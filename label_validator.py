@@ -8,6 +8,7 @@ Implements two-tier validation strategy:
 Outputs unified JSON format for CLI and API.
 """
 
+import os
 import time
 from typing import Dict, Any, Optional, List
 from enum import Enum
@@ -33,16 +34,18 @@ class ValidationLevel(Enum):
 class LabelValidator:
     """Main validator orchestrating OCR, extraction, and validation."""
     
-    def __init__(self, ocr_backend: str = "tesseract"):
+    def __init__(self, ocr_backend: str = "tesseract", ollama_host: Optional[str] = None):
         """
         Initialize validator with specified OCR backend.
         
         Args:
             ocr_backend: "tesseract" (fast) or "ollama" (accurate)
+            ollama_host: Ollama API host URL (defaults to OLLAMA_HOST env var or http://localhost:11434)
         """
         # Initialize OCR backend
         if ocr_backend.lower() == "ollama":
-            self.ocr = OllamaOCR()
+            host = ollama_host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
+            self.ocr = OllamaOCR(host=host)
         else:
             self.ocr = TesseractOCR()
         

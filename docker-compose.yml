@@ -6,16 +6,18 @@ services:
     image: ollama/ollama:latest
     container_name: ttb-ollama
     ports:
-      - "11434:11434"
+      - "11435:11434"
     volumes:
       - ollama_models:/root/.ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    # Note: GPU support disabled for compatibility
+    # To enable GPU, uncomment the deploy section below
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
     healthcheck:
       test: ["CMD", "ollama", "list"]
       interval: 10s
@@ -48,8 +50,7 @@ services:
       # CORS (allow all for prototype)
       - CORS_ORIGINS=["*"]
     depends_on:
-      ollama:
-        condition: service_healthy
+      - ollama
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
       interval: 30s

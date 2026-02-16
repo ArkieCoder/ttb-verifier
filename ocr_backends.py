@@ -71,31 +71,30 @@ class OllamaOCR(OCRBackend):
     
     def _verify_ollama_available(self):
         """Check if Ollama is running and model is available."""
+        import requests
+        
         try:
-            # Check if Ollama service is running
-            result = subprocess.run(
-                ['ollama', 'list'],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
+            # Check if Ollama service is running via HTTP API
+            response = requests.get(f"{self.host}/api/tags", timeout=5)
             
-            if result.returncode != 0:
-                raise RuntimeError(f"Ollama not available: {result.stderr}")
+            if response.status_code != 200:
+                raise RuntimeError(f"Ollama not available: HTTP {response.status_code}")
             
             # Check if requested model is downloaded
-            if self.model not in result.stdout:
+            models_data = response.json()
+            available_models = [m.get('name', '').split(':')[0] for m in models_data.get('models', [])]
+            model_base = self.model.split(':')[0]
+            
+            if model_base not in available_models:
                 raise RuntimeError(
                     f"Model '{self.model}' not found. "
-                    f"Run: ollama pull {self.model}"
+                    f"Available models: {', '.join(available_models)}"
                 )
                 
-        except FileNotFoundError:
+        except requests.exceptions.RequestException as e:
             raise RuntimeError(
-                "Ollama not installed. Install from: https://ollama.com"
+                f"Cannot connect to Ollama at {self.host}: {str(e)}"
             )
-        except subprocess.TimeoutExpired:
-            raise RuntimeError("Ollama service not responding")
     
     def extract_text(self, image_path: str) -> Dict[str, Any]:
         """Extract text using Ollama vision model."""

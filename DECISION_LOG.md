@@ -931,7 +931,385 @@ image.save(f"{filename}.jpg", 'JPEG', quality=90)
 
 ---
 
-## Decision 008: [To Be Determined]
+## Decision 008: CLI-First Development Approach
+
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Build verification engine as command-line tool first, wrap with FastAPI later
+
+### Context
+- Need to build label verification system with OCR + validation logic
+- Could start with web app (FastAPI + frontend) or CLI tool
+- Want to focus on core verification logic without UI distractions
+- Need rapid iteration and testing capability
+
+### Options Considered
+
+#### Option 1: FastAPI Web App First
+**Pros:**
+- Matches final deliverable format
+- User-friendly interface from start
+- Demo-ready immediately
+
+**Cons:**
+- Frontend/backend coordination overhead
+- Slower iteration on core logic
+- Harder to test and debug
+- UI concerns distract from verification accuracy
+
+#### Option 2: CLI Tool First ✅ SELECTED
+**Pros:**
+- Focus purely on verification logic
+- Fast iteration and testing (just run command)
+- Easy to test against 40-label golden dataset
+- Clean separation: build core, then wrap in API
+- Follows Unix philosophy: do one thing well
+- Same JSON output works for both CLI and API
+
+**Cons:**
+- Requires second step to add web interface
+- Less immediately impressive for demos
+
+### Decision Rationale
+
+**Selected CLI-first approach because:**
+
+1. **Focus on Core Logic:** Verification accuracy is the critical requirement
+   - Build OCR extraction properly
+   - Get validation logic correct
+   - Meet 5-second performance requirement
+   - No UI distractions
+
+2. **Rapid Testing:** With golden dataset ready:
+   ```bash
+   # Test immediately
+   python verify_label.py samples/label_good_001.jpg
+   
+   # Batch test all 40 labels
+   ./test_all_samples.sh
+   ```
+   - Instant feedback on accuracy
+   - Easy to iterate on validation rules
+   - No need to click through web forms
+
+3. **Clean Architecture:**
+   ```
+   CLI (verify_label.py)
+     ↓
+   Core Logic (label_validator.py) ← Returns JSON
+     ↓
+   FastAPI (app.py) ← Wraps same function
+   ```
+   - Single source of truth for verification
+   - No duplication between CLI and API
+   - Test core once, both interfaces work
+
+4. **JSON Output is Universal:**
+   - CLI returns JSON to stdout
+   - FastAPI returns same JSON as HTTP response
+   - Consistent results regardless of interface
+   - Easy to test programmatically
+
+5. **Matches Development Workflow:**
+   - Build verifier (this phase)
+   - Test thoroughly with CLI
+   - Wrap in FastAPI (next phase)
+   - Add frontend (final phase)
+
+### Implementation Details
+
+**CLI Interface:**
+```bash
+# Basic usage - returns JSON to stdout
+python verify_label.py samples/label_good_001.jpg
+
+# With ground truth for full validation
+python verify_label.py label.jpg --ground-truth application.json
+
+# Batch mode
+python verify_label.py samples/*.jpg
+
+# Choose OCR backend
+python verify_label.py label.jpg --ocr ollama  # default
+python verify_label.py label.jpg --ocr tesseract  # fallback
+```
+
+**Output Format (JSON only):**
+```json
+{
+  "status": "COMPLIANT",
+  "validation_level": "full",
+  "extracted_fields": { ... },
+  "validation_results": { ... },
+  "violations": [],
+  "processing_time_seconds": 2.3
+}
+```
+
+**Future FastAPI Integration:**
+```python
+@app.post("/verify")
+async def verify_label(image: UploadFile, ...):
+    # Call same core function
+    result = verify_label_file(image_path, expected_fields)
+    return result  # Same JSON
+```
+
+### Implications
+
+**For Development:**
+- Start with `ocr_backends.py`, `label_extractor.py`, `label_validator.py`
+- CLI is thin wrapper: parse args, call validator, print JSON
+- Can test immediately against golden dataset
+- Iterate quickly without web server overhead
+
+**For Testing:**
+- Simple bash script tests all 40 labels
+- Easy to measure accuracy (20 GOOD should pass, 20 BAD should fail)
+- Performance testing: just time the command
+- No browser/HTTP testing needed yet
+
+**For FastAPI Migration:**
+- Core logic already returns JSON
+- FastAPI just wraps: accept upload, call function, return JSON
+- No rewrite needed - literally import and call
+- Can build frontend against CLI JSON structure first
+
+### Success Metrics
+
+- [✅] CLI tool accepts image path and returns JSON
+- [✅] Ollama installed with llama3.2-vision model
+- [ ] Verifier correctly identifies 20 GOOD labels as compliant
+- [ ] Verifier correctly identifies 20 BAD labels as non-compliant  
+- [ ] Processing time < 5 seconds per label
+- [ ] JSON output structure documented
+
+### References
+- Unix Philosophy: https://en.wikipedia.org/wiki/Unix_philosophy
+- Golden dataset: `samples/` directory (40 labels with ground truth)
+
+---
+
+## Decision 009: Graceful Degradation Validation Strategy
+
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Support two-tier validation: structural checks (always) + accuracy checks (optional, requires ground truth)
+
+### Context
+- Real TTB workflow: verify label matches COLA application data
+- Need to compare extracted text against claimed values
+- Users may not always have complete application data
+- Should provide useful feedback even with partial information
+
+### Problem Statement
+
+**Core Question:** Can we validate a label from the image alone, or do we need application data?
+
+**Answer:** Depends on what we're validating:
+- **Structural compliance** (required fields present, warning formatted correctly) - YES, image only
+- **Accuracy verification** (does brand match claim, is ABV correct) - NO, need ground truth
+
+### Options Considered
+
+#### Option 1: Require Ground Truth (Strict)
+**Pros:**
+- Complete validation always
+- Matches TTB workflow exactly
+- No ambiguous results
+
+**Cons:**
+- Can't validate without application data
+- Not useful for quick structural checks
+- Rigid - all or nothing
+
+#### Option 2: Image-Only Validation (Lenient)
+**Pros:**
+- Always works regardless of input
+- Fast structural checks
+- No external data needed
+
+**Cons:**
+- Can't verify accuracy (main use case)
+- Misleading - might say "compliant" when fields are wrong
+- Doesn't match real TTB workflow
+
+#### Option 3: Graceful Degradation ✅ SELECTED
+**Pros:**
+- Works with any amount of ground truth (none, partial, full)
+- Transparent about what was/wasn't validated
+- Useful in all scenarios
+- Guides users to provide more data
+- Mirrors real-world flexibility
+
+**Cons:**
+- More complex output (three states: pass/fail/unknown)
+- Need to track what was checked vs skipped
+
+### Decision Rationale
+
+**Selected graceful degradation because:**
+
+1. **Matches Real-World Usage:**
+   - Sometimes user has full application data
+   - Sometimes only partial (just brand and ABV)
+   - Sometimes none (quick structural check)
+   - System should be useful in all cases
+
+2. **Two-Tier Validation System:**
+
+   **Tier 1: Structural (Always Performed)**
+   - Government warning present? ✅
+   - "GOVERNMENT WARNING:" in all caps? ✅
+   - Warning text matches exact wording? ✅
+   - Brand name present? ✅
+   - ABV present? ✅
+   - Net contents present? ✅
+   - Bottler info present? ✅
+   
+   **Tier 2: Accuracy (Requires Ground Truth)**
+   - Brand matches application? (need expected brand)
+   - ABV matches within tolerance? (need expected ABV)
+   - Net contents matches? (need expected net contents)
+   - Bottler info matches? (need expected bottler)
+   - Country of origin matches? (need expected country)
+
+3. **Transparent Communication:**
+   ```json
+   {
+     "status": "PARTIAL_COMPLIANCE",
+     "validation_level": "structural_only",
+     "structural_checks": { "passed": 8, "failed": 0 },
+     "accuracy_checks": { "skipped": 6, "reason": "no_ground_truth" },
+     "warnings": [
+       "Cannot verify field accuracy without application data"
+     ]
+   }
+   ```
+
+4. **Guides Users:**
+   - When ground truth missing: "Provide application data for complete validation"
+   - Shows what was checked vs what wasn't
+   - User understands limitations
+
+5. **Flexible Workflow:**
+   ```bash
+   # Quick structural check
+   python verify_label.py label.jpg
+   # → "Structure OK, but can't verify accuracy"
+   
+   # Full validation
+   python verify_label.py label.jpg --ground-truth app.json
+   # → "COMPLIANT - all fields match"
+   
+   # Partial validation
+   python verify_label.py label.jpg --brand "X" --abv "13.5%"
+   # → "Brand matches, ABV matches, other fields not verified"
+   ```
+
+### Implementation Details
+
+**Validation Function Signature:**
+```python
+def verify_label_file(
+    image_path: str,
+    expected_fields: Optional[Dict[str, str]] = None,
+    ocr_backend: str = "ollama"
+) -> Dict[str, Any]:
+    """
+    Verify label compliance.
+    
+    Args:
+        image_path: Path to label image
+        expected_fields: Optional dict with expected values
+            {
+                'brand_name': 'Stone\'s Throw',
+                'alcohol_content': '13.5% alc./vol.',
+                'net_contents': '750 mL',
+                # ... any subset of fields
+            }
+        ocr_backend: 'ollama' or 'tesseract'
+    
+    Returns:
+        {
+            'status': 'COMPLIANT' | 'NON_COMPLIANT' | 'PARTIAL_COMPLIANCE',
+            'validation_level': 'full' | 'partial' | 'structural_only',
+            'extracted_fields': {...},
+            'validation_results': {
+                'structural': {'passed': N, 'failed': M, 'checks': [...]},
+                'accuracy': {'passed': X, 'failed': Y, 'skipped': Z, 'checks': [...]}
+            },
+            'violations': [...],
+            'warnings': [...]
+        }
+    """
+```
+
+**Three Validation Levels:**
+1. **full** - All expected fields provided, complete validation
+2. **partial** - Some expected fields provided, validate what we can
+3. **structural_only** - No expected fields, only check structure
+
+**Status Determination:**
+- `COMPLIANT` - All checks passed (structural + accuracy where applicable)
+- `NON_COMPLIANT` - Any checks failed (violations found)
+- `PARTIAL_COMPLIANCE` - All performed checks passed, but some skipped
+
+### Implications
+
+**For CLI:**
+```bash
+# No ground truth
+python verify_label.py label.jpg
+# Returns: status=PARTIAL_COMPLIANCE, warnings about missing data
+
+# Full ground truth
+python verify_label.py label.jpg --ground-truth app.json
+# Returns: status=COMPLIANT or NON_COMPLIANT
+
+# Partial ground truth
+python verify_label.py label.jpg --brand "X" --abv "13.5%"
+# Returns: status varies, shows which checks ran
+```
+
+**For FastAPI (Future):**
+```html
+<form>
+  <input type="file" name="label" required>
+  
+  <!-- Optional fields with warning -->
+  <p class="warning">
+    💡 Providing application data enables full validation.
+    Without it, we can only check structural compliance.
+  </p>
+  
+  <input name="brand_name" placeholder="Brand Name (optional)">
+  <input name="alcohol_content" placeholder="ABV (optional)">
+  <!-- ... -->
+</form>
+```
+
+**For Users:**
+- Always get useful feedback
+- Understand what was/wasn't validated
+- Encouraged to provide complete data
+- No binary "works/doesn't work" frustration
+
+### Success Metrics
+
+- [ ] Structural validation works without ground truth
+- [ ] Accuracy validation works with ground truth
+- [ ] Partial ground truth correctly skips missing fields
+- [ ] Output clearly indicates validation level
+- [ ] Warnings guide users to provide more data
+
+### References
+- Graceful degradation pattern: https://en.wikipedia.org/wiki/Graceful_degradation
+- TTB workflow: REQUIREMENTS.md
+
+---
+
+## Decision 010: [To Be Determined]
 
 **Date:** TBD  
 **Status:** 🔄 Pending  
@@ -966,4 +1344,4 @@ image.save(f"{filename}.jpg", 'JPEG', quality=90)
 ---
 
 **Document Maintained By:** Project Team  
-**Last Updated:** 2026-02-16 (Decision 007 added: JPEG-Only Output; Decision 006 updated with ideal vs. practical justification)
+**Last Updated:** 2026-02-16 (Decisions 008-009 added: CLI-First Approach and Graceful Degradation Strategy)

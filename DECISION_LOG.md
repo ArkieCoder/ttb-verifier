@@ -1653,7 +1653,482 @@ complex or disputed cases where accuracy is more important than speed.
 
 ---
 
-## Decision 011: [To Be Determined]
+## Decision 011: Remove Pretty-Print Option - JSON-Only Output
+
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Remove `--pretty` flag and TTY detection from CLI. Always output compact JSON with no indentation.
+
+### Context
+- Original CLI had `--pretty` flag that auto-detected TTY and pretty-printed JSON
+- Moving to API-first architecture with FastAPI
+- APIs should output consistent, compact JSON regardless of client
+- Pretty-printing adds complexity and inconsistency between CLI and API usage
+
+### Options Considered
+
+#### Option 1: Keep --pretty as Debug Option
+**Pros:**
+- Helpful for manual debugging
+- Backward compatible with existing scripts
+
+**Cons:**
+- Inconsistent behavior between CLI and API
+- Additional code complexity
+- Users can pipe to `jq` or `python -m json.tool` for pretty-printing
+
+#### Option 2: Always Compact JSON ✅ SELECTED
+**Pros:**
+- Consistent output format (matches API behavior)
+- Simpler code (remove 4+ lines of logic)
+- Smaller output size for pipelines
+- Industry standard for APIs
+- Users can pretty-print externally if needed
+
+**Cons:**
+- Less readable for human inspection (mitigated by external tools)
+
+### Decision Rationale
+Selected **Option 2** because:
+1. **API-First Design:** CLI will be wrapper around core validation logic used by API
+2. **Consistency:** Same JSON format whether called via CLI, API, or programmatically
+3. **Simplicity:** Removes conditional logic and flags
+4. **Best Practice:** APIs return compact JSON; clients handle formatting
+5. **External Tools:** `jq`, `python -m json.tool`, IDE formatters available
+
+### Implications
+- **Code Changes:** Remove `--pretty` argument, TTY detection, conditional formatting
+- **Test Updates:** Update `run_tests.sh` TEST 7 to check for compact JSON
+- **Documentation:** Update CLI docs to note JSON-only output
+- **User Impact:** Users wanting pretty output must use external tools (one-liner: `| python -m json.tool`)
+
+### Success Metrics
+- ✅ CLI outputs identical JSON format as API
+- ✅ All tests pass with compact JSON
+- ✅ Code simplified (fewer conditionals)
+- ✅ Documentation updated
+
+### References
+- `verify_label.py` lines 249-250, 254-256, 276, 287
+- API design best practices: compact JSON for machine consumption
+
+---
+
+## Decision 012: Docker Strategy with Separate Ollama Service
+
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Use multi-stage Docker build for main app (~500MB) with Ollama as separate service in docker-compose
+
+### Context
+- Need to containerize application for deployment
+- Ollama AI vision models are ~7.9GB (llama3.2-vision)
+- Want to support both fast (Tesseract) and accurate (Ollama) OCR options
+- All-in-one image would be ~10GB (slow build/push, violates Docker best practices)
+- Must support local development and production deployment
+
+### Options Considered
+
+#### Option 1: Ollama as Separate Docker Service ✅ SELECTED
+**Architecture:**
+```yaml
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+  verifier:
+    build: .
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+```
+
+**Pros:**
+- ✅ Main app image stays lean (~500MB)
+- ✅ Uses official Ollama container (well-maintained)
+- ✅ Services can scale independently
+- ✅ Easy GPU passthrough for Ollama
+- ✅ Models cached in Docker volume (survive restarts)
+- ✅ Clear separation of concerns
+
+**Cons:**
+- ⚠️ Requires docker-compose (acceptable for deployment)
+- ⚠️ Minimal network overhead between containers
+
+#### Option 2: Ollama on EC2 Host
+**Pros:**
+- Simplest Docker setup
+- Uses host GPU directly
+
+**Cons:**
+- ❌ Not fully containerized
+- ❌ Manual installation required on each host
+- ❌ Host dependency reduces portability
+
+#### Option 3: All-In-One Image
+**Cons:**
+- ❌ Image size ~10GB (7.9GB model + base)
+- ❌ Slow build times (30+ minutes)
+- ❌ Slow push/pull to registry
+- ❌ Violates Docker best practices (one concern per container)
+- ❌ Wastes bandwidth for users not using Ollama
+
+### Decision Rationale
+Selected **Option 1** because:
+1. **Lean Images:** Main app stays ~500MB (Tesseract + Python deps)
+2. **Official Images:** Ollama maintained by Ollama team, always up-to-date
+3. **Flexibility:** Can run verifier without Ollama for Tesseract-only deployments
+4. **Scalability:** Can scale Ollama separately if it becomes bottleneck
+5. **Best Practices:** Each service has single responsibility
+6. **GPU Support:** Official Ollama image handles GPU passthrough correctly
+7. **Model Management:** Ollama handles model downloads/updates
+
+### Implementation Details
+
+**Multi-Stage Dockerfile:**
+```
+Stage 1: base (Python 3.12-slim + Tesseract)
+Stage 2: builder (install Python dependencies)
+Stage 3: test (run pytest with 80% coverage requirement)
+Stage 4: production (minimal runtime)
+```
+
+**docker-compose.yml:**
+- Ollama service with GPU support and health checks
+- Verifier service depends on Ollama (can override for Tesseract-only)
+- Shared network for service communication
+- Volume for Ollama models (persist across restarts)
+
+**Environment Configuration:**
+- `OLLAMA_HOST` configurable via .env
+- Defaults to docker-compose service name
+- Can override for external Ollama instance
+
+### Implications
+- **Development:** Requires Docker Compose for local dev with Ollama
+- **Testing:** Multi-stage build runs pytest automatically (fails if <80% coverage)
+- **Deployment:** Two containers deployed together via docker-compose or orchestrator
+- **Image Size:** Main app ~500MB, Ollama ~4GB (one-time pull)
+- **Startup Time:** Ollama takes ~10-30s to start, verifier waits via health check
+- **Graceful Degradation:** If Ollama unavailable, verifier falls back to Tesseract
+
+### Success Metrics
+- ✅ Main image size <600MB
+- ✅ Docker build completes in <5 minutes (excluding model pull)
+- ✅ Both services start successfully via docker-compose
+- ✅ Health checks pass for both services
+- ✅ Can run verifier with or without Ollama
+- ✅ GPU passthrough works for Ollama (when available)
+
+### References
+- Ollama Docker image: https://hub.docker.com/r/ollama/ollama
+- Docker multi-stage builds: https://docs.docker.com/build/building/multi-stage/
+- Docker Compose health checks: https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck
+
+---
+
+## Decision 013: Pytest Test Suite with 80% Coverage Target
+
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Implement comprehensive pytest suite with 80% minimum coverage, integrated into Docker build. Keep existing bash tests for smoke testing.
+
+### Context
+- Currently have bash test script (`run_tests.sh`) with 24 tests across 8 categories
+- Moving to containerized deployment requires proper CI/CD testing
+- Need unit tests, integration tests, and API tests
+- Docker multi-stage build should fail if tests fail or coverage too low
+- Want to maintain both developer-friendly smoke tests and rigorous CI/CD tests
+
+### Options Considered
+
+#### Option 1: Keep Both Bash and Pytest ✅ SELECTED
+**Bash Tests:**
+- Quick smoke tests for local development
+- Human-readable colored output
+- Direct CLI testing
+- Fast feedback (~30 seconds with --quick)
+
+**Pytest Suite:**
+- Comprehensive unit + integration + API tests
+- Code coverage metrics
+- Runs in Docker build (fails build if tests fail)
+- CI/CD integration ready
+- 80% minimum coverage requirement
+
+**Pros:**
+- ✅ Best of both worlds
+- ✅ Bash tests remain useful for quick local checks
+- ✅ Pytest provides rigor for CI/CD
+- ✅ Different tools for different purposes
+
+**Cons:**
+- ⚠️ Two test suites to maintain (acceptable - different purposes)
+
+#### Option 2: Pytest Only
+**Cons:**
+- ❌ Loses convenient colored CLI output for developers
+- ❌ Bash tests already written and working
+
+#### Option 3: Bash Only
+**Cons:**
+- ❌ Not suitable for CI/CD
+- ❌ No code coverage metrics
+- ❌ Harder to run in Docker
+
+### Decision Rationale
+Selected **Option 1** because:
+1. **Complementary Tools:** Bash for quick dev feedback, pytest for thorough testing
+2. **Developer Experience:** Bash tests provide instant visual feedback
+3. **CI/CD Ready:** Pytest integrates with Docker, generates coverage reports
+4. **Coverage Enforcement:** 80% minimum prevents regressions
+5. **API Testing:** pytest + httpx ideal for FastAPI testing
+6. **Existing Work:** Bash tests already provide value, no reason to discard
+
+### Test Structure
+
+```
+tests/
+├── conftest.py (shared fixtures)
+├── test_unit/ (90% coverage target)
+│   ├── test_field_validators.py
+│   ├── test_label_extractor.py
+│   ├── test_ocr_backends.py
+│   └── test_label_validator.py
+├── test_integration/ (70% coverage target)
+│   ├── test_cli.py
+│   └── test_end_to_end.py
+└── test_api/ (95% coverage target)
+    └── test_fastapi_endpoints.py
+```
+
+### Coverage Targets by Module
+- `field_validators.py`: 90% (fuzzy matching, ABV tolerance, edge cases)
+- `label_extractor.py`: 85% (regex patterns, field extraction)
+- `ocr_backends.py`: 70% (mock Ollama, test Tesseract)
+- `label_validator.py`: 90% (Tier 1/2 validation, graceful degradation)
+- `verify_label.py`: 60% (CLI integration via subprocess)
+- `api.py`: 95% (all endpoints, error handling)
+- **Overall Target: 80%+**
+
+### Test Against Golden Samples
+- Use existing 40 golden samples (20 GOOD + 20 BAD)
+- 4.9MB dataset included in Docker image
+- Tests verify both Tesseract and Ollama backends
+- Users can replace samples with their own (document in `docs/GOLDEN_SAMPLES.md`)
+
+### Implications
+- **Docker Build:** Test stage runs pytest automatically
+- **Build Failures:** Build fails if tests fail or coverage <80%
+- **Development Workflow:** Developers run bash tests locally, pytest before push
+- **CI/CD:** GitHub Actions runs Docker build (includes tests)
+- **Coverage Reports:** Generated in Docker, can be exported as artifacts
+- **Test Fixtures:** Shared fixtures in conftest.py (golden sample paths, mock OCR)
+
+### Success Metrics
+- ✅ 80%+ code coverage achieved
+- ✅ All tests pass in Docker build
+- ✅ Tests complete in <2 minutes (excluding Ollama tests)
+- ✅ Bash tests remain functional for quick dev checks
+- ✅ API tests cover all endpoints and error conditions
+- ✅ Tests catch regressions (e.g., graceful degradation working)
+
+### References
+- pytest: https://docs.pytest.org/
+- pytest-cov: https://pytest-cov.readthedocs.io/
+- FastAPI testing: https://fastapi.tiangolo.com/tutorial/testing/
+
+---
+
+## Decision 014: FastAPI with Open Access and Minimal Observability
+
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Implement FastAPI with open access (no authentication), CORS allow-all, logging to stdout only. No metrics, tracing, or API versioning at this stage.
+
+### Context
+- Building prototype to demonstrate label verification capability
+- Need REST API with file upload for web UI integration
+- May eventually use AWS API Gateway for production (handles auth, rate limiting, etc.)
+- Want to keep prototype simple and focused on core functionality
+- Containerized deployment captures stdout logs automatically
+
+### API Design
+
+**Endpoints:**
+- `POST /verify` - Single label verification (image + optional ground truth)
+- `POST /verify/batch` - Batch verification (ZIP file with images + JSON metadata)
+- `GET /health` - Health check (removed per user - not needed at this stage)
+- `GET /docs` - Auto-generated Swagger UI
+
+**Request Limits:**
+- Max file size: 10MB per image
+- Max batch size: 50 images
+- Allowed formats: .jpg, .jpeg, .png
+
+**Batch ZIP Format:**
+```
+batch.zip
+├── label_001.jpg
+├── label_001.json (ground truth, optional)
+├── label_002.jpg
+├── label_002.json
+└── ...
+```
+
+JSON files must match image filenames (e.g., `label_001.jpg` → `label_001.json`)
+
+### Security & Access Control
+
+#### Authentication: None (Open Access) ✅ SELECTED
+**Rationale:**
+- Prototype stage - focus on functionality
+- Production will use AWS API Gateway for auth
+- Simplifies development and testing
+- Can add API key middleware later if needed (comment in code)
+
+**Future Production Path:**
+- AWS API Gateway handles:
+  - API key authentication
+  - Rate limiting
+  - Request throttling
+  - Usage plans
+  - CloudWatch metrics
+
+#### CORS: Allow All Origins
+**Configuration:** `CORS_ORIGINS=["*"]`
+
+**Rationale:**
+- Prototype needs to work from any dev environment
+- Frontend may be served from localhost, different ports, etc.
+- Production will restrict to specific domains
+
+**Future:**
+```python
+# Production CORS example (commented in code)
+CORS_ORIGINS=[
+    "https://ttb.gov",
+    "https://cola.ttb.gov", 
+    "https://label-verify.ttb.gov"
+]
+```
+
+### Observability
+
+#### Logging: Stdout Only ✅ SELECTED
+**Implementation:**
+- Structured logs to stdout
+- Docker captures and forwards to log aggregator
+- Format: `%(asctime)s - %(name)s - %(levelname)s - %(message)s`
+- Log level configurable via env var (default: INFO)
+
+**Rationale:**
+- Docker best practice: log to stdout
+- Syslog, CloudWatch, or other aggregators can capture stdout
+- No file I/O reduces complexity
+- Container-native approach
+
+#### Metrics: None at This Stage
+**Decision:** No Prometheus, StatsD, or custom metrics
+
+**Rationale:**
+- Prototype focuses on functionality
+- AWS API Gateway provides metrics in production
+- Can add `/metrics` endpoint later if needed (comment in code)
+
+**Future Options (Commented):**
+```python
+# Option 1: Prometheus metrics
+# from prometheus_fastapi_instrumentator import Instrumentator
+# Instrumentator().instrument(app).expose(app)
+
+# Option 2: CloudWatch via boto3
+# Option 3: Custom metrics to external service
+```
+
+#### Tracing: None at This Stage
+**Decision:** No distributed tracing (OpenTelemetry, Jaeger, etc.)
+
+**Rationale:**
+- Single service (verifier + Ollama)
+- No microservices requiring tracing
+- Adds complexity without current benefit
+
+#### API Versioning: None at This Stage
+**Decision:** No `/v1/` or `/v2/` prefix
+
+**Rationale:**
+- First version of API
+- Breaking changes unlikely in prototype
+- Can add versioning when needed
+
+**Future Path:**
+```python
+# When versioning needed:
+# app.include_router(v1_router, prefix="/v1")
+# app.include_router(v2_router, prefix="/v2")
+```
+
+### Rate Limiting
+
+**Decision:** No rate limiting in app code
+
+**Rationale:**
+- AWS API Gateway handles rate limiting in production
+- Prototype deployed in controlled environment
+- Can add `slowapi` if needed (comment in code)
+
+**Future Implementation (Commented):**
+```python
+# from slowapi import Limiter
+# limiter = Limiter(key_func=get_remote_address)
+# @limiter.limit("100/hour")
+# async def verify_label(...):
+```
+
+### Error Handling
+
+**HTTP Status Codes:**
+- `200 OK` - Successful validation (includes NON_COMPLIANT status in JSON)
+- `400 Bad Request` - Invalid file format, malformed JSON
+- `413 Payload Too Large` - File >10MB or batch >50 images
+- `422 Unprocessable Entity` - Validation error (Pydantic)
+- `500 Internal Server Error` - OCR failure, unexpected errors
+
+**Error Response Format:**
+```json
+{
+  "error": "File too large",
+  "detail": "Maximum file size is 10MB",
+  "timestamp": "2026-02-16T12:00:00Z"
+}
+```
+
+### Implications
+- **Development:** Simplified API without auth complexity
+- **Testing:** Easy to test with curl, no tokens needed
+- **Deployment:** Docker logs go to stdout (captured by orchestrator)
+- **Production Path:** Clear migration to API Gateway for enterprise features
+- **Documentation:** Must document prototype nature and production considerations
+- **Future-Proofing:** Comments in code show where to add auth/metrics/versioning
+
+### Success Metrics
+- ✅ API endpoints work without authentication
+- ✅ CORS allows requests from any origin
+- ✅ Logs appear in Docker stdout
+- ✅ File upload handles 10MB images
+- ✅ Batch processing handles 50 images
+- ✅ Error responses have consistent format
+- ✅ Swagger UI auto-generated and functional
+
+### References
+- FastAPI CORS: https://fastapi.tiangolo.com/tutorial/cors/
+- FastAPI file uploads: https://fastapi.tiangolo.com/tutorial/request-files/
+- Docker logging: https://docs.docker.com/config/containers/logging/
+- AWS API Gateway: https://aws.amazon.com/api-gateway/
+
+---
+
+## Decision 015: [To Be Determined]
 
 **Date:** TBD  
 **Status:** 🔄 Pending  
@@ -1688,4 +2163,9 @@ complex or disputed cases where accuracy is more important than speed.
 ---
 
 **Document Maintained By:** Project Team  
-**Last Updated:** 2026-02-16 (Decision 010 added: Hybrid OCR Backend Strategy - Tesseract default with Ollama AI option)
+**Last Updated:** 2026-02-16  
+**Recent Additions:**
+- Decision 011: Remove Pretty-Print Option - JSON-Only Output
+- Decision 012: Docker Strategy with Separate Ollama Service  
+- Decision 013: Pytest Test Suite with 80% Coverage Target
+- Decision 014: FastAPI with Open Access and Minimal Observability

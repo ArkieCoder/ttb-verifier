@@ -691,24 +691,39 @@ python gen_samples.py --seed 42  # optional reproducibility
 
 **Selected programmatic generation (Option 2) because:**
 
-1. **Ground Truth is Critical:** For testing the verification system, we MUST know exactly what text should be extracted
+1. **Ideal vs. Practical Reality:**
+   - **In a perfect world**, we would use REAL label images that had been validated by human experts in the 27 CFR regulations
+   - Real labels validated by TTB experts would provide:
+     - Authentic visual complexity
+     - Real-world edge cases and variations
+     - Confidence in regulatory compliance
+     - No risk of programmatic errors in interpretation
+   - **However, this is not possible for this POC** because:
+     - We don't have access to a corpus of pre-validated labels with ground truth
+     - Getting expert validation would take weeks/months (outside POC timeline)
+     - Real TTB COLA database only has approved labels (can't get BAD examples)
+     - Building such a dataset is beyond the scope of a 6-day prototype
+   - **Therefore**, deterministic generation was the pragmatic choice given constraints
+
+2. **Ground Truth is Critical:** For testing the verification system, we MUST know exactly what text should be extracted
+2. **Ground Truth is Critical (Continued):** For testing the verification system, we MUST know exactly what text should be extracted
    - With AI generation: AI might write "Goverment Warning" or "45.2% ABV" when we wanted "45.0% ABV"
    - With programmatic: We render exactly "GOVERNMENT WARNING:" and "45.0% ABV"
    - Ground truth is essential for automated validation testing
 
-2. **Violation Control:** Need to systematically test specific violations
+3. **Violation Control:** Need to systematically test specific violations
    - Must create labels with "warning not all caps" violation
    - Must create labels with "ABV outside tolerance" violation
    - Very difficult to prompt AI to generate these specific regulatory violations
    - Programmatic generation: simply set `warning_header_all_caps = False`
 
-3. **Regulatory Accuracy:** Labels must follow precise 27 CFR requirements
+4. **Regulatory Accuracy:** Labels must follow precise 27 CFR requirements
    - Type sizes must be exactly 1mm, 2mm, or 3mm based on container size
    - Warning text must be word-for-word exact
    - AI models aren't trained on TTB regulations
    - Programmatic: we implement exact requirements from CFR
 
-4. **Human Expertise Requirements:** Deterministic methods were necessary for sample generation so that we could KNOW with some degree of certainty that we were generating definitively GOOD or BAD samples
+5. **Human Expertise Requirements:** Deterministic methods were necessary for sample generation so that we could KNOW with some degree of certainty that we were generating definitively GOOD or BAD samples
    - With AI-generated samples, a human well-versed in the regulations would have to either:
      a) Train the AI to reliably generate GOOD and BAD samples (requires extensive prompt engineering and validation), OR
      b) Manually sort images created by an AI-based sample generator into GOOD and BAD categories
@@ -716,17 +731,17 @@ python gen_samples.py --seed 42  # optional reproducibility
    - The regulations contain subtle requirements (e.g., "GOVERNMENT WARNING:" must be bold but body text must not be bold, ABV tolerances vary by product type) that are difficult for humans to quickly master
    - Programmatic generation embeds regulatory knowledge directly in code, removing human judgment from the classification process
 
-5. **Speed & Scale:** Can generate 100+ labels in minutes
+6. **Speed & Scale:** Can generate 100+ labels in minutes
    - Programmatic: ~2 seconds per label, no API latency
    - AI generation: 10-30 seconds per label + API costs
    - For testing, need ability to regenerate entire test set quickly
 
-6. **Deterministic Testing:** Same seed = same labels
+7. **Deterministic Testing:** Same seed = same labels
    - Critical for reproducible test results
    - Debugging: can regenerate exact same problematic label
    - AI generation is inherently non-deterministic
 
-7. **Cost & Availability:**
+8. **Cost & Availability:**
    - Programmatic: Free after Pillow installation
    - AI APIs: $0.02-$0.20+ per image, adds up for 100+ labels
    - No API keys or accounts needed
@@ -784,7 +799,139 @@ python gen_samples.py --seed 42  # optional reproducibility
 
 ---
 
-## Decision 007: [To Be Determined]
+## Decision 007: JPEG-Only Output Format
+
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Generate only JPEG files (not TIFF) for sample labels
+
+### Context
+- Initial implementation generated both JPEG and TIFF files per label
+- TTB COLA submission requirements specify "JPEG or TIFF, < 750 KB"
+- Need to simplify output and reduce unnecessary file generation
+- Verification software should handle standard image formats interchangeably
+
+### Options Considered
+
+#### Option 1: JPEG + TIFF (Original Implementation)
+**Pros:**
+- Covers both accepted formats
+- TIFF provides lossless quality
+- Shows format flexibility
+
+**Cons:**
+- Doubles file count (unnecessary)
+- TIFF files often larger (compression varies)
+- More complex file management
+- Longer generation time
+
+#### Option 2: JPEG Only ✅ SELECTED
+**Pros:**
+- Simpler implementation and file management
+- Smaller file sizes with quality=90
+- All modern OCR/vision software reads JPEG
+- Trivial to convert JPEG→TIFF if needed
+- Faster generation (one file per label vs. two)
+- Standard format universally supported
+
+**Cons:**
+- Lossy compression (but quality=90 is excellent)
+- No lossless option provided
+
+#### Option 3: TIFF Only
+**Pros:**
+- Lossless quality
+- Professional archival format
+
+**Cons:**
+- Larger file sizes (harder to stay under 750KB)
+- Less common in web contexts
+- Slower to generate
+
+### Decision Rationale
+
+**Selected JPEG-only output (Option 2) because:**
+
+1. **Format Interchangeability:** It is trivial for regulatory validation software to:
+   - Read either JPEG or TIFF with no problems
+   - Convert between formats as needed (ImageMagick, Pillow, etc.)
+   - Modern OCR/vision APIs accept both interchangeably
+
+2. **Simplicity Principle:** Generating both formats adds complexity without meaningful benefit
+   - Doubles file count: 40 labels × 2 formats = 80 image files instead of 40
+   - Adds file size management for second format
+   - More disk space, longer generation time
+
+3. **File Size Optimization:** JPEG compression allows:
+   - Quality=90 provides excellent visual fidelity
+   - Easier to stay under 750 KB limit
+   - TIFF files often larger even with LZW compression
+
+4. **Standard Practice:** JPEG is the de facto standard for:
+   - Web applications
+   - Image processing pipelines
+   - OCR/vision APIs (OpenAI, Google Cloud Vision, Azure CV)
+   - Cross-platform compatibility
+
+5. **Realistic Use Case:** In production:
+   - Users likely upload photos from phones (JPEG)
+   - Scanners default to JPEG or PDF
+   - Conversion between formats is one-line command: `convert label.jpg label.tif`
+
+### Implementation Changes
+
+**Before:**
+```python
+# Save JPEG
+image.save(f"{filename}.jpg", 'JPEG', quality=90)
+
+# Save TIFF
+image.save(f"{filename}.tif", 'TIFF', compression='tiff_lzw')
+```
+
+**After:**
+```python
+# Save JPEG only
+image.save(f"{filename}.jpg", 'JPEG', quality=90)
+```
+
+**Metadata Update:**
+- Remove `file_sizes_kb.tiff` field
+- Simplify to single file size tracking
+
+### Implications
+
+**For Development:**
+- Simpler code in `save_label()` method
+- Faster generation (no second file write)
+- Less disk I/O
+
+**For Testing:**
+- Fewer files to manage in `samples/` directory
+- 40 labels = 80 files total (40 JPG + 40 JSON) instead of 120
+
+**For Documentation:**
+- Update SAMPLE_GENERATOR.md to reflect JPEG-only
+- Update README instructions
+
+**For Verification System:**
+- No change needed - system should accept JPEG input
+- Standard image loading: `Image.open()` works the same
+
+### Success Metrics
+
+- [✅] Only JPEG files generated (no TIFF)
+- [✅] All JPEGs < 750 KB
+- [✅] Quality sufficient for OCR/text extraction
+- [✅] Reduced generation time per label
+
+### References
+- TTB COLA Requirements: JPEG or TIFF, < 750 KB
+- PIL/Pillow Image.save() documentation: https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save
+
+---
+
+## Decision 008: [To Be Determined]
 
 **Date:** TBD  
 **Status:** 🔄 Pending  
@@ -819,4 +966,4 @@ python gen_samples.py --seed 42  # optional reproducibility
 ---
 
 **Document Maintained By:** Project Team  
-**Last Updated:** 2026-02-15 (Decision 006 added: Deterministic vs AI Generation)
+**Last Updated:** 2026-02-16 (Decision 007 added: JPEG-Only Output; Decision 006 updated with ideal vs. practical justification)

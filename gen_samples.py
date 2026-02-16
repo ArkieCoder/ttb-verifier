@@ -2233,9 +2233,8 @@ class LabelGenerator:
         return metadata
     
     def save_label(self, image, metadata, filename_base):
-        """Save label as JPEG, TIFF, and JSON with file size management."""
+        """Save label as JPEG and JSON with file size management."""
         jpeg_path = f"{filename_base}.jpg"
-        tiff_path = f"{filename_base}.tif"
         
         # Quality cascade for JPEG: 90 → 85 → 80 → 75 → 70
         quality_levels = [90, 85, 80, 75, 70]
@@ -2258,26 +2257,9 @@ class LabelGenerator:
                 size_kb = Path(jpeg_path).stat().st_size / 1024
                 scale -= 0.05
         
-        # Save TIFF with compression
-        current_image.save(tiff_path, 'TIFF', compression='tiff_lzw')
-        
-        # Verify TIFF size and resize if needed
-        tiff_size_kb = Path(tiff_path).stat().st_size / 1024
-        if tiff_size_kb >= 750:
-            scale = 0.95
-            while tiff_size_kb >= 750 and scale > 0.6:
-                new_size = (int(image.width * scale), int(image.height * scale))
-                resized = image.resize(new_size, Image.Resampling.LANCZOS)
-                resized.save(tiff_path, 'TIFF', compression='tiff_lzw')
-                tiff_size_kb = Path(tiff_path).stat().st_size / 1024
-                scale -= 0.05
-        
         # Save metadata
         metadata['filename'] = f"{filename_base}.jpg"
-        metadata['file_sizes_kb'] = {
-            'jpeg': round(Path(jpeg_path).stat().st_size / 1024, 2),
-            'tiff': round(Path(tiff_path).stat().st_size / 1024, 2)
-        }
+        metadata['file_size_kb'] = round(Path(jpeg_path).stat().st_size / 1024, 2)
         json_path = f"{filename_base}.json"
         with open(json_path, 'w') as f:
             json.dump(metadata, f, indent=2)
@@ -2306,7 +2288,7 @@ class LabelGenerator:
         print(f"Generated {good_count + bad_count} labels total")
         print(f"  - {good_count} GOOD labels")
         print(f"  - {bad_count} BAD labels")
-        print(f"  - {(good_count + bad_count) * 3} files total (jpg, tif, json)")
+        print(f"  - {(good_count + bad_count) * 2} files total (jpg, json)")
 
 
 # ============================================================================

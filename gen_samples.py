@@ -18,6 +18,7 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 import requests
+import urllib.parse
 
 
 # ============================================================================
@@ -164,13 +165,18 @@ class GoogleFontDownloader:
         # Convert "Playfair Display" -> "PlayfairDisplay" for file prefix
         file_prefix = family_name.replace(' ', '')
         
-        # Build full URL
+        # Build filename and URL-encode it (handles square brackets in variable fonts)
         if variable:
             # Variable fonts: FontFamily[wght].ttf
-            return f"{self.GITHUB_RAW_BASE}/{license_dir}/{dir_name}/{file_prefix}[wght].ttf"
+            filename = f"{file_prefix}[wght].ttf"
         else:
             # Static fonts: FontFamily-Variant.ttf
-            return f"{self.GITHUB_RAW_BASE}/{license_dir}/{dir_name}/{file_prefix}-{variant}.ttf"
+            filename = f"{file_prefix}-{variant}.ttf"
+        
+        # URL-encode the filename (critical for square brackets)
+        encoded_filename = urllib.parse.quote(filename)
+        
+        return f"{self.GITHUB_RAW_BASE}/{license_dir}/{dir_name}/{encoded_filename}"
     
     @staticmethod
     def _sanitize_name(name):
@@ -493,6 +499,7 @@ class Label:
         self.background_color = None
         self.text_color = None
         self.canvas_size = None
+        self.fonts_used = {}  # Track which fonts were actually used: {field: font_name}
         
         # Violation flag
         self._type_size_violation = False
@@ -1370,7 +1377,8 @@ class LabelRenderer:
                 layout['brand'],
                 font_size_mm=6.0,
                 bold=True,
-                font_family_list=brand_font_list
+                font_family_list=brand_font_list,
+                field_name='brand_name'
             )
         
         # Class/type (serif or sans)
@@ -1380,7 +1388,8 @@ class LabelRenderer:
                 layout['class_type'],
                 font_size_mm=4.0,
                 bold=False,
-                font_family_list=self.BRAND_FONTS_SERIF if random.random() < 0.5 else self.BODY_FONTS
+                font_family_list=self.BRAND_FONTS_SERIF if random.random() < 0.5 else self.BODY_FONTS,
+                field_name='class_type'
             )
         
         # ABV (bold, emphasis)
@@ -1389,7 +1398,8 @@ class LabelRenderer:
                 self.label.alcohol_content,
                 layout['abv'],
                 font_size_mm=3.5,
-                bold=True
+                bold=True,
+                field_name='alcohol_content'
             )
         
         # Net contents
@@ -1398,7 +1408,8 @@ class LabelRenderer:
                 self.label.net_contents,
                 layout['net_contents'],
                 font_size_mm=3.0,
-                bold=False
+                bold=False,
+                field_name='net_contents'
             )
         
         # Bottler info
@@ -1407,7 +1418,8 @@ class LabelRenderer:
                 self.label.bottler_info,
                 layout['bottler'],
                 font_size_mm=2.5,
-                bold=False
+                bold=False,
+                field_name='bottler_info'
             )
         
         # Country of origin
@@ -1418,7 +1430,8 @@ class LabelRenderer:
                 self.label.country_of_origin,
                 (layout['bottler'][0], country_y),
                 font_size_mm=2.5,
-                bold=False
+                bold=False,
+                field_name='country_of_origin'
             )
         
         # Sulfites (if present and in layout)
@@ -1427,7 +1440,8 @@ class LabelRenderer:
                 self.label.sulfites,
                 layout['sulfites'],
                 font_size_mm=2.0,
-                bold=False
+                bold=False,
+                field_name='sulfites'
             )
         
         # Government warning (special handling)
@@ -1464,7 +1478,8 @@ class LabelRenderer:
             header,
             (position[0], header_y),
             font_size_mm=font_size_mm,
-            bold=self.label.warning_header_bold
+            bold=self.label.warning_header_bold,
+            field_name='warning_header'
         )
         
         # Draw body (wrapped, below header)
@@ -1475,15 +1490,16 @@ class LabelRenderer:
                 (position[0], body_y),
                 font_size_mm=font_size_mm,
                 bold=self.label.warning_body_bold,
-                max_width=self.label.canvas_size[0] * 0.85
+                max_width=self.label.canvas_size[0] * 0.85,
+                field_name='warning_body'
             )
     
-    def _draw_text_centered(self, text, position, font_size_mm, bold, font_family_list=None):
+    def _draw_text_centered(self, text, position, font_size_mm, bold, font_family_list=None, field_name=None):
         """Draw centered text with font selection."""
         if font_family_list is None:
             font_family_list = self.BODY_FONTS
         
-        font = self._get_font(font_size_mm, bold, font_family_list)
+        font = self._get_font(font_size_mm, bold, font_family_list, field_name)
         
         # Get text bounding box
         bbox = self.draw.textbbox((0, 0), text, font=font)
@@ -1496,9 +1512,9 @@ class LabelRenderer:
         
         self.draw.text((x, y), text, fill=self.label.text_color, font=font)
     
-    def _draw_text_wrapped(self, text, position, font_size_mm, bold, max_width):
+    def _draw_text_wrapped(self, text, position, font_size_mm, bold, max_width, field_name=None):
         """Draw text with wrapping."""
-        font = self._get_font(font_size_mm, bold, self.BODY_FONTS)
+        font = self._get_font(font_size_mm, bold, self.BODY_FONTS, field_name)
         
         # Word wrapping
         words = text.split()
@@ -1535,8 +1551,18 @@ class LabelRenderer:
             y = start_y + i * line_height
             self.draw.text((x, y), line, fill=self.label.text_color, font=font)
     
-    def _get_font(self, size_mm, bold, font_family_list=None):
-        """Get font with Google Fonts support and system font fallbacks."""
+    def _get_font(self, size_mm, bold, font_family_list=None, field_name=None):
+        """Get font with Google Fonts support and system font fallbacks.
+        
+        Args:
+            size_mm: Font size in millimeters
+            bold: Whether bold is requested
+            font_family_list: List of font specs (tuples or strings)
+            field_name: Optional field name to track font usage
+        
+        Returns:
+            ImageFont object
+        """
         size_px = int(size_mm * self.MM_TO_PX)
         
         if font_family_list is None:
@@ -1550,14 +1576,23 @@ class LabelRenderer:
                 font_path = self.font_downloader.get_font_path(family, variant)
                 if font_path:
                     try:
-                        return ImageFont.truetype(font_path, size_px)
+                        font = ImageFont.truetype(font_path, size_px)
+                        # Track font usage
+                        if field_name:
+                            self.label.fonts_used[field_name] = f"{family} {variant}"
+                        return font
                     except:
                         continue
             
             # Otherwise try as system font name or path (string)
             else:
                 try:
-                    return ImageFont.truetype(font_spec, size_px)
+                    font = ImageFont.truetype(font_spec, size_px)
+                    # Track font usage
+                    if field_name:
+                        font_display_name = font_spec.split('/')[-1].replace('.ttf', '')
+                        self.label.fonts_used[field_name] = font_display_name
+                    return font
                 except:
                     continue
         
@@ -1567,11 +1602,17 @@ class LabelRenderer:
                 if isinstance(font_spec, str):  # Only for system fonts
                     for suffix in ['-Bold', ' Bold', 'Bold']:
                         try:
-                            return ImageFont.truetype(font_spec + suffix, size_px)
+                            font = ImageFont.truetype(font_spec + suffix, size_px)
+                            if field_name:
+                                font_display_name = (font_spec + suffix).split('/')[-1].replace('.ttf', '')
+                                self.label.fonts_used[field_name] = font_display_name
+                            return font
                         except:
                             continue
         
         # Final fallback to default font
+        if field_name:
+            self.label.fonts_used[field_name] = "Default"
         try:
             return ImageFont.load_default()
         except:
@@ -1713,7 +1754,8 @@ class LabelGenerator:
                 'warning_body_bold': label.warning_body_bold,
                 'canvas_size_px': label.canvas_size,
                 'background_color': label.background_color,
-                'text_color': label.text_color
+                'text_color': label.text_color,
+                'fonts_used': label.fonts_used  # Track which fonts were used
             },
             'violations_introduced': violations
         }

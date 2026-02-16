@@ -83,9 +83,13 @@ class GoogleFontDownloader:
         
         # Try different filename patterns Google Fonts might use
         patterns = [
+            # Static font files (specific variants)
             f"{family_name.replace(' ', '')}-{variant}.ttf",
             f"{self._sanitize_name(family_name)}-{variant}.ttf",
             f"{family_name.replace(' ', '')}_{variant}.ttf",
+            # Variable font files (work for all weights)
+            f"{family_name.replace(' ', '')}[wght].ttf",
+            f"{self._sanitize_name(family_name)}[wght].ttf",
         ]
         
         for pattern in patterns:
@@ -99,13 +103,15 @@ class GoogleFontDownloader:
         """Download font from GitHub google/fonts repository.
         
         Tries each license directory (ofl, apache, ufl) until successful.
+        Attempts both static font files and variable fonts.
         """
         family_dir = self.FONT_CACHE_DIR / self._sanitize_name(family_name)
         family_dir.mkdir(exist_ok=True)
         
         # Try each license directory
         for license_dir in self.LICENSE_DIRS:
-            url = self._build_url(family_name, variant, license_dir)
+            # Try 1: Static font file (e.g., PlayfairDisplay-Bold.ttf)
+            url = self._build_url(family_name, variant, license_dir, variable=False)
             
             try:
                 response = requests.get(url, timeout=10, stream=True)
@@ -120,16 +126,37 @@ class GoogleFontDownloader:
                     
                     return str(filepath)
             except:
-                # Silently continue to next license dir or fail
+                pass
+            
+            # Try 2: Variable font file (e.g., PlayfairDisplay[wght].ttf)
+            # Variable fonts work for all weights, so we can use them for any variant
+            url = self._build_url(family_name, variant, license_dir, variable=True)
+            
+            try:
+                response = requests.get(url, timeout=10, stream=True)
+                if response.status_code == 200:
+                    # Save variable font with [wght] suffix
+                    filename = f"{family_name.replace(' ', '')}[wght].ttf"
+                    filepath = family_dir / filename
+                    
+                    with open(filepath, 'wb') as f:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                    
+                    return str(filepath)
+            except:
+                # Silently continue to next license dir
                 continue
         
         # All attempts failed
         return None
     
-    def _build_url(self, family_name, variant, license_dir):
+    def _build_url(self, family_name, variant, license_dir, variable=False):
         """Build GitHub raw URL for font file.
         
-        Example: https://github.com/google/fonts/raw/main/ofl/playfairdisplay/PlayfairDisplay-Bold.ttf
+        Examples:
+          Static: https://github.com/google/fonts/raw/main/ofl/crimsontext/CrimsonText-Bold.ttf
+          Variable: https://github.com/google/fonts/raw/main/ofl/playfairdisplay/PlayfairDisplay[wght].ttf
         """
         # Convert "Playfair Display" -> "playfairdisplay" for directory name
         dir_name = family_name.lower().replace(' ', '')
@@ -138,7 +165,12 @@ class GoogleFontDownloader:
         file_prefix = family_name.replace(' ', '')
         
         # Build full URL
-        return f"{self.GITHUB_RAW_BASE}/{license_dir}/{dir_name}/{file_prefix}-{variant}.ttf"
+        if variable:
+            # Variable fonts: FontFamily[wght].ttf
+            return f"{self.GITHUB_RAW_BASE}/{license_dir}/{dir_name}/{file_prefix}[wght].ttf"
+        else:
+            # Static fonts: FontFamily-Variant.ttf
+            return f"{self.GITHUB_RAW_BASE}/{license_dir}/{dir_name}/{file_prefix}-{variant}.ttf"
     
     @staticmethod
     def _sanitize_name(name):

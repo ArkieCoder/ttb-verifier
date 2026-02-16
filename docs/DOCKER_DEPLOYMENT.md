@@ -912,12 +912,19 @@ trivy image ttb-verifier:latest
 
 ## Integration with CI/CD
 
-### GitHub Actions (Future)
+### Container Registry Options
+
+This project can be deployed with either **GitHub Container Registry (GHCR)** or **AWS Elastic Container Registry (ECR)**. Choose based on your infrastructure:
+
+- **GitHub Container Registry**: Recommended for GitHub-hosted projects, free for public repos
+- **AWS ECR**: Recommended if already using AWS infrastructure, integrates with EC2/ECS
+
+### Option 1: GitHub Container Registry (GHCR)
 
 **Workflow File:** `.github/workflows/build-and-push.yml`
 
 ```yaml
-name: Build and Push
+name: Build and Push to GHCR
 
 on:
   push:
@@ -935,32 +942,121 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Build production
-        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/ttb-verifier:${{ github.sha }} .
+      - uses: actions/checkout@v4
       
-      - name: Push to GCR
-        run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/ttb-verifier:${{ github.sha }}
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/ttb-verifier:latest
+            ghcr.io/${{ github.repository }}/ttb-verifier:${{ github.sha }}
 ```
 
-### Deploying from GCR to EC2
-
+**Deploying from GHCR to EC2:**
 ```bash
 # On EC2 instance
 
-# Authenticate to GCR
-gcloud auth configure-docker gcr.io
+# Authenticate to GHCR
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
 
 # Pull image
-docker pull gcr.io/project-id/ttb-verifier:latest
+docker pull ghcr.io/username/repo/ttb-verifier:latest
 
 # Update docker-compose.yml
 services:
   verifier:
-    image: gcr.io/project-id/ttb-verifier:latest
+    image: ghcr.io/username/repo/ttb-verifier:latest
 
 # Deploy
-docker-compose up -d
+docker compose up -d
 ```
+
+### Option 2: AWS Elastic Container Registry (ECR)
+
+**Workflow File:** `.github/workflows/build-and-push-ecr.yml`
+
+```yaml
+name: Build and Push to ECR
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: docker build --target test .
+  
+  push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      
+      - name: Build and push
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ttb-verifier
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+```
+
+**Deploying from ECR to EC2:**
+```bash
+# On EC2 instance (with IAM role or AWS credentials)
+
+# Login to ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
+
+# Pull image
+docker pull <account-id>.dkr.ecr.us-east-1.amazonaws.com/ttb-verifier:latest
+
+# Update docker-compose.yml
+services:
+  verifier:
+    image: <account-id>.dkr.ecr.us-east-1.amazonaws.com/ttb-verifier:latest
+
+# Deploy
+docker compose up -d
+```
+
+### Required Secrets
+
+**For GHCR:**
+- `GITHUB_TOKEN` (automatically available in GitHub Actions)
+
+**For AWS ECR:**
+- `AWS_ACCESS_KEY_ID` - AWS access key with ECR permissions
+- `AWS_SECRET_ACCESS_KEY` - AWS secret key
+
+Configure secrets in **Settings → Secrets and variables → Actions**
 
 ---
 

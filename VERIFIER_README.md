@@ -82,7 +82,9 @@ The verifier implements a graceful degradation approach:
 
 ## Output Format
 
-All commands output JSON to stdout (suitable for piping to other tools or APIs).
+**Note**: As of Phase 4, the verifier outputs **compact JSON only** to stdout. The `--pretty` flag has been removed to ensure consistency with the REST API.
+
+All commands output JSON to stdout (suitable for piping to other tools or APIs). For pretty-printing, pipe through `jq` or `python -m json.tool`:
 
 ### Example Output
 
@@ -204,7 +206,7 @@ Tested on golden dataset (40 samples):
 usage: verify_label.py [-h] [--batch DIR] [--ground-truth FILE]
                        [--ground-truth-dir DIR]
                        [--ocr-backend {tesseract,ollama}]
-                       [--verbose] [--output FILE] [--pretty]
+                       [--verbose] [--output FILE]
                        [image_path]
 
 positional arguments:
@@ -219,8 +221,9 @@ optional arguments:
                         OCR backend (default: tesseract)
   --verbose, -v         Print progress to stderr
   --output FILE, -o FILE
-                        Write output to file
-  --pretty              Pretty-print JSON output
+                        Write output to file (compact JSON)
+
+Note: The --pretty flag has been removed. Use `python -m json.tool` or `jq` for formatting.
 ```
 
 ### test_verifier.py

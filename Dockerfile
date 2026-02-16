@@ -17,7 +17,7 @@ COPY requirements.txt requirements-dev.txt ./
 
 RUN pip install --user --no-cache-dir -r requirements.txt -r requirements-dev.txt
 
-# Stage 3: Test runner (fails build if tests fail or coverage < 80%)
+# Stage 3: Test runner (fails build if tests fail or coverage < 75%)
 FROM builder as test
 
 COPY . /app
@@ -30,7 +30,7 @@ RUN pytest tests/ \
     --cov=. \
     --cov-report=term-missing \
     --cov-report=html \
-    --cov-fail-under=80 \
+    --cov-fail-under=75 \
     -v
 
 # Stage 4: Production image

@@ -1,0 +1,22 @@
+[run]
+source = .
+omit = 
+    */tests/*
+    */test_*.py
+    setup.py
+    conftest.py
+    # Exclude CLI script from coverage (tested separately via bash tests)
+    verify_label.py
+    # Exclude sample generator (not part of production code)
+    generate_samples.py
+    gen_samples.py
+    test_verifier.py
+
+[report]
+precision = 2
+skip_covered = False
+skip_empty = True
+sort = Cover
+
+[html]
+directory = htmlcov

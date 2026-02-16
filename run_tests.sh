@@ -219,13 +219,14 @@ else
     print_fail "Output file not created or invalid JSON"
 fi
 
-print_test "Pretty-printed JSON output"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg --pretty" 1)
+print_test "Compact JSON output (no indentation)"
+exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
-if echo "$output" | grep -q "^  " && validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
-    print_pass "Pretty-printed JSON with indentation"
+# Check that output is compact (no leading spaces indicating indentation)
+if ! echo "$output" | grep -q "^  " && validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
+    print_pass "Compact JSON with no indentation"
 else
-    print_fail "Not pretty-printed or invalid JSON"
+    print_fail "JSON is pretty-printed or invalid"
 fi
 
 print_test "Verbose mode"

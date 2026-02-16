@@ -246,14 +246,8 @@ Examples:
                        help='Print verbose progress information to stderr')
     parser.add_argument('--output', '-o', metavar='FILE',
                        help='Write output to file instead of stdout')
-    parser.add_argument('--pretty', action='store_true',
-                       help='Pretty-print JSON output (default for terminal, off for pipes)')
     
     args = parser.parse_args()
-    
-    # Determine if output should be pretty-printed
-    # Default: pretty if outputting to terminal, compact if piping
-    pretty = args.pretty if args.pretty else (sys.stdout.isatty() and not args.output)
     
     # Process single image or batch
     results = None
@@ -272,8 +266,8 @@ Examples:
         if args.verbose:
             print_summary(results)
         
-        # Output results as JSON array
-        output = json.dumps(results, indent=2 if pretty else None)
+        # Output results as JSON array (compact)
+        output = json.dumps(results)
     else:
         # Single image processing
         result = validate_single_label(
@@ -283,8 +277,8 @@ Examples:
             args.verbose
         )
         
-        # Output result as JSON object
-        output = json.dumps(result, indent=2 if pretty else None)
+        # Output result as JSON object (compact)
+        output = json.dumps(result)
     
     # Write output
     if args.output:

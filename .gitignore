@@ -6,3 +6,29 @@ label_*.json
 
 # Downloaded Google Fonts cache
 fonts/
+
+# Docker
+.env
+docker-compose.override.yml
+
+# Python testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.tox/
+
+# Test artifacts
+test_output/
+
+# Logs
+*.log
+
+# S3 cache (future)
+.s3_cache/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

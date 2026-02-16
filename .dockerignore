@@ -1,0 +1,60 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+test_output/
+.tox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation (except README)
+*.md
+!README.md
+*.docx
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD (for now)
+.github/
+
+# Large files we don't need
+cfr_regulations/
+fonts/
+*.backup
+
+# Scripts (bash tests run outside container)
+run_tests.sh
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Test samples (keep for demo)
+test_samples/

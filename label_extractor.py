@@ -277,7 +277,8 @@ class LabelExtractor:
                 'present': bool,
                 'text': str or None,
                 'header_all_caps': bool or None,
-                'text_matches': bool or None
+                'text_matches': bool or None,
+                'similarity_score': float or None
             }
         """
         # Check if warning is present
@@ -286,7 +287,8 @@ class LabelExtractor:
                 'present': False,
                 'text': None,
                 'header_all_caps': None,
-                'text_matches': None
+                'text_matches': None,
+                'similarity_score': None
             }
         
         # Find warning header
@@ -303,23 +305,30 @@ class LabelExtractor:
                 'present': True,
                 'text': None,
                 'header_all_caps': header_all_caps,
-                'text_matches': None
+                'text_matches': None,
+                'similarity_score': None
             }
         
         warning_text = raw_text[warning_start:]
         
-        # Check if text matches expected warning
-        # Normalize for comparison (remove extra whitespace, newlines)
+        # Check text similarity using fuzzy matching (allow OCR errors)
+        # Normalize for comparison (remove extra whitespace, newlines, punctuation variations)
         warning_normalized = ' '.join(warning_text.split())
         expected_normalized = ' '.join(GOVERNMENT_WARNING_TEXT.split())
         
-        text_matches = warning_normalized.lower() == expected_normalized.lower()
+        # Calculate similarity
+        from difflib import SequenceMatcher
+        similarity = SequenceMatcher(None, warning_normalized.lower(), expected_normalized.lower()).ratio()
+        
+        # Consider it a match if similarity >= 85% (allowing for OCR errors)
+        text_matches = similarity >= 0.85
         
         return {
             'present': True,
             'text': warning_text,
             'header_all_caps': header_all_caps,
-            'text_matches': text_matches
+            'text_matches': text_matches,
+            'similarity_score': similarity
         }
 
 

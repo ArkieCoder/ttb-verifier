@@ -1,0 +1,279 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>STILLS AND MISCELLANEOUS REGULATIONS</TITLE>
+        <GRANULENUM>29</GRANULENUM>
+        <HEADING>PART 29</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 29</EAR>
+        <HD SOURCE="HED">PART 29—STILLS AND MISCELLANEOUS REGULATIONS</HD>
+        <CONTENTS>
+            <SUBPART>
+                <RESERVED>Subparts A-B [Reserved]</RESERVED>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Stills</HD>
+                <SECHD>Sec.</SECHD>
+                <SECTNO>29.41</SECTNO>
+                <SUBJECT>Scope of subpart.</SUBJECT>
+                <SECTNO>29.42</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <SECTNO>29.43</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <SECTNO>29.45</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <SECTNO>29.47</SECTNO>
+                <SUBJECT>Notice requirement; manufacture of stills.</SUBJECT>
+                <SECTNO>29.49</SECTNO>
+                <SUBJECT>Notice requirement; setup of still.</SUBJECT>
+                <SECTNO>29.51</SECTNO>
+                <SUBJECT>Failure to give notice; penalty.</SUBJECT>
+                <SECTNO>29.53</SECTNO>
+                <SUBJECT>Identification of distilling apparatus.</SUBJECT>
+                <SECTNO>29.55</SECTNO>
+                <SUBJECT>Registry of stills and distilling apparatus.</SUBJECT>
+                <SECTNO>29.57</SECTNO>
+                <SUBJECT>Failure to register; penalty.</SUBJECT>
+                <SECTNO>29.59</SECTNO>
+                <SUBJECT>Records.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <RESERVED>Subparts D-Y [Reserved]</RESERVED>
+            </SUBPART>
+        </CONTENTS>
+        <EDNOTE>
+            <HD SOURCE="HED">Editorial Note:</HD>
+            <P>Nomenclature changes to part 29 appear by T.D. ATF-462, 66 FR 42737, Aug. 15, 2001.</P>
+        </EDNOTE>
+        <SUBPART>
+            <RESERVED>Subparts A-B [Reserved]</RESERVED>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart C—Stills</HD>
+            <AUTH>
+                <HD SOURCE="HED">Authority:</HD>
+                <P>26 U.S.C. 5002, 5101, 5102, 5179, 5291, 5601, 5615, 5687, 7805.</P>
+            </AUTH>
+            <SOURCE>
+                <HD SOURCE="HED">Source:</HD>
+                <P>T.D. ATF-207, 50 FR 23682, June 5, 1985, unless otherwise noted. Redesignated by T.D. ATF-462, 66 FR 42737, Aug. 15, 2001.</P>
+            </SOURCE>
+            <SECTION>
+                <SECTNO>§ 29.41</SECTNO>
+                <SUBJECT>Scope of subpart.</SUBJECT>
+                <P>The regulations in this subpart relate to the manufacture, removal, and use of stills and condensers, and to the notice, registration, and recordkeeping requirements therefor.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.42</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    The regulatory authorities of the Administrator contained in this part are delegated to appropriate TTB officers. These TTB officers are specified in TTB Order 1135.29, Delegation of the Administrator's Authorities in 27 CFR Part 29, Stills and Miscellaneous Regulations. You may obtain a copy of this order by accessing the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. TTB-44, 71 FR 16947, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.43</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <P>(a) The appropriate TTB officer is authorized to prescribe all forms, including all notices and records, required by this subpart. All of the information called for in each form shall be furnished as indicated by the headings on the form and the instructions on or pertaining to the form. In addition, information called for in each form shall be furnished as required by this subpart. The form will be filed in accordance with the instructions for the form.</P>
+                <P>
+                    (b) Forms prescribed by this part are available for printing through the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <SECAUTH>(Pub. L. 89-554, 80 Stat. 383, as amended (5 U.S.C. 552))</SECAUTH>
+                <CITA>[T.D. ATF-207, 50 FR 23682, June 5, 1985; 50 FR 28572, July 15, 1985; T.D. ATF-439, 66 FR 8769, Feb. 2, 2001; T.D. TTB-44, 71 FR 16947, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.45</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <P>
+                    When used in this subpart and in the forms prescribed under this subpart, where not otherwise distinctly expressed or manifestly incompatible with the intent thereof, terms shall have the meaning ascribed in this section. Words in the plural form shall include the singular, and vice versa, and words in the masculine shall include the feminine. The terms “includes” and “including” do not exclude things 
+                    <PRTPAGE P="1009"/>
+                    not enumerated which are in the same general class.
+                </P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any functions relating to the administration or enforcement of this part by TTB Order 1135.29, Delegation of the Administrator's Authorities in 27 CFR Part 29, Stills and Miscellaneous Regulations.
+                </P>
+                <P>
+                    <E T="03">Distilling spirits or spirits.</E>
+                     That substance known as ethyl alcohol, ethanol, or spirits of wine in any form (including all dilutions and mixtures thereof, from whatever source or by whatever process produced).
+                </P>
+                <P>
+                    <E T="03">Distilling.</E>
+                     The conduct by any person of operations that constitute, as defined by 26 U.S.C. 5002, operations as a distiller. Such operations include: (a) The original manufacture of distilled spirits from mash, wort, or wash, or any materials suitable for the production of spirits; (b) the redistillation of spirits in the course of original manufacture; (c) the redistillation of spirits, or products containing spirits; (d) the distillation, redistillation, or recovery of spirits, denatured spirits, or articles containing spirits or denatured spirits; and (e) the redistillation or recovery of tax-free spirits.
+                </P>
+                <P>
+                    <E T="03">Distilling apparatus.</E>
+                     A still or condenser, as defined in this section, and any other apparatus to be used for the purpose of distilling.
+                </P>
+                <P>
+                    <E T="03">Executed under the penalties of perjury.</E>
+                     Signed with the prescribed declaration under the penalties of perjury as provided on or with respect to any document prescribed under this subpart or, where no form of declaration is prescribed, with the declaration: “I declare under the penalties of perjury that this ____________ (insert type of document), including the documents submitted in support thereof, has been examined by me and, to best of my knowledge and belief, is true, correct and complete.”
+                </P>
+                <P>
+                    <E T="03">Manufacturer of stills.</E>
+                     Any person who manufactures any still or condenser, as defined in this section, or any other apparatus to be used for the purpose of distilling. The term includes a person furnishing separate parts of a complete still or condenser, of any kind, to a person who assembles same into a still or condenser for distilling and a person who procures materials or apparatus and converts same into a still or condenser for distilling.
+                </P>
+                <P>
+                    <E T="03">Person.</E>
+                     An individual, a trust, estate, partnership, association, company, or corporation.
+                </P>
+                <P>
+                    <E T="03">Still.</E>
+                     Any apparatus capable of being used for separating alcoholic or spirituous vapors, or spiritous solutions, or spirits, from spirituous solutions or mixtures, but shall not include stills used for laboratory purposes or stills used for distilling water or other nonalcoholic materials where the cubic distilling capacity is one gallon or less.
+                </P>
+                <P>
+                    <E T="03">This chapter.</E>
+                     Title 27, Code of Federal Regulations, Chapter I (27 CFR Chapter I).
+                </P>
+                <P>
+                    <E T="03">United States.</E>
+                     The several states and the District of Columbia.
+                </P>
+                <P>
+                    <E T="03">U.S.C.</E>
+                     The United States Code.
+                </P>
+                <CITA>[T.D. ATF-207, 50 FR 23682, June 5, 1985; 50 FR 28572, July 15, 1985, as amended by T.D. ATF-439, 66 FR 8770, Feb. 2, 2001; T.D. TTB-44, 71 FR 16947, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.47</SECTNO>
+                <SUBJECT>Notice requirement; manufacture of stills.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     When required by letter issued by the appropriate TTB officer and until notified to the contrary by the appropriate TTB officer, every person who manufactures any still, boiler (double or pot still), condenser, or other apparatus to be used for the purpose of distilling shall give written notice before the still or distilling apparatus is removed from the place of manufacture.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Preparation.</E>
+                     The notice will be prepared in letter form, executed under the penalties of perjury, and show the following information:
+                </P>
+                <P>(1) The name and address of the manufacturer;</P>
+                <P>(2) The name and complete address of the person by whom the apparatus is to be used, and of any other person for, by, or through whom the apparatus is ordered or disposed of;</P>
+                <P>
+                    (3) The distilling purpose for which the apparatus is to be used (distillation of spirits, redistillation of spirits or recovery of spirits, including denatured 
+                    <PRTPAGE P="1010"/>
+                    spirits and articles containing spirits or denatured spirits);
+                </P>
+                <P>(4) The manufacturer's serial number of the apparatus;</P>
+                <P>(5) The type and kind of apparatus;</P>
+                <P>(6) The distilling capacity of the apparatus; and</P>
+                <P>(7) The date the apparatus is to be removed from the place of manufacture.</P>
+                <P>
+                    (c) 
+                    <E T="03">Filing.</E>
+                     The notice will be filed in accordance with the instructions in the letter of the appropriate TTB officer. A copy of the notice will be retained at the place of manufacture as provided by § 29.59.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0341)</APPRO>
+                <SECAUTH>(Sec. 843, Pub. L. 98-369, 98 Stat. 818 (26 U.S.C. 5101))</SECAUTH>
+                <CITA>[T.D. ATF-207, 50 FR 23682, June 5, 1985; 50 FR 28572, July 15, 1985; T.D. ATF-439, 66 FR 8769, Feb. 2, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.49</SECTNO>
+                <SUBJECT>Notice requirement; setup of still.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     When required by letter issued by the appropriate TTB officer, no still, boiler (double or pot still), condenser, or other distilling apparatus may be set up without the manufacturer of the still or distilling apparatus first giving written notice of that purpose.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Preparation.</E>
+                     The notice will be prepared by the manufacturer in letter form, executed under the penalties of perjury, and will contain the information specified in the letter of the appropriate TTB officer.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Filing.</E>
+                     The notice will be filed in accordance with the instructions in the letter of the appropriate TTB officer. A copy of the notice will be retained at the manufacturer's place of business as provided by § 29.59.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0341)</APPRO>
+                <SECAUTH>(Sec. 843, Pub. L. 98-369, 98 Stat. 818 (26 U.S.C. 5101))</SECAUTH>
+                <CITA>[T.D. ATF-207, 50 FR 23682, June 5, 1985, as amended by T.D. ATF-439, 66 FR 8769, Feb. 2, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.51</SECTNO>
+                <SUBJECT>Failure to give notice; penalty.</SUBJECT>
+                <P>Failure to give notice of manufacture of still or notice of setup of still when required to do so is punishable by a fine of not more than $1,000 or imprisonment for not more than one year, or both, and any still, boiler (double or pot still), condenser, or other distilling apparatus to be used for the purpose of distilling which is removed or set up without the required notice having been given is forfeitable to the Government.</P>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1405, as amended, 1412, as amended (26 U.S.C. 5615, 5687))</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.53</SECTNO>
+                <SUBJECT>Identification of distilling apparatus.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Each still or condenser manufactured will be identified by the manufacturer as follows:
+                </P>
+                <P>(1) Name of manufacturer.</P>
+                <P>(2) Address of manufacturer.</P>
+                <P>(3) Manufacturer's serial number for the apparatus.</P>
+                <P>
+                    (b) 
+                    <E T="03">Marking requirements.</E>
+                     The apparatus will be identified in a legible and durable manner. The required identification marks will be placed on the apparatus in a location where they will not be obscured or concealed.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.55</SECTNO>
+                <SUBJECT>Registry of stills and distilling apparatus.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Every person having possession, custody, or control of any still or distilling apparatus set up shall, immediately on its being set up, register the still or distilling apparatus, except that a still or distilling apparatus not used or intended for use in the distillation, redistillation, or recovery of distilled spirits is not required to be registered. Registration may be accomplished by describing the still or distilling apparatus on the registration or permit application prescribed in this chapter for qualification under 26 U.S.C. chapter 51 or, if qualification is not required under 26 U.S.C. chapter 51, on a letter application, and filing the application with the appropriate TTB officer. Approval of the application by the appropriate TTB officer will constitute registration of the still or distilling apparatus.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">When still is set up.</E>
+                     A still will be regarded as set up and subject to registry when it is in position over a furnace, or connected with a boiler so that heat may be applied, irrespective of whether a condenser is in position. 
+                    <PRTPAGE P="1011"/>
+                    This rule is intended merely as an illustration and should not be construed as covering all types of stills or condensers requiring registration.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Change in location or ownership.</E>
+                     Where any distilling apparatus registered under this section is to be removed to another location, sold or otherwise disposed of, the registrant shall, prior to the removal or disposition, file a letter notice with the appropriate TTB officer. The letter notice will show the intended method of disposition (sale, destruction, or othewise), the name and complete address of the person to whom disposition will be made, and the purpose for which the apparatus will be used. After removal, sale, or other disposal, the person having possession, custody, or control of any distilling apparatus intended for use in distilling shall immediately register the still or distilling apparatus on its being set up or, if already set up, immediately on obtaining possession, custody, or control. The registrant shall also comply with the procedures prescribed in this chapter for amendment of the registration or permit application.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0341)</APPRO>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1355, as amended (26 U.S.C. 5179))</SECAUTH>
+                <CITA>[T.D. ATF-207, 50 FR 23682, June 5, 1985; 50 FR 28572, July 15, 1985; 50 FR 30821, July 30, 1985, as amended by T.D. ATF-439, 66 FR 8770, Feb. 2, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.57</SECTNO>
+                <SUBJECT>Failure to register; penalty.</SUBJECT>
+                <P>Any person having possession, custody, or control of any still or distilling apparatus set up who fails to register the still or distilling apparatus is subject to a fine of not more than $10,000 or imprisonment of not more than 5 years, or both, and the still or distilling apparatus is forfeitable to the Government.</P>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1398, as amended, 1405, as amended (26 U.S.C. 5601, 5615))</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 29.59</SECTNO>
+                <SUBJECT>Records.</SUBJECT>
+                <P>A copy of each notice of manufacture, or set up, of still required under the provisions of § 29.47, or § 29.49, shall be maintained, in chronological order, by the manufacturer at the premises where the still or distilling apparatus is manufactured. In addition, each manufacturer or vendor of stills shall maintain at their premises a record showing all stills and distilling apparatus (including those to be used for purposes other than distilling) manufactured, received, removed, or otherwise disposed of. The record will also show the name and address of the purchaser and the purpose for which each apparatus is to be used. Any commercial document on which all the required information has been recorded may be used for the record. The records will be kept available for a period of three years for inspection by appropriate TTB officers.</P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0341)</APPRO>
+                <CITA>[T.D. ATF-207, 50 FR 23682, June 5, 1985, as amended by T.D. ATF-439, 66 FR 8770, Feb. 2, 2001]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <RESERVED>Subparts D-Y [Reserved]</RESERVED>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

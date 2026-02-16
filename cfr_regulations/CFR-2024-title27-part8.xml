@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>EXCLUSIVE OUTLETS</TITLE>
+        <GRANULENUM>8</GRANULENUM>
+        <HEADING>PART 8</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 8</EAR>
+        <HD SOURCE="HED">PART 8—EXCLUSIVE OUTLETS</HD>
+        <CONTENTS>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—Scope of Regulations</HD>
+                <SECHD>Sec.</SECHD>
+                <SECTNO>8.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>8.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <SECTNO>8.3</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <SECTNO>8.4</SECTNO>
+                <SUBJECT>Jurisdictional limits.</SUBJECT>
+                <SECTNO>8.5</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <SECTNO>8.6</SECTNO>
+                <SUBJECT>Administrative provisions.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart B—Definitions</HD>
+                <SECTNO>8.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Prohibited Practices</HD>
+                <SECTNO>8.21</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>8.22</SECTNO>
+                <SUBJECT>Contracts to purchase distilled spirits, wine, or malt beverages.</SUBJECT>
+                <SECTNO>8.23</SECTNO>
+                <SUBJECT>Third party arrangements.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—Exclusion</HD>
+                <SECTNO>8.51</SECTNO>
+                <SUBJECT>Exclusion, in general.</SUBJECT>
+                <SECTNO>8.52</SECTNO>
+                <SUBJECT>Practices which result in exclusion.</SUBJECT>
+                <SECTNO>8.53</SECTNO>
+                <SUBJECT>Practice not resulting in exclusion.</SUBJECT>
+                <SECTNO>8.54</SECTNO>
+                <SUBJECT>Criteria for determining retailer independence.</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>15 U.S.C. 49-50; 27 U.S.C. 202 and 205; 44 U.S.C. 3504(h).</P>
+        </AUTH>
+        <SOURCE>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. ATF-74, 45 FR 63256, Sept. 23, 1980, unless otherwise noted.</P>
+        </SOURCE>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—Scope of Regulations</HD>
+            <SECTION>
+                <SECTNO>§ 8.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>The regulations in this part, issued pursuant to section 105 of the Federal Alcohol Administration Act (27 U.S.C. 205), specify arrangements which are exclusive outlets under section 105(a) of the Act and criteria for determining whether a practice is a violation of section 105(a) of the Act. This part does not attempt to enumerate all of the practices prohibited by section 105(a) of the Act. Nothing in this part shall operate to exempt any person from the requirements of any State law or regulation.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20425, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <P>This part applies to the several States of the United States, the District of Columbia, and Puerto Rico.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.3</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     This part applies only to transactions between industry members and retailers. It does not apply to transactions between two industry members; for example, between a producer and a wholesaler.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Transactions involving State agencies.</E>
+                     The regulations in this part apply only to transactions between industry members and State agencies operating as retailers as defined in this part. The 
+                    <PRTPAGE P="140"/>
+                    regulations do not apply to State agencies with regard to their wholesale dealings with retailers.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.4</SECTNO>
+                <SUBJECT>Jurisdictional limits.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The regulations in this part apply where:
+                </P>
+                <P>(1) The industry member requires, by agreement or otherwise, a retailer to purchase distilled spirits, wine, or malt beverages from such industry member to the exclusion in whole or in part of products sold or offered for sale by other persons in interstate or foreign commerce; and</P>
+                <P>(2) If: (i) The requirement is made in the course of interstate or foreign commerce; or</P>
+                <P>(ii) The industry member engages in the practice of using a requirement to such an extent as substantially to restrain or prevent transactions in interstate or foreign commerce in any such products; or</P>
+                <P>(iii) The direct effect of the requirement is to prevent, deter, hinder, or restrict other persons from selling or offering for sale any such products to such retailer in interstate or foreign commerce.</P>
+                <P>
+                    (b) 
+                    <E T="03">Malt beverages.</E>
+                     In the case of malt beverages, this part applies to transactions between a retailer in any State and a brewer, importer, or wholesaler of malt beverages inside or outside such State only to the extent that the law of such State imposes requirements similar to the requirements of section 5(a) of the Federal Alcohol Administration Act (27 U.S.C. 205(a)), with respect to similar transactions between a retailer in such State and a brewer, importer, or wholesaler of malt beverages in such State.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.5</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    Most of the regulatory authorities of the Administrator contained in this part are delegated to appropriate TTB officers. These TTB officers are specified in TTB Order 1135.8, Delegation of the Administrator's Authorities in 27 CFR Part 8, Exclusive Outlets. You may obtain a copy of this order by accessing the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. TTB-44, 71 FR 16923, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.6</SECTNO>
+                <SUBJECT>Administrative provisions.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The Act makes applicable the provisions including penalties of sections 49 and 50 of Title 15, United States Code, to the jurisdiction, powers and duties of the Administrator under this Act, and to any person (whether or not a corporation) subject to the provisions of law administered by the Administrator under this Act. The Act also provides that the Administrator is authorized to require, in such manner and such form as he or she shall prescribe, such reports as are necessary to carry out the powers and duties under this chapter.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Examination and subpoena.</E>
+                     Any appropriate TTB officer shall at all reasonable times have access to, for the purpose of examination, and the right to copy any documentary evidence of any person, partnership, or corporation being investigated or proceeded against. An appropriate TTB officer shall also have the power to require by subpoena the attendance and testimony of witnesses and the production of all such documentary evidence relating to any matter under investigation, upon a satisfactory showing the requested evidence may reasonably be expected to yield information relevant to any matter being investigated under the Act.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Reports required by the appropriate TTB officer</E>
+                    —(1) 
+                    <E T="03">General.</E>
+                     The appropriate TTB officer may, as part of a trade practice investigation of an industry member, require such industry member to submit a written report containing information on sponsorships, advertisements, promotions, and other activities pertaining to its business subject to the Act conducted by, or on behalf of, or benefiting the industry member.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Preparation.</E>
+                     The report will be prepared by the industry member in letter form, executed under the penalties of perjury, and will contain the information specified by the appropriate TTB officer. The period covered by the report will not exceed three years.
+                    <PRTPAGE P="141"/>
+                </P>
+                <P>
+                    (3) 
+                    <E T="03">Filing.</E>
+                     The report will be filed in accordance with the instructions of the appropriate TTB officer.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0392)</APPRO>
+                <CITA>[T.D. ATF-364, 60 FR 20425, Apr. 26, 1995. Redesignated and amended by T.D. ATF-428, 65 FR 52020, Aug. 28, 2000]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart B—Definitions</HD>
+            <SECTION>
+                <SECTNO>§ 8.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <P>As used in this part, unless the context otherwise requires, terms have the meanings given in this section. Any other term defined in the Federal Alcohol Administration Act and used in this part shall have the meaning assigned to it by that Act.</P>
+                <P>
+                    <E T="03">Act.</E>
+                     The Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any functions relating to the administration or enforcement of this part by TTB Order 1135.8, Delegation of the Administrator's Authorities in 27 CFR Part 8, Exclusive Outlets.
+                </P>
+                <P>
+                    <E T="03">Industry member.</E>
+                     Any person engaged in business as a distiller, brewer, rectifier, blender, or other producer, or as an importer or wholesaler, of distilled spirits, wine or malt beverages, or as a bottler, or warehouseman and bottler, of distilled spirits; industry member does not include an agency of a State or political subdivision thereof, or an officer or employee of such agency.
+                </P>
+                <P>
+                    <E T="03">Product.</E>
+                     Distilled spirits, wine or malt beverages, as defined in the Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Retailer.</E>
+                     Any person engaged in the sale of distilled spirits, wine or malt beverages to consumers. A wholesaler who makes incidental retail sales representing less than five percent of the wholesaler's total sales volume for the preceding two-month period shall not be considered a retailer with respect to such incidental sales.
+                </P>
+                <CITA>[T.D. ATF-74, 45 FR 63256, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20425, Apr. 26, 1995; T.D. ATF-428, 65 FR 52020, Aug. 28, 2000; T.D. TTB-44, 71 FR 16923, Apr. 4, 2006]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart C—Prohibited Practices</HD>
+            <SECTION>
+                <SECTNO>§ 8.21</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>It is unlawful for an industry member to require, by agreement or otherwise, that any retailer purchase distilled spirits, wine, or malt beverages from the industry member to the exclusion, in whole or in part, of products sold or offered for sale by other persons in interstate or foreign commerce. This prohibition includes purchases coerced by industry members, through acts or threats of physical or economic harm, as well as voluntary industry member-retailer purchase agreements.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.22</SECTNO>
+                <SUBJECT>Contracts to purchase distilled spirits, wine, or malt beverages.</SUBJECT>
+                <P>Any contract or agreement, written or unwritten, which has the effect of requiring the retailer to purchase distilled spirits, wine, or malt beverages from the industry member beyond a single sales transaction is prohibited. Examples of such contracts are:</P>
+                <P>(a) An advertising contract between an industry member and a retailer with the express or implied requirement of the purchase of the advertiser's products; or</P>
+                <P>(b) A sales contract awarded on a competitive bid basis which has the effect of prohibiting the retailer from purchasing from other industry members by:</P>
+                <P>(1) Requiring that for the period of the agreement, the retailer purchase a product or line of products exclusively from the industry member; or</P>
+                <P>(2) Requiring that the retailer purchase a specific or minimum quantity during the period of the agreement.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.23</SECTNO>
+                <SUBJECT>Third party arrangements.</SUBJECT>
+                <P>
+                    Industry member requirements, by agreement or otherwise, with non-retailers which result in a retailer being required to purchase the industry member's products are within the exclusive outlet provisions. These industry member requirements are covered 
+                    <PRTPAGE P="142"/>
+                    whether the agreement or other arrangement originates with the industry member or the third party. For example, a supplier enters into a contractual agreement or other arrangement with a third party. This agreement or arrangement contains an industry member requirement as described above. The third party, a ballclub, or municipal or private corporation, not acting as a retailer, leases the concession rights and is able to control the purchasing decisions of the retailer. The third party, as a result of the requirement, by agreement or otherwise, with the industry member, requires the retailer to purchase the industry member's products to the exclusion, in whole or in part, of products sold or offered for sale by other persons in interstate or foreign commerce. The business arrangements entered into by the industry member and the third party may consist of such things as sponsoring radio or television broadcasting, paying for advertising, or providing other services or things of value.
+                </P>
+                <CITA>[T.D. ATF-364, 60 FR 20425, Apr. 26, 1995]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—Exclusion</HD>
+            <SOURCE>
+                <HD SOURCE="HED">Source:</HD>
+                <P>T.D. ATF-364, 60 FR 20425, Apr. 26, 1995, unless otherwise noted.</P>
+            </SOURCE>
+            <SECTION>
+                <SECTNO>§ 8.51</SECTNO>
+                <SUBJECT>Exclusion, in general.</SUBJECT>
+                <P>(a) Exclusion, in whole or in part occurs:</P>
+                <P>(1) When a practice by an industry member, whether direct, indirect, or through an affiliate, places (or has the potential to place) retailer independence at risk by means of a tie or link between the industry member and retailer or by any other means of industry member control over the retailer, and</P>
+                <P>(2) Such practice results in the retailer purchasing less than it would have of a competitor's product.</P>
+                <P>(b) Section 8.52 lists practices that result in exclusion. Section 8.53 lists practices not resulting in exclusion. Section 8.54 lists the criteria used for determining whether other practices can put retailer independence at risk.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.52</SECTNO>
+                <SUBJECT>Practices which result in exclusion.</SUBJECT>
+                <P>The practices specified in this section result in exclusion under section 105(a) of the Act. The practices specified here are examples and do not constitute a complete list of such practices:</P>
+                <P>(a) Purchases of distilled spirits, wine or malt beverages by a retailer as a result, directly or indirectly, of a threat or act of physical or economic harm by the selling industry member.</P>
+                <P>(b) Contracts between an industry member and a retailer which require the retailer to purchase distilled spirits, wine, or malt beverages from that industry member and expressly restrict the retailer from purchasing, in whole or in part, such products from another industry member.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.53</SECTNO>
+                <SUBJECT>Practice not resulting in exclusion.</SUBJECT>
+                <P>The practice specified in this section is deemed not to result in exclusion under section 105(a) of the Act: a supply contract for one year or less between the industry member and retailer under which the industry member agrees to sell distilled spirits, wine, or malt beverages to the retailer on an “as needed” basis provided that the retailer is not required to purchase any minimum quantity of such product.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 8.54</SECTNO>
+                <SUBJECT>Criteria for determining retailer independence.</SUBJECT>
+                <P>The criteria specified in this section are indications that a particular practice, other than those in §§ 8.52 and 8.53, places retailer independence at risk. A practice need not meet all of the criteria specified in this section in order to place retailer independence at risk.</P>
+                <P>(a) The practice restricts or hampers the free economic choice of a retailer to decide which products to purchase or the quantity in which to purchase them for sale to consumers.</P>
+                <P>(b) The industry member obligates the retailer to participate in the promotion to obtain the industry member's product.</P>
+                <P>(c) The retailer has a continuing obligation to purchase or otherwise promote the industry member's product.</P>
+                <P>
+                    (d) The retailer has a commitment not to terminate its relationship with 
+                    <PRTPAGE P="143"/>
+                    the industry member with respect to purchase of the industry member's products.
+                </P>
+                <P>(e) The practice involves the industry member in the day-to-day operations of the retailer. For example, the industry member controls the retailer's decisions on which brand of products to purchase, the pricing of products, or the manner in which the products will be displayed on the retailer's premises.</P>
+                <P>(f) The practice is discriminatory in that it is not offered to all retailers in the local market on the same terms without business reasons present to justify the difference in treatment.</P>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

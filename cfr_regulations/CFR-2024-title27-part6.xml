@@ -1,0 +1,829 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>âTIED-HOUSEâ</TITLE>
+        <GRANULENUM>6</GRANULENUM>
+        <HEADING>PART 6</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 6</EAR>
+        <HD SOURCE="HED">PART 6—“TIED-HOUSE”</HD>
+        <CONTENTS>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—Scope of Regulations</HD>
+                <SECHD>Sec.</SECHD>
+                <SECTNO>6.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>6.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <SECTNO>6.3</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <SECTNO>6.4</SECTNO>
+                <SUBJECT>Jurisdictional limits.</SUBJECT>
+                <SECTNO>6.5</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <SECTNO>6.6</SECTNO>
+                <SUBJECT>Administrative provisions.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <PRTPAGE P="99"/>
+                <HD SOURCE="HED">Subpart B—Definitions</HD>
+                <SECTNO>6.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Unlawful Inducements</HD>
+                <SUBJGRP>
+                    <HD SOURCE="HED">General</HD>
+                    <SECTNO>6.21</SECTNO>
+                    <SUBJECT>Application.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Interest in Retail License</HD>
+                    <SECTNO>6.25</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <SECTNO>6.26</SECTNO>
+                    <SUBJECT>Indirect interest.</SUBJECT>
+                    <SECTNO>6.27</SECTNO>
+                    <SUBJECT>Proprietary interest.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Interest in Retail Property</HD>
+                    <SECTNO>6.31</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <SECTNO>6.32</SECTNO>
+                    <SUBJECT>Indirect interest.</SUBJECT>
+                    <SECTNO>6.33</SECTNO>
+                    <SUBJECT>Proprietary interest.</SUBJECT>
+                    <SECTNO>6.34</SECTNO>
+                    <SUBJECT>Mortgages.</SUBJECT>
+                    <SECTNO>6.35</SECTNO>
+                    <SUBJECT>Renting display space.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Furnishing Things of Value</HD>
+                    <SECTNO>6.41</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <SECTNO>6.42</SECTNO>
+                    <SUBJECT>Indirect inducement through third party arrangements.</SUBJECT>
+                    <SECTNO>6.43</SECTNO>
+                    <SUBJECT>Sale of equipment.</SUBJECT>
+                    <SECTNO>6.44</SECTNO>
+                    <SUBJECT>Free warehousing.</SUBJECT>
+                    <SECTNO>6.45</SECTNO>
+                    <SUBJECT>Assistance in acquiring license.</SUBJECT>
+                    <SECTNO>6.46-6.47</SECTNO>
+                    <SUBJECT>[Reserved]</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Paying for Advertising, Display or Distribution Service</HD>
+                    <SECTNO>6.51</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <SECTNO>6.52</SECTNO>
+                    <SUBJECT>Cooperative advertising.</SUBJECT>
+                    <SECTNO>6.53</SECTNO>
+                    <SUBJECT>Advertising in ballparks, racetracks, and stadiums.</SUBJECT>
+                    <SECTNO>6.54</SECTNO>
+                    <SUBJECT>Advertising in retailer publications.</SUBJECT>
+                    <SECTNO>6.55</SECTNO>
+                    <SUBJECT>Display service.</SUBJECT>
+                    <SECTNO>6.56</SECTNO>
+                    <SUBJECT>Renting display space.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Guaranteeing Loans</HD>
+                    <SECTNO>6.61</SECTNO>
+                    <SUBJECT>Guaranteeing loans.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Extension of Credit</HD>
+                    <SECTNO>6.65</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <SECTNO>6.66</SECTNO>
+                    <SUBJECT>Calculation of period.</SUBJECT>
+                    <SECTNO>6.67</SECTNO>
+                    <SUBJECT>Sales to retailer whose account is in arrears.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Quota Sales</HD>
+                    <SECTNO>6.71</SECTNO>
+                    <SUBJECT>Quota sales.</SUBJECT>
+                    <SECTNO>6.72</SECTNO>
+                    <SUBJECT>“Tie-in” sales.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—Exceptions</HD>
+                <SECTNO>6.81</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>6.82</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <SECTNO>6.83</SECTNO>
+                <SUBJECT>Product displays.</SUBJECT>
+                <SECTNO>6.84</SECTNO>
+                <SUBJECT>Point of sale advertising materials and consumer advertising specialties.</SUBJECT>
+                <SECTNO>6.85</SECTNO>
+                <SUBJECT>Temporary retailers.</SUBJECT>
+                <SECTNO>6.86-6.87</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <SECTNO>6.88</SECTNO>
+                <SUBJECT>Equipment and supplies.</SUBJECT>
+                <SECTNO>6.89-6.90</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <SECTNO>6.91</SECTNO>
+                <SUBJECT>Samples.</SUBJECT>
+                <SECTNO>6.92</SECTNO>
+                <SUBJECT>Newspaper cuts.</SUBJECT>
+                <SECTNO>6.93</SECTNO>
+                <SUBJECT>Combination packaging.</SUBJECT>
+                <SECTNO>6.94</SECTNO>
+                <SUBJECT>Educational seminars.</SUBJECT>
+                <SECTNO>6.95</SECTNO>
+                <SUBJECT>Consumer tasting or sampling at retail establishments.</SUBJECT>
+                <SECTNO>6.96</SECTNO>
+                <SUBJECT>Consumer promotions.</SUBJECT>
+                <SECTNO>6.97</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <SECTNO>6.98</SECTNO>
+                <SUBJECT>Advertising service.</SUBJECT>
+                <SECTNO>6.99</SECTNO>
+                <SUBJECT>Stocking, rotation, and pricing service.</SUBJECT>
+                <SECTNO>6.100</SECTNO>
+                <SUBJECT>Participation in retailer association activities.</SUBJECT>
+                <SECTNO>6.101</SECTNO>
+                <SUBJECT>Merchandise.</SUBJECT>
+                <SECTNO>6.102</SECTNO>
+                <SUBJECT>Outside signs.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart E—Exclusion</HD>
+                <SECTNO>6.151</SECTNO>
+                <SUBJECT>Exclusion, in general.</SUBJECT>
+                <SECTNO>6.152</SECTNO>
+                <SUBJECT>Practices which put retailer independence at risk.</SUBJECT>
+                <SECTNO>6.153</SECTNO>
+                <SUBJECT>Criteria for determining retailer independence.</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>15 U.S.C. 49-50; 27 U.S.C. 202 and 205; 44 U.S.C. 3504(h).</P>
+        </AUTH>
+        <SOURCE>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, unless otherwise noted.</P>
+        </SOURCE>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—Scope of Regulations</HD>
+            <SECTION>
+                <SECTNO>§ 6.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>The regulations in this part, issued pursuant to section 105 of the Federal Alcohol Administration Act (27 U.S.C. 205), specify practices that are means to induce under section 105(b) of the Act, criteria for determining whether a practice is a violation of section 105(b) of the Act, and exceptions to section 105(b) of the Act. This part does not attempt to enumerate all of the practices that may result in a violation of section 105(b) of the Act. Nothing in this part shall operate to exempt any person from the requirements of any State law or regulation.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <P>This part applies to the several States of the United States, the District of Columbia, and Puerto Rico.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.3</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     This part applies only to transactions between industry members and retailers. It does not apply to transactions between two industry members (for example, between a producer and a wholesaler), or to transactions between an industry member 
+                    <PRTPAGE P="100"/>
+                    and a retailer wholly owned by that industry member.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Transaction involving State agencies.</E>
+                     The regulations in this part apply only to transactions between industry members and State agencies operating as retailers as defined in this part. The regulations do not apply to State agencies with regard to their wholesale dealings with retailers.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.4</SECTNO>
+                <SUBJECT>Jurisdictional limits.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The regulations in this part apply where:
+                </P>
+                <P>(1) The industry member induces a retailer to purchase distilled spirits, wine, or malt beverages from such industry member to the exclusion in whole or in part of products sold or offered for sale by other persons in interstate or foreign commerce; and</P>
+                <P>(2) If: (i) The inducement is made in the course of interstate or foreign commerce; or</P>
+                <P>(ii) The industry member engages in the practice of using an inducement to such an extent as substantially to restrain or prevent transactions in interstate or foreign commerce in any such products; or</P>
+                <P>(iii) The direct effect of the inducement is to prevent, deter, hinder or restrict other persons from selling or offering for sale any such products to such retailer in interstate or foreign commerce.</P>
+                <P>
+                    (b) 
+                    <E T="03">Malt beverages.</E>
+                     In the case of malt beverages, this part applies to transactions between a retailer in any State and a brewer, importer, or wholesaler of malt beverages inside or outside such State only to the extent that the law of such State imposes requirements similar to the requirements of section 105(b) of the Federal Alcohol Administration Act (27 U.S.C. 205(b)), with respect to similar transactions between a retailer in such State and a brewer, importer, or wholesaler or malt beverage in such State, as the case may be.
+                </P>
+                <CITA>[T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.5</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    Most of the regulatory authorities of the Administrator contained in this part are delegated to appropriate TTB officers. These TTB officers are specified in TTB Order 1135.6, Delegation of the Administrator's Authorities in 27 CFR Part 6, 
+                    <E T="03">Tied-House.</E>
+                     You may obtain a copy of this order by accessing the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. TTB-44, 71 FR 16922, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.6</SECTNO>
+                <SUBJECT>Administrative provisions.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The Act makes applicable the provisions including penalties of sections 49 and 50 of Title 15, United States Code, to the jurisdiction, powers and duties of the Administrator under this Act, and to any person (whether or not a corporation) subject to the provisions of law administered by the Administrator under this Act. The Act also provides that the Administrator is authorized to require, in such manner and such form as he or she shall prescribe, such reports as are necessary to carry out the powers and duties under this chapter.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Examination and subpoena.</E>
+                     Any appropriate TTB officer shall at all reasonable times have access to, for the purpose of examination, and the right to copy any documentary evidence of any person, partnership, or corporation being investigated or proceeded against. An appropriate TTB officer shall also have the power to require by subpoena the attendance and testimony of witnesses and the production of all such documentary evidence relating to any matter under investigation, upon a satisfactory showing the requested evidence may reasonably be expected to yield information relevant to any matter being investigated under the Act.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Reports required by the appropriate TTB officer</E>
+                    —(1) 
+                    <E T="03">General.</E>
+                     The appropriate TTB officer may, as part of a trade practice investigation of an industry member, require such industry member to submit a written report containing information on sponsorships, advertisements, promotions, and other activities pertaining to its business subject to the Act conducted by, or on behalf of, or benefiting the industry member.
+                    <PRTPAGE P="101"/>
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Preparation.</E>
+                     The report will be prepared by the industry member in letter form, executed under the penalties of perjury, and will contain the information specified by the appropriate TTB officer. The period covered by the report will not exceed three years.
+                </P>
+                <P>
+                    (3) 
+                    <E T="03">Filing.</E>
+                     The report will be filed in accordance with the instructions of the appropriate TTB officer.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0392)</APPRO>
+                <CITA>[T.D. ATF-364, 60 FR 20421, Apr. 26, 1995. Redesignated and amended by T.D. ATF-428, 65 FR 52019, Aug. 28, 2000]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart B—Definitions</HD>
+            <SECTION>
+                <SECTNO>§ 6.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <P>As used in this part, unless the context otherwise requires, terms have the meanings given in this section. Any other term defined in the Federal Alcohol Administration Act and used in this part shall have the meaning assigned to it by that Act.</P>
+                <P>
+                    <E T="03">Act.</E>
+                     The Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any functions relating to the administration or enforcement of this part by TTB Order 1135.6, Delegation of the Administrator's Authorities in 27 CFR Part 6, 
+                    <E T="03">Tied-House.</E>
+                </P>
+                <P>
+                    <E T="03">Brand.</E>
+                     For purposes of administering this part, the term “brand” refers to differences in the brand name of a product or in the nature of a product. Examples of different brands are products having a different brand name or class, type, or kind designation; appellation of origin (wine); vintage date (wine); age (distilled spirits); or percentage of alcohol. Differences in packaging such as difference in label design or color, or a different style, type or size of container are not considered different brands.
+                </P>
+                <P>
+                    <E T="03">Equipment.</E>
+                     All functional items such as tap boxes, glassware, pouring racks, and similar items used in the conduct of a retailer's business.
+                </P>
+                <P>
+                    <E T="03">Industry member.</E>
+                     Any person engaged in business as a distiller, brewer, rectifier, blender, or other producer, or as an importer or wholesaler, of distilled spirits, wine or malt beverages, or as a bottler, or warehousemen and bottler, of distilled spirits; industry member does not include an agency of a State or political subdivision thereof, or an officer or employee of such agency.
+                </P>
+                <P>
+                    <E T="03">Product.</E>
+                     Distilled spirits, wine or malt beverages, as defined in the Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Retail establishment.</E>
+                     Any premises where distilled spirits, wine or malt beverages are sold or offered for sale to consumers, whether for consumption on or off the premises where sold.
+                </P>
+                <P>
+                    <E T="03">Retailer.</E>
+                     Any person engaged in the sale of distilled spirits, wine or malt beverages to consumers. A wholesaler who makes incidental retail sales representing less than five percent of the wholesaler's total sales volume for the preceding two-month period shall not be considered a retailer with respect to such incidental sales.
+                </P>
+                <CITA>[T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20421, Apr. 26, 1995; T.D. ATF-428, 65 FR 52020, Aug. 28, 2000; T.D. TTB-44, 71 FR 16922, Apr. 4, 2006]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart C—Unlawful Inducements</HD>
+            <SUBJGRP>
+                <HD SOURCE="HED">General</HD>
+                <SECTION>
+                    <SECTNO>§ 6.21</SECTNO>
+                    <SUBJECT>Application.</SUBJECT>
+                    <P>Except as provided in subpart D, it is unlawful for any industry member to induce, directly or indirectly, any retailer to purchase any products from the industry member to the exclusion, in whole or in part, of such products sold or offered for sale by other persons in interstate or foreign commerce by any of the following means:</P>
+                    <P>(a) By acquiring or holding (after the expiration of any license held at the time the FAA Act was enacted) any interest in any license with respect to the premises of the retailer;</P>
+                    <P>(b) By acquiring any interest in the real or personal property owned, occupied, or used by the retailer in the conduct of his business;</P>
+                    <P>
+                        (c) By furnishing, giving, renting, lending, or selling to the retailer, any 
+                        <PRTPAGE P="102"/>
+                        equipment, fixtures, signs, supplies, money, services or other thing of value, subject to the exceptions contained in subpart D;
+                    </P>
+                    <P>(d) By paying or crediting the retailer for any advertising, display, or distribution service;</P>
+                    <P>(e) By guaranteeing any loan or the repayment of any financial obligation of the retailer;</P>
+                    <P>(f) By extending to the retailer credit for a period in excess of the credit period usual and customary to the industry for the particular class of transactions as prescribed in § 6.65; or</P>
+                    <P>(g) By requiring the retailer to take and dispose of a certain quota of any such products.</P>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Interest in Retail License</HD>
+                <SECTION>
+                    <SECTNO>§ 6.25</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <P>The act by an industry member of acquiring or holding any interest in any license (State, county or municipal) with respect to the premises of a retailer constitutes a means to induce within the meaning of the Act.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.26</SECTNO>
+                    <SUBJECT>Indirect interest.</SUBJECT>
+                    <P>Industry member interest in retail licenses includes any interest acquired by corporate officials, partners, employees or other representatives of the industry member. Any interest in a retail license acquired by a separate corporation in which the industry member or its officials, hold ownership or are otherwise affiliated, is an interest in a retail license.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.27</SECTNO>
+                    <SUBJECT>Proprietary interest.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Complete ownership.</E>
+                         Outright ownership of a retail business by an industry member is not an interest which may result in a violation of section 105(b)(1) of the Act.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Partial ownership.</E>
+                         Less than complete ownership of a retail business by an industry member constitutes an interest in a retail license within the meaning of the Act.
+                    </P>
+                    <CITA>[T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Interest in Retail Property</HD>
+                <SECTION>
+                    <SECTNO>§ 6.31</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <P>The act by an industry member of acquiring an interest in real or personal property owned, occupied, or used by the retailer in the conduct of business constitutes a means to induce within the meaning of the Act.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.32</SECTNO>
+                    <SUBJECT>Indirect interest.</SUBJECT>
+                    <P>Industry member interest in retail property includes any interest acquired by corporate officials, partners, employees or other representatives of the industry member. Any interest in retail property acquired by a separate corporation in which the industry member or its officials, hold ownership or are otherwise affiliated, is an interest in retail property.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.33</SECTNO>
+                    <SUBJECT>Proprietary interest.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Complete ownership.</E>
+                         Outright ownership of a retail business by an industry member is not an interest that may result in a violation of section 105(b)(2) of the Act.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Partial ownership.</E>
+                         Less than complete ownership of a retail business by an industry member constitutes an interest in retail property within the meaning of the Act.
+                    </P>
+                    <CITA>[T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.34</SECTNO>
+                    <SUBJECT>Mortgages.</SUBJECT>
+                    <P>The acquisition of a mortgage on a retailer's real or personal property by an industry member constitutes an interest in the retailer's property within the meaning of the Act.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.35</SECTNO>
+                    <SUBJECT>Renting display space.</SUBJECT>
+                    <P>The renting of display space by an industry member at a retail establishment constitutes an interest in the retailer's property within the meaning of the Act.</P>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <PRTPAGE P="103"/>
+                <HD SOURCE="HED">Furnishing Things of Value</HD>
+                <SECTION>
+                    <SECTNO>§ 6.41</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <P>Subject to the exceptions listed in subpart D, the act by an industry member of furnishing, giving, renting, lending, or selling any equipment, fixtures, signs, supplies, money, services, or other things of value to a retailer constitutes a means to induce within the meaning of the Act.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.42</SECTNO>
+                    <SUBJECT>Indirect inducement through third party arrangements.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         The furnishing, giving, renting, lending, or selling of equipment, fixtures, signs, supplies, money, services, or other thing of value by an industry member to a third party, where the benefits resulting from such things of value flow to individual retailers, is the indirect furnishing of a thing of value within the meaning of the Act. Indirect furnishing of a thing of value includes, but is not limited to, making payments for advertising to a retailer association or a display company where the resulting benefits flow to individual retailers.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Exceptions.</E>
+                         An indirect inducement will not arise where the thing of value was furnished to a retailer by the third party without the knowledge or intent of the industry member, or the industry member did not reasonably foresee that the thing of value would have been furnished to a retailer. Things which may lawfully be furnished, given, rented, lent, or sold by industry members to retailers under subpart D may also be furnished directly by a third party to a retailer.
+                    </P>
+                    <CITA>[T.D. ATF-364, 60 FR 20421, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.43</SECTNO>
+                    <SUBJECT>Sale of equipment.</SUBJECT>
+                    <P>A transaction in which equipment is sold to a retailer by an industry member, except as provided in § 6.88, is the selling of equipment in within the meaning of the Act regardless of how sold. Further, the negotiation by an industry member of a special price to a retailer for equipment from an equipment company is the furnishing of a thing of value within the meaning of the Act.</P>
+                    <CITA>[T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.44</SECTNO>
+                    <SUBJECT>Free warehousing.</SUBJECT>
+                    <P>The furnishing of free warehousing by delaying delivery of distilled spirits, wine, or malt beverages beyond the time that payment for the product is received, or if a retailer is purchasing on credit, delaying final delivery of products beyond the close of the period of time for which credit is lawfully extended, is the furnishing of a service or thing of value within the meaning of the Act.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.45</SECTNO>
+                    <SUBJECT>Assistance in acquiring license.</SUBJECT>
+                    <P>Any assistance (financial, legal, administrative or influential) given the retailer by an industry member in the retailer's acquisition of the retailer's license is the furnishing of a service or thing of value within the meaning of the Act.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§§ 6.46-6.47</SECTNO>
+                    <RESERVED>[Reserved]</RESERVED>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Paying for Advertising, Display or Distribution Service</HD>
+                <SECTION>
+                    <SECTNO>§ 6.51</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <P>The act by an industry member of paying or crediting a retailer for any advertising, display, or distribution service constitutes a means to induce within the meaning of the Act, whether or not the advertising, display, or distribution service received by the industry member in these instances is commensurate with the amount paid therefor. This includes payments or credits to retailers that are merely reimbursements, in full or in part, for such services purchased by a retailer from a third party.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.52</SECTNO>
+                    <SUBJECT>Cooperative advertising.</SUBJECT>
+                    <P>An arrangement in which an industry member participates with a retailer in paying for an advertisement placed by the retailer constitutes paying the retailer for advertising within the meaning of the Act.</P>
+                </SECTION>
+                <SECTION>
+                    <PRTPAGE P="104"/>
+                    <SECTNO>§ 6.53</SECTNO>
+                    <SUBJECT>Advertising in ballparks, racetracks, and stadiums.</SUBJECT>
+                    <P>The purchase, by an industry member, of advertising on signs, scoreboards, programs, scorecards, and the like at ballparks, racetracks or stadiums, from the retail concessionaire constitutes paying the retailer for an advertising service within the meaning of the Act.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.54</SECTNO>
+                    <SUBJECT>Advertising in retailer publications.</SUBJECT>
+                    <P>The purchase, by an industry member, of advertising in a retailer publication for distribution to consumers or the general public constitutes paying the retailer for advertising within the meaning of the Act.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.55</SECTNO>
+                    <SUBJECT>Display service.</SUBJECT>
+                    <P>Industry member reimbursements to retailers for setting up product or other displays constitutes paying the retailer for rendering a display service within the meaning of the Act.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.56</SECTNO>
+                    <SUBJECT>Renting display space.</SUBJECT>
+                    <P>A promotion whereby an industry member rents display space at a retail establishment constitutes paying the retailer for rendering a display service within the meaning of the Act.</P>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Guaranteeing Loans</HD>
+                <SECTION>
+                    <SECTNO>§ 6.61</SECTNO>
+                    <SUBJECT>Guaranteeing loans.</SUBJECT>
+                    <P>The act by an industry member of guaranteeing any loan or the repayment of any financial obligation of a retailer constitutes a means to induce within the meaning of the Act.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Extension of Credit</HD>
+                <SECTION>
+                    <SECTNO>§ 6.65</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <P>Extension of credit by an industry member to a retailer for a period of time in excess of 30 days from the date of delivery constitutes a means to induce within the meaning of the Act.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.66</SECTNO>
+                    <SUBJECT>Calculation of period.</SUBJECT>
+                    <P>For the purpose of this part, the period of credit is calculated as the time elapsing between the date of delivery of the product and the date of full legal discharge of the retailer, through the payment of cash or its equivalent, from all indebtedness arising from the transaction.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.67</SECTNO>
+                    <SUBJECT>Sales to retailer whose account is in arrears.</SUBJECT>
+                    <P>An extension of credit (for product purchases) by an industry member to a retailer whose account is in arrears does not constitute a means to induce within the meaning of the Act so long as such retailer pays in advance or on delivery an amount equal to or greater than the value of each order, regardless of the manner in which the industry member applies the payment in its records.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Quota Sales</HD>
+                <SECTION>
+                    <SECTNO>§ 6.71</SECTNO>
+                    <SUBJECT>Quota sales.</SUBJECT>
+                    <P>The act by an industry member of requiring a retailer to take and dispose of any quota of distilled spirits, wine, or malt beverages constitutes a means to induce within the meaning of the Act.</P>
+                    <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 6.72</SECTNO>
+                    <SUBJECT>“Tie-in” sales.</SUBJECT>
+                    <P>
+                        The act by an industry member of requiring that a retailer purchase one product (as defined in § 6.11) in order to obtain another constitutes a means to induce within the meaning of the Act. This includes the requirement to take a minimum quantity of a product in standard packaging in order to obtain the same product in some type of premium package, i.e., a distinctive decanter, or wooden or tin box. This also includes combination sales if one or more products may be purchased only in combination with other products and not individually. However, an industry member is not precluded from selling two or more kinds or brands of products to a retailer at a special combination price, provided the retailer has the option of purchasing either product at the usual price, and the retailer is not required to purchase any product it does not want. See § 6.93 for 
+                        <PRTPAGE P="105"/>
+                        combination packaging of products plus non-alcoholic items.
+                    </P>
+                    <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—Exceptions</HD>
+            <SECTION>
+                <SECTNO>§ 6.81</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Application.</E>
+                     Section 105(b)(3) of the Act enumerates means to induce that may be unlawful under the subsection, subject to such exceptions as are prescribed in regulations, having due regard for public health, the quantity and value of articles involved, established trade customs not contrary to the public interest, and the purposes of that section. This subpart implements section 105(b)(3) of the Act and identifies the practices that are exceptions to section 105(b)(3) of the Act. An industry member may furnish a retailer equipment, inside signs, supplies, services, or other things of value, under the conditions and within the limitations prescribed in this subpart.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Recordkeeping Requirements.</E>
+                     (1) Industry members shall keep and maintain records on the permit or brewery premises, for a three year period, of all items furnished to retailers under §§ 6.83, 6.88, 6.91, 6.96(a), and 6.100 and the commercial records required under § 6.101. Commercial records or invoices may be used to satisfy this recordkeeping requirement if all required information is shown. These records shall show:
+                </P>
+                <P>(i) The name and address of the retailer receiving the item;</P>
+                <P>(ii) The date furnished;</P>
+                <P>(iii) The item furnished;</P>
+                <P>(iv) The industry member's cost of the item furnished (determined by the manufacturer's invoice price); and</P>
+                <P>(v) Charges to the retailer for any item.</P>
+                <P>(2) Although no separate recordkeeping violation results, an industry member who fails to keep such records is not eligible for the exception claimed.</P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0392)</APPRO>
+                <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.82</SECTNO>
+                <RESERVED>[Reserved]</RESERVED>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.83</SECTNO>
+                <SUBJECT>Product displays.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The act by an industry member of giving or selling product displays to a retailer does not constitute a means to induce within the meaning of section 105(b)(3) of the Act provided that the conditions prescribed in paragraph (c) of this section are met.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Definition.</E>
+                     “Product display” means any wine racks, bins, barrels, casks, shelving, or similar items the primary function of which is to hold and display consumer products.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Conditions and limitations.</E>
+                     (1) The total value of all product displays given or sold by an industry member under paragraph (a) of this section may not exceed $300 per brand at any one time in any one retail establishment. Industry members may not pool or combine dollar limitations in order to provide a retailer a product display valued in excess of $300 per brand. The value of a product display is the actual cost to the industry member who initially purchased it. Transportation and installation costs are excluded.
+                </P>
+                <P>(2) All product displays must bear conspicuous and substantial advertising matter on the product or the industry member which is permanently inscribed or securely affixed. The name and address of the retailer may appear on the product displays.</P>
+                <P>(3) The giving or selling of such product displays may be conditioned upon the purchase of the distilled spirits, wine, or malt beverages advertised on those displays in a quantity necessary for the initial completion of such display. No other condition can be imposed by the industry member on the retailer in order for the retailer to receive or obtain the product display.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20422, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.84</SECTNO>
+                <SUBJECT>Point of sale advertising materials and consumer advertising specialties.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The act by an industry member of giving or selling point of sale advertising materials and consumer advertising specialties to a retailer does not constitute a means to induce within the meaning of section 105(b)(3) of the Act provided that the 
+                    <PRTPAGE P="106"/>
+                    conditions prescribed in paragraph (c) of this section are met.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Definitions</E>
+                    —(1) 
+                    <E T="03">Point of sale advertising materials</E>
+                     are items designed to be used within a retail establishment to attract consumer attention to the products of the industry member. Such materials include, but are not limited to: posters, placards, designs, inside signs (electric, mechanical or otherwise), window decorations, trays, coasters, mats, menu cards, meal checks, paper napkins, foam scrapers, back bar mats, thermometers, clocks, calendars, and alcoholic beverage lists or menus.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Consumer advertising specialties</E>
+                     are items that are designed to be carried away by the consumer, such as trading stamps, nonalcoholic mixers, pouring racks, ash trays, bottle or can openers, cork screws, shopping bags, matches, printed recipes, pamphlets, cards, leaflets, blotters, post cards, pencils, shirts, caps, and visors.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Conditions and limitations.</E>
+                     (1) All point of sale advertising materials and consumer advertising specialties must bear conspicuous and substantial advertising matter about the product or the industry member which is permanently inscribed or securely affixed. The name and address of the retailer may appear on the point of sale advertising materials.
+                </P>
+                <P>(2) The industry member may not directly or indirectly pay or credit the retailer for using or distributing these materials or for any expense incidental to their use.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.85</SECTNO>
+                <SUBJECT>Temporary retailers.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The furnishing of things of value to a temporary retailer does not constitute a means to induce within the meaning of section 105(b)(3) of the Act.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Definition.</E>
+                     For purposes of administering this part, a temporary retailer is a dealer who is not engaged in business as a retailer for more than four consecutive days per event, and for not more than five events in a calendar year.
+                </P>
+                <CITA>[T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§§ 6.86-6.87</SECTNO>
+                <RESERVED>[Reserved]</RESERVED>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.88</SECTNO>
+                <SUBJECT>Equipment and supplies.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The act by an industry member of selling equipment or supplies to a retailer does not constitute a means to induce within the meaning of section 105(b)(3) of the Act if the equipment or supplies are sold at a price not less than the cost to the industry member who initially purchased them, and if the price is collected within 30 days of the date of the sale. The act by an industry member of installing dispensing accessories at the retailer's establishment does not constitute a means to induce within the meaning of the Act as long as the retailer bears the cost of initial installation. The act by an industry member of furnishing, giving, or selling coil cleaning service to a retailer of distilled spirits, wine, or malt beverages does not constitute a means to induce within the meaning of section 105(b)(3) of the Act.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Definition.</E>
+                     “Equipment and supplies” means glassware (or similar containers made of other material), dispensing accessories, carbon dioxide (and other gasses used in dispensing equipment) or ice. “Dispensing accessories” include items such as standards, faucets, cold plates, rods, vents, taps, tap standards, hoses, washers, couplings, gas gauges, vent tongues, shanks, and check valves.
+                </P>
+                <CITA>[T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§§ 6.89-6.90</SECTNO>
+                <RESERVED>[Reserved]</RESERVED>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.91</SECTNO>
+                <SUBJECT>Samples.</SUBJECT>
+                <P>
+                    The act by an industry member of furnishing or giving a sample of distilled spirits, wine, or malt beverages to a retailer who has not purchased the brand from that industry member within the last 12 months does not constitute a means to induce within the meaning of section 105(b)(3) of the Act. For each retail establishment the industry member may give not more than 3 gallons of any brand of malt beverage, not more than 3 liters of any brand of wine, and not more than 3 liters of distilled spirits. If a particular product is not available in a size within 
+                    <PRTPAGE P="107"/>
+                    the quantity limitations of this section, an industry member may furnish to a retailer the next larger size.
+                </P>
+                <CITA>[T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.92</SECTNO>
+                <SUBJECT>Newspaper cuts.</SUBJECT>
+                <P>Newspaper cuts, mats, or engraved blocks for use in retailers' advertisements may be given or sold by an industry member to a retailer selling the industry member's products.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.93</SECTNO>
+                <SUBJECT>Combination packaging.</SUBJECT>
+                <P>The act by an industry member of packaging and distributing distilled spirits, wine, or malt beverages in combination with other (non-alcoholic) items for sale to consumers does not constitute a means to induce within the meaning of section 105(b)(3) of the Act.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.94</SECTNO>
+                <SUBJECT>Educational seminars.</SUBJECT>
+                <P>An industry member may give or sponsor educational seminars for employees of retailers either at the industry member's premises or at the retail establishment. Examples would be seminars dealing with use of a retailer's equipment, training seminars for employees of retailers, or tours of industry member's plant premises. This section does not authorize an industry member to pay a retailer's expense in conjunction with an educational seminar (such as travel and lodging). This does not preclude providing nominal hospitality during the event.</P>
+                <CITA>[T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.95</SECTNO>
+                <SUBJECT>Consumer tasting or sampling at retail establishments.</SUBJECT>
+                <P>An industry member may conduct tasting or sampling activities at a retail establishment. The industry member may purchase the products to be used from the retailer, but may not purchase them from the retailer for more than the ordinary retail price.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.96</SECTNO>
+                <SUBJECT>Consumer promotions.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Coupons.</E>
+                     The act by an industry member of furnishing to consumers coupons which are redeemable at a retail establishment does not constitute a means to induce within the meaning of section 105(b)(3) of the Act, provided the following conditions are met:
+                </P>
+                <P>(1) All retailers within the market where the coupon offer is made may redeem such coupons; and</P>
+                <P>(2) An industry member may not reimburse a retailer for more than the face value of all coupons redeemed, plus a usual and customary handling fee for the redemption of coupons.</P>
+                <P>
+                    (b) 
+                    <E T="03">Direct offerings.</E>
+                     Contest prizes, premium offers, refunds, and like items may be offered by industry members directly to consumers. Officers, employees and representatives of wholesalers or retailers are excluded from particiption.
+                </P>
+                <CITA>[T.D. ATF-74, 45 FR 63251, Sept. 23, 1980, as amended by T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.97</SECTNO>
+                <RESERVED>[Reserved]</RESERVED>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.98</SECTNO>
+                <SUBJECT>Advertising service.</SUBJECT>
+                <P>The listing of the names and addresses of two or more unaffiliated retailers selling the products of an industry member in an advertisement of that industry member does not constitute a means to induce within the meaning of section 105(b)(3) of the Act, provided:</P>
+                <P>(a) The advertisement does not also contain the retail price of the product (except where the exclusive retailer in the jurisdiction is a State or a political subdivision of a State), and</P>
+                <P>(b) The listing is the only reference to the retailers in the advertisement and is relatively inconspicuous in relation to the advertisement as a whole, and</P>
+                <P>(c) The advertisement does not refer only to one retailer or only to retail establishments controlled directly or indirectly by the same retailer, except where the retailer is an agency of a State or a political subdivision of a State.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20423, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.99</SECTNO>
+                <SUBJECT>Stocking, rotation, and pricing service.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Industry members may, at a retail establishment, stock, rotate and affix the price to distilled spirits, wine, or malt beverages which they 
+                    <PRTPAGE P="108"/>
+                    sell, provided products of other industry members are not altered or disturbed. The rearranging or resetting of all or part of a store or liquor department is not hereby authorized.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Shelf plan and shelf schematics.</E>
+                     The act by an industry member of providing a recommended shelf plan or shelf schematic for distilled spirits, wine, or malt beverages does not constitute a means to induce within the meaning of section 105(b)(3) of the Act.
+                </P>
+                <CITA>[T.D. ATF-364, 60 FR 20424, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.100</SECTNO>
+                <SUBJECT>Participation in retailer association activities.</SUBJECT>
+                <P>The following acts by an industry member participating in retailer association activities do not constitute a means to induce within the meaning of section 105(b)(3) of the Act:</P>
+                <P>(a) Displaying its products at a convention or trade show;</P>
+                <P>(b) Renting display booth space if the rental fee is the same as paid by all exhibitors at the event;</P>
+                <P>(c) Providing its own hospitality which is independent from association sponsored activities;</P>
+                <P>(d) Purchasing tickets to functions and paying registration fees if the payments or fees are the same as paid by all attendees, participants or exhibitors at the event; and</P>
+                <P>(e) Making payments for advertisements in programs or brochures issued by retailer associations at a convention or trade show if the total payments made by an industry member for all such advertisements do not exceed $300 per year for any retailer association.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20424, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.101</SECTNO>
+                <SUBJECT>Merchandise.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The act by an industry member, who is also in business as a bona fide producer or vendor of other merchandise (for example, groceries or pharmaceuticals), of selling that merchandise to a retailer does not constitute a means to induce within the meaning of section 105(b)(3) of the Act, provided:
+                </P>
+                <P>(1) The merchandise is sold at its fair market value;</P>
+                <P>(2) The merchandise is not sold in combination with distilled spirits, wines, or malt beverages (except as provided in § 6.93);</P>
+                <P>(3) The industry member's acquisition or production costs of the merchandise appears on the industry member's purchase invoices or other records; and</P>
+                <P>(4) The individual selling prices of merchandise and distilled spirits, wines, or malt beverages sold in a single transaction can be determined from commercial documents covering the sales transaction.</P>
+                <P>
+                    (b) 
+                    <E T="03">Things of value covered in other sections of this part.</E>
+                     The act by an industry member of providing equipment, fixtures, signs, glassware, supplies, services, and advertising specialties to retailers does not constitute a means to induce within the meaning of section 105(b)(3) of the Act only as provided in other sections within this part.
+                </P>
+                <CITA>[T.D. ATF-364, 60 FR 20424, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.102</SECTNO>
+                <SUBJECT>Outside signs.</SUBJECT>
+                <P>The act by an industry member of giving or selling outside signs to a retailer does not constitute a means to induce within the meaning of section 105(b)(3) of the Act provided that:</P>
+                <P>(a) The sign must bear conspicuous and substantial advertising matter about the product or the industry member which is permanently inscribed or securely affixed;</P>
+                <P>(b) The retailer is not compensated, directly or indirectly such as through a sign company, for displaying the signs; and</P>
+                <P>(c) The cost of the signs may not exceed $400.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20424, Apr. 26, 1995]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart E—Exclusion</HD>
+            <SOURCE>
+                <HD SOURCE="HED">Source:</HD>
+                <P>T.D. ATF-364, 60 FR 20424, Apr. 26, 1995, unless otherwise noted.</P>
+            </SOURCE>
+            <SECTION>
+                <SECTNO>§ 6.151</SECTNO>
+                <SUBJECT>Exclusion, in general.</SUBJECT>
+                <P>(a) Exclusion, in whole or in part occurs:</P>
+                <P>
+                    (1) When a practice by an industry member, whether direct, indirect, or through an affiliate, places (or has the potential to place) retailer independence at risk by means of a tie or link 
+                    <PRTPAGE P="109"/>
+                    between the industry member and retailer or by any other means of industry member control over the retailer; and
+                </P>
+                <P>(2) Such practice results in the retailer purchasing less than it would have of a competitor's product.</P>
+                <P>(b) Section 6.152 lists practices that create a tie or link that places retailer independence at risk. Section 6.153 lists the criteria used for determining whether other practices can put retailer independence at risk.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.152</SECTNO>
+                <SUBJECT>Practices which put retailer independence at risk.</SUBJECT>
+                <P>The practices specified in this section put retailer independence at risk. The practices specified here are examples and do not constitute a complete list of those practices that put retailer independence at risk.</P>
+                <P>(a) The act by an industry member of resetting stock on a retailer's premises (other than stock offered for sale by the industry member).</P>
+                <P>
+                    (b) The act by an industry member of purchasing or renting display, shelf, storage or warehouse space (
+                    <E T="03">i.e.</E>
+                     slotting allowance).
+                </P>
+                <P>(c) Ownership by an industry member of less than a 100 percent interest in a retailer, where such ownership is used to influence the purchases of the retailer.</P>
+                <P>(d) The act by an industry member of requiring a retailer to purchase one alcoholic beverage product in order to be allowed to purchase another alcoholic beverage product at the same time.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 6.153</SECTNO>
+                <SUBJECT>Criteria for determining retailer independence.</SUBJECT>
+                <P>The criteria specified in this section are indications that a particular practice, other than those in § 6.152, places retailer independence at risk. A practice need not meet all of the criteria specified in this section in order to place retailer independence at risk.</P>
+                <P>(a) The practice restricts or hampers the free economic choice of a retailer to decide which products to purchase or the quantity in which to purchase them for sale to consumers.</P>
+                <P>(b) The industry member obligates the retailer to participate in the promotion to obtain the industry member's product.</P>
+                <P>(c) The retailer has a continuing obligation to purchase or otherwise promote the industry member's product.</P>
+                <P>(d) The retailer has a commitment not to terminate its relationship with the industry member with respect to purchase of the industry member's products.</P>
+                <P>(e) The practice involves the industry member in the day-to-day operations of the retailer. For example, the industry member controls the retailer's decisions on which brand of products to purchase, the pricing of products, or the manner in which the products will be displayed on the retailer's premises.</P>
+                <P>(f) The practice is discriminatory in that it is not offered to all retailers in the local market on the same terms without business reasons present to justify the difference in treatment.</P>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

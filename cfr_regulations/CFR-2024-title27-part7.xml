@@ -1,0 +1,1980 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>LABELING AND ADVERTISING OF MALT BEVERAGES</TITLE>
+        <GRANULENUM>7</GRANULENUM>
+        <HEADING>PART 7</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 7</EAR>
+        <HD SOURCE="HED">PART 7—LABELING AND ADVERTISING OF MALT BEVERAGES</HD>
+        <CONTENTS>
+            <SECHD>Sec.</SECHD>
+            <SECTNO>7.0</SECTNO>
+            <SUBJECT>Scope.</SUBJECT>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—General Provisions</HD>
+                <SECTNO>7.1</SECTNO>
+                <SUBJECT>Definitions.</SUBJECT>
+                <SECTNO>7.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <SECTNO>7.3</SECTNO>
+                <SUBJECT>General requirements and prohibitions under the FAA Act.</SUBJECT>
+                <SECTNO>7.4</SECTNO>
+                <SUBJECT>Jurisdictional limits of the FAA Act.</SUBJECT>
+                <SECTNO>7.5</SECTNO>
+                <SUBJECT>Ingredients and processes.</SUBJECT>
+                <SECTNO>7.6</SECTNO>
+                <SUBJECT>Brewery products not covered by this part.</SUBJECT>
+                <SECTNO>7.7</SECTNO>
+                <SUBJECT>Other TTB labeling regulations that apply to malt beverages.</SUBJECT>
+                <SECTNO>7.8</SECTNO>
+                <SUBJECT>Malt beverages for export.</SUBJECT>
+                <SECTNO>7.9</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <SECTNO>7.10</SECTNO>
+                <SUBJECT>Other related regulations.</SUBJECT>
+                <SECTNO>7.11</SECTNO>
+                <SUBJECT>Forms.</SUBJECT>
+                <SECTNO>7.12</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart B—Certificates of Label Approval</HD>
+                <HD SOURCE="HD1">Requirements for Malt Beverages Bottled in the United States</HD>
+                <SECTNO>7.21</SECTNO>
+                <SUBJECT>Requirement for certificates of label approval (COLAs) for malt beverages bottled in the United States.</SUBJECT>
+                <SECTNO>7.22</SECTNO>
+                <SUBJECT>Rules regarding certificates of label approval (COLAs) for malt beverages bottled in the United States.</SUBJECT>
+                <SECTNO>7.23</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <HD SOURCE="HD1">Requirements for Malt Beverages Imported in Containers</HD>
+                <SECTNO>7.24</SECTNO>
+                <SUBJECT>
+                    Certificates of label approval (COLAs) for malt beverages imported in containers.
+                    <PRTPAGE P="110"/>
+                </SUBJECT>
+                <SECTNO>7.25</SECTNO>
+                <SUBJECT>Rules regarding certificates of label approval (COLAs) for malt beverages imported in containers.</SUBJECT>
+                <HD SOURCE="HD1">Administrative Rules</HD>
+                <SECTNO>7.27</SECTNO>
+                <SUBJECT>Presenting certificates of label approval (COLAs) to Government officials.</SUBJECT>
+                <SECTNO>7.28</SECTNO>
+                <SUBJECT>Formulas, samples, and documentation.</SUBJECT>
+                <SECTNO>7.29</SECTNO>
+                <SUBJECT>Personalized labels.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Alteration of Labels, Relabeling, and Adding Information to Containers</HD>
+                <SECTNO>7.41</SECTNO>
+                <SUBJECT>Alteration of labels.</SUBJECT>
+                <SECTNO>7.42</SECTNO>
+                <SUBJECT>Authorized relabeling activities by brewers and importers.</SUBJECT>
+                <SECTNO>7.43</SECTNO>
+                <SUBJECT>Relabeling activities that require separate written authorization from TTB.</SUBJECT>
+                <SECTNO>7.44</SECTNO>
+                <SUBJECT>Adding a label or other information to a container that identifies the wholesaler, retailer, or consumer.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—Label Standards</HD>
+                <SECTNO>7.51</SECTNO>
+                <SUBJECT>Requirement for firmly affixed labels.</SUBJECT>
+                <SECTNO>7.52</SECTNO>
+                <SUBJECT>Legibility and other requirements for mandatory information on labels.</SUBJECT>
+                <SECTNO>7.53</SECTNO>
+                <SUBJECT>Type size of mandatory information and alcohol content statements.</SUBJECT>
+                <SECTNO>7.54</SECTNO>
+                <SUBJECT>Visibility of mandatory information.</SUBJECT>
+                <SECTNO>7.55</SECTNO>
+                <SUBJECT>Language requirements.</SUBJECT>
+                <SECTNO>7.56</SECTNO>
+                <SUBJECT>Additional information.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart E—Mandatory Label Information</HD>
+                <SECTNO>7.61</SECTNO>
+                <SUBJECT>What constitutes a label for purposes of mandatory information.</SUBJECT>
+                <SECTNO>7.62</SECTNO>
+                <SUBJECT>Packaging (cartons, coverings, and cases).</SUBJECT>
+                <SECTNO>7.63</SECTNO>
+                <SUBJECT>Mandatory label information.</SUBJECT>
+                <SECTNO>7.64</SECTNO>
+                <SUBJECT>Brand name.</SUBJECT>
+                <SECTNO>7.65</SECTNO>
+                <SUBJECT>Alcohol content.</SUBJECT>
+                <SECTNO>7.66</SECTNO>
+                <SUBJECT>Name and address for domestically bottled malt beverages that were wholly fermented in the United States.</SUBJECT>
+                <SECTNO>7.67</SECTNO>
+                <SUBJECT>Name and address for domestically bottled malt beverages that were bottled after importation.</SUBJECT>
+                <SECTNO>7.68</SECTNO>
+                <SUBJECT>Name and address for malt beverages that are imported in a container.</SUBJECT>
+                <SECTNO>7.69</SECTNO>
+                <SUBJECT>Country of origin.</SUBJECT>
+                <SECTNO>7.70</SECTNO>
+                <SUBJECT>Net contents.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart F—Restricted Labeling Statements</HD>
+                <SECTNO>7.81</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SUBJGRP>
+                    <HD SOURCE="HED"/>
+                    <HD SOURCE="HD1">Food Allergen Labeling</HD>
+                    <SECTNO>7.82</SECTNO>
+                    <SUBJECT>Voluntary disclosure of major food allergens.</SUBJECT>
+                    <SECTNO>7.83</SECTNO>
+                    <SUBJECT>Petitions for exemption from major food allergen labeling.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Production and Other Claims</HD>
+                    <SECTNO>7.84</SECTNO>
+                    <SUBJECT>Use of the term “organic.”</SUBJECT>
+                    <SECTNO>7.85-7.87</SECTNO>
+                    <SUBJECT>[Reserved]</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart G—Prohibited Labeling Practices</HD>
+                <SECTNO>7.101</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>7.102</SECTNO>
+                <SUBJECT>False or untrue statements.</SUBJECT>
+                <SECTNO>7.103</SECTNO>
+                <SUBJECT>Obscene or indecent depictions.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart H—Labeling Practices That Are Prohibited if They Are Misleading</HD>
+                <SECTNO>7.121</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>7.122</SECTNO>
+                <SUBJECT>Misleading statements or representations.</SUBJECT>
+                <SECTNO>7.123</SECTNO>
+                <SUBJECT>Guarantees.</SUBJECT>
+                <SECTNO>7.124</SECTNO>
+                <SUBJECT>Disparaging statements.</SUBJECT>
+                <SECTNO>7.125</SECTNO>
+                <SUBJECT>Tests or analyses.</SUBJECT>
+                <SECTNO>7.126</SECTNO>
+                <SUBJECT>Depictions of government symbols.</SUBJECT>
+                <SECTNO>7.127</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <SECTNO>7.128</SECTNO>
+                <SUBJECT>Claims related to distilled spirits.</SUBJECT>
+                <SECTNO>7.129</SECTNO>
+                <SUBJECT>Health-related statements.</SUBJECT>
+                <SECTNO>7.130</SECTNO>
+                <SUBJECT>Appearance of endorsement.</SUBJECT>
+                <SECTNO>7.131</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <SECTNO>7.132</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart I—Classes and Types of Malt Beverages</HD>
+                <SECTNO>7.141</SECTNO>
+                <SUBJECT>Class and type.</SUBJECT>
+                <SECTNO>7.142</SECTNO>
+                <SUBJECT>Class designations.</SUBJECT>
+                <SECTNO>7.143</SECTNO>
+                <SUBJECT>Class and type—special rules.</SUBJECT>
+                <SECTNO>7.144</SECTNO>
+                <SUBJECT>Malt beverages fermented or flavored with certain traditional ingredients.</SUBJECT>
+                <SECTNO>7.145</SECTNO>
+                <SUBJECT>Malt beverages containing less than 0.5 percent alcohol by volume.</SUBJECT>
+                <SECTNO>7.146</SECTNO>
+                <SUBJECT>Geographical names.</SUBJECT>
+                <SECTNO>7.147</SECTNO>
+                <SUBJECT>Statement of composition.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <RESERVED>Subparts J-L [Reserved]</RESERVED>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart M—Penalties and Compromise of Liability</HD>
+                <SECTNO>7.221</SECTNO>
+                <SUBJECT>Criminal penalties.</SUBJECT>
+                <SECTNO>7.222</SECTNO>
+                <SUBJECT>Conditions of basic permit.</SUBJECT>
+                <SECTNO>7.223</SECTNO>
+                <SUBJECT>Compromise.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart N—Advertising of Malt Beverages</HD>
+                <SECTNO>7.231</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <SECTNO>7.232</SECTNO>
+                <SUBJECT>Definitions.</SUBJECT>
+                <SECTNO>7.233</SECTNO>
+                <SUBJECT>Mandatory statements.</SUBJECT>
+                <SECTNO>7.234</SECTNO>
+                <SUBJECT>Legibility of mandatory information.</SUBJECT>
+                <SECTNO>7.235</SECTNO>
+                <SUBJECT>Prohibited practices.</SUBJECT>
+                <SECTNO>7.236</SECTNO>
+                <SUBJECT>Comparative advertising.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart O—Paperwork Reduction Act</HD>
+                <SECTNO>7.241</SECTNO>
+                <SUBJECT>OMB control numbers assigned under the Paperwork Reduction Act.</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>27 U.S.C. 205 and 207.</P>
+        </AUTH>
+        <SOURCE>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. TTB-176, 87 FR 7605, Feb. 9, 2022, unless otherwise noted.</P>
+        </SOURCE>
+        <SECTION>
+            <PRTPAGE P="111"/>
+            <SECTNO>§ 7.0</SECTNO>
+            <SUBJECT>Scope.</SUBJECT>
+            <P>This part sets forth requirements that apply to the labeling and packaging of malt beverages in containers, including requirements for label approval and rules regarding mandatory, regulated, and prohibited labeling statements. This part also sets forth requirements that apply to the advertising of malt beverages.</P>
+        </SECTION>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—General Provisions</HD>
+            <SECTION>
+                <SECTNO>§ 7.1</SECTNO>
+                <SUBJECT>Definitions.</SUBJECT>
+                <P>When used in this part and on forms prescribed under this part, the following terms have the meaning assigned to them in this section, unless the terms appear in a context that requires a different meaning. Any other term defined in the Federal Alcohol Administration Act (FAA Act) and used in this part has the same meaning assigned to it by the FAA Act.</P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury.
+                </P>
+                <P>
+                    <E T="03">Advertisement or Advertising.</E>
+                     See § 7.232 for meaning of these terms as used in subpart N of this part.
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any function relating to the administration or enforcement of this part by the current version of TTB Order 1135.7, Delegation of the Administrator's Authorities in 27 CFR part 7, Labeling and Advertising of Malt Beverages.
+                </P>
+                <P>
+                    <E T="03">Bottler.</E>
+                     Any brewer or wholesaler who places malt beverages in containers.
+                </P>
+                <P>
+                    <E T="03">Brand name.</E>
+                     The name under which a malt beverage or a line of malt beverages is sold.
+                </P>
+                <P>
+                    <E T="03">Certificate holder.</E>
+                     The permittee or brewer whose name, address, and basic permit number, plant registry number, or brewer's notice number appears on an approved TTB Form 5100.31.
+                </P>
+                <P>
+                    <E T="03">Certificate of exemption from label approval.</E>
+                     A certificate issued on TTB Form 5100.31, which authorizes the bottling of wine or distilled spirits, under the condition that the product will under no circumstances be sold, offered for sale, shipped, delivered for shipment, or otherwise introduced by the applicant, directly or indirectly, into interstate or foreign commerce.
+                </P>
+                <P>
+                    <E T="03">Certificate of label approval (COLA).</E>
+                     A certificate issued on form TTB Form 5100.31 that authorizes the bottling of wine, distilled spirits, or malt beverages, or the removal of bottled wine, distilled spirits, or malt beverages from customs custody for introduction into commerce, as long as the product bears labels identical to the labels appearing on the face of the certificate, or labels with changes authorized by TTB on the certificate or otherwise (such as through the issuance of public guidance available on the TTB website at 
+                    <E T="03">https://www.ttb.gov</E>
+                    ).
+                </P>
+                <P>
+                    <E T="03">Container.</E>
+                     Any can, bottle, box, cask, keg, barrel or other closed receptacle, in any size or material, which is for use in the sale of malt beverages at retail.
+                </P>
+                <P>
+                    <E T="03">Customs officer.</E>
+                     An officer of U.S. Customs and Border Protection (CBP) or any agent or other person authorized by law to perform the duties of such an officer.
+                </P>
+                <P>
+                    <E T="03">Distinctive or fanciful name.</E>
+                     A descriptive name or phrase chosen to identify a malt beverage product on the label. It does not include a brand name, class or type designation, statement of composition, or designation known to the trade or consumers.
+                </P>
+                <P>
+                    <E T="03">FAA Act.</E>
+                     The Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Gallon.</E>
+                     A U.S. gallon of 231 cubic inches of malt beverages at 39.1 degrees Fahrenheit (4 degrees Celsius). All other liquid measures used are subdivisions of the gallon as defined.
+                </P>
+                <P>
+                    <E T="03">Interstate or foreign commerce.</E>
+                     Commerce between any State and any place outside of that State or commerce within the District of Columbia or commerce between points within the same State but through any place outside of that State.
+                </P>
+                <P>
+                    <E T="03">Keg collar.</E>
+                     A disk that is pushed down over the keg's bung or tap cover.
+                </P>
+                <P>
+                    <E T="03">Malt beverage.</E>
+                     A beverage made by the alcoholic fermentation of an infusion or decoction, or combination of both, in potable brewing water, of malted barley with hops, or their parts, or their products, and with or without other malted cereals, and with or without the addition of unmalted or prepared cereals, other carbohydrates or 
+                    <PRTPAGE P="112"/>
+                    products prepared therefrom, and with or without the addition of carbon dioxide, and with or without other wholesome products suitable for human food consumption. See § 7.5 for standards applying to the use of processing methods and flavors in malt beverage production.
+                </P>
+                <P>
+                    <E T="03">Net contents.</E>
+                     The amount, by volume, of a malt beverage held in a container.
+                </P>
+                <P>
+                    <E T="03">Permittee.</E>
+                     Any person holding a basic permit under the FAA Act.
+                </P>
+                <P>
+                    <E T="03">Person.</E>
+                     Any individual, corporation, partnership, association, joint-stock company, business trust, limited liability company, or other form of business enterprise, including a receiver, trustee, or liquidating agent and including an officer or employee of any agency of a State or political subdivision of a State.
+                </P>
+                <P>
+                    <E T="03">Responsible advertiser.</E>
+                     The permittee or brewer responsible for the publication or broadcast of an advertisement.
+                </P>
+                <P>
+                    <E T="03">State.</E>
+                     One of the 50 States of the United States, the District of Columbia, or the Commonwealth of Puerto Rico.
+                </P>
+                <P>
+                    <E T="03">Tap cover.</E>
+                     A cap, usually made of plastic, that fits over the top of the tap (or bung) of a keg.
+                </P>
+                <P>
+                    <E T="03">TTB.</E>
+                     The Alcohol and Tobacco Tax and Trade Bureau of the Department of the Treasury.
+                </P>
+                <P>
+                    <E T="03">United States (U.S.).</E>
+                     The 50 States, the District of Columbia, and the Commonwealth of Puerto Rico.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <P>The provisions of this part apply to the 50 States, the District of Columbia, and the Commonwealth of Puerto Rico.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.3</SECTNO>
+                <SUBJECT>General requirements and prohibitions under the FAA Act.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Certificates of label approval (COLAs).</E>
+                     Subject to the requirements and exceptions set forth in the regulations in subpart B of this part, any brewer or wholesaler who bottles malt beverages, and any person who removes malt beverages in containers from customs custody for sale or any other commercial purpose, is required to first obtain from TTB a certificate of label approval (COLA) covering the label(s) on each container.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Alteration, mutilation, destruction, obliteration, or removal of labels.</E>
+                     Subject to the requirements and exceptions set forth in the regulations in subpart C of this part, it is unlawful to alter, mutilate, destroy, obliterate, or remove labels on malt beverage containers. This prohibition applies to any person, including retailers, holding malt beverages for sale in interstate or foreign commerce or any person holding malt beverages for sale after shipment in interstate or foreign commerce.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Labeling requirements for malt beverages.</E>
+                     Subject to the jurisdictional limits of the FAA Act, as set forth in § 7.4, it is unlawful for any person engaged in business as a brewer, wholesaler, or importer of malt beverages, directly or indirectly, or through an affiliate, to sell or ship, or deliver for sale or shipment, or otherwise introduce or receive in interstate or foreign commerce, or remove from customs custody, any malt beverages in containers unless such containers are marked, branded, labeled, and packaged in conformity with the regulations in this part.
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Labeled in accordance with this part.</E>
+                     In order to be labeled in accordance with the regulations in this part, a container of malt beverages must be in compliance with the following requirements:
+                </P>
+                <P>(1) It must bear one or more labels meeting the standards for “labels” set forth in subpart D of this part;</P>
+                <P>(2) One or more of the labels on the container must include the mandatory information set forth in subpart E of this part;</P>
+                <P>(3) Claims on any label, container, or packaging (as defined in § 7.81) must comply with the rules for restricted label statements, as applicable, set forth in subpart F of this part;</P>
+                <P>(4) Statements or any other representations on any malt beverage label, container, or packaging (as defined in §§ 7.101 and 7.121) may not violate the regulations in subparts G and H of this part regarding certain practices on labeling of malt beverages; and</P>
+                <P>(5) The class and type designation on any label, as well as any designation appearing on containers or packaging, must comply with the standards for classes and types set forth in subpart I of this part.</P>
+            </SECTION>
+            <SECTION>
+                <PRTPAGE P="113"/>
+                <SECTNO>§ 7.4</SECTNO>
+                <SUBJECT>Jurisdictional limits of the FAA Act.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Malt beverages sold in interstate or foreign commerce</E>
+                    —(1) 
+                    <E T="03">General.</E>
+                     The labeling provisions of this part apply to malt beverages sold or shipped or delivered for shipment, or otherwise introduced into or received in any State from any place outside thereof, only to the extent that the laws or regulations of such State impose requirements similar to the requirements of the regulations in this part, with respect to the labels and labeling of malt beverages not sold or shipped or delivered for shipment or otherwise introduced into or received in such State from any place outside thereof.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Similar State law.</E>
+                     For purposes of this section, a “similar” State law may be found in State laws or regulations that apply specifically to malt beverages or in State laws or regulations that provide general labeling requirements that are not specific to malt beverages but that do apply to malt beverages. In order to be “similar” to the Federal requirements, the State requirements need not be identical to the Federal requirements. Nonetheless, if the label in question does not violate the laws or regulations of the State or States into which the brewer, wholesaler, or importer is shipping the malt beverages, it does not violate this part.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Malt beverages not sold in interstate or foreign commerce.</E>
+                     The labeling regulations in this part do not apply to domestically bottled malt beverages that are not and will not be sold, or offered for sale, or shipped or delivered for shipment, or otherwise introduced in interstate or foreign commerce.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.5</SECTNO>
+                <SUBJECT>Ingredients and processes.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Use of nonbeverage flavors and other nonbeverage ingredients containing alcohol.</E>
+                     (1) Nonbeverage flavors and other nonbeverage ingredients containing alcohol may be used in producing a malt beverage (sometimes referred to as a “flavored malt beverage”). Except as provided in paragraph (a)(2) of this section, no more than 49 percent of the overall alcohol content (determined without regard to any tolerance otherwise allowed by this part) of the finished product may be derived from the addition of nonbeverage flavors and other nonbeverage ingredients containing alcohol. For example, a finished malt beverage that contains 5.0 percent alcohol by volume must derive a minimum of 2.55 percent alcohol by volume from the fermentation of barley malt and other materials and may derive not more than 2.45 percent alcohol by volume from the addition of nonbeverage flavors and other nonbeverage ingredients containing alcohol.
+                </P>
+                <P>(2) In the case of malt beverages with an alcohol content of more than 6 percent by volume (determined without regard to any tolerance otherwise allowed by this part), no more than 1.5 percent of the volume of the malt beverage may consist of alcohol derived from added nonbeverage flavors and other nonbeverage ingredients containing alcohol.</P>
+                <P>
+                    (b) 
+                    <E T="03">Processing.</E>
+                     Malt beverages may be filtered or otherwise processed in order to remove color, taste, aroma, bitterness, or other characteristics derived from fermentation.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.6</SECTNO>
+                <SUBJECT>Brewery products not covered by this part.</SUBJECT>
+                <P>Certain fermented products that are regulated as “beer” under the Internal Revenue Code (IRC) do not fall within the definition of a “malt beverage” under the FAA Act and thus are not subject to this part. See § 7.7 for related TTB regulations that may apply to these products. See §§ 25.11 and 27.11 of this chapter for the definition of “beer” under the IRC.</P>
+                <P>
+                    (a) 
+                    <E T="03">Saké and similar products.</E>
+                     Saké and similar products (including products that fall within the definition of “beer” under parts 25 and 27 of this chapter) that fall within the definition of a “wine” under the FAA Act are covered by the labeling regulations for wine in 27 CFR part 4.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Other beers not made with both malted barley and hops.</E>
+                     The regulations in this part do not cover beer products that are not made with both malted barley and hops, or their parts or their products, or that do not fall within the definition of a “malt beverage” under § 7.1 for any other reason. Bottlers and importers of alcohol beverages that do not fall within the definition of malt beverages, wine, or distilled spirits 
+                    <PRTPAGE P="114"/>
+                    under the FAA Act should refer to the applicable labeling regulations for foods issued by the U.S. Food and Drug Administration. See 21 CFR part 101.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.7</SECTNO>
+                <SUBJECT>Other TTB labeling regulations that apply to malt beverages.</SUBJECT>
+                <P>In addition to the regulations in this part, malt beverages must also comply with the following TTB labeling regulations:</P>
+                <P>
+                    (a) 
+                    <E T="03">Health warning statement.</E>
+                     Alcoholic beverages, including malt beverages, that contain at least 0.5 percent alcohol by volume, must be labeled with a health warning statement in accordance with the Alcoholic Beverage Labeling Act of 1988 (ABLA). The regulations implementing the ABLA are contained in 27 CFR part 16.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Internal Revenue Code requirements.</E>
+                     The labeling and marking requirements for beer under the Internal Revenue Code are found in 27 CFR part 25, subpart J (for domestic breweries) and 27 CFR part 27, subpart E (for importers).
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.8</SECTNO>
+                <SUBJECT>Malt beverages for export.</SUBJECT>
+                <P>The regulations in this part shall not apply to malt beverages exported in bond.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.9</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.10</SECTNO>
+                <SUBJECT>Other related regulations.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">TTB regulations.</E>
+                     Other TTB regulations that relate to malt beverages are listed in paragraphs (a)(1) through (8) of this section:
+                </P>
+                <P>(1) 27 CFR part 1—Basic Permit Requirements Under the Federal Alcohol Administration Act, Nonindustrial Use of Distilled Spirits and Wine, Bulk Sales and Bottling of Distilled Spirits;</P>
+                <P>(2) 27 CFR part 13—Labeling Proceedings;</P>
+                <P>(3) 27 CFR part 16—Alcoholic Beverage Health Warning Statement;</P>
+                <P>(4) 27 CFR part 25—Beer;</P>
+                <P>(5) 27 CFR part 26—Liquors and Articles from Puerto Rico and the Virgin Islands;</P>
+                <P>(6) 27 CFR part 27—Importation of Distilled Spirits, Wines, and Beer;</P>
+                <P>(7) 27 CFR part 28—Exportation of Alcohol; and</P>
+                <P>(8) 27 CFR part 71—Rules of Practice in Permit Proceedings.</P>
+                <P>
+                    (b) 
+                    <E T="03">Other Federal regulations.</E>
+                     The regulations listed in paragraphs (b)(1) through (8) of this section issued by other Federal agencies also may apply:
+                </P>
+                <P>(1) 7 CFR part 205—National Organic Program;</P>
+                <P>(2) 19 CFR part 11—Packing and Stamping; Marking;</P>
+                <P>(3) 19 CFR part 102—Rules of Origin;</P>
+                <P>(4) 19 CFR part 134—Country of Origin Marking;</P>
+                <P>(5) 21 CFR part 1—General Enforcement Provisions, Subpart H, Registration of Food Facilities, and Subpart I, Prior Notice of Imported Food;</P>
+                <P>(6) 21 CFR parts 70-82, which pertain to food and color additives;</P>
+                <P>(7) 21 CFR part 110—Current Good Manufacturing Practice in Manufacturing, Packing, or Holding Human Food; and</P>
+                <P>(8) 21 CFR parts 170-189, which pertain to food additives and secondary direct food additives for human consumption.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.11</SECTNO>
+                <SUBJECT>Forms.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     TTB prescribes and makes available all forms required by this part. Any person completing a form must provide all of the information required by each form as indicated by the headings on the form and the instructions for the form. Each form must be filed in accordance with this part and the instructions for the form.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Electronically filing forms.</E>
+                     The forms required by this part can be filed electronically by using TTB's online filing systems: COLAs Online and Formulas Online. Anyone who intends to use one of these online filing systems must first register to use the system by accessing the TTB website at 
+                    <E T="03">https://www.ttb.gov.</E>
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Obtaining paper forms.</E>
+                     Forms required by this part are available for printing through the TTB website (
+                    <E T="03">https://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 8002, Cincinnati, OH 45202.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.12</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    Most of the regulatory authorities of the Administrator contained in this part are delegated to “appropriate TTB 
+                    <PRTPAGE P="115"/>
+                    officers.” To find out which officers have been delegated specific authorities, see the current version of TTB Order 1135.7, Delegation of the Administrator's Authorities in 27 CFR part 7, Labeling and Advertising of Malt Beverages. Copies of this order can be obtained by accessing the TTB website (
+                    <E T="03">https://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 8002, Cincinnati, OH 45202.
+                </P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart B—Certificates of Label Approval</HD>
+            <HD SOURCE="HD1">Requirements for Malt Beverages Bottled in the United States</HD>
+            <SECTION>
+                <SECTNO>§ 7.21</SECTNO>
+                <SUBJECT>Requirement for certificates of label approval (COLAs) for malt beverages bottled in the United States.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">COLA requirement.</E>
+                     Subject to the requirements and exceptions set forth in paragraphs (b) and (c) of this section, a brewer or wholesaler bottling malt beverages must obtain a certificate of label approval (COLA) covering the malt beverages from TTB prior to bottling the malt beverages or removing the malt beverages from the premises where they were bottled.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Malt beverages shipped or sold in interstate commerce.</E>
+                     Persons bottling malt beverages (other than malt beverages in customs custody) for shipment, or delivery for sale or shipment, into a State (from outside of that State) are required to obtain a COLA covering those malt beverages only if the laws or regulations of the State require that all malt beverages sold or otherwise disposed of in such State be labeled in conformity with the requirements of subparts D through I of this part. This requirement applies when the State has either adopted subparts D through I of this part in their entireties or has adopted requirements that are identical in effect to those set forth in subparts D through I of this part. In accordance with §§ 7.3 and 7.4, malt beverages that are not subject to the COLA requirements of this section may still be subject to the substantive labeling provisions of subparts D through I of this part to the extent that the State into which the malt beverages are being shipped has similar State laws or regulations.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Products not shipped or sold in interstate commerce.</E>
+                     Persons bottling malt beverages that will not be shipped or delivered for sale or shipment in interstate or foreign commerce are not required to obtain a COLA or a certificate of exemption from label approval. (Note: A certificate of exemption from label approval is a certificate issued by TTB to cover a wine or distilled spirits product that will not be sold, offered for sale, shipped, delivered for shipment, or otherwise introduced, in interstate or foreign commerce.)
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Evidence of COLA.</E>
+                     Upon request by the appropriate TTB officer, a bottler or importer must provide evidence of label approval for a label used on a container of malt beverages that is subject to the COLA requirements of this part. This requirement may be satisfied by providing original COLAs, photocopies, or electronic copies of COLAs, or records showing the TTB identification number assigned to the approved COLA.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.22</SECTNO>
+                <SUBJECT>Rules regarding certificates of label approval (COLAs) for malt beverages bottled in the United States.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">What a COLA authorizes.</E>
+                     An approved TTB Form 5100.31 authorizes the bottling of malt beverages covered by the certificate of label approval (COLA), as long as the container bears labels identical to the labels appearing on the face of the COLA, or labels with changes authorized by TTB on the COLA or otherwise, (such as through the issuance of public guidance available on the TTB website at 
+                    <E T="03">https://www.ttb.gov</E>
+                    ).
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">When to obtain a COLA.</E>
+                     The COLA must be obtained prior to bottling. No brewer or wholesaler may bottle malt beverages or remove malt beverages from the premises where bottled unless a COLA has been obtained.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Application for a COLA.</E>
+                     The bottler may apply for a COLA by submitting an application to TTB on Form 5100.31, in accordance with the instructions on the form. The bottler may apply for a COLA either electronically by accessing TTB's online system, 
+                    <PRTPAGE P="116"/>
+                    COLAs Online, at 
+                    <E T="03">https://www.ttb.gov,</E>
+                     or by submitting the paper form. For procedures regarding the issuance of COLAs, see part 13 of this chapter.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.23</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+                <HD SOURCE="HD1">Requirements for Malt Beverages Imported in Containers</HD>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.24</SECTNO>
+                <SUBJECT>Certificates of label approval (COLAs) for malt beverages imported in containers.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Application requirement.</E>
+                     Any person removing malt beverages in containers from customs custody for consumption must first apply for and obtain a certificate of label approval (COLA) covering the malt beverages from the appropriate TTB officer, or obtain authorization to use the COLA from the person to whom the COLA is issued.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Release of malt beverages from customs custody.</E>
+                     Malt beverages, imported in containers, are not eligible for release from customs custody for consumption, and no person may remove such malt beverages from customs custody for consumption, unless the person removing the malt beverages has obtained a COLA covering the malt beverages and is able to provide it (either electronically or on paper) upon request. Products imported under another person's COLA are eligible for release only if each bottle or individual container to be imported bears the name (or trade name) and address of the person to whom the COLA was issued by TTB, and only if the importer using the COLA to obtain release of a shipment can substantiate that the person to whom the COLA was issued has authorized its use by the importer.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Filing requirements.</E>
+                     If filing electronically, the importer must file with U.S Customs and Border Protection (CBP), at the time of filing the customs entry, the TTB-assigned identification number of the valid COLA that corresponds to the label on the product or lot of malt beverages being imported. If the importer is not filing electronically, the importer must provide a copy of the COLA to CBP at the time of entry. In addition, the importer must provide a copy of the applicable COLA, and proof of the COLA holder's authorization if applicable, upon request by the appropriate TTB officer or a customs officer.
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Evidence of COLA.</E>
+                     Upon request by the appropriate TTB officer, an importer must provide evidence of label approval for a label used on a container of malt beverages that is subject to the COLA requirements of this part. This requirement may be satisfied by providing original COLAs, photocopies, or electronic copies of COLAs, or records showing the TTB identification number assigned to the approved COLA.
+                </P>
+                <P>
+                    (e) 
+                    <E T="03">Scope of this section.</E>
+                     The COLA requirement imposed by this section applies only to malt beverages that are removed for sale or any other commercial purpose. See 27 CFR 27.49, 27.74, and 27.75 for labeling exemptions applicable to certain imported samples of malt beverages.
+                </P>
+                <P>
+                    (f) 
+                    <E T="03">Relabeling in customs custody.</E>
+                     Containers of malt beverages in customs custody that are required to be covered by a COLA but are not labeled in conformity with a COLA must be relabeled, under the supervision and direction of customs officers, prior to their removal from customs custody for consumption.
+                </P>
+                <P>
+                    (g) 
+                    <E T="03">State law.</E>
+                     Paragraphs (a) through (c) of this section apply only if the laws or regulations of the State in which the malt beverages are withdrawn require that all malt beverages sold or otherwise disposed of in such State be labeled in conformity with the requirements of subparts D through I of this part. A State requires that malt beverages be labeled in conformity with the requirements of subparts D through I of this part when the State has either adopted subparts D through I of this part in their entireties or has adopted requirements identical in effect to those set forth in subparts D through I in this part. In accordance with §§ 7.3 and 7.4, malt beverages that are not subject to the COLA requirements of this section may still be subject to the substantive labeling provisions of subparts D through I of this part to the extent that the State into which the malt beverages are being shipped has similar State law or regulation.
+                </P>
+            </SECTION>
+            <SECTION>
+                <PRTPAGE P="117"/>
+                <SECTNO>§ 7.25</SECTNO>
+                <SUBJECT>Rules regarding certificates of label approval (COLAs) for malt beverages imported in containers.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">What a COLA authorizes.</E>
+                     An approved TTB Form 5100.31 authorizes the use of the labels covered by the certificate of label approval (COLA) on containers of malt beverages, as long as the container bears labels identical to the labels appearing on the face of the COLA, or labels with changes authorized by the form or otherwise authorized by TTB (such as through the issuance of public guidance available on the TTB website at 
+                    <E T="03">https://www.ttb.gov</E>
+                    ).
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">When to obtain a COLA.</E>
+                     The COLA must be obtained prior to the removal of malt beverages in containers from customs custody for consumption.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Application for a COLA.</E>
+                     The person responsible for the importation of malt beverages must obtain approval of the labels by submitting an application to TTB on Form 5100.31. A person may apply for a COLA either electronically by accessing TTB's online system, COLAs Online, at 
+                    <E T="03">https://www.ttb.gov</E>
+                     or by submitting the paper form. For procedures regarding the issuance of COLAs, see part 13 of this chapter.
+                </P>
+                <HD SOURCE="HD1">Administrative Rules</HD>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.27</SECTNO>
+                <SUBJECT>Presenting certificates of label approval (COLAs) to Government officials.</SUBJECT>
+                <P>A certificate holder must present the original or a paper or electronic copy of the appropriate certificate of label approval (COLA) upon the request of any duly authorized representative of the United States Government.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.28</SECTNO>
+                <SUBJECT>Formulas, samples, and documentation.</SUBJECT>
+                <P>(a) Prior to or in conjunction with the review of an application for a certificate of label approval (COLA) on TTB Form 5100.31, the appropriate TTB officer may require a bottler or importer to submit a formula, the results of laboratory testing of the malt beverage, or a sample of any malt beverage or ingredients used in producing a malt beverage. After the issuance of a COLA, or with regard to any malt beverage required to be covered by a COLA, the appropriate TTB officer may require a full and accurate statement of the contents of the container.</P>
+                <P>(b) A formula may be filed electronically by using Formulas Online, or it may be submitted on paper on TTB Form 5100.51. See § 7.11 for more information on forms and Formulas Online.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.29</SECTNO>
+                <SUBJECT>Personalized labels.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Applicants for label approval may obtain permission from TTB to make certain changes in order to personalize labels without having to resubmit labels for TTB approval. A personalized label is an alcohol beverage label that meets the minimum mandatory label requirements and is customized for customers. Personalized labels may contain a personal message, picture, or other artwork that is specific to the consumer who is purchasing the product. For example, a brewer may offer individual or corporate customers labels that commemorate an event such as a wedding or grand opening.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Application.</E>
+                     Any person who intends to offer personalized labels must submit a template for the personalized label as part of the application for label approval required under §§ 7.21 or 7.24, and must note on the application a description of the specific personalized information that may change.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Approval of personalized label.</E>
+                     If the application complies with the regulations, TTB will issue a certificate of label approval (COLA) with a qualification allowing the personalization of labels. The qualification will allow the certificate holder to add or change items on the personalized label such as salutations, names, graphics, artwork, congratulatory dates and names, or event dates without applying for a new COLA. All of these items on personalized labels must comply with the regulations of this part.
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Changes not allowed to personalized labels.</E>
+                     Approval of an application to personalize labels does not authorize the addition of any information that discusses either the alcohol beverage or characteristics of the alcohol beverage or that is inconsistent with or in violation of the provisions of this part or any other applicable provision of law or regulations.
+                </P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <PRTPAGE P="118"/>
+            <HD SOURCE="HED">Subpart C—Alteration of Labels, Relabeling, and Adding Information to Containers</HD>
+            <SECTION>
+                <SECTNO>§ 7.41</SECTNO>
+                <SUBJECT>Alteration of labels.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Prohibition.</E>
+                     It is unlawful for any person to alter, mutilate, destroy, obliterate or remove any mark, brand, or label on malt beverages in containers held for sale in interstate or foreign commerce, or held for sale after shipment in interstate or foreign commerce, except as authorized by §§ 7.42, 7.43, or 7.44, or as otherwise authorized by Federal law.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Authorized relabeling.</E>
+                     For purposes of the relabeling activities authorized by this subpart, the term “relabel” includes the alteration, mutilation, destruction, obliteration, or removal of any existing mark, brand, or label on the container, as well as the addition of a new label (such as a sticker that adds information about the product or information engraved on the container) to the container, and the replacement of a label with a new label bearing identical information.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Obligation to comply with other requirements.</E>
+                     Authorization to relabel under this subpart:
+                </P>
+                <P>(1) In no way authorizes the placement of labels on containers that do not accurately reflect the brand, bottler, identity, or other characteristics of the product;</P>
+                <P>(2) Does not relieve the person conducting the relabeling operations from any obligation to comply with the regulations in this part and with State or local law: and,</P>
+                <P>(3) Does not relieve the person conducting the relabeling operations from any obligation to obtain permission from the owner of the brand where otherwise required.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.42</SECTNO>
+                <SUBJECT>Authorized relabeling activities by brewers and importers.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Relabeling at brewery premises.</E>
+                     A brewer may relabel domestically bottled malt beverages prior to removal from, and after return to bond at, the brewery premises, with labels covered by a certificate of label approval (COLA) without obtaining separate permission from TTB for the relabeling activity, provided that the brewer is the certificate holder (and bottler).
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Relabeling after removal from brewery premises.</E>
+                     A brewer may relabel domestically bottled malt beverages (or direct the relabeling of such malt beverages by an authorized agent) after removal from brewery premises with labels covered by a COLA, without obtaining separate permission from TTB for the relabeling activity, provided that the brewer is the certificate holder (and bottler).
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Relabeling in customs custody.</E>
+                     Under the supervision of U.S. customs officers, imported malt beverages in containers in customs custody may be relabeled without obtaining separate permission from TTB for the relabeling activity. Such containers must bear labels covered by a certificate of label approval (COLA) upon their removal from customs custody for consumption. See § 7.24(b).
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Relabeling after removal from customs custody.</E>
+                     The importer of malt beverages in containers may relabel such malt beverages (or direct the relabeling of such malt beverages by an authorized agent) after removal from customs custody without obtaining separate permission from TTB for the relabeling activity, as long as the labels are covered by a COLA.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.43</SECTNO>
+                <SUBJECT>Relabeling activities that require separate written authorization from TTB.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Any permittee or brewer holding malt beverages for sale who needs to relabel the containers but is not the original bottler may apply for written permission for the relabeling of malt beverage containers. The appropriate TTB officer may permit relabeling of malt beverages in containers if the facts show that the relabeling is for the purpose of compliance with the requirements of this part or State law, or for the purpose of replacing damaged labels.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Application.</E>
+                     The written application must include:
+                </P>
+                <P>(1) Copies of the original and proposed new labels;</P>
+                <P>(2) The circumstances of the request, including the reason for relabeling;</P>
+                <P>(3) The number of containers to be relabeled;</P>
+                <P>
+                    (4) The location where the relabeling will take place; and,
+                    <PRTPAGE P="119"/>
+                </P>
+                <P>(5) The name and address of the person who will be conducting the relabeling operations.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.44</SECTNO>
+                <SUBJECT>Adding a label or other information to a container that identifies the wholesaler, retailer, or consumer.</SUBJECT>
+                <P>Any label or other information that identifies the wholesaler, retailer, or consumer of the malt beverage may be added to containers (by the addition of stickers, engraving, stenciling, etc.) without prior approval from TTB and without being covered by a certificate of label approval. Such information may be added before or after the containers are removed from brewery premises or released from customs custody. The information added:</P>
+                <P>(a) May not violate the provisions of subparts F, G, and H of this part;</P>
+                <P>(b) May not contain any reference to the characteristics of the product; and</P>
+                <P>(c) May not be added to the container in such a way that it obscures any other label on the container.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—Label Standards</HD>
+            <SECTION>
+                <SECTNO>§ 7.51</SECTNO>
+                <SUBJECT>Requirement for firmly affixed labels.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General rule.</E>
+                     Except as otherwise provided in paragraph (b) of this section, any label that is not an integral part of the container must be affixed to the container in such a way that it cannot be removed without thorough application of water or other solvents.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Exception for keg labels.</E>
+                     The following provisions apply to labels on kegs with a capacity of 5.16 gallons or more that bear mandatory information, as defined by § 7.61(a)(5), and are in the form of a keg collar or tap cover, as defined in § 7.1.
+                </P>
+                <P>(1) Such keg collars or tap covers are considered to be firmly affixed if removal would break or destroy the keg collar or tap cover in such a way that it cannot be reused.</P>
+                <P>(2) Such keg collars or tap covers are not required to be firmly affixed, provided that the name of the bottler or importer of the malt beverage, as applicable under §§ 7.66-7.68, is permanently or semi-permanently stated on the keg in the form of embossing, engraving, stamping, or through the use of a sticker or ink jet method.</P>
+                <P>(c) This section in no way affects the requirements of part 16 of this chapter regarding the mandatory health warning statement.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.52</SECTNO>
+                <SUBJECT>Legibility and other requirements for mandatory information on labels.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Readily legible.</E>
+                     Mandatory information on labels must be readily legible to potential consumers under ordinary conditions.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Separate and apart.</E>
+                     Subject to the exceptions below, mandatory information on labels, except brand names, must be separate and apart from any additional information.
+                </P>
+                <P>(1) This does not preclude the addition of brief optional phrases of additional information as part of the class or type designation (such as “premium malt beverage”), the name and address statement (such as “Proudly brewed and bottled by ABC Brewing Co. in Pittsburgh, PA, for over 30 years”), or other information required by § 7.63(a). The statements required by § 7.63(b) may not include additional information.</P>
+                <P>(2) Mandatory information (other than an aspartame declaration required by § 7.63(b)(4)) may be contained among other descriptive or explanatory information if the script, type, or printing of the mandatory information is substantially more conspicuous than that of the descriptive or explanatory information.</P>
+                <P>
+                    (c) 
+                    <E T="03">Contrasting background.</E>
+                     Mandatory information must appear in a color that contrasts with the background on which it appears, except that if the net contents or the name and address are blown into a glass container, they need not be contrasting. The color of the container and of the malt beverages must be taken into account if the label is transparent or if mandatory label information is etched, engraved, sandblasted, or otherwise carved into the surface of the container or is branded, stenciled, painted, printed, or otherwise directly applied on to the surface of the container. Examples of acceptable contrasts are:
+                </P>
+                <P>
+                    (1) Black lettering appearing on a white or cream background; or
+                    <PRTPAGE P="120"/>
+                </P>
+                <P>(2) White or cream lettering appearing on a black background.</P>
+                <P>
+                    (d) 
+                    <E T="03">Capitalization.</E>
+                     Except for the aspartame statement when required by § 7.63(b)(4), which must appear in all capital letters, mandatory information may appear in all capital letters, in all lower case letters, or in mixed-case using both capital and lower-case letters.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.53</SECTNO>
+                <SUBJECT>Type size of mandatory information and alcohol content statements.</SUBJECT>
+                <P>(a) All capital and lowercase letters in statements of mandatory information on labels must meet the following type size requirements.</P>
+                <P>
+                    (1) 
+                    <E T="03">Minimum type size</E>
+                    —
+                    <E T="03">Containers of more than one-half pint.</E>
+                     All mandatory information (including an alcohol content statement required by § 7.63(a)(3)) must be in script, type, or printing that is at least two millimeters in height.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Minimum type size</E>
+                    —
+                    <E T="03">Containers of one-half pint or less.</E>
+                     All mandatory information (including an alcohol content statement required by § 7.63(a)(3)) must be in script, type, or printing that is at least one millimeter in height.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Maximum type size for mandatory and optional alcohol content statements</E>
+                    —(1) 
+                    <E T="03">Containers of more than 40 fluid ounces.</E>
+                     An alcohol content statement, whether required or optional under this part, may not appear in script, type, or printing that is more than four millimeters in height on containers of malt beverages of more than 40 fluid ounces.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Containers of 40 fluid ounces or less.</E>
+                     An alcohol content statement, whether required or optional under this part, may not appear in script, type, or printing that is more than three millimeters in height on containers of malt beverages of 40 fluid ounces or less.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.54</SECTNO>
+                <SUBJECT>Visibility of mandatory information.</SUBJECT>
+                <P>Mandatory information on a label must be readily visible and may not be covered or obscured in whole or in part. See § 7.62 for rules regarding packaging of containers (including cartons, coverings, and cases). See subpart N of this part for regulations pertaining to advertising materials.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.55</SECTNO>
+                <SUBJECT>Language requirements.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Mandatory information must appear in the English language, with the exception of the brand name and except as provided in paragraph (c) of this section.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Foreign languages.</E>
+                     Additional statements in a foreign language, including translations of mandatory information that appears elsewhere in English on the label, are allowed on labels and containers as long as they do not in any way conflict with, or contradict, the requirements of this part.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Malt beverages for consumption in the Commonwealth of Puerto Rico.</E>
+                     Mandatory information may be stated solely in the Spanish language on labels of malt beverages bottled for consumption within the Commonwealth of Puerto Rico.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.56</SECTNO>
+                <SUBJECT>Additional information.</SUBJECT>
+                <P>Information (other than mandatory information) that is truthful, accurate, and specific, and that does not violate subpart F, G, or H of this part, may appear on labels. Such additional information may not conflict with, modify, qualify or restrict mandatory information in any manner.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart E—Mandatory Label Information</HD>
+            <SECTION>
+                <SECTNO>§ 7.61</SECTNO>
+                <SUBJECT>What constitutes a label for purposes of mandatory information.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Label.</E>
+                     Certain information, as outlined in § 7.63, must appear on a label. When used in this part for purposes of determining where mandatory information must appear, the term “label” includes:
+                </P>
+                <P>(1) Material affixed to the container, whether made of paper, plastic, metal, or other matter;</P>
+                <P>(2) For purposes of the net contents statement and the name and address statement only, information blown, embossed, or molded into the container as part of the process of manufacturing the container;</P>
+                <P>(3) Information etched, engraved, sandblasted, or otherwise carved into the surface of the container;</P>
+                <P>
+                    (4) Information branded, stenciled, painted, printed, or otherwise directly 
+                    <PRTPAGE P="121"/>
+                    applied on to the surface of the container; and
+                </P>
+                <P>(5) Information on a keg collar or a tap cover of a keg, only if it includes mandatory information that is not repeated elsewhere on a label firmly affixed to the container and only if it meets the requirements of § 7.51.</P>
+                <P>
+                    (b) 
+                    <E T="03">Information appearing elsewhere on the container.</E>
+                     Information appearing on the following parts of the container is subject to all of the restrictions and prohibitions set forth in subparts F, G, and H of this part, but will not satisfy any requirements in this part for mandatory information that must appear on labels:
+                </P>
+                <P>(1) Material affixed to, or information appearing on, the bottom surface of the container;</P>
+                <P>(2) Caps, corks, or other closures unless authorized to bear mandatory information by the appropriate TTB officer; and</P>
+                <P>(3) Foil or heat shrink bottle capsules.</P>
+                <P>
+                    (c) 
+                    <E T="03">Materials not firmly affixed to the container.</E>
+                     Any materials that accompany the container to the consumer but are not firmly affixed to the container, including booklets, leaflets, and hang tags, are not “labels” for purposes of this part. Such materials are instead subject to the advertising regulations in subpart N of this part.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.62</SECTNO>
+                <SUBJECT>Packaging (cartons, coverings, and cases).</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The term “packaging” includes any covering, carton, case, carrier, or other packaging of malt beverage containers used for sale at retail, but does not include shipping cartons or cases that are not intended to accompany the container to the consumer.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Prohibition.</E>
+                     Any packaging of malt beverage containers may not contain any statement, design, device, or graphic, pictorial, or emblematic representation that is prohibited on labels by regulations in subpart F, G, or H of this part.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Other information on packaging.</E>
+                     The following requirements apply to optional information on packaging.
+                </P>
+                <P>(1) The packaging may display any information that is not in conflict with the labeling on the container or containers within the packaging.</P>
+                <P>(2) If the packaging displays a brand name, it must display the brand name in its entirety. For example, if a brand name is required to be modified with additional information on the container or containers within the packaging, the packaging must also display the same modifying language.</P>
+                <P>(3) If the packaging displays a class or type designation it must be identical to the class or type designation appearing on the container or containers within the packaging. For example, if the packaging displays a class or type designation for a specialty product for which a statement of composition is required on the container, the packaging must include the statement of composition as well.</P>
+                <P>
+                    (d) 
+                    <E T="03">Labeling of containers within the packaging.</E>
+                     The container or containers within the packaging are subject to all labeling requirements of this part, including mandatory labeling information requirements, regardless of whether the packaging bears such information.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.63</SECTNO>
+                <SUBJECT>Mandatory label information.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Mandatory information.</E>
+                     Malt beverage containers must bear a label or labels (as defined in § 7.61(a)) containing the following information:
+                </P>
+                <P>(1) Brand name, in accordance with § 7.64;</P>
+                <P>(2) Class, type, or other designation, in accordance with subpart I of this part;</P>
+                <P>(3) Alcohol content, in accordance with § 7.65, for malt beverages that contain any alcohol derived from added nonbeverage flavors or other added nonbeverage ingredients (other than hops extract) containing alcohol;</P>
+                <P>(4) Name and address of the bottler or importer (which may be blown, embossed, or molded into the container as part of the process of manufacturing the container), in accordance with § 7.66, 7.67, or 7.68, as applicable; and</P>
+                <P>(5) Net contents (which may be blown, embossed, or molded into the container as part of the process of manufacturing the container), in accordance with § 7.70.</P>
+                <P>
+                    (b) 
+                    <E T="03">Disclosure of certain ingredients.</E>
+                     Certain ingredients must be declared 
+                    <PRTPAGE P="122"/>
+                    on a label without the inclusion of any additional information as part of the statement as follows:
+                </P>
+                <P>
+                    (1) 
+                    <E T="03">FD&amp;C Yellow No. 5.</E>
+                     If a malt beverage contains the coloring material FD&amp;C Yellow No. 5, the label must include a statement to that effect, such as “FD&amp;C Yellow No. 5” or “Contains FD&amp;C Yellow No. 5.”
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Cochineal extract or carmine.</E>
+                     If a malt beverage contains the color additive cochineal extract or the color additive carmine, the label must include a statement to that effect, using the respective common or usual name (such as, “contains cochineal extract” or “contains carmine”). This requirement applies to labels when either of the coloring materials is used in a malt beverage that is removed from bottling premises or from customs custody on or after April 16, 2013.
+                </P>
+                <P>
+                    (3) 
+                    <E T="03">Sulfites.</E>
+                     If a malt beverage contains 10 or more parts per million of sulfur dioxide or other sulfiting agent(s) measured as total sulfur dioxide, the label must include a statement to that effect. Examples of acceptable statements are “Contains sulfites” or “Contains (a) sulfiting agent(s)” or a statement identifying the specific sulfiting agent. The alternative terms “sulphites” or “sulphiting” may be used.
+                </P>
+                <P>
+                    (4) 
+                    <E T="03">Aspartame.</E>
+                     If the malt beverage contains aspartame, the label must include the following statement, in capital letters, separate and apart from all other information: “PHENYLKETONURICS: CONTAINS PHENYLALANINE.”
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.64</SECTNO>
+                <SUBJECT>Brand name.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Requirement.</E>
+                     The malt beverage label must include a brand name. If the malt beverage is not sold under a brand name, then the name of the bottler or importer, as applicable, appearing in the name and address statement is treated as the brand name.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Misleading brand names.</E>
+                     Labels may not include any misleading brand names. A brand name is misleading if it creates (by itself or in association with other printed or graphic matter) any erroneous impression or inference as to the age, origin, identity, or other characteristics of the malt beverage. A brand name that would otherwise be misleading may be qualified with the word “brand” or with some other qualification if the appropriate TTB officer determines that the qualification dispels any misleading impression that might otherwise be created.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.65</SECTNO>
+                <SUBJECT>Alcohol content.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Alcohol content and the percentage and quantity of the original gravity or extract may be stated on any malt beverage label, unless prohibited by State law. When alcohol content is stated, and the manner of statement is not required under State law, it must be stated as prescribed in paragraph (b) of this section.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">How the alcohol content must be expressed.</E>
+                     The following rules apply to both mandatory and optional statements of alcohol content.
+                </P>
+                <P>(1) A statement of alcohol content must be expressed as a percentage of alcohol by volume. Other truthful, accurate, and specific factual representations of alcohol content, such as alcohol by weight, may be made, as long as they appear together with, and as part of, the statement of alcohol content as a percentage of alcohol by volume.</P>
+                <P>(2) For malt beverages containing one half of one percent (0.5 percent) or more alcohol by volume, statements of alcohol content must be expressed to the nearest one-tenth of a percentage point, subject to the tolerance permitted by paragraph (c) of this section. For malt beverages containing less than 0.5 percent alcohol by volume, alcohol content may be expressed either to the nearest one-tenth or the nearest one-hundredth of a percentage point, and such statements are not subject to any tolerance. See paragraph (e) of this section for the rules applicable to such statements.</P>
+                <P>(3)(i) The alcohol content statement must be expressed in one of the following formats:</P>
+                <P>(A) “Alcohol percent by volume”;</P>
+                <P>(B) “percent alcohol by volume”; or</P>
+                <P>(C) “Alcohol by volume: percent.”</P>
+                <P>
+                    (ii) Any of the words or symbols may be enclosed in parentheses and authorized abbreviations may be used with or without a period. The alcohol content statement does not have to appear with quotation marks.
+                    <PRTPAGE P="123"/>
+                </P>
+                <P>(4) The statements listed in paragraph (b)(3) of this section must appear as shown, except that the following abbreviations may be used: Alcohol may be abbreviated as “alc”; percent may be represented by the percent symbol “%”; alcohol and volume may be separated by a slash “/” in lieu of the word “by”; and volume may be abbreviated as “vol”.</P>
+                <P>
+                    (5) 
+                    <E T="03">Examples.</E>
+                     The following are examples of alcohol content statements that comply with the requirements of this part:
+                </P>
+                <P>(i) “4.2% alc/vol”;</P>
+                <P>(ii) “Alc. 4.0 percent by vol.”;</P>
+                <P>(iii) “Alc 4% by vol”; and</P>
+                <P>(iv) “5.9% Alcohol by Volume.”</P>
+                <P>
+                    (c) 
+                    <E T="03">Tolerances.</E>
+                     Except as provided by paragraph (d) of this section, a tolerance of 0.3 percentage points will be permitted, either above or below the stated alcohol content, for malt beverages containing 0.5 percent or more alcohol by volume. However, any malt beverage that is labeled as containing 0.5 percent or more alcohol by volume may not contain less than 0.5 percent alcohol by volume, regardless of any tolerance. The tolerance provided by this paragraph does not apply in determining compliance with the provisions of § 7.5 regarding the percentage of alcohol derived from added nonbeverage flavors and other nonbeverage ingredients containing alcohol.
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Low alcohol and reduced alcohol.</E>
+                     The terms “low alcohol” or “reduced alcohol” may be used only on labels of malt beverages containing less than 2.5 percent alcohol by volume. The actual alcohol content may not equal or exceed 2.5 percent alcohol by volume, regardless of any tolerance permitted by paragraph (c) of this section.
+                </P>
+                <P>
+                    (e) 
+                    <E T="03">Non-alcoholic.</E>
+                     The term “non-alcoholic” may be used on labels of malt beverages only if the statement “contains less than 0.5 percent (or .5%) alcohol by volume” appears immediately adjacent to it, in readily legible printing, and on a completely contrasting background. No tolerances are permitted for malt beverages labeled as “non-alcoholic” and containing less than 0.5 percent alcohol by volume. A malt beverage may not be labeled with an alcohol content of 0.0 percent alcohol by volume, unless it is also labeled as “alcohol free” in accordance with paragraph (f) of this section, and contains no alcohol.
+                </P>
+                <P>
+                    (f) 
+                    <E T="03">Alcohol free.</E>
+                     The term “alcohol free” may be used only on malt beverages containing no alcohol. No tolerances are permitted for “alcohol free” malt beverages.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.66</SECTNO>
+                <SUBJECT>Name and address for domestically bottled malt beverages that were wholly fermented in the United States.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Domestically bottled malt beverages that were wholly fermented in the United States and contain no imported malt beverages must be labeled in accordance with this section. (See §§ 7.67 and 7.68 for name and address requirements applicable to malt beverages that are not wholly fermented in the United States.)
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Mandatory statement.</E>
+                     A label on the container must state the name and address of the bottler, in accordance with the rules set forth in this section.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Form of address.</E>
+                     The address consists of the city and State and must be consistent with the information reflected on the brewer's notice required under part 25 of this chapter. Addresses may, but are not required to, include additional information such as street names, counties, zip codes, phone numbers, and website addresses. The postal abbreviation of the State name may be used; for example, California may be abbreviated as CA.
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Optional statements.</E>
+                     The bottler may, but is not required to, be identified by a phrase describing the function performed by that person, such as “bottled by,” “canned by,” “packed by,” or “filled by,” followed by the name and address of the bottler. If one person performs more than one function, the label may so indicate (for example, “brewed and bottled by XYZ Brewery.”) If different functions are performed by more than one person, statements on the label may not create the misleading impression that the different functions were performed by the same person. The appropriate TTB officer may require specific information about the functions performed if necessary to prevent a misleading impression on the label.
+                    <PRTPAGE P="124"/>
+                </P>
+                <P>
+                    (e) 
+                    <E T="03">Principal place of business.</E>
+                     The bottler's principal place of business may be shown in lieu of the actual place where the malt beverage was bottled if the address shown is a location where a bottling operation takes place. The appropriate TTB officer may disapprove the listing of a principal place of business if its use would create a false or misleading impression as to the geographic origin of the malt beverage. See 27 CFR 25.141 and 25.142 for coding requirements applicable in these circumstances.
+                </P>
+                <P>
+                    (f) 
+                    <E T="03">Multiple breweries under the same ownership.</E>
+                     If two or more breweries are owned or operated by the same person, the place where the malt beverage is bottled within the meaning of paragraph (a) of this section may be shown in one of the following two ways:
+                </P>
+                <P>
+                    (1) 
+                    <E T="03">Listing of where bottled.</E>
+                     The place where the malt beverage is bottled may be shown as the only location on the label; or
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Listing of all brewer's locations.</E>
+                     The place where the malt beverage is bottled may appear in a listing of the locations of breweries owned by that person if the place of bottling is not given less emphasis than any of the other locations. See 27 CFR 25.141 and 25.142 for coding requirements applicable in these circumstances.
+                </P>
+                <P>
+                    (g) 
+                    <E T="03">Malt beverages bottled for another person.</E>
+                     (1) If malt beverages are bottled for another person, the label may state, in addition to (but not in lieu of) the name and address of the bottler, the name and address of such other person, immediately preceded by the words “brewed and bottled for” or “bottled for” or another similar appropriate phrase. Such statements must clearly indicate the relationship between the two persons (for example, contract brewing).
+                </P>
+                <P>(2) If the same brand of malt beverage is brewed and bottled by two or more breweries that are not under the same ownership, the label for each brewery may set forth all the locations where bottling takes place, as long as the label uses the actual location (and not the principal place of business) and as long as the nature of the arrangement is clearly set forth.</P>
+                <P>
+                    (h) 
+                    <E T="03">Use of trade names.</E>
+                     The name of the person appearing on the label may be the trade name or the operating name, as long as it is identical to a trade or operating name appearing on the brewer's notice.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.67</SECTNO>
+                <SUBJECT>Name and address for domestically bottled malt beverages that were bottled after importation.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     This section applies to domestically bottled malt beverages that were bottled after importation. See § 7.68 for name and address requirements applicable to imported malt beverages that are imported in a container. See 19 CFR parts 102 and 134 for U.S. Customs and Border Protection country of origin marking requirements.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Malt beverages that were subject to blending or other production activities after importation.</E>
+                     Malt beverages that were subject, after importation, to blending or other production may not bear an “imported by” statement on the label, but must instead be labeled in accordance with the rules set forth in § 7.66 with regard to mandatory and optional labeling statements.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Malt beverages bottled after importation without blending or other production activities.</E>
+                     The label on malt beverages that are bottled without being subject to blending or other production activities in the United States after the malt beverages were imported must state the words “imported by” or a similar appropriate phrase, followed by the name and address of the importer. The label must also state the words “bottled by” or “packed by,” followed by the name and address of the bottler, except that the following phrases are acceptable in lieu of the name and address of the bottler under the circumstances set forth below:
+                </P>
+                <P>(1) If the malt beverages were bottled for the person responsible for the importation, the words “imported and bottled (canned, packed or filled) in the United States for” (or a similar appropriate phrase) followed by the name and address of the principal place of business in the United States of the person responsible for the importation;</P>
+                <P>
+                    (2) If the malt beverages were bottled by the person responsible for the importation, the words “imported and bottled (canned, packed or filled) in the 
+                    <PRTPAGE P="125"/>
+                    United States by” (or a similar appropriate phrase) followed by the name and address of the principal place of business in the United States of the person responsible for the importation;
+                </P>
+                <P>(3) In the situations set forth in paragraphs (c)(1) and (2) of this section, the address shown on the label may be that of the principal place of business of the importer who is also the bottler, provided that the address shown is a location where bottling takes place.</P>
+                <P>
+                    (d) 
+                    <E T="03">Use of trade names.</E>
+                     A trade name may be used if the trade name is listed on the importer's basic permit.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.68</SECTNO>
+                <SUBJECT>Name and address for malt beverages that are imported in a container.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     This section applies to malt beverages that are imported in a container, as defined in § 7.1. See § 7.67 for rules regarding name and address requirements applicable to malt beverages that are domestically bottled after importation. See 19 CFR parts 102 and 134 for U.S. Customs and Border Protection country of origin marking requirements.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Mandatory labeling statement.</E>
+                     The label on malt beverages imported in containers, as defined in § 7.1, must state the words “imported by” or a similar appropriate phrase, followed by the name and address of the importer.
+                </P>
+                <P>(1) For purposes of this section, the importer is the holder of the importer's basic permit that either makes the original customs entry or is the person for whom such entry is made, or the holder of the importer's basic permit that is the agent, distributor, or franchise holder for the particular brand of imported alcohol beverages and that places the order abroad.</P>
+                <P>(2) The address of the importer must be stated as the city and State of the principal place of business and must be consistent with the address reflected on the importer's basic permit. Addresses may, but are not required to, include additional information such as street names, counties, zip codes, phone numbers, and website addresses. The postal abbreviation of the State name may be used; for example, California may be abbreviated as CA.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.69</SECTNO>
+                <SUBJECT>Country of origin.</SUBJECT>
+                <P>For U.S. Customs and Border Protection (CBP) rules regarding country of origin marking requirements, see the CBP regulations at 19 CFR parts 102 and 134.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.70</SECTNO>
+                <SUBJECT>Net contents.</SUBJECT>
+                <P>The following rules apply to the net contents statement required by § 7.63.</P>
+                <P>(a) The volume of malt beverage in the container must appear on a label as a net contents statement using the following measures:</P>
+                <P>(1) If less than one pint, the net contents must be stated in fluid ounces or fractions of a pint.</P>
+                <P>(2) If one pint, one quart, or one gallon, the net contents must be so stated.</P>
+                <P>(3) If more than one pint, but less than one quart, the net contents must be stated in fractions of a quart, or in pints and fluid ounces.</P>
+                <P>(4) If more than one quart, but less than one gallon, the net contents must be stated in fractions of a gallon, or in quarts, pints, and fluid ounces.</P>
+                <P>(5) If more than one gallon, the net contents must be stated in gallons and fractions thereof.</P>
+                <P>(b) All fractions must be expressed in their lowest denominations.</P>
+                <P>(c) Metric measures may be used in addition to, but not in lieu of, the U.S. customary units of measurement and must appear in the same field of vision.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart F—Restricted Labeling Statements</HD>
+            <SECTION>
+                <SECTNO>§ 7.81</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Application.</E>
+                     The labeling practices, statements, and representations in this subpart may be used on malt beverage labels only when used in compliance with this subpart. In addition, if any of the practices, statements, or representations in this subpart are used elsewhere on containers or in packaging, they must comply with the requirements of this subpart. For purposes of this subpart:
+                </P>
+                <P>
+                    (1) The term “label” includes all labels on malt beverage containers on which mandatory information may appear, as set forth in § 7.61(a), as well as any other label on the container.
+                    <PRTPAGE P="126"/>
+                </P>
+                <P>(2) The term “container” includes all parts of the malt beverage container, including any part of a malt beverage container on which mandatory information may appear, as well as those parts of the container on which information does not satisfy mandatory labeling requirements, as set forth in § 7.61(b).</P>
+                <P>(3) The term “packaging” includes any carton, case, carrier, individual covering, or other packaging of such containers used for sale at retail, but does not include shipping cartons or cases that are not intended to accompany the container to the consumer.</P>
+                <P>
+                    (b) 
+                    <E T="03">Statement or representation.</E>
+                     For purposes of this subpart, the term “statement or representation” includes any statement, design, device, or representation, and includes pictorial or graphic designs or representations as well as written ones. The term “statement or representation” includes explicit and implicit statements and representations.
+                </P>
+            </SECTION>
+            <SUBJGRP>
+                <HD SOURCE="HED">Food Allergen Labeling</HD>
+                <SECTION>
+                    <SECTNO>§ 7.82</SECTNO>
+                    <SUBJECT>Voluntary disclosure of major food allergens.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Definitions.</E>
+                         For purposes of this section, the following terms have the meanings indicated.
+                    </P>
+                    <P>
+                        (1) 
+                        <E T="03">Major food allergen</E>
+                         means any of the following:
+                    </P>
+                    <P>(i) Milk, egg, fish (for example, bass, flounder, or cod), Crustacean shellfish (for example, crab, lobster, or shrimp), tree nuts (for example, almonds, pecans, or walnuts), wheat, peanuts, and soybeans; or</P>
+                    <P>(ii) A food ingredient that contains protein derived from a food specified in paragraph (a)(1)(i) of this section, except:</P>
+                    <P>(A) Any highly refined oil derived from a food specified in paragraph (a)(1)(i) of this section and any ingredient derived from such highly refined oil; or</P>
+                    <P>(B) A food ingredient that is exempt from major food allergen labeling requirements pursuant to a petition for exemption approved by the Food and Drug Administration (FDA) under 21 U.S.C. 343(w)(6) or pursuant to a notice submitted to the FDA under 21 U.S.C. 343(w)(7), provided that the food ingredient meets the terms or conditions, if any, specified for that exemption.</P>
+                    <P>
+                        (2) 
+                        <E T="03">Name of the food source from which each major food allergen is derived</E>
+                         means the name of the food as listed in paragraph (a)(1)(i) of this section, except that:
+                    </P>
+                    <P>(i) In the case of a tree nut, it means the name of the specific type of nut (for example, almonds, pecans, or walnuts);</P>
+                    <P>(ii) In the case of Crustacean shellfish, it means the name of the species of Crustacean shellfish (for example, crab, lobster, or shrimp); and</P>
+                    <P>(iii) The names “egg” and “peanuts,” as well as the names of the different types of tree nuts, may be expressed in either the singular or plural form, and the names “soy,” “soybean,” or “soya” may be used instead of “soybeans.”</P>
+                    <P>
+                        (b) 
+                        <E T="03">Voluntary labeling standards.</E>
+                         Major food allergens used in the production of a malt beverage product may, on a voluntary basis, be declared on a label. However, if any one major food allergen is voluntarily declared, all major food allergens used in production of the malt beverage product, including major food allergens used as fining or processing agents, must be declared, except when covered by a petition for exemption approved by the appropriate TTB officer under § 7.83. The major food allergens declaration must consist of the word “Contains” followed by a colon and the name of the food source from which each major food allergen is derived (for example, “Contains: egg”).
+                    </P>
+                    <P>
+                        (c) 
+                        <E T="03">Cross reference.</E>
+                         For mandatory labeling requirements applicable to malt beverage products containing FD&amp;C Yellow No. 5, sulfites, aspartame, and cochineal extract or carmine, see § 7.63(b).
+                    </P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 7.83</SECTNO>
+                    <SUBJECT>Petitions for exemption from major food allergen labeling.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Submission of petition.</E>
+                         Any person may petition the appropriate TTB officer to exempt a particular product or class of products from the labeling requirements of § 7.82. The burden is on the petitioner to provide scientific evidence (as well as the analytical method used to produce the evidence) that demonstrates that the finished product or class of products, as derived by the 
+                        <PRTPAGE P="127"/>
+                        method specified in the petition, either:
+                    </P>
+                    <P>(1) Does not cause an allergic response that poses a risk to human health; or</P>
+                    <P>(2) Does not contain allergenic protein derived from one of the foods identified in § 7.82(a)(1)(i), even though a major food allergen was used in production.</P>
+                    <P>
+                        (b) 
+                        <E T="03">Decision on petition.</E>
+                         TTB will approve or deny a petition for exemption submitted under paragraph (a) of this section in writing within 180 days of receipt of the petition. If TTB does not provide a written response to the petitioner within that 180-day period, the petition will be deemed denied unless an extension of time for decision is mutually agreed upon by the appropriate TTB officer and the petitioner. TTB may confer with the Food and Drug Administration (FDA) on petitions for exemption, as appropriate and as FDA resources permit. TTB may require the submission of product samples and other additional information in support of a petition; however, unless required by TTB, the submission of samples or additional information by the petitioner after submission of the petition will be treated as the withdrawal of the initial petition and the submission of a new petition. An approval or denial under this section will constitute final agency action.
+                    </P>
+                    <P>
+                        (c) 
+                        <E T="03">Resubmission of a petition.</E>
+                         After a petition for exemption is denied under this section, the petitioner may resubmit the petition along with supporting materials for reconsideration at any time. TTB will treat this submission as a new petition.
+                    </P>
+                    <P>
+                        (d) 
+                        <E T="03">Availability of information</E>
+                        —(1) 
+                        <E T="03">General.</E>
+                         TTB will promptly post to its website (
+                        <E T="03">https://www.ttb.gov</E>
+                        ) all petitions received under this section as well as TTB's responses to those petitions. Any information submitted in support of the petition that is not posted to the TTB website will be available to the public pursuant to the Freedom of Information Act (5 U.S.C. 552), except where a request for confidential treatment is granted under paragraph (d)(2) of this section.
+                    </P>
+                    <P>
+                        (2) 
+                        <E T="03">Requests for confidential treatment of business information.</E>
+                         A person who provides trade secrets or other commercial or financial information in connection with a petition for exemption under this section may request that TTB give confidential treatment to that information. A failure to request confidential treatment at the time the information in question is submitted to TTB will constitute a waiver of confidential treatment. A request for confidential treatment of information under this section must conform to the following standards:
+                    </P>
+                    <P>(i) The request must be in writing;</P>
+                    <P>(ii) The request must clearly identify the information to be kept confidential;</P>
+                    <P>(iii) The request must relate to information that constitutes trade secrets or other confidential, commercial, or financial information regarding the business transactions of an interested person, the disclosure of which would cause substantial harm to the competitive position of that person;</P>
+                    <P>(iv) The request must set forth the reasons why the information should not be disclosed, including the reasons the disclosure of the information would prejudice the competitive position of the interested person; and</P>
+                    <P>(v) The request must be supported by a signed statement by the interested person, or by an authorized officer or employee of that person, certifying that the information in question is a trade secret or other confidential, commercial, or financial information and that the information is not already in the public domain.</P>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Production and Other Claims</HD>
+                <SECTION>
+                    <SECTNO>§ 7.84</SECTNO>
+                    <SUBJECT>Use of the term “organic.”</SUBJECT>
+                    <P>Use of the term “organic” is permitted if any such use complies with the United States Department of Agriculture (USDA) National Organic Program rules (7 CFR part 205), as interpreted by the USDA.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§§ 7.85-7.87</SECTNO>
+                    <RESERVED>[Reserved]</RESERVED>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart G—Prohibited Labeling Practices</HD>
+            <SECTION>
+                <SECTNO>§ 7.101</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Application.</E>
+                     The prohibitions set forth in this subpart apply to any malt 
+                    <PRTPAGE P="128"/>
+                    beverage label, container, or packaging. For purposes of this subpart:
+                </P>
+                <P>(1) The term “label” includes all labels on malt beverage containers on which mandatory information may appear, as set forth in § 7.61(a), as well as any other label on the container;</P>
+                <P>(2) The term “container” includes all parts of the malt beverage container, including any part of a malt beverage container on which mandatory information may appear, as well as those parts of the container on which information does not satisfy mandatory labeling requirements, as set forth in § 7.61(b); and</P>
+                <P>(3) The term “packaging” includes any carton, case, carrier, individual covering, or other packaging of such containers used for sale at retail but does not include shipping cartons or cases that are not intended to accompany the container to the consumer.</P>
+                <P>
+                    (b) 
+                    <E T="03">Statement or representation.</E>
+                     For purposes of the practices in this subpart, the term “statement or representation” includes any statement, design, device, or representation, and includes pictorial or graphic designs or representations as well as written ones. The term “statement or representation” includes explicit and implicit statements and representations.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.102</SECTNO>
+                <SUBJECT>False or untrue statements.</SUBJECT>
+                <P>Malt beverage labels, containers, or packaging may not contain any statement or representation that is false or untrue in any particular.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.103</SECTNO>
+                <SUBJECT>Obscene or indecent depictions.</SUBJECT>
+                <P>Malt beverage labels, containers, or packaging may not contain any statement or representation that is obscene or indecent.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart H—Labeling Practices That Are Prohibited if They Are Misleading</HD>
+            <SECTION>
+                <SECTNO>§ 7.121</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Application.</E>
+                     The labeling practices that are prohibited if misleading set forth in this subpart apply to any malt beverage label, container, or packaging. For purposes of this subpart:
+                </P>
+                <P>(1) The term “label” includes all labels on malt beverage containers on which mandatory information may appear, as set forth in § 7.61(a), as well as any other label on the container;</P>
+                <P>(2) The term “container” includes all parts of the malt beverage container, including any part of a malt beverage container on which mandatory information may appear, as well as those parts of the container on which information does not satisfy mandatory labeling requirements, as set forth in § 7.61(b); and</P>
+                <P>(3) The term “packaging” includes any carton, case, carrier, individual covering, or other packaging of such containers used for sale at retail but does not include shipping cartons or cases that are not intended to accompany the container to the consumer.</P>
+                <P>
+                    (b) 
+                    <E T="03">Statement or representation.</E>
+                     For purposes of this subpart, the term “statement or representation” includes any statement, design, device, or representation, and includes pictorial or graphic designs or representations as well as written ones. The term “statement or representation” includes explicit and implicit statements and representations.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.122</SECTNO>
+                <SUBJECT>Misleading statements or representations.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General prohibition.</E>
+                     Malt beverage labels, containers, or packaging may not contain any statement or representation, irrespective of falsity, that is misleading to consumers as to the age, origin, identity, or other characteristics of the malt beverage, or with regard to any other material factor.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Ways in which statements or representations may be found to be misleading.</E>
+                     (1) A statement or representation is prohibited, irrespective of falsity, if it directly creates a misleading impression or if it does so indirectly through ambiguity, omission, inference, or by the addition of irrelevant, scientific, or technical matter. For example, an otherwise truthful statement may be misleading because of the omission of material information, the disclosure of which is necessary to prevent the statement from being misleading.
+                </P>
+                <P>
+                    (2) All claims, whether implicit or explicit, must have a reasonable basis in fact. Any claim on malt beverage labels, containers, or packaging that 
+                    <PRTPAGE P="129"/>
+                    does not have a reasonable basis in fact or cannot be adequately substantiated upon the request of the appropriate TTB officer is considered misleading.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.123</SECTNO>
+                <SUBJECT>Guarantees.</SUBJECT>
+                <P>Malt beverage labels, containers, or packaging may not contain any statement relating to guarantees if the appropriate TTB officer finds it is likely to mislead the consumer. However, money-back guarantees are not prohibited.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.124</SECTNO>
+                <SUBJECT>Disparaging statements.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Malt beverage labels, containers, or packaging may not contain any false or misleading statement that explicitly or implicitly disparages a competitor's product.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Truthful and accurate comparisons.</E>
+                     This section does not prevent truthful and accurate comparisons between products (such as “Our ale contains more hops than Brand X”) or statements of opinion (such as “We think our beer tastes better than any other beer on the market”).
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.125</SECTNO>
+                <SUBJECT>Tests or analyses.</SUBJECT>
+                <P>Malt beverage labels, containers, or packaging may not contain any statement or representation of or relating to analyses, standards, or tests, whether or not it is true, that is likely to mislead the consumer. An example of a misleading statement is “tested and approved by our research laboratories” if the testing and approval does not in fact have any significance.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.126</SECTNO>
+                <SUBJECT>Depictions of government symbols.</SUBJECT>
+                <P>
+                    <E T="03">Representations of the armed forces or flags.</E>
+                     Malt beverage labels, containers, or packaging may not show an image of any government's flag or any representation related to the armed forces of the United States if the representation, standing alone or considered together with any additional language or symbols on the label, creates a false or misleading impression that the product was endorsed by, made by, used by, or made under the supervision of the government represented by that flag or by the armed forces of the United States. This section does not prohibit the use of a flag as part of a claim of American origin or another country of origin.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.127</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.128</SECTNO>
+                <SUBJECT>Claims related to distilled spirits.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Except as provided in paragraph (b) of this section, containers of malt beverages, or any labels on such containers, or any carton, case, or individual covering of such containers, used for sale at retail, or any written, printed, graphic, or other material accompanying such containers to the consumer, must not contain any statement, design, device, or representation that tends to create a false or misleading impression that the malt beverage contains distilled spirits or is a distilled spirits product.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Exceptions.</E>
+                     This section does not prohibit:
+                </P>
+                <P>(1) A truthful and accurate statement of alcohol content, in conformity with § 7.65;</P>
+                <P>(2) The use of a brand name of a distilled spirits product as a malt beverage brand name, provided that the overall label does not create a misleading impression as to the identity of the product;</P>
+                <P>(3) The use of a cocktail name as a brand name or a distinctive or fanciful name of a malt beverage, provided that the overall labeling does not present a misleading impression about the identity of the product; or</P>
+                <P>(4) The use of truthful and accurate statements about the production of the malt beverage as part of a statement of composition or otherwise, such as “aged in whisky barrels,” as long as such statements do not create a misleading impression as to the identity of the product.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.129</SECTNO>
+                <SUBJECT>Health-related statements.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Definitions.</E>
+                     When used in this section, the following terms have the meaning indicated:
+                </P>
+                <P>
+                    (1) 
+                    <E T="03">Health-related statement</E>
+                     means any statement related to health (other than the warning statement required under part 16 of this chapter) and includes statements of a curative or therapeutic nature that, expressly or by implication, suggest a relationship between the consumption of alcohol, 
+                    <PRTPAGE P="130"/>
+                    malt beverages, or any substance found within the malt beverage, and health benefits or effects on health. The term includes both specific health claims and general references to alleged health benefits or effects on health associated with the consumption of alcohol, a malt beverage, or any substance found within the malt beverage product, as well as health-related directional statements. The term also includes statements and claims that imply that a physical or psychological sensation results from consuming the alcohol beverage product, as well as statements and claims of nutritional value (for example, statements of vitamin content). Numerical statements of the calorie, carbohydrate, protein, and fat content of the product do not constitute claims of nutritional value.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Specific health claim</E>
+                     means a type of health-related statement that, expressly or by implication, characterizes the relationship of malt beverages, alcohol, or any substance found within the malt beverage, to a disease or health-related condition. Implied specific health claims include statements, symbols, vignettes, or other forms of communication that suggest, within the context in which they are presented, that a relationship exists between alcohol, malt beverages, or any substance found within the malt beverage, and a disease or health-related condition.
+                </P>
+                <P>
+                    (3) 
+                    <E T="03">Health-related directional statement</E>
+                     means a type of health-related statement that directs or refers consumers to a third party or other source for information regarding the effects on health of malt beverage or alcohol consumption.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Rules for malt beverage labels, containers, and packaging</E>
+                    —(1) 
+                    <E T="03">Health-related statements.</E>
+                     In general, malt beverage labels, containers, or packaging may not contain any health-related statement that is untrue in any particular or tends to create a misleading impression as to the effects on health of alcohol consumption. TTB will evaluate such statements on a case-by-case basis and may require as part of the health-related statement a disclaimer or some other qualifying statement to dispel any misleading impression conveyed by the health-related statement.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Specific health claims.</E>
+                     (i) TTB will consult with the Food and Drug Administration (FDA) as needed on the use of specific health claims on labels, containers, or packaging. If FDA determines that the use of such a claim is a drug claim that is not in compliance with the requirements of the Federal Food, Drug, and Cosmetic Act, TTB will not approve the use of that specific health claim on the malt beverage label.
+                </P>
+                <P>(ii) TTB will approve the use of a specific health claim on a malt beverage label only if the claim is truthful and adequately substantiated by scientific or medical evidence; is sufficiently detailed and qualified with respect to the categories of individuals to whom the claim applies; adequately discloses the health risks associated with both moderate and heavier levels of alcohol consumption; and outlines the categories of individuals for whom any levels of alcohol consumption may cause health risks. This information must appear as part of the specific health claim.</P>
+                <P>
+                    (3) 
+                    <E T="03">Health-related directional statements.</E>
+                     A health-related directional statement is presumed misleading unless it:
+                </P>
+                <P>(i) Directs consumers in a neutral or other non-misleading manner to a third party or other source for balanced information regarding the effects on health of malt beverage or alcohol consumption; and</P>
+                <P>(ii)(A) Includes as part of the health-related directional statement the following disclaimer: “This statement should not encourage you to drink or to increase your alcohol consumption for health reasons”; or</P>
+                <P>(B) Includes as part of the health-related directional statement some other qualifying statement that the appropriate TTB officer finds is sufficient to dispel any misleading impression conveyed by the health-related directional statement.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.130</SECTNO>
+                <SUBJECT>Appearance of endorsement.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Malt beverage labels, containers, or packaging may not include the name, or the simulation or abbreviation of the name, of any living individual of public prominence or an 
+                    <PRTPAGE P="131"/>
+                    existing private or public organization, or any graphic, pictorial, or emblematic representation of the individual or organization if its use is likely to lead a consumer to falsely believe that the product has been endorsed, made, or used by, or produced for, or under the supervision of, or in accordance with the specifications of, such individual or organization. This section does not prohibit the use of such names where the individual or organization has provided authorization for their use.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Disclaimers.</E>
+                     Statements or other representations do not violate this section if, taken as a whole, they create no misleading impression as to an implied endorsement either because of the context in which they are presented or because of the use of an adequate disclaimer.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Exception.</E>
+                     This section does not apply to the use of the name of any person engaged in business as a producer, importer, bottler, packer, wholesaler, retailer, or warehouseman, of malt beverages. This section also does not apply to the use by any industry member of a trade or brand name that is the name of any living individual of public prominence, or existing private or public organization, provided such trade or brand name was used by the industry member or its predecessors in interest prior to August 29, 1935.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.131</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.132</SECTNO>
+                <SUBJECT>[Reserved]</SUBJECT>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart I—Classes and Types of Malt Beverages</HD>
+            <SECTION>
+                <SECTNO>§ 7.141</SECTNO>
+                <SUBJECT>Class and type.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Products known to the trade.</E>
+                     The class of the malt beverage must be stated on the label (see § 7.63). The type of the malt beverage may be stated, but is not required to appear on the label. Statements of class and type must conform to the designation of the product as known to the trade. All parts of the designation must appear together.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Malt beverage specialty products</E>
+                    —(1) 
+                    <E T="03">General.</E>
+                     A malt beverage specialty product is a malt beverage that does not fall under any of the class designations set forth in §§ 7.142 through 7.144 and is not known to the trade under a particular designation, usually because of the addition of ingredients such as colorings, flavorings, or food materials or the use of certain types of production processes where the appropriate TTB officer has not determined that such ingredients or processes are generally recognized as traditional in the production of a fermented beverage designated as “beer,” “ale,” “porter,” “stout,” “lager,” or “malt liquor.”
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Designation.</E>
+                     A malt beverage specialty product must be designated with a distinctive or fanciful name, together with a statement of the composition of the product, in accordance with § 7.147. This statement will be considered the class designation for the purposes of this part. All parts of the designation must appear together.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.142</SECTNO>
+                <SUBJECT>Class designations.</SUBJECT>
+                <P>The following class designations may be used in accordance with this section:</P>
+                <P>(a) Any malt beverage, as defined in § 7.1, may be designated simply as a “malt beverage.”</P>
+                <P>(b)(1) The class designations “beer,” “ale,” “porter,” “stout,” “lager,” and “malt liquor” may be used to designate malt beverages that contain at least 0.5 percent alcohol by volume and that conform to the trade understanding of those designations. These designations may be preceded or followed by descriptions of the color of the product (such as “amber,” “brown,” “red,” or “golden”) as well as descriptive terms such as “dry,” “export,” “cream,” and “pale.”</P>
+                <P>(2) No product other than a malt beverage fermented at a comparatively high temperature, possessing the characteristics generally attributed to “ale,” “porter,” or “stout” and produced without the use of coloring or flavoring materials (other than those recognized in standard brewing practices) may bear any of these class designations.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.143</SECTNO>
+                <SUBJECT>Class and type—special rules.</SUBJECT>
+                <P>The following special rules apply to specified class and type designations:</P>
+                <P>
+                    (a) 
+                    <E T="03">Reconstituted malt beverages.</E>
+                     Malt beverages that have been concentrated by the removal of water therefrom and 
+                    <PRTPAGE P="132"/>
+                    reconstituted by the addition of water and carbon dioxide must for the purpose of this part be labeled in the same manner as malt beverages which have not been concentrated and reconstituted, except that there must appear immediately adjacent to, and as a part of, the class designation the statement “PRODUCED FROM____ __CONCENTRATE” (the blank to be filled in with the appropriate class designation). All parts of the class designation must appear in lettering of substantially the same size and kind. However, ice beers, described in paragraph (c) of this section, which are produced by the removal of less than 0.5 percent of the volume of the beer in the form of ice crystals and that retain beer character are not considered concentrated.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Half and half.</E>
+                     No product may be designated with the type designation “half and half” unless it is in fact composed of equal parts of two classes of malt beverages, the names of which are conspicuously stated immediately adjacent to the designation “half and half” (for example, “Half and Half, Porter and Stout”). This does not preclude the use of terms such as “half and half” as part of a distinctive or fanciful name that refers to flavors added to a malt beverage designated in accordance with trade understanding or with a statement of composition.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Ice beer.</E>
+                     Malt beverages supercooled during the brewing process to form ice crystals may be labeled with the type designation “ice” preceding the class designation (beer, ale, etc.).
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Black and tan.</E>
+                     A product composed of two classes of malt beverages may be designated with the type designation “black and tan,” and the class and type designation is the names of the two classes of malt beverages in conjunction with “black and tan” (for example, “Black and Tan, Stout and Ale”).
+                </P>
+                <P>
+                    (e) 
+                    <E T="03">Wheat beer.</E>
+                     Any “beer,” “ale,” “porter,” “stout,” “lager,” “malt liquor,” or other malt beverage made from a fermentable base that consists of at least 25 percent by weight malted wheat may be designated with the type designation “wheat” preceding the applicable class designation.
+                </P>
+                <P>
+                    (f) 
+                    <E T="03">Rye beer.</E>
+                     Any “beer,” “ale,” “porter,” “stout,” “lager,” “malt liquor,” or other malt beverage made from a fermentable base that consists of at least 25 percent by weight malted rye may be designated with the type designation “rye” preceding the applicable class designation.
+                </P>
+                <P>
+                    (g) 
+                    <E T="03">Barley wine ale.</E>
+                     The term “barley (or wheat or rye) wine ale” or “barley (or wheat or rye) wine style ale” may be used in accordance with trade understanding.
+                </P>
+                <P>
+                    (h) 
+                    <E T="03">Malt beverages aged in barrels</E>
+                    —(1) 
+                    <E T="03">General.</E>
+                     Label designations for malt beverages aged in barrels or with woodchips, spirals, or staves derived from barrels may, but are not required to, include a description of how the product was aged. Thus, for example, acceptable designations for a standard beer aged in an oak barrel would include “beer,” “oak aged beer,” and “beer aged in an oak barrel.”
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Barrels previously used in the production or storage of wine or distilled spirits.</E>
+                     Malt beverages aged in barrels previously used in the production or storage of wine or distilled spirits, or with woodchips, spirals, or staves derived from barrels previously used in the production or storage of wine or distilled spirits, or from woodchips previously used in the aging of distilled spirits or wine may, but are not required to, include a description of how the product was aged.
+                </P>
+                <P>(i) Examples of acceptable designations for a standard beer aged in a wine barrel include “beer,” “beer aged in a wine barrel,” and “wine barrel aged beer.”</P>
+                <P>(ii) Examples of acceptable designations for an ale brewed with honey and aged in a bourbon barrel include “honey ale” and “bourbon barrel aged honey ale” but not simply “ale” or “bourbon barrel aged ale.”</P>
+                <P>
+                    (3) 
+                    <E T="03">Misleading designations.</E>
+                     Designations that create a misleading impression as to the identity of the product by emphasizing certain words or terms are prohibited. As set forth in § 7.122, designations may not mislead consumers as to the age, origin, identity, or other characteristics of the malt beverage. Examples of designations that would be prohibited under this provision are “bourbon ale,” “bourbon-
+                    <PRTPAGE P="133"/>
+                    flavored lager,” “Chardonnay lager,” or “lager with whisky flavors.”
+                </P>
+                <P>
+                    (i) 
+                    <E T="03">Other designations.</E>
+                     Other type designations (such as “milk” preceding the class designation “stout”) may be applied in conformance with trade understanding.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.144</SECTNO>
+                <SUBJECT>Malt beverages fermented or flavored with certain traditional ingredients.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Any malt beverage that has been fermented or flavored only with one or more ingredients (such as honey or certain fruits) that the appropriate TTB officer has determined are generally recognized as traditional ingredients in the production of a fermented beverage designated as “beer,” “ale,” “porter,” “stout,” “lager,” or “malt liquor” may be labeled in accordance with trade understanding following the rules set forth in this section.
+                </P>
+                <P>
+                    (1) A list of such traditional ingredients may be found on the TTB website (
+                    <E T="03">https://www.ttb.gov</E>
+                    ).
+                </P>
+                <P>(2) If the malt beverage has also been fermented or flavored with ingredients that the appropriate TTB officer has not determined are generally recognized as traditional ingredients in the production of a fermented beverage designated as “beer,” “ale,” “porter,” “stout,” “lager,” or “malt liquor,” it is a malt beverage specialty and must be labeled in accordance with the statement of composition rules in § 7.147.</P>
+                <P>
+                    (b) 
+                    <E T="03">Rules for designation.</E>
+                     (1) A designation in accordance with trade understanding must identify the base product, such as “malt beverage,” “beer,” “ale,” “porter,” “stout,” “lager,” or “malt liquor” along with a modifier or explanation that provides the consumer with adequate information about the fruit, honey, or other food ingredient used in production of the malt beverage. The label may include additional information about the production process (such as “beer fermented with cherry juice”).
+                </P>
+                <P>(2) Where more than one exempted ingredient is included, a designation in accordance with trade understanding may identify each ingredient (such as “Ale with cherry juice, cinnamon, and nutmeg”), refer to the ingredients by category (such as “Fruit ale,” “Spiced ale,” or “Ale with natural flavors”), or simply include the ingredient or ingredients that the bottler or importer believes best identify the product (such as “Cherry ale,” “Cinnamon ale,” or “Nutmeg ale”). The designation must distinguish the product from a malt beverage, beer, ale, porter, stout, lager, or malt liquor that is not brewed or flavored with any of these ingredients; thus, unmodified designations such as “beer,” “stout,” or “ale” would not be acceptable.</P>
+                <P>
+                    (c) 
+                    <E T="03">Other requirements.</E>
+                     All parts of the designation must appear together and must be readily legible on a contrasting background. Designations that create a misleading impression as to the identity of the product by emphasizing certain words or terms are prohibited.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.145</SECTNO>
+                <SUBJECT>Malt beverages containing less than 0.5 percent alcohol by volume.</SUBJECT>
+                <P>(a) Products containing less than 0.5 percent of alcohol by volume must bear the class designation “malt beverage,” “cereal beverage,” or “near beer.”</P>
+                <P>(b) If the designation “near beer” is used, both words must appear in the same size and style of type, in the same color of ink, and on the same background.</P>
+                <P>(c) No product containing less than 0.5 percent of alcohol by volume may bear the class designations “beer,” “lager beer,” “lager,” “ale,” “porter,” “stout,” or any other class or type designation commonly applied to malt beverages containing 0.5 percent or more of alcohol by volume.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.146</SECTNO>
+                <SUBJECT>Geographical names.</SUBJECT>
+                <P>(a) Geographical names for distinctive types of malt beverages (other than names found under paragraph (b) of this section to have become generic) shall not be applied to malt beverages produced in any place other than the particular region indicated by the name unless:</P>
+                <P>
+                    (1) In direct conjunction with the name there appears the word “type” or the word “American”, or some other statement indicating the true place of production in lettering substantially as conspicuous as such name; and
+                    <PRTPAGE P="134"/>
+                </P>
+                <P>
+                    (2) The malt beverages to which the name is applied conform to the type so designated. The following are examples of distinctive types of beer with geographical names that have not become generic; Dortmund, Dortmunder, Vienna, Wien, Wiener, Bavarian, Munich, Munchner, Salvator, Kulmbacher, Wurtzburger, Pilsen (Pilsener and Pilsner): 
+                    <E T="03">Provided,</E>
+                     That notwithstanding the foregoing provisions of this section, beer which is produced in the United States may be designated as “Pilsen,” “Pilsener,” or “Pilsner” without further modification, if it conforms to such type.
+                </P>
+                <P>
+                    (b) Only such geographical names for distinctive types of malt beverages as the appropriate TTB officer finds have by usage and common knowledge lost their geographical significance to such an extent that they have become generic shall be deemed to have become generic, 
+                    <E T="03">e.g.,</E>
+                     India Pale Ale.
+                </P>
+                <P>(c) Except as provided in § 7.64(b), geographical names that are not names for distinctive types of malt beverages shall not be applied to malt beverages produced in any place other than the particular place or region indicated in the name.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.147</SECTNO>
+                <SUBJECT>Statement of composition.</SUBJECT>
+                <P>(a) A statement of composition is required to appear on the label for malt beverage specialty products, as defined in § 7.141(b), which are not known to the trade under a particular designation. For example, the addition of flavoring materials, colors, or artificial sweeteners may change the class and type of the malt beverage. The statement of composition along with a distinctive or fanciful name serves as the class and type designation for these products.</P>
+                <P>(b) When required by this part, a statement of composition must contain all of the following information, as applicable:</P>
+                <P>
+                    (1) 
+                    <E T="03">Identify the base class and/or type designation.</E>
+                     The statement of composition must clearly identify the base class and/or type designation of the malt beverage product (
+                    <E T="03">e.g.,</E>
+                     “beer,” “lager beer,” “lager,” “ale,” “porter,” “stout,” or “malt beverage”).
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Identify added flavoring material(s) used before, during, and after fermentation.</E>
+                     The statement of composition must disclose fermentable or non-fermentable flavoring materials added to the malt beverage base class.
+                </P>
+                <P>(i) If the flavoring material is used before or during the fermentation process, the statement of composition must indicate that the malt beverage was fermented or brewed with the flavoring material (such as “Beer Fermented with grapefruit juice” or “Grapefruit Ale”). If the flavoring material is added after fermentation, the statement of composition must describe that process, using terms such as “added,” “with,” “infused,” or “flavored” (such as “Grapefruit-flavored ale.”).</P>
+                <P>(ii) If a single flavoring material is used in the production of the malt beverage product, the flavoring material may be specifically identified (such as “Ale Fermented with grapefruit juice”) or generally referenced (such as “Ale with natural flavor”). If two or more flavoring materials are used in the production of the malt beverage, each flavoring material may be specifically identified (such as “lemon juice, kiwi juice” or “lemon and kiwi juice”) or the characterizing flavoring material may be specifically identified and the remaining flavoring materials may be generally referenced (such as “kiwi and other natural and artificial flavor(s)”), or all flavors may be generally referenced (such as “with artificial flavors”).</P>
+                <P>
+                    (3) 
+                    <E T="03">Identify added coloring material(s).</E>
+                     The statement of composition must disclose the addition of coloring material(s), whether added directly or through flavoring material(s). The coloring materials may be identified specifically (such as “caramel color,” “FD&amp;C Red #40,” “annatto,” etc.) or as a general statement, such as “Contains certified color” for colors approved under 21 CFR subpart 74 or “artificially colored” to indicate the presence of any one or a combination of coloring material(s). However, FD&amp;C Yellow No. 5, carmine, and cochineal extract require specific disclosure in accordance with § 7.63(b)(1) and (2) and that specific disclosure may appear either in the statement of composition or elsewhere in accordance with those sections.
+                </P>
+                <P>
+                    (4) 
+                    <E T="03">Identify added artificial sweeteners.</E>
+                     The statement of composition must 
+                    <PRTPAGE P="135"/>
+                    disclose any artificial sweetener that is added to a malt beverage product, whether the artificial sweetener is added directly or through flavoring material(s). The artificial sweetener may be identified specifically by either generic name or trademarked brand name, or as a general statement (such as “artificially sweetened”) to indicate the presence of any one or combination of artificial sweeteners. However, if aspartame is used, an additional warning statement is required in accordance with § 7.63(b)(4).
+                </P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <RESERVED>Subparts J-L [Reserved]</RESERVED>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart M—Penalties and Compromise of Liability</HD>
+            <SECTION>
+                <SECTNO>§ 7.221</SECTNO>
+                <SUBJECT>Criminal penalties.</SUBJECT>
+                <P>A violation of the labeling provisions of 27 U.S.C. 205(e) is punishable as a misdemeanor. See 27 U.S.C. 207 for the statutory provisions relating to criminal penalties, consent decrees, and injunctions.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.222</SECTNO>
+                <SUBJECT>Conditions of basic permit.</SUBJECT>
+                <P>A basic permit is conditioned upon compliance with the requirements of 27 U.S.C. 205, including the labeling and advertising provisions of this part. A willful violation of the conditions of a basic permit provides grounds for the revocation or suspension of the permit, as applicable, as set forth in part 1 of this chapter.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.223</SECTNO>
+                <SUBJECT>Compromise.</SUBJECT>
+                <P>Pursuant to 27 U.S.C. 207, the appropriate TTB officer is authorized, with respect to any violation of 27 U.S.C. 205, to compromise the liability arising with respect to such violation upon payment of a sum not in excess of $500 for each offense, to be collected by the appropriate TTB officer and to be paid into the Treasury as miscellaneous receipts.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart N—Advertising of Malt Beverages</HD>
+            <SECTION>
+                <SECTNO>§ 7.231</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <P>
+                    No person engaged in business as a brewer, wholesaler, or importer, of malt beverages directly or indirectly or through an affiliate, shall publish or disseminate or cause to be published or disseminated by radio or television broadcast, or in any newspaper, periodical, or any publication, by any sign or outdoor advertisement, or by electronic or internet media, or in any other printed or graphic matter, any advertisement of malt beverages, if such advertising is in, or is calculated to induce sales in, interstate or foreign commerce, or is disseminated by mail, unless such advertisement is in conformity with this subpart: 
+                    <E T="03">Provided,</E>
+                     That such sections shall not apply to outdoor advertising in place on September 7, 1984, but shall apply upon replacement, restoration, or renovation of any such advertising; and 
+                    <E T="03">provided further,</E>
+                     that this subpart shall apply to advertisements of malt beverages intended to be sold or shipped or delivered for shipment, or otherwise introduced into or received in any State from any place outside thereof, only to the extent that the laws of such State impose similar requirements with respect to advertisements of malt beverages manufactured and sold or otherwise disposed of in such State. 
+                    <E T="03">And provided further</E>
+                     that such sections shall not apply to a retailer or the publisher of any newspaper, periodical, or other publication, or radio or television or internet broadcast, unless such retailer or publisher or broadcaster is engaged in business as a brewer, wholesaler, bottler, or importer of malt beverages, directly or indirectly, or through an affiliate.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.232</SECTNO>
+                <SUBJECT>Definitions.</SUBJECT>
+                <P>
+                    As used in this subpart, the term “advertisement” or “advertising” includes any written or verbal statement, illustration, or depiction which is in, or calculated to induce sales in, interstate or foreign commerce, or is disseminated by mail, whether it appears in a newspaper, magazine, trade booklet, menu, wine card, leaflet, circular, mailer, book insert, catalog, promotional material, sales pamphlet, internet or other electronic site or social network, or in any written, printed, graphic, or other matter (such as hang tags) accompanying, but not firmly affixed to, the container, representations made on shipping cases, or 
+                    <PRTPAGE P="136"/>
+                    in any billboard, sign, or other outdoor display, public transit card, other periodical literature, publication, or in a radio or television broadcast, or in any other media; except that such term shall not include:
+                </P>
+                <P>(a) Any label affixed to any container of malt beverages; or any coverings, cartons, or cases of containers of malt beverages used for sale at retail which constitute a part of the labeling under this part.</P>
+                <P>(b) Any editorial or other reading material (such as a news release) in any periodical or publication or newspaper, for the publication of which no money or valuable consideration or thing of value is paid or promised, directly or indirectly, by any permittee or brewer, and which is not written by or at the direction of the permittee or brewer.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.233</SECTNO>
+                <SUBJECT>Mandatory statements.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Responsible advertiser.</E>
+                     The advertisement must display the responsible advertiser's name, city, and State or the name and other contact information (such as, telephone number, website, or email address) where the responsible advertiser may be contacted.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Class.</E>
+                     The advertisement shall contain a conspicuous statement of the class to which the product belongs, corresponding to the statement of class which is required to appear on the label of the product.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Exception.</E>
+                     (1) If an advertisement refers to a general malt beverage line or all of the malt beverage products of one company, whether by the company name or by the brand name common to all the malt beverages in the line, the only mandatory information necessary is the responsible advertiser's name, city, and State or the name and other contact information (such as telephone number, website, or email address) where the responsible advertiser may be contacted. This exception does not apply where only one type of malt beverage is marketed under the specific brand name advertised.
+                </P>
+                <P>(2) On consumer specialty items, the only information necessary is the company name or brand name of the product.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.234</SECTNO>
+                <SUBJECT>Legibility of mandatory information.</SUBJECT>
+                <P>(a) Statements required under this subpart that appear in any written, printed, or graphic advertisement must be in lettering or type size sufficient to be conspicuous and readily legible.</P>
+                <P>(b) In the case of signs, billboards, and displays the name and address or name and other contact information (such as, telephone number, website, or email) of the permittee responsible for the advertisement may appear in type size of lettering smaller than the other mandatory information, provided such information can be ascertained upon closer examination of the sign or billboard.</P>
+                <P>(c) Mandatory information must be so stated as to be clearly a part of the advertisement and may not be separated in any manner from the remainder of the advertisement.</P>
+                <P>(d) Mandatory information for two or more products shall not be stated unless clearly separated.</P>
+                <P>(e) Mandatory information must be so stated in both the print and audiovisual media that it will be readily apparent to the persons viewing the advertisement.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.235</SECTNO>
+                <SUBJECT>Prohibited practices.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General prohibition.</E>
+                     An advertisement of malt beverages must not contain:
+                </P>
+                <P>(1) Any statement that is false or untrue in any material particular, or that, irrespective of falsity, directly, or by ambiguity, omission, or inference, or by the addition of irrelevant, scientific or technical matter, tends to create a misleading impression.</P>
+                <P>(2) Any false or misleading statement that explicitly or implicitly disparages a competitor's product. This does not prevent truthful and accurate comparisons between products (such as “Our ale contains more hops than Brand X”) or statements of opinion (such as “We think our beer tastes better than any other beer on the market”).</P>
+                <P>(3) Any statement, design, device, or representation which is obscene or indecent.</P>
+                <P>
+                    (4) Any statement, design, device, or representation of or relating to analyses, standards, or tests, irrespective of 
+                    <PRTPAGE P="137"/>
+                    falsity, which the appropriate TTB officer finds to be likely to mislead the consumer.
+                </P>
+                <P>(5) Any statement, design, device, or representation of or relating to any guarantee, irrespective of falsity, which the appropriate TTB officer finds to be likely to mislead the consumer. Money-back guarantees are not prohibited.</P>
+                <P>(6) [Reserved].</P>
+                <P>(7) [Reserved].</P>
+                <P>(8) Any statement, design, device, or representation that tends to create a false or misleading impression that the malt beverage contains distilled spirits or is a distilled spirits product. Advertisements may include the types of statements that are listed as being not prohibited on labels in § 7.128(b).</P>
+                <P>
+                    (b) 
+                    <E T="03">Statements inconsistent with labeling.</E>
+                     (1) Advertisements shall not contain any statement concerning a brand or lot of malt beverages that is inconsistent with any statement on the labeling thereof.
+                </P>
+                <P>(2) Any label depicted on a container in an advertisement shall be a reproduction of an approved label, except that malt beverage labels not required to be covered by a COLA in accordance with the rules in § 7.21 of this chapter may also appear on advertisements.</P>
+                <P>(c) [Reserved]</P>
+                <P>
+                    (d) 
+                    <E T="03">Class.</E>
+                     (1) No product containing less than 0.5 percent of alcohol by volume shall be designated in any advertisement as “beer”, “lager beer”, “lager”, “ale”, “porter”, or “stout”, or by any other class or type designation commonly applied to fermented malt beverages containing 0.5 percent or more of alcohol by volume.
+                </P>
+                <P>(2) No product other than a malt beverage fermented at comparatively high temperature, possessing the characteristics generally attributed to “ale,” “porter,” or “stout” and produced without the use of coloring or flavoring materials (other than those recognized in standard brewing practices) shall be designated in any advertisement by any of these class designations.</P>
+                <P>
+                    (e) 
+                    <E T="03">Health-related statements</E>
+                    —(1) 
+                    <E T="03">Definitions.</E>
+                     When used in this paragraph (e), terms are defined as follows:
+                </P>
+                <P>
+                    (i) 
+                    <E T="03">Health-related statement</E>
+                     means any statement related to health and includes statements of a curative or therapeutic nature that, expressly or by implication, suggest a relationship between the consumption of alcohol, malt beverages, or any substance found within the malt beverage, and health benefits or effects on health. The term includes both specific health claims and general references to alleged health benefits or effects on health associated with the consumption of alcohol, malt beverages, or any substance found within the malt beverage, as well as health-related directional statements. The term also includes statements and claims that imply that a physical or psychological sensation results from consuming the malt beverage, as well as statements and claims of nutritional value (
+                    <E T="03">e.g.,</E>
+                     statements of vitamin content). Statements concerning caloric, carbohydrate, protein, and fat content do not constitute nutritional claims about the product.
+                </P>
+                <P>
+                    (ii) 
+                    <E T="03">Specific health claim</E>
+                     is a type of health-related statement that, expressly or by implication, characterizes the relationship of the malt beverage, alcohol, or any substance found within the malt beverage, to a disease or health-related condition. Implied specific health claims include statements, symbols, vignettes, or other forms of communication that suggest, within the context in which they are presented, that a relationship exists between malt beverages, alcohol, or any substance found within the malt beverage, and a disease or health-related condition.
+                </P>
+                <P>
+                    (iii) 
+                    <E T="03">Health-related directional statement</E>
+                     is a type of health-related statement that directs or refers consumers to a third party or other source for information regarding the effects on health of malt beverage or alcohol consumption.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Rules for advertising</E>
+                    —(i) 
+                    <E T="03">Health-related statements.</E>
+                     In general, advertisements may not contain any health-related statement that is untrue in any particular or tends to create a misleading impression as to the effects on health of alcohol consumption. TTB will evaluate such statements on a case-by-case basis and may require as part of the health-related statement a disclaimer or some other qualifying 
+                    <PRTPAGE P="138"/>
+                    statement to dispel any misleading impression conveyed by the health-related statement. Such disclaimer or other qualifying statement must appear as prominent as the health-related statement.
+                </P>
+                <P>
+                    (ii) 
+                    <E T="03">Specific health claims.</E>
+                     A specific health claim will not be considered misleading if it is truthful and adequately substantiated by scientific or medical evidence; sufficiently detailed and qualified with respect to the categories of individuals to whom the claim applies; adequately discloses the health risks associated with both moderate and heavier levels of alcohol consumption; and outlines the categories of individuals for whom any levels of alcohol consumption may cause health risks. This information must appear as part of the specific health claim and in a manner as prominent as the specific health claim.
+                </P>
+                <P>
+                    (iii) 
+                    <E T="03">Health-related directional statements.</E>
+                     A statement that directs consumers to a third party or other source for information regarding the effects on health of malt beverage or alcohol consumption is presumed misleading unless it—
+                </P>
+                <P>(A) Directs consumers in a neutral or other non-misleading manner to a third party or other source for balanced information regarding the effects on health of malt beverage or alcohol consumption; and</P>
+                <P>
+                    (B)(
+                    <E T="03">1</E>
+                    ) Includes as part of the health-related directional statement, and in a manner as prominent as the health-related directional statement, the following disclaimer: “This statement should not encourage you to drink or increase your alcohol consumption for health reasons;” or
+                </P>
+                <P>
+                    (
+                    <E T="03">2</E>
+                    ) Includes as part of the health-related directional statement, and in a manner as prominent as the health-related directional statement, some other qualifying statement that the appropriate TTB officer finds is sufficient to dispel any misleading impression conveyed by the health-related directional statement.
+                </P>
+                <P>
+                    (f) 
+                    <E T="03">Confusion of brands.</E>
+                     Two or more different brands or lots of malt beverages shall not be advertised in one advertisement (or in two or more advertisements in one issue of a periodical or a newspaper or in one piece of other written, printed, or graphic matter) if the advertisement tends to create the impression that representations made as to one brand or lot apply to the other or others, and if as to such latter the representations contravene any provision of this subpart or are in any respect untrue.
+                </P>
+                <P>
+                    (g) 
+                    <E T="03">Representations of the armed forces or flags.</E>
+                     Advertisements may not show an image of any government's flag or any representation related to the armed forces of the United States if the representation, standing alone or considered together with any additional language or symbols, creates a false or misleading impression that the product was endorsed by, made by, used by, or made under the supervision of, the government represented by that flag or by the armed forces of the United States. This section does not prohibit the use of a flag as part of a claim of American origin or another country of origin.
+                </P>
+                <P>
+                    (h) 
+                    <E T="03">Deceptive advertising techniques.</E>
+                     Subliminal or similar techniques are prohibited. “Subliminal or similar techniques,” as used in this part, refers to any device or technique that is used to convey, or attempts to convey, a message to a person by means of images or sounds of a very brief nature that cannot be perceived at a normal level of awareness.
+                </P>
+                <P>
+                    (i) 
+                    <E T="03">Organic.</E>
+                     Any use of the term “organic” in the advertising of malt beverages must comply with the United States Department of Agriculture's (USDA) National Organic Program rules, 7 CFR part 205, as interpreted by the USDA.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 7.236</SECTNO>
+                <SUBJECT>Comparative advertising.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Comparative advertising shall not be disparaging of a competitor's product in a manner that is false or misleading.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Taste tests.</E>
+                     (1) Taste test results may be used in advertisements comparing competitors' products unless they are disparaging in a false or misleading manner, deceptive, or likely to mislead the consumer.
+                </P>
+                <P>
+                    (2) The taste test procedure used shall meet scientifically accepted procedures. An example of a scientifically accepted procedure is outlined in the Manual on Sensory Testing Methods, ASTM Special Technical Publication 
+                    <PRTPAGE P="139"/>
+                    434, published by the American Society for Testing and Materials, 1916 Race Street, Philadelphia, Pennsylvania 19103, ASTM, 1968, Library of Congress Catalog Card Number 68-15545.
+                </P>
+                <P>(3) A statement shall appear in the advertisement providing the name and address of the testing administrator.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart O—Paperwork Reduction Act</HD>
+            <SECTION>
+                <SECTNO>§ 7.241</SECTNO>
+                <SUBJECT>OMB control numbers assigned under the Paperwork Reduction Act.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Purpose.</E>
+                     This subpart displays the control numbers assigned to information collection requirements in this part by the Office of Management and Budget (OMB) under the Paperwork Reduction Act of 1995, Public Law 104-13.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Table.</E>
+                     The following table identifies each section in this part that contains an information collection requirement and the OMB control number that is assigned to that information collection requirement.
+                </P>
+                <GPOTABLE COLS="2" OPTS="L2" CDEF="s25,12">
+                    <TTITLE>
+                        Table 1 to Paragraph (
+                        <E T="01">b</E>
+                        )
+                    </TTITLE>
+                    <BOXHD>
+                        <CHED H="1">Section where contained</CHED>
+                        <CHED H="1">Current OMB Control No.</CHED>
+                    </BOXHD>
+                    <ROW>
+                        <ENT I="01">7.11</ENT>
+                        <ENT>1513-0111</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.21</ENT>
+                        <ENT>1513-0020</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.22</ENT>
+                        <ENT>1513-0020</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.24</ENT>
+                        <ENT>
+                            1513-0020
+                            <LI>1513-0064</LI>
+                        </ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.25</ENT>
+                        <ENT>1513-0020</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.27</ENT>
+                        <ENT>1513-0020</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.28</ENT>
+                        <ENT>1513-0122</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.29</ENT>
+                        <ENT>1513-0020</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.62</ENT>
+                        <ENT>1513-0087</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.63</ENT>
+                        <ENT>
+                            1513-0084
+                            <LI>1513-0087</LI>
+                        </ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.66</ENT>
+                        <ENT>1513-0085</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.67</ENT>
+                        <ENT>1513-0085</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.81</ENT>
+                        <ENT>1513-0087</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.82</ENT>
+                        <ENT>1513-0121</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.83</ENT>
+                        <ENT>1513-0121</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.84</ENT>
+                        <ENT>1513-0087</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">7.233</ENT>
+                        <ENT>1513-0087</ENT>
+                    </ROW>
+                </GPOTABLE>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

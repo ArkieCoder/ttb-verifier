@@ -1,0 +1,727 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>PRODUCTION OF VOLATILE FRUIT-FLAVOR CONCENTRATE</TITLE>
+        <GRANULENUM>18</GRANULENUM>
+        <HEADING>PART 18</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 18</EAR>
+        <HD SOURCE="HED">PART 18—PRODUCTION OF VOLATILE FRUIT-FLAVOR CONCENTRATE</HD>
+        <CONTENTS>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—Scope</HD>
+                <SECHD>Sec.</SECHD>
+                <SECTNO>18.1</SECTNO>
+                <SUBJECT>Scope.</SUBJECT>
+                <SECTNO>18.2</SECTNO>
+                <SUBJECT>Applicability of law.</SUBJECT>
+                <SECTNO>18.3</SECTNO>
+                <SUBJECT>Unlawful operations.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart B—Definitions</HD>
+                <SECTNO>18.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Administrative and Miscellaneous Provisions</HD>
+                <SECTNO>18.12</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <SECTNO>18.13</SECTNO>
+                <SUBJECT>Alternate methods or procedures.</SUBJECT>
+                <SECTNO>18.14</SECTNO>
+                <SUBJECT>Emergency variations from requirements.</SUBJECT>
+                <SECTNO>18.15</SECTNO>
+                <SUBJECT>Right of entry and examination.</SUBJECT>
+                <SECTNO>18.16</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Document Requirements</HD>
+                    <SECTNO>18.17</SECTNO>
+                    <SUBJECT>Retention of documents.</SUBJECT>
+                    <SECTNO>18.18</SECTNO>
+                    <SUBJECT>Execution under penalties of perjury.</SUBJECT>
+                    <SECTNO>18.19</SECTNO>
+                    <SUBJECT>Security.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—Qualification</HD>
+                <SECTNO>18.21</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>18.22</SECTNO>
+                <SUBJECT>Restrictions as to location and use.</SUBJECT>
+                <SECTNO>18.23</SECTNO>
+                <SUBJECT>Registry of stills.</SUBJECT>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Application</HD>
+                    <SECTNO>18.24</SECTNO>
+                    <SUBJECT>Data for application.</SUBJECT>
+                    <SECTNO>18.25</SECTNO>
+                    <SUBJECT>Organizational documents.</SUBJECT>
+                    <SECTNO>18.26</SECTNO>
+                    <SUBJECT>Powers of attorney.</SUBJECT>
+                    <SECTNO>18.27</SECTNO>
+                    <SUBJECT>Additional requirements.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Changes After Original Establishment</HD>
+                    <SECTNO>18.31</SECTNO>
+                    <SUBJECT>General requirements.</SUBJECT>
+                    <SECTNO>18.32</SECTNO>
+                    <SUBJECT>Change in name.</SUBJECT>
+                    <SECTNO>18.33</SECTNO>
+                    <SUBJECT>Change in location.</SUBJECT>
+                    <SECTNO>18.34</SECTNO>
+                    <SUBJECT>Continuing partnerships.</SUBJECT>
+                    <SECTNO>18.35</SECTNO>
+                    <SUBJECT>Change in proprietorship.</SUBJECT>
+                    <SECTNO>18.36</SECTNO>
+                    <SUBJECT>Change in officers and directors.</SUBJECT>
+                    <SECTNO>18.37</SECTNO>
+                    <SUBJECT>Change in stockholders.</SUBJECT>
+                    <SECTNO>18.38</SECTNO>
+                    <SUBJECT>
+                        Permanent discontinuance.
+                        <PRTPAGE P="482"/>
+                    </SUBJECT>
+                    <SECTNO>18.39</SECTNO>
+                    <SUBJECT>Qualification to alternate a volatile fruit-flavor concentrate plant and a distilled spirits plant.</SUBJECT>
+                    <SECTNO>18.40</SECTNO>
+                    <SUBJECT>Qualification to alternate volatile fruit-flavor concentrate plant and bonded wine cellar.</SUBJECT>
+                    <SECTNO>18.41</SECTNO>
+                    <SUBJECT>Separation of premises.</SUBJECT>
+                    <SECTNO>18.42</SECTNO>
+                    <SUBJECT>Record of alternation.</SUBJECT>
+                    <SECTNO>18.43</SECTNO>
+                    <SUBJECT>Conditions of alternation.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart E—Operations</HD>
+                <SECTNO>18.51</SECTNO>
+                <SUBJECT>Processing material.</SUBJECT>
+                <SECTNO>18.52</SECTNO>
+                <SUBJECT>Production of high-proof concentrate.</SUBJECT>
+                <SECTNO>18.53</SECTNO>
+                <SUBJECT>Use of concentrate.</SUBJECT>
+                <SECTNO>18.54</SECTNO>
+                <SUBJECT>Transfer of concentrate.</SUBJECT>
+                <SECTNO>18.55</SECTNO>
+                <SUBJECT>Label.</SUBJECT>
+                <SECTNO>18.56</SECTNO>
+                <SUBJECT>Receipt of concentrate.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart F—Records and Reports</HD>
+                <SECTNO>18.61</SECTNO>
+                <SUBJECT>Records and reports.</SUBJECT>
+                <SECTNO>18.62</SECTNO>
+                <SUBJECT>Record of transfer.</SUBJECT>
+                <SECTNO>18.63</SECTNO>
+                <SUBJECT>Record of transfer to a bonded wine cellar.</SUBJECT>
+                <SECTNO>18.64</SECTNO>
+                <SUBJECT>Photographic copies of records.</SUBJECT>
+                <SECTNO>18.65</SECTNO>
+                <SUBJECT>Annual report.</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>26 U.S.C. 5001, 5171-5173, 5178, 5179, 5203, 5351, 5354, 5356, 5511, 5552, 6065, 6109, 7805.</P>
+        </AUTH>
+        <SOURCE>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. ATF-104, 47 FR 23921, June 2, 1982, unless otherwise noted.</P>
+        </SOURCE>
+        <EDNOTE>
+            <HD SOURCE="HED">Editorial Note:</HD>
+            <P>Nomenclature changes to part 18 appear by T.D. ATF-436, 66 FR 5471, 5472, Jan. 19, 2001.</P>
+        </EDNOTE>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—Scope</HD>
+            <SECTION>
+                <SECTNO>§ 18.1</SECTNO>
+                <SUBJECT>Scope.</SUBJECT>
+                <P>The regulations in this part relate to the qualification and operation (including activities incident thereto) of plants for the manufacture of volatile fruit-flavor concentrate (essence). The regulations in this part apply to the several States of the United States and the District of Columbia.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.2</SECTNO>
+                <SUBJECT>Applicability of law.</SUBJECT>
+                <P>Except as specified in 26 U.S.C. 5511, the provisions of 26 U.S.C. Chapter 51 are not applicable to the manufacture, by any process which includes evaporations from the mash or juice of any fruit, of any volatile fruit-flavor concentrate if:</P>
+                <P>(a) The concentrate, and the mash or juice from which it is produced, contains no more alcohol than is reasonably unavoidable in the manufacture of the concentrate; and</P>
+                <P>(b) The concentrate is rendered unfit for use as a beverage before removal from the place of manufacture, or (in the case of concentrate which does not exceed 24 percent alcohol by volume) the concentrate is transferred to a bonded wine cellar for use in the production of natural wine; and</P>
+                <P>(c) The manufacturer of concentrate complies with all requirements for the protection of the revenue with respect to the production, removal, sale, transportation, and use of concentrate, and of the mash or juice from which it is produced, as may be prescribed by this part.</P>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1392, as amended (26 U.S.C. 5511))</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.3</SECTNO>
+                <SUBJECT>Unlawful operations.</SUBJECT>
+                <P>(a) A manufacturer of concentrate who violates any of the conditions stated in § 18.2 is subject to the taxes and penalties otherwise applicable under 26 U.S.C. Chapter 51 in respect to such operations.</P>
+                <P>(b) Any person who sells, transports, or uses any concentrate or the mash or juice from which it is produced in violation of law or regulations is subject to all the provisions of 26 U.S.C. Chapter 51 pertaining to distilled spirits and wines, including those requiring the payment of the tax thereon.</P>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1314, as amended (26 U.S.C. 5001))</SECAUTH>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart B—Definitions</HD>
+            <SECTION>
+                <SECTNO>§ 18.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <P>When used in this part and in forms prescribed under this part, where not otherwise distinctly expressed or manifestly incompatible with the intent thereof, terms shall have the meaning ascribed in this section. Words in the plural form shall include the singular, and vice versa, and words importing the masculine gender shall include the feminine. The terms “includes” and “including” do not exclude things not enumerated which are in the same general class.</P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                    <PRTPAGE P="483"/>
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any functions relating to the administration or enforcement of this part by TTB Order 1135.18, Delegation of the Administrator's Authorities in 27 CFR Part 18, Production of Volatile Fruit-Flavor Concentrate.
+                </P>
+                <P>
+                    <E T="03">Bonded wine cellar.</E>
+                     Premises established under 27 CFR part 24 for the production, blending, cellar treatment, storage, bottling, or packaging of untaxpaid wine, and includes premises designated as “bonded winery.”
+                </P>
+                <P>
+                    <E T="03">Concentrate.</E>
+                     Any volatile fruit-flavor concentrate (essence) produced by any process which includes evaporations from any fruit mash or juice.
+                </P>
+                <P>
+                    <E T="03">Concentrate plant.</E>
+                     An establishment qualified under this part for the production of concentrate.
+                </P>
+                <P>
+                    <E T="03">Distilled spirits plant.</E>
+                     An establishment qualified under 27 CFR part 19, excluding alcohol fuel plants, for producing, warehousing, or processing distilled spirits (including denatured distilled spirits).
+                </P>
+                <P>
+                    <E T="03">Executed under penalties of perjury.</E>
+                     Signed with the prescribed declaration under the penalties of perjury as provided on or with respect to the application, report, form, or other document or, where no form of declaration is prescribed, with the declaration: “I declare under the penalties of perjury that this __________ (insert type of document, such as application or report), including the documents submitted in support thereof, has been examined by me and, to the best of my knowledge and belief, is true, correct and complete.”
+                </P>
+                <P>
+                    <E T="03">Fold.</E>
+                     The ratio of the volume of the fruit mash or juice to the volume of the concentrate produced from the fruit mash or juice. For example, one gallon of concentrate of 100-fold would be the product from 100 gallons of fruit mash or juice.
+                </P>
+                <P>
+                    <E T="03">Fruit.</E>
+                     All products commonly known and classified as fruit, berries, or grapes.
+                </P>
+                <P>
+                    <E T="03">Fruit mash.</E>
+                     Any unfermented mixture of juice, pulp, skins, and seeds prepared from fruit, berries, or grapes.
+                </P>
+                <P>
+                    <E T="03">High-proof concentrate.</E>
+                     For the purposes of this part, “high-proof concentrate” means a concentrate (essence), as defined in this section, that has an alcohol content of more than 24 percent by volume and is unfit for beverage use (nonpotable) because of its natural constituents, i.e. without the addition of other substances.
+                </P>
+                <P>
+                    <E T="03">Juice.</E>
+                     The unfermented juice (concentrated or unconcentrated) of fruit, berries, or grapes, exclusive of pulp, skins, or seeds.
+                </P>
+                <P>
+                    <E T="03">Person.</E>
+                     An individual, trust, estate, partnership, association, company, or corporation.
+                </P>
+                <P>
+                    <E T="03">Processing material.</E>
+                     The fruit mash or juice from which concentrate is produced.
+                </P>
+                <P>
+                    <E T="03">Proprietor.</E>
+                     A person qualified under this part to operate a concentrate plant.
+                </P>
+                <P>
+                    <E T="03">Registry number.</E>
+                     The number assigned to a concentrate plant or a bonded wine cellar for an approved application as required by Parts 18 and 24, respectively.
+                </P>
+                <P>
+                    <E T="03">U.S.C.</E>
+                     The United States Code.
+                </P>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-299, 55 FR 24989, June 19, 1990; T.D. ATF-436, 66 FR 5471, Jan. 19, 2001; T.D. ATF-455, 66 FR 29482, May 31, 2001; T.D. TTB-44, 71 FR 16927, Apr. 4, 2006]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart C—Administrative and Miscellaneous Provisions</HD>
+            <SECTION>
+                <SECTNO>§ 18.12</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    The regulatory authorities of the Administrator contained in this part are delegated to appropriate TTB officers. These TTB officers are specified in TTB Order 1135.18, Delegation of the Administrator's Authorities in 27 CFR Part 18, Production of a Volatile Fruit-Flavor Concentrate. You may obtain a copy of this order by accessing the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. TTB-44, 71 FR 16927, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.13</SECTNO>
+                <SUBJECT>Alternate methods or procedures.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The proprietor, on specific approval by the appropriate TTB officer, may use an alternate method 
+                    <PRTPAGE P="484"/>
+                    or procedure in lieu of a method or procedure specifically prescribed in this part. The appropriate TTB officer may approve an alternate method or procedure, subject to stated conditions, when he finds that:
+                </P>
+                <P>(1) Good cause has been shown for the use of the alternate method or procedure;</P>
+                <P>(2) The alternate method or procedure is within the purpose of, and consistent with the effect intended by the specifically prescribed method or procedure, and affords equivalent security to the revenue; and</P>
+                <P>(3) The alternate method or procedure will not be contrary to any provision of law, and will not result in an increase in cost to the Government or hinder the effective administration of this part.</P>
+                <P>
+                    (b) 
+                    <E T="03">Application.</E>
+                     A proprietor who desires to employ an alternate method or procedure shall submit a written application to the appropriate TTB officer. The application will specifically describe the proposed alternate method or procedure and set forth the reasons therefor. Alternate methods or procedures may not be employed until the application has been approved by the appropriate TTB officer. Authorization for any alternate method or procedure may be withdrawn whenever in the judgment of the appropriate TTB officer the revenue is jeopardized or the effective administration of this part is hindered by the continuation of the authorization.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996; T.D. ATF-436, 66 FR 5471, Jan. 19, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.14</SECTNO>
+                <SUBJECT>Emergency variations from requirements.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The appropriate TTB officer may approve emergency variations from requirements specified in this part, where the appropriate TTB officer finds that an emergency exists, the proposed variations are necessary, and the proposed variations:
+                </P>
+                <P>(1) Will afford the security and protection to the revenue intended by the prescribed specifications;</P>
+                <P>(2) Will not hinder the effective administration of this part; and</P>
+                <P>(3) Will not be contrary to any provision of law.</P>
+                <FP>Variations from requirements granted under this section are conditioned on compliance with the procedures, conditions, and limitations stated in the approval of the application. Failure to comply in good faith with such procedures, conditions and limitations will automatically terminate the authority for such variations and the proprietor thereupon shall fully comply with the prescribed requirements of regulations from which the variations were authorized. Authority for any variation may be withdrawn whenever in the judgment of the appropriate TTB officer the revenue is jeopardized or the effective administration of this part is hindered by the continuation of such variation.</FP>
+                <P>
+                    (b) 
+                    <E T="03">Application.</E>
+                     A proprietor who desires to employ emergency variations shall submit a written application to the appropriate TTB officer. The application will describe the proposed variations and set forth the reasons therefor. Variations will not be employed until the application has been approved, except when an emergency requires immediate action to correct a situation that is threatening to life or property. Such corrective action may then be taken concurrent with the filing of the application and notification of the appropriate TTB officer via telephone.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.15</SECTNO>
+                <SUBJECT>Right of entry and examination.</SUBJECT>
+                <P>
+                    Appropriate TTB officers may at all times, as well by night as by day, enter any concentrate plant to make examination of the materials, equipment, and facilities thereon; and make such gauges and inventories as they deem necessary. Whenever appropriate TTB officers, having demanded admittance and declared their name and office, are not admitted into such premises by the proprietor or other person having charge thereof, they may at all times 
+                    <PRTPAGE P="485"/>
+                    use such force as is necessary for them to gain entry to such premises.
+                </P>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1357, as amended, 1392, as amended (26 U.S.C. 5203, 5511))</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.16</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <P>(a) The appropriate TTB officer is authorized to prescribe all forms required by this part. All of the information called for in each form will be furnished as indicated by the headings on the form and the instructions on or pertaining to the form. In addition, information called for in each form will be furnished as required by this part. The form will be filed in accordance with the instructions for the form.</P>
+                <P>
+                    (b) Forms prescribed by this part are available for printing through the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-249, 52 FR 5960, Feb. 27, 1987; T.D. 372, 61 FR 20723, May 8, 1996; T.D. ATF-436, 66 FR 5472, Jan. 19, 2001; T.D. TTB-44, 71 FR 16927, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SUBJGRP>
+                <HD SOURCE="HED">Document Requirements</HD>
+                <SECTION>
+                    <SECTNO>§ 18.17</SECTNO>
+                    <SUBJECT>Retention of documents.</SUBJECT>
+                    <P>The proprietor shall maintain a file of all approved applications and other documents, on or convenient to the concentrate plant premises, available for inspection by appropriate TTB officers.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.18</SECTNO>
+                    <SUBJECT>Execution under penalties of perjury.</SUBJECT>
+                    <P>When a form or other document called for under this part is required to be executed under penalties of perjury, it will be so executed, as defined in § 18.11, and signed by an authorized person.</P>
+                    <SECAUTH>(Act of August 16, 1954, Pub. L. 591, Chapter 736, 68A Stat. 749 (26 U.S.C. 6065))</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.19</SECTNO>
+                    <SUBJECT>Security.</SUBJECT>
+                    <P>The concentrate plant and equipment will be so constructed, arranged, equipped, and protected as to afford adequate protection to the revenue and facilitate inspection by appropriate TTB officers.</P>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—Qualification</HD>
+            <SECTION>
+                <SECTNO>§ 18.21</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>A person who desires to engage in the business of manufacturing concentrate shall submit an application for registration on Form 27-G (5520.3) and receive approval as provided in this part. All written statements, affidavits, and other documents submitted in support of the application or incorporated by reference are deemed a part thereof.</P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.22</SECTNO>
+                <SUBJECT>Restrictions as to location and use.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Restrictions.</E>
+                     A concentrate plant may not be established in any dwelling house or on board any vessel or boat, or on any premises where any other business is conducted. The premises of a concentrate plant may be used only for the business stated in the approved application for registration.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Exceptions.</E>
+                     The appropriate TTB officer may authorize (1) the establishment of a concentrate plant on premise where other business is conducted, or (2) the use of the premises of a concentrate plant for other business. A person or proprietor desiring such authorization shall submit a written application to the appropriate TTB officer. The application will describe the other business by type and the premises to be used. If the premises of a concentrate plant are to be used for other business, the relationship (if any) to the concentrate plant will be described in the application. A concentrate plant may not be established on premises where other business is conducted or used to conduct other business until the application is approved. The appropriate TTB officer may decline to approve the application or withdraw the 
+                    <PRTPAGE P="486"/>
+                    authorization if the revenue is jeopardized or the effective administration of this part is hindered.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.23</SECTNO>
+                <SUBJECT>Registry of stills.</SUBJECT>
+                <P>The provisions of subpart C of part 29 of this chapter are applicable to stills or distilling apparatus located on concentrate plant premises used for the production of concentrate. As provided under § 29.55, the listing of a still in the application, and approval of the application, constitutes registration of the still.</P>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1355, as amended, 1392, as amended (26 U.S.C. 5179, 5511))</SECAUTH>
+                <CITA>[T.D. ATF-207, 50 FR 23681, June 5, 1985, as amended by T.D. ATF-462, 66 FR 42736, Aug. 15, 2001]</CITA>
+            </SECTION>
+            <SUBJGRP>
+                <HD SOURCE="HED">Application</HD>
+                <SECTION>
+                    <SECTNO>§ 18.24</SECTNO>
+                    <SUBJECT>Data for application.</SUBJECT>
+                    <P>Applications on Form 27-G (5520.3) will include the following:</P>
+                    <P>(a) Serial number;</P>
+                    <P>(b) Name and principal business address of the applicant, and the location of the plant if different from the business address;</P>
+                    <P>(c) Purpose for which filed;</P>
+                    <P>(d) Information regarding proprietorship, supported by the organizational documents listed in § 18.25; and</P>
+                    <P>(e) Description of each still and a statement of its maximum capacity.</P>
+                    <FP>Where any of the information required by this section is on file with the appropriate TTB officer, that information, if accurate and complete, may be incorporated by reference by the applicant and made a part of the application.</FP>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.25</SECTNO>
+                    <SUBJECT>Organizational documents.</SUBJECT>
+                    <P>The supporting information required by paragraph (d) of § 18.24 includes, as applicable:</P>
+                    <P>(a) Extracts from the articles of incorporation or from the minutes of meetings of the board of directors, authorizing the incumbents of certain offices, or other persons, to sign for the corporation;</P>
+                    <P>(b) Names and addresses of the officers and directors (Do not list officers and directors who have no responsibility in connection with the operation of the concentrate plant.);</P>
+                    <P>(c) Names and addresses of the 10 persons having the largest ownership or other interest in the corporation or other entity, and the nature and amount of the stockholding or other interest of each, whether the interest appears in the name of the interested party or in the name of another for him; and</P>
+                    <P>(d) In the case of an individual owner or a partnership, the name and address of every person interested in the concentrate plant, whether the interest appears in the name of the interested party or in the name of another for him.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.26</SECTNO>
+                    <SUBJECT>Powers of attorney.</SUBJECT>
+                    <P>The proprietor shall execute and file a Form 1534 (5000.8) for every person authorized to sign or to act on behalf of the proprietor. (Not required for persons whose authority is furnished in the application.)</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0079)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.27</SECTNO>
+                    <SUBJECT>Additional requirements.</SUBJECT>
+                    <P>(a) The appropriate TTB officer, to protect the revenue, may require:</P>
+                    <P>(1) Additional information in support of an application for registration;</P>
+                    <P>(2) Marks on major equipment to show serial number, capacity, and use;</P>
+                    <P>(3) Installation of meters, tanks, pipes, or other apparatus; and</P>
+                    <P>
+                        (4) Installation of security devices.
+                        <PRTPAGE P="487"/>
+                    </P>
+                    <P>(b) Any proprietor refusing or neglecting to comply with any requirement of this section shall not be permitted to operate.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1349, as amended, 1353, as amended, 1395, as amended (26 U.S.C. 5172, 5178, 5552))</SECAUTH>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Changes After Original Establishment</HD>
+                <SECTION>
+                    <SECTNO>§ 18.31</SECTNO>
+                    <SUBJECT>General requirements.</SUBJECT>
+                    <P>Where there is a change with respect to the information shown in the application, the proprietor shall submit, within 30 days of the change (except as otherwise provided in this part), an amended application on Form 27-G (5520.3).</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1392, as amended (26 U.S.C. 5511))</SECAUTH>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.32</SECTNO>
+                    <SUBJECT>Change in name.</SUBJECT>
+                    <P>The proprietor shall submit an amended application to cover any change in the individual, firm, or corporate name.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.33</SECTNO>
+                    <SUBJECT>Change in location.</SUBJECT>
+                    <P>The proprietor shall submit an amended application to cover a change in the location of a concentrate plant. Operation of the concentrate plant may not be commenced at the new location prior to approval of the amended application.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.34</SECTNO>
+                    <SUBJECT>Continuing partnerships.</SUBJECT>
+                    <P>If, under the laws of the particular State, the partnership is not immediately terminated on death or insolvency of a partner, but continues until the winding up of the partnership affairs is completed, and the surviving partner has the exclusive right to the control and possession of the partnership assets for the purpose of liquidation and settlement, the surviving partner may continue to operate the plant under the prior qualification of the partnership. If the surviving partner acquires the business on completion of the settlement of the partnership, such partner shall qualify in his own name from the date of acquisition, as provided in § 18.35. The rule set forth in this section also applies where there is more than one surviving partner.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996; T.D. TTB-91, 76 FR 5477, Feb. 1, 2011]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.35</SECTNO>
+                    <SUBJECT>Change in proprietorship.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         If there is a change in the proprietorship of a concentrate plant, the outgoing proprietor shall comply with the requirements of § 18.38, and the successor shall, before commencing operations, file application and receive approval in the same manner as a person qualifying as the proprietor of a new concentrate plant. Processing material, concentrate and other materials may be transferred from an outgoing proprietor to a successor.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Fiduciary.</E>
+                         A successor to the proprietorship of a concentrate plant who is an administrator, executor, receiver, trustee, assignee, or other fiduciary shall comply with the provisions of paragraph (a) of this section. If the fiduciary was appointed by a court, the effective dates of the qualifying documents filed by the fiduciary shall be the effective date of the court order, or the date specified therein for the fiduciary to assume control. If the fiduciary was not appointed by a court, the date the fiduciary assumes control shall coincide with the effective date of 
+                        <PRTPAGE P="488"/>
+                        the qualifying documents filed by the fiduciary.
+                    </P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.36</SECTNO>
+                    <SUBJECT>Change in officers and directors.</SUBJECT>
+                    <P>The proprietor shall submit an amended application to cover changes in the list of officers and directors furnished under the provisions of § 18.25.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.37</SECTNO>
+                    <SUBJECT>Change in stockholders.</SUBJECT>
+                    <P>The proprietor shall submit changes in the list of stockholders furnished under the provisions of § 18.25 annually on May 1. When the sale or transfer of capital stock results in a change of control or management of the business, the proprietor shall comply with the provisions of § 18.35.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.38</SECTNO>
+                    <SUBJECT>Permanent discontinuance.</SUBJECT>
+                    <P>A proprietor who permanently discontinues the business of a concentrate manufacturer shall, after completion of operations, file an application on Form 27-G (5520.3) to cover such discontinuance, giving the date of the discontinuance.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.39</SECTNO>
+                    <SUBJECT>Qualification to alternate a volatile fruit-flavor concentrate plant and a distilled spirits plant.</SUBJECT>
+                    <P>A proprietor of a volatile fruit-flavor concentrate plant operating a contiguous distilled spirits plant may alternate the use of such premises between the two functions through extension and curtailment by filing with the appropriate TTB officer the following information:</P>
+                    <P>(a) TTB Form 27-G (5520.3) and TTB Form 5110.41 to cover the proposed alternation of premises;</P>
+                    <P>(b) A special diagram, in duplicate, delineating the premises as they will exist, both during extension and curtailment and clearly depicting all buildings, floors, rooms, areas, equipment and pipe lines (identified individually by letter or number) which are to be subject to alternation, in their relative operating sequence; and</P>
+                    <P>(c) A bond or a consent of surety to cover the proposed alternation of premises if the proprietor is required to hold a bond under § 19.151 of this chapter to cover the distilled spirits plant premises subject to alternation.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0006)</APPRO>
+                    <CITA>[T.D. ATF-455, 66 FR 29482, May 31, 2001, as amended by T.D. TTB-146, 82 FR 1119, Jan. 4, 2017]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.40</SECTNO>
+                    <SUBJECT>Qualification to alternate volatile fruit-flavor concentrate plant and bonded wine cellar.</SUBJECT>
+                    <P>A proprietor of a volatile fruit-flavor concentrate plant operating a contiguous bonded wine cellar may alternate the use of each premise by extension and curtailment by filing with the appropriate TTB officer the following information:</P>
+                    <P>(a) TTB Form 27-G (5520.3) and TTB Form 5120.25 to cover the proposed alternation of premises;</P>
+                    <P>(b) A special diagram, in duplicate, delineating the premises as they will exist, both during extension and curtailment and clearly depicting all buildings, floors, rooms, areas, equipment and pipe lines (identified individually by letter or number) which are to be subject to alternation, in their relative operating sequence; and</P>
+                    <P>
+                        (c) A bond or a consent of surety to cover the proposed alternation of premises if the proprietor is required to hold a bond under § 24.146 of this chapter to 
+                        <PRTPAGE P="489"/>
+                        cover the bonded wine cellar premises subject to alternation.
+                    </P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0006)</APPRO>
+                    <CITA>[T.D. ATF-455, 66 FR 29482, May 31, 2001, as amended by T.D. TTB-146, 82 FR 1119, Jan. 4, 2017]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.41</SECTNO>
+                    <SUBJECT>Separation of premises.</SUBJECT>
+                    <P>The appropriate TTB officer may specify additional means of separating the volatile fruit-flavor concentrate plant from a distilled spirits plant or bonded wine cellar premises.</P>
+                    <CITA>[T.D. ATF-455, 66 FR 29482, May 31, 2001]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.42</SECTNO>
+                    <SUBJECT>Record of alternation.</SUBJECT>
+                    <P>After approval of the qualifying documents for the alternation of premises, the proprietor must execute a record each time that the premises are alternated. The record will contain the following information:</P>
+                    <P>(a) Identification assigned by TTB, including the plant or registry number, of the volatile fruit-flavor concentrate plant and the distilled spirits plant or bonded wine cellar;</P>
+                    <P>(b) Effective date and time of proposed change; and</P>
+                    <P>(c) Description of the alternation that identifies the diagrams depicting the premises before and after the alternation.</P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                    <CITA>[T.D. ATF-455, 66 FR 29482, May 31, 2001]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 18.43</SECTNO>
+                    <SUBJECT>Conditions of alternation.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Curtailment of volatile fruit-flavor concentrate plant.</E>
+                         The proprietor must remove all concentrate, fruit mash, and juice from the volatile fruit-flavor concentrate plant alternated to a distilled spirits plant or to a bonded wine cellar premises, unless such concentrate, fruit mash, or juice is being simultaneously transferred to the distilled spirits plant or bonded wine cellar premises.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Extension of volatile fruit-flavor concentrate premises and curtailment of distilled spirits plant.</E>
+                         The proprietor must remove all spirits, denatured spirits, articles and wine, except for concentrate, fruit mash, or juice that is being simultaneously transferred to the volatile fruit-flavor concentrate plant.
+                    </P>
+                    <P>
+                        (c) 
+                        <E T="03">Extension of volatile fruit-flavor concentrate premises and curtailment of bonded wine cellar premises.</E>
+                         The proprietor must remove all wine and spirits from the alternated bonded wine cellar premises, except for concentrate, fruit mash, or juice that is being simultaneously transferred to the volatile fruit-flavor concentrate plant.
+                    </P>
+                    <CITA>[T.D. ATF-455, 66 FR 29482, May 31, 2001]</CITA>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart E—Operations</HD>
+            <SECTION>
+                <SECTNO>§ 18.51</SECTNO>
+                <SUBJECT>Processing material.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     A proprietor may produce processing material or receive processing material produced elsewhere. Fermented processing material may not be used in the manufacture of concentrate. Processing material may be used if it contains no more alcohol than is reasonably unavoidable, and must be used when produced, or as soon thereafter as practicable.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Record of processing material.</E>
+                     A proprietor shall maintain a record, by kind and quantity, of processing material used.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0098)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.52</SECTNO>
+                <SUBJECT>Production of high-proof concentrate.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     High-proof concentrate may be produced in a concentrate plant. Concentrate having an alcohol content of more than 24 percent by volume that is fit for beverage use may not be produced in a concentrate plant.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Determination.</E>
+                     A proprietor shall determine whether a particular concentrate is a high-proof concentrate. However, a proprietor may at any time submit a written request to the appropriate TTB officer for a determination of whether a concentrate is unfit for beverage use. Each request for a determination will include information as to kind, percent alcohol by volume, 
+                    <PRTPAGE P="490"/>
+                    and fold of the concentrate. The request will be accompanied by a representative 8-ounce sample of the concentrate.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0046)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.53</SECTNO>
+                <SUBJECT>Use of concentrate.</SUBJECT>
+                <P>Concentrate may be used in the manufacture of any product made in the conduct of another business authorized to be conducted on concentrate plant premises under the provisions of § 18.22, if such product contains less than one-half of one percent of alcohol by volume.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.54</SECTNO>
+                <SUBJECT>Transfer of concentrate.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Concentrate unfit for beverage use.</E>
+                     Concentrate (including high-proof concentrate and concentrate treated as provided in paragraph (c) of this section) unfit for beverage use may be transferred for any purpose authorized by law.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Concentrate fit for beverage use.</E>
+                     Concentrate fit for beverage use may be transferred only to a bonded wine cellar. If such concentrate is rendered unfit for beverage use, it may be transferred as provided in paragraph (a) of this section.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Rendering concentrate unfit for beverage use.</E>
+                     Concentrate may be rendered unfit for beverage use by reducing the alcohol content to not more than 15 percent alcohol by volume (if the reduction does not result in a concentrate of less than 100-fold), and adding to each gallon thereof, in a quantity sufficient to render the concentrate unfit for beverage use, the following:
+                </P>
+                <P>(1) Sucrose; or</P>
+                <P>(2) Concentrated fruit juice, of at least 70 Brix, made from the same kind of fruit as the concentrate; or</P>
+                <P>(3) Malic, citric, or tartaric acid.</P>
+                <P>
+                    (d) 
+                    <E T="03">Record of transfer.</E>
+                     The proprietor shall record transfers of concentrate (including high-proof concentrate) on a record of transfer as required in §§ 18.62 or 18.63.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0098)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.55</SECTNO>
+                <SUBJECT>Label.</SUBJECT>
+                <P>Each container of concentrate will have affixed thereto, before transfer, a label identifying the product and showing (a) the name of the proprietor; (b) the registry number of the plant; (c) the address of the plant; (d) the number of wine gallons; and (e) the percent of alcohol by volume.</P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0098)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.56</SECTNO>
+                <SUBJECT>Receipt of concentrate.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The proprietor of a concentrate plant may accept the return of concentrate that the proprietor shipped. In addition, concentrate that is unfit for beverage use may be received from another concentrate plant for further processing in accordance with this part.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Record of concentrate received.</E>
+                     When concentrate is received, the proprietor must record the receipt, including the name of the consignor and a notation regarding any loss in transit or other discrepancy.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0098)</APPRO>
+                <CITA>[T.D. ATF-455, 66 FR 29482, May 31, 2001]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart F—Records and Reports</HD>
+            <SECTION>
+                <SECTNO>§ 18.61</SECTNO>
+                <SUBJECT>Records and reports.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Each proprietor shall keep records and reports as required by this part. These records and reports will be maintained on or convenient to the concentrate plant and will be available for inspection by appropriate TTB officers during business hours. Records and reports will be retained by the proprietor for three years from the date they were prepared, or three years from the date of the last entry, whichever is later.
+                    <PRTPAGE P="491"/>
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Records.</E>
+                     Each proprietor shall keep such records relating to or connected with the production, transfer, or return of concentrate and the juice or mash from which it is produced, as will (1) enable any appropriate TTB officer to verify operations and to ascertain whether there has been compliance with law and regulations, and (2) enable the proprietor to prepare Form 1695(5520.2). A proprietor need not prepare a specific record to meet the record requirements of this part. Any book, paper, invoice, bill of lading, or similar document that the proprietor prepares or receives for other purposes may be used, if all required information is shown.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Reports.</E>
+                     Each proprietor shall prepare and submit reports (including applications) as required by this part.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0098)</APPRO>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-172, 49 FR 14941, Apr. 16, 1984; T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.62</SECTNO>
+                <SUBJECT>Record of transfer.</SUBJECT>
+                <P>When concentrate, juice, or fruit mash is transferred from the concentrate plant premises, the proprietor shall prepare, in duplicate, a record of transfer. The record of transfer may consist of a commercial invoice, bill of lading, or any other similar document. The proprietor shall forward the original of the record of transfer to the consignee and retain the copy as a record. Each record of transfer shall show the following information:</P>
+                <P>(a) Name, registry number, and address of the concentrate plant;</P>
+                <P>(b) Name and address of the consignee;</P>
+                <P>(c) Kind (by fruit from which produced) and description of product, e.g. grape concentrate, concentrated grape juice, unconcentrated grape juice, grape mash;</P>
+                <P>(d) Quantity (in wine gallons); and</P>
+                <P>(e) For concentrate, percent of alcohol by volume.</P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0098)</APPRO>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1392, as amended (26 U.S.C. 5511))</SECAUTH>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-172, 49 FR 14941, Apr. 16, 1984; T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.63</SECTNO>
+                <SUBJECT>Record of transfer to a bonded wine cellar.</SUBJECT>
+                <P>A proprietor transferring concentrate, juice, or fruit mash to a bonded wine cellar shall prepare a record of transfer as required by § 18.62 and enter the following additional information:</P>
+                <P>(a) Registry number of the bonded wine cellar;</P>
+                <P>(b) For each product manufactured from grapes or berries, variety of grape or berry;</P>
+                <P>(c) For concentrate, fold;</P>
+                <P>(d) For juice and fruit mash, whether volatile fruit flavor has been removed and, if so, whether the identical volatile fruit flavor has been restored; and</P>
+                <P>(e) For concentrated juice, total solids content before and after concentration.</P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0098)</APPRO>
+                <SECAUTH>(Sec. 201, Pub. L. 85-859, 72 Stat. 1392, as amended (26 U.S.C. 5511))</SECAUTH>
+                <CITA>[T.D. ATF-104, 47 FR 23921, June 2, 1982, as amended by T.D. ATF-172, 49 FR 14941, Apr. 16, 1984; T.D. ATF-381, 61 FR 37003, July 16, 1996]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.64</SECTNO>
+                <SUBJECT>Photographic copies of records.</SUBJECT>
+                <P>
+                    Proprietors may record, copy, or reproduce records required by this part by any process which accurately reproduces or forms a durable medium for reproducing the original of records. Whenever records are reproduced under this section, the reproduced records will be preserved in conveniently accessible files, and provisions will be made for examining, viewing, and using the reproduced record the same as if it were the original record. The reproduced record will be treated and considered for all purposes as though it were the original record. All provisions of law and regulation applicable to the 
+                    <PRTPAGE P="492"/>
+                    original record are applicable to the reproduced record.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 18.65</SECTNO>
+                <SUBJECT>Annual report.</SUBJECT>
+                <P>An annual report, on Form 1695(5520.2), of concentrate plant operations shall be prepared by each proprietor and forwarded in accordance with the instructions for the form. When a proprietor permanently discontinues the business of manufacturing concentrate, the proprietor shall submit the annual report in accordance with the instructions for the form.</P>
+                <CITA>[T.D. ATF-436, 66 FR 5472, Jan. 19, 2001]</CITA>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

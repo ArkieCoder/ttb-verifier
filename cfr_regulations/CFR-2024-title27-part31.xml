@@ -1,0 +1,1504 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>ALCOHOL BEVERAGE DEALERS</TITLE>
+        <GRANULENUM>31</GRANULENUM>
+        <HEADING>PART 31</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 31</EAR>
+        <HD SOURCE="HED">PART 31—ALCOHOL BEVERAGE DEALERS</HD>
+        <CONTENTS>
+            <SECHD>Sec.</SECHD>
+            <SECTNO>31.0</SECTNO>
+            <SUBJECT>Scope.</SUBJECT>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—General Provisions</HD>
+                <SECTNO>31.1</SECTNO>
+                <SUBJECT>Definitions.</SUBJECT>
+                <SECTNO>31.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <SECTNO>31.3</SECTNO>
+                <SUBJECT>Basic permit requirements.</SUBJECT>
+                <SECTNO>31.4</SECTNO>
+                <SUBJECT>Relation to State and municipal law.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart B—Administrative Provisions</HD>
+                <SECTNO>31.11</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <SECTNO>31.12</SECTNO>
+                <SUBJECT>Right of entry and examination.</SUBJECT>
+                <SECTNO>31.13</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <SECTNO>31.14</SECTNO>
+                <SUBJECT>Penalties.</SUBJECT>
+                <SECTNO>31.15</SECTNO>
+                <SUBJECT>Disclosure of information.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <PRTPAGE P="1025"/>
+                <HD SOURCE="HED">Subpart C—Activities Subject to This Part</HD>
+                <SECTNO>31.21</SECTNO>
+                <SUBJECT>Basis of regulation.</SUBJECT>
+                <SECTNO>31.22</SECTNO>
+                <SUBJECT>Selling or offering for sale.</SUBJECT>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Dealers Classified</HD>
+                    <SECTNO>31.31</SECTNO>
+                    <SUBJECT>Retail dealer in liquors.</SUBJECT>
+                    <SECTNO>31.32</SECTNO>
+                    <SUBJECT>Wholesale dealer in liquors.</SUBJECT>
+                    <SECTNO>31.33</SECTNO>
+                    <SUBJECT>Retail dealer in beer.</SUBJECT>
+                    <SECTNO>31.34</SECTNO>
+                    <SUBJECT>Wholesale dealer in beer.</SUBJECT>
+                    <SECTNO>31.35</SECTNO>
+                    <SUBJECT>Limited retail dealer; persons eligible.</SUBJECT>
+                    <SECTNO>31.36</SECTNO>
+                    <SUBJECT>Sales of 20 wine gallons (75.7 liters) or more.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Certain Organizations, Agencies, and Persons</HD>
+                    <SECTNO>31.41</SECTNO>
+                    <SUBJECT>Clubs or similar organizations.</SUBJECT>
+                    <SECTNO>31.42</SECTNO>
+                    <SUBJECT>Restaurants serving liquors with meals.</SUBJECT>
+                    <SECTNO>31.43</SECTNO>
+                    <SUBJECT>States, political subdivisions thereof, or the District of Columbia.</SUBJECT>
+                    <SECTNO>31.44</SECTNO>
+                    <SUBJECT>Sales of denatured spirits or articles.</SUBJECT>
+                    <SECTNO>31.45</SECTNO>
+                    <SUBJECT>Sales of alcoholic compounds, preparations, or mixtures containing distilled spirits, wines, or beer.</SUBJECT>
+                    <SECTNO>31.46</SECTNO>
+                    <SUBJECT>Sales by agencies and instrumentalities of the United States.</SUBJECT>
+                    <SECTNO>31.47</SECTNO>
+                    <SUBJECT>Warehouse receipts covering spirits.</SUBJECT>
+                    <SECTNO>31.48</SECTNO>
+                    <SUBJECT>Alcohol beverage producers, processors, and bonded warehousemen.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—Exemptions and Exceptions</HD>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Persons Exempt From Registration and/or Recordkeeping</HD>
+                    <SECTNO>31.51</SECTNO>
+                    <SUBJECT>Wholesale dealers making retail sales.</SUBJECT>
+                    <SECTNO>31.52</SECTNO>
+                    <SUBJECT>Wholesale dealers in liquors consummating sales of wines or beer at premises of other dealers.</SUBJECT>
+                    <SECTNO>31.53</SECTNO>
+                    <SUBJECT>Wholesale dealers in beer consummating sales at premises of other dealers.</SUBJECT>
+                    <SECTNO>31.54</SECTNO>
+                    <SUBJECT>Hospitals.</SUBJECT>
+                    <SECTNO>31.55</SECTNO>
+                    <SUBJECT>Limited retail dealers.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Persons Who Are Not Dealers in Liquors or Beer</HD>
+                    <SECTNO>31.61</SECTNO>
+                    <SUBJECT>Single sale of liquors or warehouse receipts.</SUBJECT>
+                    <SECTNO>31.62</SECTNO>
+                    <SUBJECT>Persons making casual sales.</SUBJECT>
+                    <SECTNO>31.63</SECTNO>
+                    <SUBJECT>Agents, auctioneers, brokers, etc., acting on behalf of others.</SUBJECT>
+                    <SECTNO>31.64</SECTNO>
+                    <SUBJECT>Apothecaries or druggists selling medicines and tinctures.</SUBJECT>
+                    <SECTNO>31.65</SECTNO>
+                    <SUBJECT>Persons selling products unfit for beverage use.</SUBJECT>
+                    <SECTNO>31.66</SECTNO>
+                    <SUBJECT>Retail dealer selling entire stock in liquidation.</SUBJECT>
+                    <SECTNO>31.67</SECTNO>
+                    <SUBJECT>Persons returning liquors for credit, refund, or exchange.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart E—Places Subject to Registration</HD>
+                <SECTNO>31.71</SECTNO>
+                <SUBJECT>Registration required for each place of business.</SUBJECT>
+                <SECTNO>31.72</SECTNO>
+                <SUBJECT>Place of sale.</SUBJECT>
+                <SECTNO>31.73</SECTNO>
+                <SUBJECT>Place of offering for sale.</SUBJECT>
+                <SECTNO>31.74</SECTNO>
+                <SUBJECT>Places of storage; deliveries therefrom.</SUBJECT>
+                <SECTNO>31.75</SECTNO>
+                <SUBJECT>Dealer in beer and dealer in liquors at the same location.</SUBJECT>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Sales in Two or More Areas on the Same Premises</HD>
+                    <SECTNO>31.81</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <SECTNO>31.82</SECTNO>
+                    <SUBJECT>Hotels.</SUBJECT>
+                    <SECTNO>31.83</SECTNO>
+                    <SUBJECT>Ball park, race track, etc.; sales throughout the premises.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Sales in Multiple Locations</HD>
+                    <SECTNO>31.91</SECTNO>
+                    <SUBJECT>Passenger trains, aircraft, and vessels.</SUBJECT>
+                    <SECTNO>31.92</SECTNO>
+                    <SUBJECT>Carriers not engaged in passenger service.</SUBJECT>
+                    <SECTNO>31.93</SECTNO>
+                    <SUBJECT>Supply boats or vessels.</SUBJECT>
+                    <SECTNO>31.94</SECTNO>
+                    <SUBJECT>Retail dealers “At Large.”</SUBJECT>
+                    <SECTNO>31.95</SECTNO>
+                    <SUBJECT>Caterers.</SUBJECT>
+                    <SECTNO>31.96</SECTNO>
+                    <SUBJECT>Peddling.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart F—Partnerships</HD>
+                <SECTNO>31.101</SECTNO>
+                <SUBJECT>Registration of partners.</SUBJECT>
+                <SECTNO>31.102</SECTNO>
+                <SUBJECT>Addition of partners or incorporation of partnership.</SUBJECT>
+                <SECTNO>31.103</SECTNO>
+                <SUBJECT>Formation of a partnership by two dealers.</SUBJECT>
+                <SECTNO>31.104</SECTNO>
+                <SUBJECT>Withdrawal of one or more partners.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart G—Registration Form, TTB F 5630.5d</HD>
+                <SECTNO>31.111</SECTNO>
+                <SUBJECT>Date registration form is due.</SUBJECT>
+                <SECTNO>31.112</SECTNO>
+                <SUBJECT>Registration of multiple locations.</SUBJECT>
+                <SECTNO>31.113</SECTNO>
+                <SUBJECT>Place for filing registration form.</SUBJECT>
+                <SECTNO>31.114</SECTNO>
+                <SUBJECT>Completion of registration form.</SUBJECT>
+                <SECTNO>31.115</SECTNO>
+                <SUBJECT>Employer identification number.</SUBJECT>
+                <SECTNO>31.116</SECTNO>
+                <SUBJECT>Execution of registration form.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart H—Changes in Registration Information</HD>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Changes Requiring Registration as a New Business</HD>
+                    <SECTNO>31.121</SECTNO>
+                    <SUBJECT>Sale of business.</SUBJECT>
+                    <SECTNO>31.122</SECTNO>
+                    <SUBJECT>Incorporation of business.</SUBJECT>
+                    <SECTNO>31.123</SECTNO>
+                    <SUBJECT>New corporation.</SUBJECT>
+                    <SECTNO>31.124</SECTNO>
+                    <SUBJECT>Stockholder continuing business of corporation.</SUBJECT>
+                    <SECTNO>31.125</SECTNO>
+                    <SUBJECT>Cross references.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Other Changes</HD>
+                    <SECTNO>31.131</SECTNO>
+                    <SUBJECT>Change of address.</SUBJECT>
+                    <SECTNO>31.132</SECTNO>
+                    <SUBJECT>Change in name or style of business.</SUBJECT>
+                    <SECTNO>31.133</SECTNO>
+                    <SUBJECT>Change in management.</SUBJECT>
+                    <SECTNO>31.134</SECTNO>
+                    <SUBJECT>Increase in capital stock of a corporation.</SUBJECT>
+                    <SECTNO>31.135</SECTNO>
+                    <SUBJECT>Change in ownership of capital stock.</SUBJECT>
+                    <SECTNO>31.136</SECTNO>
+                    <SUBJECT>Change in membership of unincorporated club.</SUBJECT>
+                    <SECTNO>31.137</SECTNO>
+                    <SUBJECT>Withdrawal of partner(s).</SUBJECT>
+                    <SECTNO>31.138</SECTNO>
+                    <SUBJECT>Discontinuance of business.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <PRTPAGE P="1026"/>
+                <HD SOURCE="HED">Subpart I—Restrictions Relating to Purchases of Distilled Spirits</HD>
+                <SECTNO>31.141</SECTNO>
+                <SUBJECT>Unlawful purchases of distilled spirits.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart J—Records and Reports</HD>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Wholesale Dealers' Records and Reports</HD>
+                    <SECTNO>31.151</SECTNO>
+                    <SUBJECT>General requirements as to distilled spirits.</SUBJECT>
+                    <SECTNO>31.152</SECTNO>
+                    <SUBJECT>Requirements as to wines and beer.</SUBJECT>
+                    <SECTNO>31.153</SECTNO>
+                    <SUBJECT>Records to be kept by States, political subdivisions of States, or the District of Columbia.</SUBJECT>
+                    <SECTNO>31.154</SECTNO>
+                    <SUBJECT>Records to be kept by alcohol beverage producers, processors, and bonded warehousemen.</SUBJECT>
+                    <SECTNO>31.155</SECTNO>
+                    <SUBJECT>Records of receipt.</SUBJECT>
+                    <SECTNO>31.156</SECTNO>
+                    <SUBJECT>Records of disposition.</SUBJECT>
+                    <SECTNO>31.157</SECTNO>
+                    <SUBJECT>Canceled or corrected records.</SUBJECT>
+                    <SECTNO>31.158</SECTNO>
+                    <SUBJECT>Previously prescribed or approved records of receipt and disposition.</SUBJECT>
+                    <SECTNO>31.159</SECTNO>
+                    <SUBJECT>Variations in format or preparation of records.</SUBJECT>
+                    <SECTNO>31.160</SECTNO>
+                    <SUBJECT>Monthly summary report.</SUBJECT>
+                    <SECTNO>31.161</SECTNO>
+                    <SUBJECT>Conversion between metric and U.S. units.</SUBJECT>
+                    <SECTNO>31.162</SECTNO>
+                    <SUBJECT>Discontinuance of business.</SUBJECT>
+                    <SECTNO>31.163</SECTNO>
+                    <SUBJECT>Requirements when a wholesale dealer in liquors maintains a retail department.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Filing of Wholesale Dealer's Records and Reports</HD>
+                    <SECTNO>31.171</SECTNO>
+                    <SUBJECT>Method of filing.</SUBJECT>
+                    <SECTNO>31.172</SECTNO>
+                    <SUBJECT>Place of filing.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Retail Dealer's Records</HD>
+                    <SECTNO>31.181</SECTNO>
+                    <SUBJECT>Requirements for retail dealers.</SUBJECT>
+                </SUBJGRP>
+                <SUBJGRP>
+                    <HD SOURCE="HED">Retention of Records and Files</HD>
+                    <SECTNO>31.191</SECTNO>
+                    <SUBJECT>Period of retention.</SUBJECT>
+                    <SECTNO>31.192</SECTNO>
+                    <SUBJECT>Photographic copies of records.</SUBJECT>
+                </SUBJGRP>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart K—Reuse and Possession of Used Liquor Bottles</HD>
+                <SECTNO>31.201</SECTNO>
+                <SUBJECT>Refilling of liquor bottles.</SUBJECT>
+                <SECTNO>31.202</SECTNO>
+                <SUBJECT>Possession of refilled liquor bottles.</SUBJECT>
+                <SECTNO>31.203</SECTNO>
+                <SUBJECT>Possession of used liquor bottles.</SUBJECT>
+                <SECTNO>31.204</SECTNO>
+                <SUBJECT>Mixed cocktails.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart L—Packaging of Alcohol for Industrial Uses</HD>
+                <SECTNO>31.211</SECTNO>
+                <SUBJECT>Requirements and procedure.</SUBJECT>
+                <SECTNO>31.212</SECTNO>
+                <SUBJECT>Labeling.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart M—Distilled Spirits for Export With Benefit of Drawback</HD>
+                <SECTNO>31.221</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>31.223</SECTNO>
+                <SUBJECT>Records and reports.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart N—Miscellaneous</HD>
+                <SECTNO>31.231</SECTNO>
+                <SUBJECT>Destruction of marks and brands on wine containers.</SUBJECT>
+                <SECTNO>31.232</SECTNO>
+                <SUBJECT>Wine bottling.</SUBJECT>
+                <SECTNO>31.233</SECTNO>
+                <SUBJECT>Mixing cocktails in advance of sale.</SUBJECT>
+                <SECTNO>31.234</SECTNO>
+                <SUBJECT>Liability for special (occupational) tax.</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>26 U.S.C. 5001, 5002, 5121, 5122-5124, 5131, 5132, 5206, 5207, 5273, 5301, 5352, 5555, 5603, 5613, 5681, 5687, 6061, 6065, 6071, 6091, 6103, 6109, 6723, 6724, 7805.</P>
+        </AUTH>
+        <SOURCE>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. TTB-79, 74 FR 37407, July 28, 2009, unless otherwise noted.</P>
+        </SOURCE>
+        <SECTION>
+            <SECTNO>§ 31.0</SECTNO>
+            <SUBJECT>Scope.</SUBJECT>
+            <P>This part contains the requirements relating to the registration of wholesale and retail dealers in liquors and in beer and to the operations of such dealers, including recordkeeping requirements, prescribed under title 26 of the United States Code. This part also contains provisions relating to entry of dealers' premises and inspection of their records by TTB officers.</P>
+        </SECTION>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—General Provisions</HD>
+            <SECTION>
+                <SECTNO>§ 31.1</SECTNO>
+                <SUBJECT>Definitions.</SUBJECT>
+                <P>As used in this part, the following terms shall have the meanings indicated unless either the context in which they are used requires a different meaning, or a different definition is prescribed for a particular subpart, section, or portion of this part:</P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any functions relating to the administration or enforcement of this part by TTB Order 1135.31, Delegation of the Administrator's Authorities in 27 CFR Part 31, Alcohol Beverage Dealers.
+                </P>
+                <P>
+                    <E T="03">Beer.</E>
+                     Beer, ale, porter, stout, and other similar fermented beverages (including sake or similar products) of any name or description containing one-half of 1 percent or more of alcohol by volume, brewed or produced from malt, wholly or in part, or from any substitute therefor.
+                </P>
+                <P>
+                    <E T="03">Beverage use</E>
+                     or 
+                    <E T="03">use for beverage purposes.</E>
+                     Use as an alcohol beverage.
+                    <PRTPAGE P="1027"/>
+                </P>
+                <P>
+                    <E T="03">Bonded wine cellar.</E>
+                     An establishment qualified under this chapter for the production, blending, cellar treatment, storage, bottling, and packaging or repackaging of untaxpaid wine.
+                </P>
+                <P>
+                    <E T="03">Brewery.</E>
+                     An establishment qualified under this chapter for the production of beer.
+                </P>
+                <P>
+                    <E T="03">CFR.</E>
+                     The Code of Federal Regulations.
+                </P>
+                <P>
+                    <E T="03">Dealer.</E>
+                     Any person who sells, or offers for sale, any distilled spirits, wines, or beer.
+                </P>
+                <P>
+                    <E T="03">Denatured spirits</E>
+                     or 
+                    <E T="03">denatured alcohol.</E>
+                     Spirits to which denaturants have been added as prescribed under this chapter.
+                </P>
+                <P>
+                    <E T="03">Distilled spirits</E>
+                     or 
+                    <E T="03">spirits.</E>
+                     That substance known as ethyl alcohol, ethanol, or spirits of wine in any form, including all dilutions and mixtures thereof, from whatever source or by whatever process produced.
+                </P>
+                <P>
+                    <E T="03">Distilled spirits plant.</E>
+                     An establishment qualified under part 19 of this chapter for the production, storage, or processing of distilled spirits.
+                </P>
+                <P>
+                    <E T="03">Gallon</E>
+                     or 
+                    <E T="03">wine gallon.</E>
+                     A United States gallon of liquid measure equivalent to the volume of 231 cubic inches.
+                </P>
+                <P>
+                    <E T="03">Liquor bottle.</E>
+                     A bottle made of glass or earthenware, or of other suitable material approved by the Food and Drug Administration, which has been designed or is intended for use as a container for distilled spirits for sale for beverage purposes and which has been determined by the appropriate TTB officer to adequately protect the revenue.
+                </P>
+                <P>
+                    <E T="03">Liquors.</E>
+                     Distilled spirits, wines, or beer.
+                </P>
+                <P>
+                    <E T="03">Liter.</E>
+                     A metric unit of capacity equal to 1,000 cubic centimeters of alcoholic beverage, and equivalent to 33.814 fluid ounces.
+                </P>
+                <P>
+                    <E T="03">Person.</E>
+                     An individual, trust, estate, partnership, association or other unincorporated organization, fiduciary, company, or corporation, the District of Columbia, or a State or a political subdivision thereof (including a city, county, or other municipality).
+                </P>
+                <P>
+                    <E T="03">Place</E>
+                     or 
+                    <E T="03">place of business.</E>
+                     The entire office, plant, or area of the business in any one location under the same proprietorship; and passageways, streets, highways, rail crossings, waterways, or partitions dividing the premises shall not be deemed a separation for the purposes of this part, if the various divisions are otherwise contiguous.
+                </P>
+                <P>
+                    <E T="03">Reclaim.</E>
+                     To grind up a liquor bottle or container and use the ground up material to make products other than liquor bottles or containers.
+                </P>
+                <P>
+                    <E T="03">Recycle.</E>
+                     To grind up a liquor bottle or container and use the ground up material to make new liquor bottles or containers.
+                </P>
+                <P>
+                    <E T="03">Sale at retail</E>
+                     or 
+                    <E T="03">retail sale.</E>
+                     Sale of liquors to a person other than a dealer.
+                </P>
+                <P>
+                    <E T="03">Sale at wholesale</E>
+                     or 
+                    <E T="03">wholesale sale.</E>
+                     Sale of liquors to a dealer.
+                </P>
+                <P>
+                    <E T="03">This chapter.</E>
+                     Chapter I of title 27 of the Code of Federal Regulations.
+                </P>
+                <P>
+                    <E T="03">U.S.C.</E>
+                     The United States Code.
+                </P>
+                <P>
+                    <E T="03">Wine.</E>
+                     When used without qualification, the term includes every kind (class and type) of product produced on bonded wine premises from grapes, other fruit (including berries), or other suitable agricultural products and containing not more than 24 percent of alcohol by volume. The term includes all imitation, other than standard, or artificial wine and compounds sold as wine. A wine product containing less than one-half of one percent alcohol by volume is not taxable as wine when removed from the bonded wine premises.
+                </P>
+                <SECAUTH>(26 U.S.C. 5002, 5041, 5052, 7805)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <P>The provisions of this part shall be applicable in the several States of the United States and the District of Columbia.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.3</SECTNO>
+                <SUBJECT>Basic permit requirements.</SUBJECT>
+                <P>Every person, except an agency of a State or political subdivision thereof, who intends to engage in the business of purchasing distilled spirits, wines, or beer for sale to other dealers for nonindustrial use, or to engage in the business of importing distilled spirits, wines, or beer for nonindustrial use, is required under part 1 of this chapter to obtain a basic permit authorizing such person to engage in such business.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.4</SECTNO>
+                <SUBJECT>Relation to State and municipal law.</SUBJECT>
+                <P>
+                    Compliance with the requirements of this part shall not be held to exempt any person from any penalty or punishment provided by the laws of any State for carrying on any trade or business 
+                    <PRTPAGE P="1028"/>
+                    within such State, or in any manner to authorize the commencement or continuance of such trade or business contrary to the laws of such State or in places prohibited by municipal law; nor shall such compliance be held to prohibit any State from placing a duty or tax on the same trade or business, for State or other purposes.
+                </P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart B—Administrative Provisions</HD>
+            <SECTION>
+                <SECTNO>§ 31.11</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <P>(a) The appropriate TTB officer is authorized to prescribe all forms required by this part. All of the information called for in each form shall be furnished as indicated by the headings on the form and the instructions on or pertaining to the form. In addition, information called for in each form shall be furnished as required by this part.</P>
+                <P>
+                    (b) Forms prescribed by this part are available for printing through the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Suite 8002, Cincinnati, OH 45202.
+                </P>
+                <SECAUTH>(5 U.S.C. 552(a))</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.12</SECTNO>
+                <SUBJECT>Right of entry and examination.</SUBJECT>
+                <P>Any appropriate TTB officer may enter during business hours the premises (including places of storage) of any dealer for the purpose of inspecting or examining any records or other documents required to be kept by such dealer under this part and any distilled spirits, wines, or beer kept or stored by such dealer on such premises.</P>
+                <SECAUTH>(26 U.S.C. 5123)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.13</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    The regulatory authorities of the Administrator contained in this part are delegated to appropriate TTB officers. These TTB officers are specified in TTB Order 1135.31, Delegation of the Administrator's Authorities in 27 CFR Part 31, Alcohol Beverage Dealers. You may obtain a copy of this order by accessing the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.14</SECTNO>
+                <SUBJECT>Penalties.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Criminal penalties.</E>
+                     Criminal penalties for failure to comply with the requirements of this part are imposed by 26 U.S.C. 5603 and 5687. A failure to register as required by this part may result in a penalty under 26 U.S.C. 5603(b).
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Administrative penalty.</E>
+                     An administrative penalty for failure to supply the required identifying number (employer identification number) in a dealer's registration is imposed by 26 U.S.C. 6723. The penalty is $50 for each such failure, but not more than $100,000 for all such failures during a calendar year. A failure to submit a registration includes a failure to include the identifying number on the registration.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Reasonable cause.</E>
+                     The administrative penalty described in paragraph (b) of this section is not imposed when it is shown that the failure was due to reasonable cause and not due to willful neglect. A dealer who believes that the circumstances that led to the failure were reasonable and who desires to have the penalty waived shall submit a written statement, under the penalty of perjury, affirmatively showing all of the circumstances alleged as reasonable causes for the failure. If the appropriate TTB officer determines that the failure was due to a reasonable cause and not to willful neglect, the penalty will not be assessed. If the dealer exercised ordinary business care and prudence but was nevertheless unable to comply with the requirement, then the failure was due to reasonable cause. Mere ignorance of the law will not be considered a reasonable cause.
+                </P>
+                <SECAUTH>(26 U.S.C. 5603, 5687, 6109, 6723, 6724)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.15</SECTNO>
+                <SUBJECT>Disclosure of information.</SUBJECT>
+                <P>Alcohol dealer registration forms are “information returns” as that term is used in 26 U.S.C. 6103 and, as such, are not subject to disclosure except as provided in that law.</P>
+                <SECAUTH>(26 U.S.C. 6103)</SECAUTH>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <PRTPAGE P="1029"/>
+            <HD SOURCE="HED">Subpart C—Activities Subject to This Part</HD>
+            <SECTION>
+                <SECTNO>§ 31.21</SECTNO>
+                <SUBJECT>Basis of regulation.</SUBJECT>
+                <P>Persons engaging in or carrying on the business or occupation of selling or offering for sale alcoholic liquors fit for use as a beverage, or any alcoholic liquors sold for use as a beverage, are subject to the provisions of this part. The classes of liquor dealer business and the conditions under which the provisions of this part apply to them are specified in §§ 31.31 through 31.34.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.22</SECTNO>
+                <SUBJECT>Selling or offering for sale.</SUBJECT>
+                <P>Whether the activities of any person constitute engaging in the business of selling or offering for sale is to be determined by the facts in each case. Any manner of selling or offering for sale, even though to a restricted class of persons or without a view to profit, is within the scope of this part.</P>
+            </SECTION>
+            <SUBJGRP>
+                <HD SOURCE="HED">Dealers Classified</HD>
+                <SECTION>
+                    <SECTNO>§ 31.31</SECTNO>
+                    <SUBJECT>Retail dealer in liquors.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         Except as otherwise provided in paragraph (b) of this section, every person who sells or offers for sale distilled spirits, wines, or beer to any person other than a dealer is a retail dealer in liquors for purposes of this part. Every retail dealer in liquors must comply with the registration and other requirements of this part, unless the dealer is covered by an applicable exemption under subpart D of this part.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Persons not deemed to be retail dealers in liquors.</E>
+                         The following persons are not retail dealers in liquors within the meaning of this part:
+                    </P>
+                    <P>(1) A retail dealer in beer as described in § 31.33(a),</P>
+                    <P>(2) A limited retail dealer as described in § 31.35, or</P>
+                    <P>(3) A person who sells or offers for sale distilled spirits, wines, or beer only as provided in § 31.61 through § 31.64 or § 31.65(a).</P>
+                    <SECAUTH>(26 U.S.C. 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.32</SECTNO>
+                    <SUBJECT>Wholesale dealer in liquors.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         Except as otherwise provided in paragraph (b) of this section, every person who sells or offers for sale distilled spirits, wines, or beer to another dealer is a wholesale dealer in liquors for purposes of this part. Every wholesale dealer in liquors must comply with the registration and other requirements of this part, unless the dealer is covered by an applicable exemption under subpart D of this part.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Persons not deemed to be wholesale dealers in liquors.</E>
+                         The following persons are not wholesale dealers in liquors within the meaning of this part:
+                    </P>
+                    <P>(1) A wholesale dealer in beer as described in § 31.34(a);</P>
+                    <P>(2) A person who sells or offers for sale distilled spirits, wines, or beer only as provided in §§ 31.61 through 31.64, § 31.65(a), or § 31.66; or</P>
+                    <P>(3) A person returning liquors for credit, refund, or exchange as provided in § 31.67.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.33</SECTNO>
+                    <SUBJECT>Retail dealer in beer.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         Except as otherwise provided in paragraph (b) of this section, every person who sells or offers for sale beer, but not distilled spirits or wines, to any person other than a dealer is a retail dealer in beer for purposes of this part. Every retail dealer in beer must comply with the registration and other requirements of this part, unless the dealer is covered by an applicable exemption under subpart D of this part.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Persons not deemed to be retail dealers in beer.</E>
+                         The following persons are not retail dealers in beer within the meaning of this part:
+                    </P>
+                    <P>(1) A limited retail dealer as described in § 31.35, or</P>
+                    <P>(2) A person who does not sell or offer for sale distilled spirits or wines and sells beer or offers beer for sale only as provided in § 31.61 through § 31.63 or § 31.65(a).</P>
+                    <SECAUTH>(26 U.S.C. 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.34</SECTNO>
+                    <SUBJECT>Wholesale dealer in beer.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         Except as otherwise provided in paragraph (b) of this section, every person who sells or offers for sale beer, but not distilled spirits or wines, to another dealer is a wholesale dealer in beer for purposes of this part. Every wholesale dealer in beer must comply with the registration and other requirements of this part, unless the 
+                        <PRTPAGE P="1030"/>
+                        dealer is covered by an applicable exemption under subpart D of this part.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Persons not deemed to be wholesale dealers in beer.</E>
+                         The following persons are not wholesale dealers in beer within the meaning of this part:
+                    </P>
+                    <P>(1) A person who does not sell or offer for sale distilled spirits or wines and sells beer or offers beer for sale only as provided in §§ 31.61 through 31.63, § 31.65(a), § 31.66, or § 31.67; or</P>
+                    <P>(2) A person returning beer for credit, refund or exchange as provided in § 31.56.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.35</SECTNO>
+                    <SUBJECT>Limited retail dealer; persons eligible.</SUBJECT>
+                    <P>Any person selling distilled spirits, beer, or wine, or any combination thereof, to members, guests, or patrons of bona fide fairs, reunions, picnics, carnivals, or similar outings, and any fraternal, civic, church, labor, charitable, benevolent, or ex-servicemen's organization selling distilled spirits, beer, or wine, or any combination thereof, on the occasion of any kind of entertainment, dance, picnic, bazaar, or festival held by it, is a “limited retail dealer” if the person or organization is not otherwise engaged in business as a dealer.</P>
+                    <SECAUTH>(26 U.S.C. 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.36</SECTNO>
+                    <SUBJECT>Sales of 20 wine gallons (75.7 liters) or more.</SUBJECT>
+                    <P>Any person who sells or offers for sale distilled spirits, wines, or beer, in quantities of 20 wine gallons (75.7 liters) or more, to the same person at the same time, shall be presumed and held to be a wholesale dealer in liquors or a wholesale dealer in beer, as the case may be, unless the seller shows by satisfactory evidence that the sale, or offer for sale, was made to a person other than a dealer.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Certain Organizations, Agencies, and Persons</HD>
+                <SECTION>
+                    <SECTNO>§ 31.41</SECTNO>
+                    <SUBJECT>Clubs or similar organizations.</SUBJECT>
+                    <P>(a) Subject to paragraph (b) of this section, a club or similar organization is a dealer for purposes of this part if the club or organization:</P>
+                    <P>(1) Furnishes liquors to members under conditions constituting a sale (including the acceptance of orders therefor, furnishing the liquors ordered and collecting the price thereof); or</P>
+                    <P>(2) Conducts a bar for the sale of liquors on the occasion of an outing, picnic, or other entertainment, unless the club is a “limited retail dealer” described in § 31.35. The registration of the proprietor of the premises where the bar is located will not relieve the club or organization from its own obligation to register; or</P>
+                    <P>(3) Purchases liquors for members without prior agreement concerning payment therefor and such organization subsequently recoups those costs.</P>
+                    <P>(b) Compliance with the registration and other requirements of this part is not required if money is collected in advance from members for the purchase of liquors, or if money is advanced for the purchase of liquors pursuant to an agreement with the members for reimbursement.</P>
+                    <SECAUTH>(26 U.S.C. 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.42</SECTNO>
+                    <SUBJECT>Restaurants serving liquors with meals.</SUBJECT>
+                    <P>Proprietors of restaurants and other persons who serve liquors with meals to paying customers, even if no separate or specific charge for the liquors is made, are dealers subject to the provisions of this part.</P>
+                    <SECAUTH>(26 U.S.C. 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.43</SECTNO>
+                    <SUBJECT>States, political subdivisions of States, or the District of Columbia.</SUBJECT>
+                    <P>
+                        A State, a political subdivision of a State, or the District of Columbia, that engages in the business of selling, or offering for sale, distilled spirits, wines, or beer is not exempt from the requirements of this part. However, no such governmental entity shall be required to register more than once as a retail dealer in liquors regardless of the number of locations at which the entity carries on business as a retail dealer in liquors. Any such governmental entity that has properly registered as a wholesale dealer at its principal office, and that has properly registered once as a retail dealer in liquors or beer, is not required to register again at its retail stores by reason of 
+                        <PRTPAGE P="1031"/>
+                        the sale of distilled spirits, wines, or beer at any of those locations to dealers qualified to do business as a dealer within the jurisdiction of that governmental entity.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.44</SECTNO>
+                    <SUBJECT>Sales of denatured spirits or articles.</SUBJECT>
+                    <P>It is illegal to sell denatured spirits, or any article containing denatured spirits, for beverage purposes. Any person who sells denatured spirits, or any substance or preparation made with or containing denatured spirits, for use, or for sale for use, for beverage purposes, or who sells any such products under circumstances in which it might reasonably appear that it is the intention of the purchaser to procure the same for sale or use for beverage purposes, is subject to the registration and other requirements of this part.</P>
+                    <SECAUTH>(26 U.S.C. 5273)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.45</SECTNO>
+                    <SUBJECT>Sales of alcoholic compounds, preparations, or mixtures containing distilled spirits, wines, or beer.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         Compliance with the provisions of this part is required with respect to the sale, or offering for sale, of alcoholic compounds, preparations, or mixtures containing distilled spirits, wines, or beer, unless those compounds, preparations, or mixtures are unfit for use for beverage purposes and are sold solely for use for nonbeverage purposes.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Products unfit for beverage use.</E>
+                         Products described in § 19.5 of this chapter, for which manufacturers are exempt from qualification requirements, shall be deemed to be unfit for beverage purposes for the purposes of this part.
+                    </P>
+                    <CITA>[T.D. TTB-79, 74 FR 37407, July 28, 2009, as amended by T.D. TTB-92, 76 FR 9172, Feb. 16, 2011]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.46</SECTNO>
+                    <SUBJECT>Sales by agencies and instrumentalities of the United States.</SUBJECT>
+                    <P>Unless specifically exempt by statute, any agency or instrumentality of the United States, including post exchanges, ship's stores, ship's service stores, and commissaries, or any canteen, club, mess, or similar organization operated under regulations of any such agency or instrumentality, that sells, or offers for sale, distilled spirits, wines, or beer must comply with the registration and other requirements of this part as a dealer in liquors or a dealer in beer, as the case may be.</P>
+                    <SECAUTH>(26 U.S.C. 5121, 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.47</SECTNO>
+                    <SUBJECT>Warehouse receipts covering spirits.</SUBJECT>
+                    <P>The sale of warehouse receipts for distilled spirits is equivalent to the sale of distilled spirits. Accordingly, every person who sells, or offers for sale, warehouse receipts for distilled spirits held or stored in a distilled spirits plant, customs bonded warehouse, or elsewhere, is required to register and keep records as a wholesale dealer in liquors, or as a retail dealer in liquors, as the case may be, at the place where those warehouse receipts are sold, or offered for sale, unless the person is exempt from those requirements under subpart D of this part.</P>
+                    <SECAUTH>(26 U.S.C. 5121, 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.48</SECTNO>
+                    <SUBJECT>Alcohol beverage producers, processors, and bonded warehousemen.</SUBJECT>
+                    <P>Brewers and proprietors of distilled spirits plants, bonded wine cellars, bonded wine warehouses, and taxpaid wine bottling houses who make sales, whether of their own alcohol beverage products or of such products produced by others, are not exempt from registration and recordkeeping as dealers under this part. However, the registration and recordkeeping requirements applicable to such persons are prescribed in parts 19 (Distilled Spirits Plants), 24 (Wine), and 25 (Beer) of this chapter.</P>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—Exemptions and Exceptions</HD>
+            <SUBJGRP>
+                <HD SOURCE="HED">Persons Exempt From Registration and/or Recordkeeping</HD>
+                <SECTION>
+                    <SECTNO>§ 31.51</SECTNO>
+                    <SUBJECT>Wholesale dealers making retail sales.</SUBJECT>
+                    <P>
+                        A wholesale dealer in liquors who sells, or offers for sale, distilled spirits, wines, or beer, and a wholesale dealer in beer who sells, or offers for sale, 
+                        <PRTPAGE P="1032"/>
+                        only beer, whether to dealers or to persons other than dealers, at any place where the wholesale dealer in liquors or beer has appropriately registered under this part, is exempt from registration at that place as a retail dealer in liquors or in beer.
+                    </P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.52</SECTNO>
+                    <SUBJECT>Wholesale dealers in liquors consummating sales of wines or beer at premises of other dealers.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Sales of wines.</E>
+                         Any wholesale dealer in liquors (including the proprietor of a bonded wine cellar) who has registered as a wholesale dealer in liquors for the place from which that dealer conducts selling operations may consummate sales of wines to other wholesale or retail dealers in liquors, or to limited retail dealers, at the purchasers' places of business without having to register again as a wholesale dealer on account of those sales.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Sales of beer.</E>
+                         Any wholesale dealer in liquors who has already registered as such may also consummate sales of beer to wholesale or retail dealers in beer, to wholesale or retail dealers in liquors, or to limited retail dealers, at the purchasers' place of business without having to register again as a wholesale dealer on account of those sales.
+                    </P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.53</SECTNO>
+                    <SUBJECT>Wholesale dealers in beer consummating sales at premises of other dealers.</SUBJECT>
+                    <P>Any dealer who has registered as a wholesale dealer in beer for the place from which that dealer conducts selling operations may consummate sales of beer (but not wines or distilled spirits) to other dealers at the purchasers' places of business without having to register again as a wholesale dealer on account of those sales.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.54</SECTNO>
+                    <SUBJECT>Hospitals.</SUBJECT>
+                    <P>Hospitals and similar institutions furnishing liquors to patients are not required to register or keep records under this part, provided that no specific or additional charge is made for the liquors so furnished.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.55</SECTNO>
+                    <SUBJECT>Limited retail dealers.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Sales by limited retail dealers.</E>
+                         Limited retail dealers, as described in § 31.35, are not required to register or keep records under this part.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Sales to limited retail dealers.</E>
+                         Retail dealers in liquors or beer who make sales at their registered places of business to limited retail dealers are not required under this part, solely by virtue of those sales, to register or keep records as wholesale dealers.
+                    </P>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Persons Who Are Not Dealers in Liquors or Beer</HD>
+                <SECTION>
+                    <SECTNO>§ 31.61</SECTNO>
+                    <SUBJECT>Single sale of liquors or warehouse receipts.</SUBJECT>
+                    <P>A single sale of distilled spirits, wines, or beer, or a single sale of one or more warehouse receipts for distilled spirits, unattended by circumstances showing the person making the sale to be engaged in that activity as a business, does not subject the vendor to the registration and other requirements of this part.</P>
+                    <SECAUTH>(26 U.S.C. 5121, 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.62</SECTNO>
+                    <SUBJECT>Persons making casual sales.</SUBJECT>
+                    <P>Certain persons making casual sales of liquors are not dealers for purposes of this part and therefore are not required to register, keep records, or submit a report as required of dealers under this part. These persons are:</P>
+                    <P>(a) Administrators, executors, receivers, and other fiduciaries who receive liquors in their fiduciary capacities and sell them in one parcel or at public auction in parcels of not less than 20 wine gallons (75.7 liters);</P>
+                    <P>(b) Creditors who receive liquors as security for, or in payment of, debts and sell them in one parcel or at a public auction in parcels of not less than 20 wine gallons (75.7 liters);</P>
+                    <P>(c) Public officers or court officials who levy on liquors under order or process of any court or magistrate and sell them in one parcel or at public auction in parcels of not less than 20 wine gallons (75.7 liters); and</P>
+                    <P>(d) A retiring partner, or representative of a deceased partner, who sells liquors to the incoming or remaining partner, or partners, of a partnership.</P>
+                </SECTION>
+                <SECTION>
+                    <PRTPAGE P="1033"/>
+                    <SECTNO>§ 31.63</SECTNO>
+                    <SUBJECT>Agents, auctioneers, brokers, etc., acting on behalf of others.</SUBJECT>
+                    <P>Certain persons may sell liquors as agents or employees of others (principals), or may receive and transmit orders therefor to a dealer, without being considered a dealer on account of those activities. Those persons, who have no property rights in the liquors sold, may make collections for their principals and receive commissions for their services, or may guarantee the payment of accounts, without being required to register or keep records under this part. In all such cases, however, the principal is required to register and keep records, as provided in this part, at each place where sales are consummated, unless the principal is exempt from those requirements under the provisions of this subpart. The persons covered by this section are:</P>
+                    <P>(a) Auctioneers who merely sell liquors at auction on behalf of others;</P>
+                    <P>(b) Agents or brokers who solicit orders for liquors in the name of a principal, but who neither stock nor deliver the liquors for which orders are taken;</P>
+                    <P>(c) Employees who merely sell liquors on behalf of their employers; and</P>
+                    <P>(d) Retail dealers in liquors or retail dealers in beer who merely receive and transmit to a wholesale dealer orders for liquors or beer to be billed, charged, and shipped to customers by such wholesale dealers.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.64</SECTNO>
+                    <SUBJECT>Apothecaries or druggists selling medicines and tinctures.</SUBJECT>
+                    <P>Apothecaries and druggists who use wines or spirituous liquors for compounding medicines and in making tinctures that are unfit for use for beverage purposes are not considered to be dealers by reason of the sale of those compounds or tinctures for nonbeverage purposes.</P>
+                    <SECAUTH>(26 U.S.C. 5002)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.65</SECTNO>
+                    <SUBJECT>Persons selling products unfit for beverage use.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Vendors not deemed to be dealers.</E>
+                         No person selling or offering for sale for nonbeverage purposes products qualifying as unfit for use for beverage purposes under § 19.5 of this chapter shall be deemed, solely by reason of such sales, to be a dealer.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Restrictions.</E>
+                         Any person who sells or offers for sale any nonbeverage products for use, or for sale for use, for beverage purposes, or who sells any of such products under circumstances in which it might reasonably appear that it is the intention of the purchaser to procure the product for sale or use for beverage purposes, must register and keep records as required under this part as a wholesale dealer in liquors, retail dealer in liquors, wholesale dealer in beer, or retail dealer in beer, as appropriate.
+                    </P>
+                    <CITA>[T.D. TTB-79, 74 FR 37407, July 28, 2009, as amended by T.D. TTB-92, 76 FR 9172, Feb. 16, 2011]</CITA>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.66</SECTNO>
+                    <SUBJECT>Retail dealer selling entire stock in liquidation.</SUBJECT>
+                    <P>No retail dealer in liquors or retail dealer in beer shall be deemed to be a wholesale dealer in liquors or a wholesale dealer in beer by virtue of selling in liquidation that dealer's entire stock of liquors in one parcel, or in parcels, each of which embraces not less than the entire stock of distilled spirits, of wines, or of beer, which parcels may contain a combination of any or all such liquors, to any other dealer. A retail dealer making such sale or sales is not required to register or to keep records or submit reports of those sales.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.67</SECTNO>
+                    <SUBJECT>Persons returning liquors for credit, refund, or exchange.</SUBJECT>
+                    <P>
+                        No retail dealer in liquors or retail dealer in beer, or other person, shall be deemed to be a wholesale dealer in liquors or a wholesale dealer in beer by virtue of a bona fide return of distilled spirits, wines, or beer to the dealer from whom the distilled spirits, wines, or beer were purchased (or to the successor of such vendor's business or line of merchandise) for credit, refund, or exchange; and the giving of such credit, refund or exchange shall not be deemed to be a purchase within the meaning of § 31.141 of this part. Except in the case of wholesale dealers in liquors required to keep records of their transactions under §§ 31.155 and 31.156, or retail dealers required to keep records under § 31.171, persons returning liquors as 
+                        <PRTPAGE P="1034"/>
+                        provided in this section are not required to keep records or submit reports of such transactions.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5132)</SECAUTH>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart E—Places Subject to Registration</HD>
+            <SECTION>
+                <SECTNO>§ 31.71</SECTNO>
+                <SUBJECT>Registration required at each place of business.</SUBJECT>
+                <P>Except as otherwise provided in § 31.43 and in subpart D of this part, registration is required under this part for each and every place where distilled spirits, wines, or beer are sold or offered for sale. No person may engage in any business for which registration is required until the place of business has been registered in accordance with this part.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.72</SECTNO>
+                <SUBJECT>Place of sale.</SUBJECT>
+                <P>For purposes of this part, the place at which ownership of liquors is transferred, actually or constructively, is the place of sale.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.73</SECTNO>
+                <SUBJECT>Place of offering for sale.</SUBJECT>
+                <P>Liquors are considered to be offered for sale at the place where they are kept for sale and where a sale could take place, and at any place where sales are in fact consummated. Liquors are not considered to be offered for sale by sending an agent out to take orders, or by establishing an office for the mere purpose of taking orders, so long as in each case the orders received are transmitted to the principal for acceptance at the place where that principal has registered under this part or where the principal is exempt from registration as provided in subpart D of this part.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.74</SECTNO>
+                <SUBJECT>Places of storage; deliveries therefrom.</SUBJECT>
+                <P>Registration is not required under this part for warehouses and similar places that are used by dealers merely for the storage of liquors and that are not places where orders for liquors are accepted. When orders for liquors are received and duly accepted at a place that the dealer has registered under this part, the subsequent actual delivery of the liquors from a place of storage does not require registration at that place of storage. Except as otherwise provided in §§ 31.52 and 31.53, a dealer who registered a given place, and who makes actual delivery of liquors from a warehouse at another place, must register for the place where ownership of the liquors is transferred if there was no prior constructive delivery by the acceptance of an order for the liquors at the place covered by the existing registration.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.75</SECTNO>
+                <SUBJECT>Dealer in beer and dealer in liquors at the same location.</SUBJECT>
+                <P>Any person who registers as a wholesale dealer in beer or retail dealer in beer and who thereafter begins to sell distilled spirits or wine must also register as a wholesale dealer in liquors or retail dealer in liquors before commencing the sale, or offering for sale, of distilled spirits or wine.</P>
+                <SECAUTH>(26 U.S.C. 5124)</SECAUTH>
+            </SECTION>
+            <SUBJGRP>
+                <HD SOURCE="HED">Sales in Two or More Areas on the Same Premises</HD>
+                <SECTION>
+                    <SECTNO>§ 31.81</SECTNO>
+                    <SUBJECT>General.</SUBJECT>
+                    <P>When liquors are sold by a proprietor in two or more areas within the proprietor's place of business, only one registration is required under this part. When the proprietor leases to another person or persons the privilege of selling liquors in two or more areas within the proprietor's place of business, whether the privilege is exercised separately or simultaneously with the proprietor or another concessionaire, each lessee is required to register only once.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.82</SECTNO>
+                    <SUBJECT>Hotels.</SUBJECT>
+                    <P>The proprietor of a hotel who conducts the sale of liquors throughout the hotel premises is only required to register under this part for one place. For example, different areas operated by the proprietor in the hotel, such as banquet rooms, meeting rooms, and guest rooms, collectively constitute a single place of business. When a concessionaire conducts the sale of liquors at two or more areas in a hotel, those areas are regarded as a single place of business, and the concessionaire is required to register only once.</P>
+                </SECTION>
+                <SECTION>
+                    <PRTPAGE P="1035"/>
+                    <SECTNO>§ 31.83</SECTNO>
+                    <SUBJECT>Ball park, race track, etc.; sales throughout the premises.</SUBJECT>
+                    <P>The proprietor of a ball park, race track, stadium, pavilion, or other similar enclosure constituting one premises, who engages in the business of selling liquors throughout that enclosure, including sales from baskets or containers by employees on the proprietor's behalf, is required to register only once for the entire enclosure. Each concessionaire having the same privilege throughout the enclosure, whether the privilege is exercised separately or simultaneously with the proprietor or another concessionaire, is required to register only once for the entire enclosure.</P>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Sales in Multiple Locations</HD>
+                <SECTION>
+                    <SECTNO>§ 31.91</SECTNO>
+                    <SUBJECT>Passenger trains, aircraft, and vessels.</SUBJECT>
+                    <P>Persons who carry on the business of a retail dealer in liquors or of a retail dealer in beer on trains, aircraft, boats, or other conveyances engaged in the business of carrying passengers may conduct that business throughout the passenger carrying train, aircraft, boat, or other vessel, after filing only one registration under this part. Such persons must specify on the registration form the number of passenger carriers for which registration is being completed.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.92</SECTNO>
+                    <SUBJECT>Carriers not engaged in passenger service.</SUBJECT>
+                    <P>Except as otherwise provided in § 31.93, the retailing of liquors on any train, aircraft, boat, or other conveyance that is not engaged in the business of carrying passengers is prohibited.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.93</SECTNO>
+                    <SUBJECT>Supply boats or vessels.</SUBJECT>
+                    <P>Persons may carry on the business of a retail dealer in liquor or of a retail dealer in beer on supply boats or vessels operated by them when those persons operate from a fixed address in a port or harbor and supply exclusively boats or other vessels, or persons thereon, at that port or harbor. Such persons must specify, on an attachment to the registration form, the following: that the business will consist of supplying exclusively boats, vessels, or persons thereon; the name of the port or harbor at which the business is to be carried on; and the fixed address from which operations are to be conducted. When such sales are to be made from two or more supply boats or vessels, the dealer must also specify on the attachment the number of supply boats or vessels for which registration is being made. If the dealer operates from two or more fixed addresses, the dealer must prepare one registration form covering all of those addresses and must include on the attachment to the registration form the number of supply boats or vessels operating from each address.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.94</SECTNO>
+                    <SUBJECT>Retail dealers “At Large.”</SUBJECT>
+                    <P>A retail dealer in liquors or a retail dealer in beer whose business requires the dealer to travel from place to place, such as a dealer who sells at carnivals or circuses, must register “At Large” covering the dealer's activities throughout the United States by filing only one registration. A dealer submitting such a registration must state on the registration form, or on an attachment thereto, the nature of the dealer's business and the reason the dealer requires registration “At Large.”</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.95</SECTNO>
+                    <SUBJECT>Caterers.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         When a contract to furnish liquors is made by a caterer at a place of business for which the caterer has registered under this part, no additional registration is required by virtue of the serving of the liquors at a different location.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Additional registration.</E>
+                         When the contract of a caterer provides for the sale of liquors by the drink at a place, or simultaneously at different places, other than the place of business for which the caterer has registered under this part, a separate registration is required for each such place if the caterer does not keep the records specified in paragraph (c) of this section.
+                    </P>
+                    <P>
+                        (c) 
+                        <E T="03">Records.</E>
+                         Caterers must maintain sufficient commercial records to identify all locations where activities subject to registration occur. These commercial records must indicate the names and addresses of locations where alcoholic beverages have been sold or offered for sale and the dates and times 
+                        <PRTPAGE P="1036"/>
+                        that those activities occurred. These commercial records must be available to an appropriate TTB officer upon request.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5121, 5122)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.96</SECTNO>
+                    <SUBJECT>Peddling.</SUBJECT>
+                    <P>No person shall peddle distilled spirits, wines, or beer, except in the circumstances described in §§ 31.52, 31.53, and 31.93. Persons peddling liquors to whom §§ 31.52, 31.53, and 31.93 do not apply are required to register at each place where sales are consummated.</P>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart F—Partnerships</HD>
+            <SECTION>
+                <SECTNO>§ 31.101</SECTNO>
+                <SUBJECT>Registration of partners.</SUBJECT>
+                <P>Any number of persons carrying on one business in partnership at any one place must register only once for that business.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.102</SECTNO>
+                <SUBJECT>Addition of partners or incorporation of partnership.</SUBJECT>
+                <P>Where a number of persons who have filed a registration under this part as partners admit one or more new members to the partnership or form a corporation (a separate legal entity) to take over the business, the new partnership or corporation must register as a new dealer before commencing business.</P>
+                <SECAUTH>(26 U.S.C. 5121, 5122, 5124)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.103</SECTNO>
+                <SUBJECT>Formation of a partnership by two dealers.</SUBJECT>
+                <P>Where two persons form a partnership after each has registered for a business carried on by himself, the partnership must register as a new dealer to cover the business conducted by the partnership.</P>
+                <SECAUTH>(26 U.S.C. 5121, 5122, 5124)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.104</SECTNO>
+                <SUBJECT>Withdrawal of one or more partners.</SUBJECT>
+                <P>When one or more partners withdraw from a partnership that has registered under this part, the remaining partner, or partners, must register the change in control by filing an amended registration form on or before the following July 1.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart G—Registration Form, TTB F 5630.5d</HD>
+            <SECTION>
+                <SECTNO>§ 31.111</SECTNO>
+                <SUBJECT>Date registration form is due.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Dealers must register by filing the registration form, TTB Form 5630.5d, before engaging in business and on or before July 1 of each year thereafter. However, as long as none of the information specified on the form has changed since the previous registration form was filed, no additional registration is required. If the registration form is received in the mail and the U.S. postmark on the cover shows that it was deposited in the mail in the United States within the time prescribed for filing in an envelope or other appropriate wrapper that was properly addressed with postage prepaid, the form will be considered as timely filed. If the postmark is not legible, the sender has the burden of proving the date when the postmark was made. When registered mail is used, the date of postal registration will be accepted as the postmark date.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Transition rule.</E>
+                     Dealers already engaged in business prior to July 1, 2008, must register as an “existing business” unless they had registered, in accordance with regulations in effect at the time of registration, on or after January 1, 2007. This one-time registration is due on or before July 1, 2009.
+                </P>
+                <SECAUTH>(26 U.S.C. 6071)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.112</SECTNO>
+                <SUBJECT>Registration of multiple locations.</SUBJECT>
+                <P>A dealer required to register at two or more locations shall file one registration form, prepared as provided in § 31.114(c), to cover all such locations.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.113</SECTNO>
+                <SUBJECT>Place for filing registration form.</SUBJECT>
+                <P>The registration form, TTB Form 5630.5d, must be filed with TTB in accordance with the instructions on the form.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.114</SECTNO>
+                <SUBJECT>Completion of registration form.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     Dealers must register by filing the registration form, TTB Form 5630.5d, Alcohol Dealer Registration. The registration form must be filed 
+                    <PRTPAGE P="1037"/>
+                    with TTB in accordance with this subpart and the instructions on the form.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Preparation of TTB Form 5630.5d.</E>
+                     All of the information called for on TTB Form 5630.5d must be provided. This information includes the following:
+                </P>
+                <P>(1) The true name of the dealer.</P>
+                <P>(2) The trade name(s) (if any) of the business(es) subject to the registration requirement.</P>
+                <P>(3) The employer identification number (see § 31.115).</P>
+                <P>(4) The mailing address of the dealer's principal place of business (or principal office, in the case of a corporate dealer).</P>
+                <P>(5) The exact location of each place of business, by name and number of building or street, or if these do not exist, by some specific description in addition to the post office address.</P>
+                <P>(6) The business telephone number of each place of business.</P>
+                <P>(7) The class(es) of dealer in which the dealer operates a business.</P>
+                <P>(8) Ownership and control information. This consists of the name, position, and residence address of every owner of the business and of every person having power to control its management and policies with respect to the activity subject to registration. “Owner of the business” includes every partner, if the dealer is a partnership, and every person owning 10 percent or more of its stock, if the dealer is a corporation. However, the ownership and control information required by this paragraph need not be stated if the same information has been previously provided to TTB and that previously provided information is still current.</P>
+                <P>
+                    (c) 
+                    <E T="03">Multiple locations and/or classes of dealers.</E>
+                     A dealer required to register at more than one location or for more than one class of dealers must—
+                </P>
+                <P>(1) File one registration form, TTB Form 5630.5d, to cover all locations and classes of dealers; and</P>
+                <P>(2) Prepare, on the form, or on an attachment identified with the taxpayer's name, mailing address (as shown on TTB Form 5630.5d), and employer identification number, a list showing, by States, the trade name, address, telephone number, and dealer class of each location for which registration is being made. The original of the list must be filed with TTB on or with the registration form, and a copy must be retained at the dealer's principal place of business (or principal office, in the case of a corporate dealer) for the period specified in § 31.191.</P>
+                <SECAUTH>(26 U.S.C. 7805)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.115</SECTNO>
+                <SUBJECT>Employer identification number.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Requirement.</E>
+                     The employer identification number (as defined in 26 CFR 301.7701-12) of a dealer who has been assigned such a number must be shown on each registration form filed under this part. A dealer who does not have such a number must apply for one as provided in paragraph (b) of this section and enter “number applied for” in the space for the number on the registration form; then, upon receipt of the number from the Internal Revenue Service, the dealer must provide it to TTB by separate correspondence. Failure of a dealer to include the employer identification number may result in the imposition of the penalty specified in § 31.14(b).
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Application for employer identification number.</E>
+                     Each dealer who files a registration form and who has not already been assigned an employer identification number must file Internal Revenue Service (IRS) Form SS-4 to apply for one. The dealer shall apply for and be assigned only one employer identification number, regardless of the number of places of business for which the dealer is required to file a registration form under this part. The employer identification number shall be applied for no later than 7 days after the filing of the taxpayer's first registration form. IRS Form SS-4 may be obtained from the director of an IRS service center, from any IRS district director, from 
+                    <E T="03">http://www.irs.gov/,</E>
+                     or from TTB's National Revenue Center.
+                </P>
+                <SECAUTH>(26 U.S.C. 6109)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.116</SECTNO>
+                <SUBJECT>Execution of registration form.</SUBJECT>
+                <P>
+                    The registration of an individual proprietor shall be signed by the proprietor, the registration of a partnership shall be signed by a member of the 
+                    <PRTPAGE P="1038"/>
+                    firm, and the registration of a corporation shall be signed by a duly authorized officer thereof; however, any individual, partnership, or corporation that is a proprietor may appoint an agent to sign on the proprietor's behalf. The person signing the registration form must identify his or her signing capacity as “individual owner,” “member of firm,” “agent,” or “attorney-in-fact,” as appropriate, or, in the case of a corporation, by the title of the signing officer. A receiver, trustee, assignee, executor, administrator, or other legal representative who continues the business of a dealer by reason of death, insolvency, or other circumstance must indicate the fiduciary capacity in which he or she acts. Registration forms signed by persons as agents or attorneys-in-fact will not be accepted unless, in each instance, the principal named on the form has executed a power of attorney authorizing that person to sign and that power of attorney is filed with the TTB officer with whom the TTB Form 5630.5d is required to be filed. Form 5630.5d must be verified by a written declaration that it has been executed under the penalties of perjury.
+                </P>
+                <SECAUTH>(26 U.S.C. 6061, 6065)</SECAUTH>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart H—Changes in Registration Information</HD>
+            <SUBJGRP>
+                <HD SOURCE="HED">Changes Requiring Registration as a New Business</HD>
+                <SECTION>
+                    <SECTNO>§ 31.121</SECTNO>
+                    <SUBJECT>Sale of business.</SUBJECT>
+                    <P>Under this part, registration is personal to the one who registered and is not transferable from one dealer to another. Where a change occurs in the proprietorship of a business for which registration has been completed, the successor must register as a new business.</P>
+                    <SECAUTH>(26 U.S.C. 5124)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.122</SECTNO>
+                    <SUBJECT>Incorporation of business.</SUBJECT>
+                    <P>Where an individual or a firm engaged in business requiring registration under this part forms a corporation to take over and conduct the business, the corporation, as a separate legal entity, must register in its own name as a new business.</P>
+                    <SECAUTH>(26 U.S.C. 5124)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.123</SECTNO>
+                    <SUBJECT>New corporation.</SUBJECT>
+                    <P>Where a new corporation is formed to take over and conduct the business of one or more corporations that have registered under this part, the new corporation must register in its own name as a new business.</P>
+                    <SECAUTH>(26 U.S.C. 5124)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.124</SECTNO>
+                    <SUBJECT>Stockholder continuing business of corporation.</SUBJECT>
+                    <P>A registration completed by a corporation as a dealer in liquors, or as a dealer in beer, cannot cover the same business carried on by one or more of its stockholders after dissolution of the corporation. The stockholder(s) must register as a new business.</P>
+                    <SECAUTH>(26 U.S.C. 5124)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.125</SECTNO>
+                    <SUBJECT>Cross references.</SUBJECT>
+                    <P>See also §§ 31.75, 31.102, and 31.103 for other situations requiring registration as a new dealer.</P>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Other Changes</HD>
+                <SECTION>
+                    <SECTNO>§ 31.131</SECTNO>
+                    <SUBJECT>Change of address.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         A dealer who removes the business to a place other than that for which the dealer is registered must register the change with TTB by filing an amended registration form, TTB Form 5630.5d, on or before the next July 1 following the change.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Caterers.</E>
+                         A caterer who sells liquor by the drink at locations other than his or her principal place of business shall not be required to provide the change of location registration prescribed in paragraph (a) of this section for those catering activities, provided that the caterer maintains the records required by § 31.95(c). For a permanent change in location of the principal place of business, the caterer must file an amended registration form in accordance with paragraph (a) of this section.
+                    </P>
+                </SECTION>
+                <SECTION>
+                    <PRTPAGE P="1039"/>
+                    <SECTNO>§ 31.132</SECTNO>
+                    <SUBJECT>Change in name or style of business.</SUBJECT>
+                    <P>A dealer who has registered for a business at a given location must complete an amended registration, and submit it on or before the next July 1, to report a change in the name or style (trade name) under which the dealer conducts that business.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.133</SECTNO>
+                    <SUBJECT>Change in management.</SUBJECT>
+                    <P>A change in management that involves no change in ownership of the business requires an amended registration only if the change involves a person who is responsible for controlling the management policies or buying or selling practices of the business pertaining to alcohol beverages. The amended registration must be submitted on TTB Form 5630.5d on or before the next July 1 following the change.</P>
+                    <SECAUTH>(26 U.S.C. 5124)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.134</SECTNO>
+                    <SUBJECT>Increase in capital stock of a corporation.</SUBJECT>
+                    <P>An amended registration is not required by reason of an increase in the capital stock of a corporation so long as a new corporation is not created under the laws of the State of incorporation and provided that the change does not alter the list of stockholders owning 10 percent or more of the capital stock.</P>
+                    <SECAUTH>(26 U.S.C. 5121, 5122, 5124)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.135</SECTNO>
+                    <SUBJECT>Change in ownership of capital stock.</SUBJECT>
+                    <P>Registration as a new business is not required merely by reason of the sale or transfer of all or a controlling interest in the capital stock of a corporation. However, an amended registration is required if the sale or transfer alters the list of stockholders owning 10 percent or more of the capital stock. The amended registration must be filed on or before the next July 1 following the sale or transfer.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.136</SECTNO>
+                    <SUBJECT>Change in membership of unincorporated club.</SUBJECT>
+                    <P>Registration of an unincorporated club is not required by reason of changes in membership, when those changes do not result in the dissolution of the club and the formation of a new club, unless the changes involve a person with the power to control the management policies or buying or selling practices pertaining to alcohol. In the latter case, the filing of an amended registration is required on or before the next July 1.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.137</SECTNO>
+                    <SUBJECT>Withdrawal of partner(s).</SUBJECT>
+                    <P>Withdrawal of partner(s) requires an amended registration. See § 31.104.</P>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.138</SECTNO>
+                    <SUBJECT>Discontinuance of business.</SUBJECT>
+                    <P>A dealer going out of business must register that event within 30 days by filing a registration form, TTB Form 5630.5d, in accordance with instructions on the form.</P>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart I—Restrictions Relating to Purchases of Distilled Spirits</HD>
+            <SECTION>
+                <SECTNO>§ 31.141</SECTNO>
+                <SUBJECT>Unlawful purchases of distilled spirits.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     It is unlawful for any dealer to purchase distilled spirits for resale from any person other than:
+                </P>
+                <P>(1) A wholesale dealer (including a State, a political subdivision of a State, the District of Columbia, and a distilled spirits plant) who is required to keep records under §§ 31.151 through 31.163 pertaining to the place where the distilled spirits are purchased;</P>
+                <P>(2) A retail liquor store operated by a State, a political subdivision of a State, or the District of Columbia; or</P>
+                <P>(3) A person not required to register as a wholesale liquor dealer, as provided in §§ 31.62, 31.63, 31.66, and 31.67.</P>
+                <P>
+                    (b) 
+                    <E T="03">Special provision for limited retail dealers.</E>
+                     A limited retail dealer may purchase distilled spirits from a retail dealer in liquors for resale.
+                </P>
+                <SECAUTH>(26 U.S.C. 5132)</SECAUTH>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart J—Records and Reports</HD>
+            <SUBJGRP>
+                <HD SOURCE="HED">Wholesale Dealers' Records and Reports</HD>
+                <SECTION>
+                    <SECTNO>§ 31.151</SECTNO>
+                    <SUBJECT>General requirements as to distilled spirits.</SUBJECT>
+                    <P>
+                        Except as otherwise provided in §§ 31.153 and 31.154, every wholesale dealer in liquors must keep daily 
+                        <PRTPAGE P="1040"/>
+                        records of the physical receipt and disposition of distilled spirits in accordance with §§ 31.155 and 31.156. When required in writing by the appropriate TTB officer, a wholesale dealer in liquors must also prepare and file a monthly summary report totaling the daily receipts and disposition of distilled spirits in accordance with § 31.160.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.152</SECTNO>
+                    <SUBJECT>Requirements as to wines and beer.</SUBJECT>
+                    <P>Every wholesale dealer in liquors who receives wines, or wines and beer, and every wholesale dealer in beer must keep at the dealer's place of business a complete record showing the quantities of wine and beer received, from whom the wine and beer were received, and the dates of receipt. This record, which must be kept for a period of not less than three years as prescribed in § 31.191, shall consist of all purchase invoices or bills covering wines and beer received or, at the option of the dealer, a book record containing all of the required information. Wholesale dealers are not required to prepare or submit reports to the appropriate TTB officer of transactions relating to wines and beer.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0065)</APPRO>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.153</SECTNO>
+                    <SUBJECT>Records to be kept by States, political subdivisions of States, or the District of Columbia.</SUBJECT>
+                    <P>The provisions of this subpart regarding the maintenance of records and the submission of reports shall not apply to States, political subdivisions of States, or the District of Columbia, or to any liquor stores operated by such entities that maintain, and make available for inspection by appropriate TTB officers, records that will enable TTB to verify receipts of wines and beer and to trace readily all distilled spirits received and disposed of by those entities. However, States, political subdivisions of States, and the District of Columbia, and liquor stores operated by such entities, must, on request of the appropriate TTB officer, furnish such transcripts, summaries, and copies of records with respect to distilled spirits as that TTB officer may require.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.154</SECTNO>
+                    <SUBJECT>Records to be kept by alcohol beverage producers, processors, and bonded warehousemen.</SUBJECT>
+                    <P>Wholesale liquor dealer operations conducted by brewers and by proprietors of distilled spirits plants, bonded wine cellars, bonded wine warehouses, and taxpaid wine bottling houses must be recorded and reported in accordance with the applicable provisions of parts 19, 24, and 25 of this chapter. To the extent that the same transactions are required to be recorded or reported by this part and by parts 19, 24, or 25, the records and reports required by those parts will satisfy the requirements of this part.</P>
+                    <SECAUTH>(26 U.S.C. 5207, 5367, 5415)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.155</SECTNO>
+                    <SUBJECT>Records of receipt.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Information required.</E>
+                         Every wholesale dealer in liquors must maintain a daily record of the physical receipt of each individual lot or shipment of distilled spirits. This record must show, at a minimum, the following:
+                    </P>
+                    <P>(1) Name and address of consignor;</P>
+                    <P>(2) Date of receipt, including date of inventory for recorded gains;</P>
+                    <P>(3) Brand name;</P>
+                    <P>(4) Name of producer or bottler. However, this may be omitted if the dealer keeps available for inspection a separate list or record identifying the producer or bottler with the brand name;</P>
+                    <P>(5) Kind of spirits. However, this may be omitted if the dealer keeps available for inspection a separate list or record identifying “kind” with the brand name;</P>
+                    <P>(6) Quantity actually received, showing number of packages, if any, and number of cases by size of bottle, and explaining any difference from the quantity shown on the commercial papers covering the shipment; and</P>
+                    <P>(7) Package identification numbers of containers of alcohol received for repackaging for industrial use pursuant to subpart L of this part.</P>
+                    <P>
+                        (b) 
+                        <E T="03">Form of record.</E>
+                         The record required by paragraph (a) of this section 
+                        <PRTPAGE P="1041"/>
+                        must be a part of the accounting system and must consist of consignors' invoices (or, if those invoices are not available on the day the shipment is received, memorandum receiving records prepared on the day of receipt of the distilled spirits, including records of inventory for recorded gains) and credit memorandums covering distilled spirits returned to the dealer.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0065)</APPRO>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.156</SECTNO>
+                    <SUBJECT>Records of disposition.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Information required.</E>
+                         Every wholesale dealer in liquors must prepare a daily record of the physical disposition of each individual lot of distilled spirits. This record must show, at a minimum, the following:
+                    </P>
+                    <P>(1) Name and address of consignee;</P>
+                    <P>(2) Date of disposition, including date of discovery in the case of casualty, theft or recorded inventory losses;</P>
+                    <P>(3) Brand name;</P>
+                    <P>(4) Kind of spirits. However, this may be omitted if the dealer keeps available for inspection a separate list or record identifying “kind” with the brand name;</P>
+                    <P>(5) Number of packages, if any, and number of cases by size of bottle; and</P>
+                    <P>(6) Package identification numbers of containers of alcohol repackaged for industrial use pursuant to subpart L of this part.</P>
+                    <P>
+                        (b) 
+                        <E T="03">Form of record.</E>
+                         The record required by paragraph (a) of this section must be part of the accounting system and must consist of wholesale dealer's invoices (or, if those invoices are not available at the time the spirits are removed, memorandum shipping records prepared at the time of removal of the distilled spirits, including date of discovery in the case of casualty, theft or recorded inventory losses).
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0065)</APPRO>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.157</SECTNO>
+                    <SUBJECT>Canceled or corrected records.</SUBJECT>
+                    <P>Entries on the records of receipt and disposition prescribed by §§ 31.155 and 31.156 must not be erased or obliterated. Correction or deletion of any entry must be accomplished by drawing a line through the entry and inserting an appropriate correction or explanation. If a wholesale dealer in liquors voids an invoice for any reason, the file copy prescribed in § 31.181 must be marked “Cancelled” and must be filed as provided in that section; any remaining copy of the voided invoice must be destroyed or similarly cancelled and filed. If a new invoice is prepared, its serial number must be cross referenced on any retained copies of the cancelled invoice.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.158</SECTNO>
+                    <SUBJECT>Previously prescribed or approved records of receipt and disposition.</SUBJECT>
+                    <P>A wholesale dealer in liquors may continue to use records of receipt and disposition in a format previously prescribed or approved. Those records must show the information required by paragraph (a) of § 31.155 or paragraph (a) of § 31.156, as applicable. The records must be preprinted with the name and address of the wholesale dealer. Each sheet or page must bear a preprinted serial number, or page serial numbers may be affixed in unbroken sequence during the preparation or processing of the records. A serial number must not be duplicated within a period of 6 months.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.159</SECTNO>
+                    <SUBJECT>Variations in format or preparation of records.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Authorization.</E>
+                         The appropriate TTB officer may approve variations in the type and format of records of receipt and disposition required under §§ 31.155 and 31.156, or in the methods of preparing those records, when it is shown that variations from the requirements are necessary in order to use data processing equipment, other business machines, or existing accounting systems, and provided that the variation will not unduly hinder the effective administration of this part, jeopardize the revenue, or be contrary to any provision of law. A dealer who wishes to employ such a variation must submit a written application to the appropriate TTB officer. The application must describe the proposed variation and set forth the need for it. 
+                        <PRTPAGE P="1042"/>
+                        Variations in type and format of records or methods of preparation must not be employed until approval is received from the appropriate TTB officer.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Requirements.</E>
+                         Any information required by this part to be kept or filed is subject to the provisions of law and this part relating to required records and reports, regardless of the form or manner in which kept or filed.
+                    </P>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0067)</APPRO>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.160</SECTNO>
+                    <SUBJECT>Monthly summary report.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Requirement.</E>
+                         Every wholesale dealer in liquors must, when required, submit monthly to the appropriate TTB officer a summary report of the total quantities of all distilled spirits received and disposed of daily during the month (including the date of discovery for theft, casualty and inventory losses and inventory gains). This report must be posted by the wholesaler on a daily basis. If there were no receipts or disposals of distilled spirits during the month, the report must be marked “No Transactions During Month.” This report must be filed not later than the 15th day of the month following the report period, with a copy retained by the dealer. The appropriate TTB officer may authorize a dealer, upon request, to post the report less frequently until otherwise notified; the appropriate TTB officer's authorization will specify the intervals at which the posting will be accomplished, but not less frequently than monthly.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Form of report.</E>
+                         When required under paragraph (a) of this section, the monthly summary report may be prepared in a format that is adapted to the dealer's accounting and recordkeeping systems. In addition to any other information shown therein, the report must include:
+                    </P>
+                    <P>(1) Daily totals of all bottled spirits received and disposed of, recorded by wine gallons or liters;</P>
+                    <P>(2) Daily totals of all bulk spirits in packages received and disposed of, recorded by proof gallons; and</P>
+                    <P>(3) Entries showing, by date, each disposition caused by an inventory, casualty, or theft loss and each receipt caused by a recorded gain in inventory.</P>
+                    <P>
+                        (c) 
+                        <E T="03">Declaration.</E>
+                         When required to be filed, the monthly summary report must bear the following declaration signed by the dealer or an authorized agent:
+                    </P>
+                    <EXTRACT>
+                        <P>I declare under the penalties of perjury that I have examined this report and, to the best of my knowledge and belief, it is true, correct, and complete and is supported by true, correct, and complete records which are available for inspection.</P>
+                    </EXTRACT>
+                    <P>
+                        (d) 
+                        <E T="03">Other records.</E>
+                         Even if the monthly summary report is not required by the appropriate TTB officer, every wholesale dealer in distilled spirits must maintain and make available for review by appropriate TTB officers:
+                    </P>
+                    <P>(1) Records of receipt required by § 31.155;</P>
+                    <P>(2) Records of disposition, required by § 31.156; and</P>
+                    <P>(3) Any other supporting information or documents regarding the receipt and disposition of distilled spirits that have a direct role in determining the completeness and accuracy of the receipt and disposition records.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0065)</APPRO>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.161</SECTNO>
+                    <SUBJECT>Conversion between metric and U.S. units.</SUBJECT>
+                    <P>When liters are converted to wine gallons, the quantity in liters must be multiplied by 0.264172 to determine the equivalent quantity in wine gallons. Once converted to wine gallons, the proof gallons of spirits in cases must be determined as provided in § 30.52 of this chapter. Cases containing the same quantity of spirits of the same proof in metric bottles may be converted to U.S. units by multiplying the liters in one case by the number of cases to be converted, as follows:</P>
+                    <P>(a) If the conversion from liters to U.S. units is made before multiplying by the number of cases, the quantity in U.S. units must be rounded to the sixth decimal; and</P>
+                    <P>(b) If the conversion is made after multiplying by the number of cases, the quantity in U.S. units must be rounded to the nearest hundredth.</P>
+                    <SECAUTH>(26 U.S.C. 7805; 27 U.S.C. 205)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <PRTPAGE P="1043"/>
+                    <SECTNO>§ 31.162</SECTNO>
+                    <SUBJECT>Discontinuance of business.</SUBJECT>
+                    <P>When a wholesale dealer in liquors who is required, under § 31.160, to file a monthly summary report discontinues business, a monthly summary report marked “Final” must be filed covering transactions through the date of discontinuance.</P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.163</SECTNO>
+                    <SUBJECT>Requirements when a wholesale dealer in liquors maintains a retail department.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Constructive receipt and sale.</E>
+                         When a wholesale dealer in liquors maintains a separate department on the premises for the retailing of distilled spirits, and the retail sales of distilled spirits normally represent 90 percent or more of the volume of distilled spirits sold, the dealer may “constructively” receive all distilled spirits in the retail department. Sales involving a wholesale transaction may be “constructively” sold through the wholesale department.
+                    </P>
+                    <P>
+                        (1) 
+                        <E T="03">Receipts.</E>
+                         In lieu of maintaining and preparing the records required by § 31.155, a wholesale dealer may constructively receive all distilled spirits in its retail department. In this case, the receiving document will serve as a receipt for (through) the wholesale department and a disposition (transfer) to the retail department. The receiving document must be maintained by the retail department in accordance with § 31.171.
+                    </P>
+                    <P>
+                        (2) 
+                        <E T="03">Dispositions.</E>
+                         In lieu of maintaining and preparing the records required by § 31.156, a wholesale dealer may constructively sell distilled spirits from its retail department to other dealers. The sales invoice or bill must be filed in the wholesaler's disposition records and will serve as a record of receipt from the retail department and a record of disposition to another dealer.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Receipt and disposition records.</E>
+                         Except as provided in paragraph (a) of this section, a wholesale dealer must prepare and maintain the required records of receipt and disposition as prescribed in §§ 31.155 and 31.156. Transfers between the wholesale and retail departments will be treated in the same manner as any other transaction involving the wholesale department.
+                    </P>
+                    <P>
+                        (c) 
+                        <E T="03">Monthly summary report.</E>
+                         When required by § 31.160, a wholesale dealer must prepare and file the monthly summary report of actual or constructive receipts and dispositions of all distilled spirits.
+                    </P>
+                    <P>
+                        (d) 
+                        <E T="03">Physical separation.</E>
+                         Wholesale and retail departments need not be physically separated.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5121)</SECAUTH>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Filing of Wholesale Dealers' Records and Reports</HD>
+                <SECTION>
+                    <SECTNO>§ 31.171</SECTNO>
+                    <SUBJECT>Method of filing.</SUBJECT>
+                    <P>A wholesale dealer may file the records of receipt and disposition required by §§ 31.155 and 31.156 in accordance with the wholesaler's regular accounting and recordkeeping systems. The required records must include the dealer's own file copies of the receiving or shipping invoices and must be filed according to the following rules:</P>
+                    <P>(a) Wholesale dealers may file records of receipt and disposition in accordance with their own filing system as long as the records are filed by transaction or reporting date and the filing system systematically and accurately accounts for all receipts and dispositions of distilled spirits.</P>
+                    <P>(b) The required records of receipt and disposition must be filed not later than one business day following the date the transaction occurred.</P>
+                    <P>(c) Supporting documents for receipts and dispositions, such as delivery receipts and bills of lading, also may be filed in accordance with the wholesaler's regular accounting and recordkeeping practices.</P>
+                    <SECAUTH>(26 U.S.C. 5121, 5122, 5123)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.172</SECTNO>
+                    <SUBJECT>Place of filing.</SUBJECT>
+                    <P>
+                        Records of receipt and disposition and monthly summary reports required by §§ 31.155, 31.156, and 31.160 must be maintained at the dealer's place of business. The appropriate TTB officer may, upon request, authorize maintenance of files, or an individual file, at another business location under the control of the same wholesale dealer, 
+                        <PRTPAGE P="1044"/>
+                        when it is determined that such maintenance will not cause undue inconvenience to TTB officers desiring to examine those files.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5123)</SECAUTH>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Retail Dealer's Records</HD>
+                <SECTION>
+                    <SECTNO>§ 31.181</SECTNO>
+                    <SUBJECT>Requirements for retail dealers.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">Records of receipt.</E>
+                         All retail dealers must keep at their place of business complete records showing the quantities of all distilled spirits, wines, and beer received, from whom the distilled spirits, wines, and beer were received, and the dates of receipt. However, the appropriate TTB officer may, upon request, authorize the maintenance of records at another business premises also under the control of the same retail dealer when it is determined that such maintenance will not cause undue inconvenience to TTB officers desiring to examine those records. Records of receipts shall consist of all purchase invoices or bills covering distilled spirits, wines, and beer received, or, at the option of the retail dealer, a book record containing all of the required information.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Records of sales of 20 wine gallons (75.7 liters) or more.</E>
+                         Every retail dealer who makes sales of distilled spirits, of wines, or of beer in quantities of 20 wine gallons (75.7 liters) or more to the same person at the same time must prepare and keep a record of each sale. The record must show the date of sale, the name and address of the purchaser, the kind and quantity of each kind of liquors sold, and the serial numbers of all full cases of distilled spirits included in the sale. Each entry on that record must be supported by a corresponding delivery receipt (which may be executed on a copy of the sales slip) signed by the purchaser or the purchaser's agent.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5122, 5123)</SECAUTH>
+                    <APPRO>(Approved by the Office of Management and Budget under control number 1513-0066)</APPRO>
+                </SECTION>
+            </SUBJGRP>
+            <SUBJGRP>
+                <HD SOURCE="HED">Retention of Records and Files</HD>
+                <SECTION>
+                    <SECTNO>§ 31.191</SECTNO>
+                    <SUBJECT>Period of retention.</SUBJECT>
+                    <P>All records and files, all documents or copies of documents supporting these records and files, and all file copies of reports, submitted as required by this part, must be retained by the person required to have them, for a period of not less than three years and, during the retention period, must be available, during business hours, for inspection and copying by the appropriate TTB officers. In addition, the appropriate TTB officer may require retention of the documents and other records for an additional period of not more than three years if it is determined that such additional retention is necessary.</P>
+                    <SECAUTH>(26 U.S.C. 5123)</SECAUTH>
+                </SECTION>
+                <SECTION>
+                    <SECTNO>§ 31.192</SECTNO>
+                    <SUBJECT>Photographic copies of records.</SUBJECT>
+                    <P>
+                        (a) 
+                        <E T="03">General.</E>
+                         Dealers may record, copy, or reproduce records required by this part. Dealers may use any process that accurately reproduces the original record and that forms a durable medium for preserving the original record.
+                    </P>
+                    <P>
+                        (b) 
+                        <E T="03">Copies of records treated as original records.</E>
+                         Whenever records are reproduced under this section, the reproduced records must be preserved in conveniently accessible files, and provision must be made for examining, viewing, and using the reproduced record in the same manner as if it were the original record. A reproduced record will be treated and considered for all purposes as though it were the original record. All provisions of law and regulations applicable to the original record are applicable to the reproduced record. As used in this section, “original record” means the record required by this part to be maintained or preserved by a dealer, even though it may be an executed duplicate or other copy of the document.
+                    </P>
+                    <SECAUTH>(26 U.S.C. 5555)</SECAUTH>
+                </SECTION>
+            </SUBJGRP>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart K—Reuse and Possession of Used Liquor Bottles</HD>
+            <SECTION>
+                <SECTNO>§ 31.201</SECTNO>
+                <SUBJECT>Refilling of liquor bottles.</SUBJECT>
+                <P>No person who sells, or offers for sale, distilled spirits, or agent or employee of such person, shall:</P>
+                <P>
+                    (a) Place in any liquor bottle any distilled spirits whatsoever other than those contained in that bottle at the time of closing under the provisions of 26 U.S.C. chapter 51; or
+                    <PRTPAGE P="1045"/>
+                </P>
+                <P>(b) By the addition of any substance whatsoever to any liquor bottle, in any manner alter or increase any portion of the original contents contained in that bottle at the time of closing under the provisions of 26 U.S.C. chapter 51.</P>
+                <SECAUTH>(26 U.S.C. 5301)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.202</SECTNO>
+                <SUBJECT>Possession of refilled liquor bottles.</SUBJECT>
+                <P>No person who sells, or offers for sale, distilled spirits, or agent or employee of such person, shall:</P>
+                <P>(a) Possess any liquor bottle in which any distilled spirits have been placed in violation of the provisions of § 31.201; or</P>
+                <P>(b) Possess any liquor bottle, any portion of the contents of which has been altered or increased in violation of the provisions of § 31.201.</P>
+                <SECAUTH>(26 U.S.C. 5301)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.203</SECTNO>
+                <SUBJECT>Possession of used liquor bottles.</SUBJECT>
+                <P>The possession of used liquor bottles by any person other than the person who empties the contents thereof is prohibited except in the following circumstances:</P>
+                <P>(a) The owner or occupant of any premises on which the used bottles have been lawfully emptied may assemble the bottles on such premises—</P>
+                <P>(1) For delivery to a bottler or importer on specific request of that bottler or importer;</P>
+                <P>(2) For destruction, either on the premises on which the bottles are emptied or elsewhere, including disposition for purposes that will result in the bottles being rendered unusable as bottles; or</P>
+                <P>(3) In the case of unusual or distinctive bottles, for disposition or sale as collectors' items or for other purposes not involving the packaging of any product for sale;</P>
+                <P>(b) Any person may possess, offer for sale, or sell unusual or distinctive bottles for purposes not involving the packaging of any product for sale; and</P>
+                <P>(c) Any person may assemble used liquor bottles for the purpose of recycling or reclaiming the glass or other approved liquor bottle material.</P>
+                <SECAUTH>(26 U.S.C. 5301)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.204</SECTNO>
+                <SUBJECT>Mixed cocktails.</SUBJECT>
+                <P>A retail liquor dealer who mixes cocktails or compounds any alcoholic liquors in advance of sale, as provided in § 31.233, may not use liquor bottles in which distilled spirits have been previously packaged for the storage of the mixture or compound pending that sale.</P>
+                <SECAUTH>(26 U.S.C. 5301)</SECAUTH>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart L—Packaging of Alcohol for Industrial Uses</HD>
+            <SECTION>
+                <SECTNO>§ 31.211</SECTNO>
+                <SUBJECT>Requirements and procedure.</SUBJECT>
+                <P>Upon compliance with the provisions of part 19 of this chapter applicable to persons repackaging distilled spirits, and subject to the requirements of paragraphs (a) through (c) of this section, a dealer engaged in the business of supplying distilled spirits for industrial use may obtain bulk alcohol on which the tax has been paid or determined and repackage the alcohol for sale for industrial use in containers of a capacity in excess of 1 wine gallon and not more than 5 wine gallons.</P>
+                <P>
+                    (a) 
+                    <E T="03">Qualification procedure.</E>
+                     An application for registration, TTB Form 5110.41, and an application for an operating permit, TTB Form 5110.25, modified in accordance with instructions of the appropriate TTB officer, must be executed and filed with the appropriate TTB officer. No alcohol shall be repackaged until the approved application for registration and the approved operating permit are received.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Operations.</E>
+                     Repackaging operations must be conducted in accordance with the bottling and packaging requirements of part 19 of this chapter. Packaging and labeling operations may be carried on without supervision of a TTB officer unless the appropriate TTB officer requires supervision.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Records.</E>
+                     The dealer must keep daily records showing the bulk alcohol received, dumped for packaging, packaged, and disposed of, including the name and address of each consignor and consignee. The dealer must prepare a monthly report on TTB Form 5110.28 of bulk alcohol received, packaged, and disposed of. Reports on Form 5110.28 must be submitted to the appropriate TTB officer not later than the 15th day 
+                    <PRTPAGE P="1046"/>
+                    of the month following the period covered by the report. Records, documents, or copies of documents supporting the records, and copies of reports submitted to the appropriate TTB officer, must be filed and retained as prescribed in §§ 31.172 and 31.191.
+                </P>
+                <SECAUTH>(26 U.S.C. 5131, 5206)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.212</SECTNO>
+                <SUBJECT>Labeling.</SUBJECT>
+                <P>Every dealer packaging alcohol for industrial use must affix to each package filled a label bearing in conspicuous print the words “Alcohol” and “For Industrial Use,” the proof of the alcohol, the capacity of the container, and the packaging dealer's name and address. The dealer may incorporate in the label other appropriate statements; however, such statements must not obscure or contradict the data required by this section to be shown on such labels.</P>
+                <SECAUTH>(26 U.S.C. 5131, 5206)</SECAUTH>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart M—Distilled Spirits for Export with Benefit of Drawback</HD>
+            <SECTION>
+                <SECTNO>§ 31.221</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>A State, a political subdivision of a State, or a person holding a wholesale liquor dealer's basic permit issued under part 1 of this chapter may export bottled taxpaid distilled spirits with benefit of drawback as provided in § 28.171 of this chapter. The marking of cases, the preparation of notice of shipment on TTB Form 5110.30, the removal and exportation of the distilled spirits, and the filing of claims by the processor of the spirits must be in accordance with the applicable provisions of parts 19 and 28 of this chapter.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.223</SECTNO>
+                <SUBJECT>Records and reports.</SUBJECT>
+                <P>The provisions of subpart J of this part regarding records and reports relating to liquors for domestic use also apply to export transactions permitted under this subpart.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart N—Miscellaneous</HD>
+            <SECTION>
+                <SECTNO>§ 31.231</SECTNO>
+                <SUBJECT>Destruction of marks and brands on wine containers.</SUBJECT>
+                <P>A dealer who empties any cask, barrel, keg, or other bulk container of wine must scrape or obliterate from the empty container all marks, brands, tags, or labels placed thereon under the provisions of part 24 of this chapter as evidence of the payment or determination of the tax on the wine removed in the container from the bonded wine cellar.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.232</SECTNO>
+                <SUBJECT>Wine bottling.</SUBJECT>
+                <P>Each person desiring to bottle, package, or repackage taxpaid wines must, before carrying on those operations, apply and receive permission from the appropriate TTB officer in accordance with part 24 of this chapter. The decanting of wine by caterers or other retail dealers for table or room service, banquets, and similar purposes shall not be considered as “bottling,” if the decanters are not furnished for the purpose of carrying wine away from the area where served.</P>
+                <SECAUTH>(26 U.S.C. 5352)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.233</SECTNO>
+                <SUBJECT>Mixing cocktails in advance of sale.</SUBJECT>
+                <P>A retail liquor dealer shall not mix cocktails, or compound any alcoholic liquors in advance of sale, except for the purpose of filling, for immediate consumption on the premises, orders received, or expected to be immediately received, at the bar. See § 31.204 for additional mixed cocktail rules.</P>
+                <SECAUTH>(26 U.S.C. 5002)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 31.234</SECTNO>
+                <SUBJECT>Liability for special (occupational) tax.</SUBJECT>
+                <P>The special (occupational) tax on alcohol beverage dealers was suspended for the period July 1, 2005, through June 30, 2008, and was repealed effective July 1, 2008. Dealers who were engaged in business prior to the suspension period remain liable for payment of the special (occupational) tax in accordance with the laws and regulations in effect at that time. The tax return to be used for payment of any past-due special (occupational) tax is TTB Form 5630.5a.</P>
+                <SECAUTH>(Section 11125, Pub. L. 109-59, 119 Stat. 1953)</SECAUTH>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

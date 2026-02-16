@@ -1,0 +1,822 @@
+# Decision Log - TTB Label Verification Prototype
+
+## Overview
+This document tracks key technical and architectural decisions made during the development of the AI-Powered Alcohol Label Verification App prototype.
+
+---
+
+## Decision 001: Programming Language Selection
+
+**Date:** 2026-02-14  
+**Status:** ✅ Decided  
+**Decision:** Use Python as the primary programming language
+
+### Context
+- Project requires AI/ML integration for OCR and text extraction
+- Need rapid development within 6-day timeline
+- Focus on rock-solid core features over ambitious scope
+- Must integrate with modern AI services (OpenAI, Google Cloud Vision, or Azure)
+
+### Options Considered
+
+#### Option 1: Python ✅ SELECTED
+**Pros:**
+- Rich AI/ML ecosystem (OpenAI SDK, Google Cloud Vision, Azure CV)
+- Excellent image processing libraries (Pillow, OpenCV)
+- Strong text processing capabilities (difflib, fuzzywuzzy, regex)
+- Rapid web development frameworks (FastAPI, Streamlit, Flask)
+- Single language for entire stack possible (reduces context switching)
+- Mature libraries for all required functionality
+
+**Cons:**
+- May require separate frontend if not using Streamlit
+- Deployment may need more consideration than JS-based solutions
+
+#### Option 2: Node.js/JavaScript
+**Pros:**
+- Single language for full-stack development
+- Fast deployment to Vercel/Netlify
+- Large ecosystem of web frameworks
+
+**Cons:**
+- AI/ML libraries less mature than Python
+- OCR integration more complex
+- Image processing libraries less robust
+- Less natural fit for ML/AI workload
+
+#### Option 3: .NET/C#
+**Pros:**
+- Aligns with TTB's current COLA system (.NET)
+- Azure integration might be smoother
+
+**Cons:**
+- Slower development time
+- Less mature AI/ML ecosystem
+- Steeper learning curve for rapid prototyping
+- Not ideal for 6-day timeline
+
+### Decision Rationale
+
+Python selected because:
+
+1. **AI/ML Best Fit:** The core requirement is AI-powered text extraction. Python has the most mature, well-documented, and actively maintained libraries for:
+   - OpenAI GPT-4 Vision API
+   - Google Cloud Vision API
+   - Azure Computer Vision API
+   - Tesseract OCR
+
+2. **Rich Ecosystem:** Python libraries handle all project requirements:
+   - Image processing: Pillow, OpenCV
+   - Text comparison: difflib (built-in), fuzzywuzzy
+   - String validation: regex (built-in)
+   - Web frameworks: FastAPI, Streamlit, Flask
+
+3. **Rapid Development:** With 6 days for implementation:
+   - Python's concise syntax enables faster development
+   - Frameworks like Streamlit can create full UI in hours, not days
+   - Less boilerplate code than compiled languages
+
+4. **Industry Standard:** Most modern AI/ML work and research happens in Python
+   - Better documentation and community support
+   - More examples and tutorials for similar use cases
+   - Easier to find solutions to implementation challenges
+
+5. **Focus on Business Logic:** Python allows spending more time on:
+   - Label verification algorithms
+   - Comparison logic for field matching
+   - Government warning validation
+   - Less time on language/framework mechanics
+
+### Implications
+
+- **Framework Selection:** Next decision will be Python web framework (Streamlit vs FastAPI vs Flask)
+- **Deployment:** Will need Python-friendly hosting (Railway, Render, Heroku, Streamlit Cloud, PythonAnywhere)
+- **Dependencies:** Will use pip/poetry for dependency management
+- **Testing:** Will use pytest for unit tests
+- **Code Quality:** Will use black/ruff for formatting, mypy for type checking
+
+### Success Metrics
+- Successfully integrate with chosen AI service (OpenAI/Google/Azure)
+- Process label images and extract text in < 5 seconds
+- Clean, maintainable Python codebase
+- Straightforward deployment process
+
+### References
+- OpenAI Python SDK: https://github.com/openai/openai-python
+- Pillow Documentation: https://pillow.readthedocs.io/
+- FastAPI Documentation: https://fastapi.tiangolo.com/
+- Streamlit Documentation: https://docs.streamlit.io/
+
+---
+
+## Decision 002: Web Framework Selection
+
+**Date:** 2026-02-14  
+**Status:** ✅ Decided  
+**Decision:** Use FastAPI as the web framework
+
+### Context
+- Need API backend for label verification service
+- Must support file uploads (images)
+- Need to expose endpoints for frontend consumption
+- Should be production-ready and well-documented
+- Must support async operations for AI/OCR calls
+
+### Options Considered
+
+#### Option 1: Streamlit
+**Pros:**
+- Fastest development time (single Python file)
+- Built-in UI components (file upload, forms, display)
+- Perfect for internal tools
+- Instant deployment to Streamlit Cloud
+
+**Cons:**
+- Less separation of concerns
+- Limited API flexibility
+- Not ideal for Lambda deployment
+- Less "production-like" architecture
+
+#### Option 2: FastAPI ✅ SELECTED
+**Pros:**
+- Modern, fast, production-ready
+- Automatic API documentation (OpenAPI/Swagger)
+- Native async/await support for AI API calls
+- Type hints and validation built-in (Pydantic)
+- Easy to deploy to AWS Lambda (with Mangum adapter)
+- Clean separation of API and frontend
+- Excellent for RESTful API design
+
+**Cons:**
+- Requires separate frontend implementation
+- More initial setup than Streamlit
+
+#### Option 3: Flask
+**Pros:**
+- Mature, well-known framework
+- Large ecosystem and community
+
+**Cons:**
+- Less modern than FastAPI
+- No native async support (need Flask-Async)
+- More boilerplate code
+- Manual API documentation
+
+### Decision Rationale
+
+FastAPI selected because:
+
+1. **AWS Lambda Compatible:** Works well with Lambda via Mangum adapter
+2. **Async Support:** Native async/await perfect for AI API calls that may take seconds
+3. **Production Quality:** Automatic validation, serialization, and API docs
+4. **Type Safety:** Pydantic models reduce bugs and improve maintainability
+5. **Performance:** Built on Starlette and Uvicorn (fast ASGI server)
+6. **Developer Experience:** Automatic interactive API docs at /docs endpoint
+
+### Implications
+- Need to build separate frontend (React/Vue/vanilla JS)
+- API-first architecture with clear endpoints
+- Can test API independently of frontend
+- Documentation generated automatically
+- Easy to add authentication later if needed
+
+### Success Metrics
+- API responds in < 5 seconds per label verification
+- Clean API contract with proper request/response models
+- Automatic API documentation available
+- Successful deployment to AWS Lambda
+
+### References
+- FastAPI Documentation: https://fastapi.tiangolo.com/
+- Mangum (Lambda adapter): https://mangum.io/
+
+---
+
+## Decision 003: AI/OCR Service Selection
+
+**Date:** 2026-02-14  
+**Status:** ✅ Decided  
+**Decision:** Use Ollama with vision-capable model (llama3.2-vision or llava)
+
+### Context
+From interview with Marcus Williams (IT Systems Administrator):
+> "Our network blocks outbound traffic to a lot of domains... During the scanning vendor pilot, half their features didn't work because our firewall blocked connections to their ML endpoints."
+
+**Key Requirements:**
+- No external API dependencies that could be blocked by government firewalls
+- Must work in isolated network environment
+- < 5 second processing time (critical requirement)
+- Must extract text from label images accurately
+- Must handle structured data extraction (brand name, ABV, warnings, etc.)
+
+### Options Considered
+
+#### Option 1: Cloud APIs (OpenAI GPT-4 Vision, Google Cloud Vision, Azure)
+**Pros:**
+- State-of-the-art accuracy
+- Fast processing (typically 1-3 seconds)
+- Minimal setup and maintenance
+- Strong structured data extraction
+
+**Cons:**
+- ❌ Requires external API calls (blocked by TTB firewall per Marcus)
+- ❌ Won't work in production environment
+- Ongoing API costs
+- Network dependency
+
+#### Option 2: Ollama + Vision Model ✅ SELECTED (with concerns)
+**Pros:**
+- ✅ Fully self-contained, runs locally
+- ✅ No external dependencies or API calls
+- ✅ Works in isolated network
+- Supports vision-capable models (llama3.2-vision, llava, etc.)
+- Free to run
+
+**Cons:**
+- ⚠️ **CRITICAL: Performance concern** - May not meet 5-second requirement
+- ⚠️ **Lambda incompatible** - Models are too large (GBs) for Lambda
+- Requires significant compute resources
+- Accuracy may be lower than GPT-4 Vision
+- Setup complexity for deployment
+
+#### Option 3: Tesseract OCR + GPT-based text parsing
+**Pros:**
+- Tesseract is self-contained and lightweight
+- Fast OCR processing (< 1 second)
+- Lambda-compatible
+- Could use smaller Ollama model for text structuring
+
+**Cons:**
+- Two-stage process (OCR then parsing)
+- Tesseract accuracy varies with image quality
+- More complex pipeline
+
+#### Option 4: Hybrid Approach (Tesseract + Rule-based extraction)
+**Pros:**
+- ✅ Fast (< 1 second for OCR)
+- ✅ Fully self-contained
+- ✅ Lambda-compatible
+- ✅ Predictable performance
+- No AI model hosting needed
+
+**Cons:**
+- Less intelligent text extraction
+- Requires manual parsing logic
+- May miss edge cases
+- Less impressive technically
+
+### Decision Rationale
+
+**Selected Ollama with EC2 deployment:**
+
+1. **Meets Core Requirement:** Self-contained, no external APIs blocked by firewall
+2. **Vision Capabilities:** Can process images and extract structured data
+3. **Realistic for TTB:** Mirrors on-premise deployment scenario
+4. **No Ongoing Costs:** Free to run (unlike cloud APIs)
+5. **Prototype Appropriate:** Demonstrates AI capability in constrained environment
+
+**Resolution of Lambda Conflict:**
+- Moved to EC2 deployment (see Decision 004)
+- EC2 can handle 4-8GB Ollama models
+- Allows persistent model loading (no cold starts)
+
+**Ollama Model Selection:**
+- **Primary:** llama3.2-vision (11B parameters, vision + text)
+- **Alternative:** llava (smaller, faster if performance issues)
+- Will benchmark both on EC2 to meet 5-second requirement
+
+### Performance Strategy
+
+**Meeting the 5-Second Requirement:**
+1. Pre-load model at container startup (not per request)
+2. Keep Ollama service warm
+3. Optimize prompts for structured output
+4. Use appropriate instance size (t3.xlarge minimum)
+5. Consider GPU instance (g4dn.xlarge) if CPU inference too slow
+
+**Fallback Plan:**
+If Ollama cannot meet 5-second requirement:
+- Switch to Tesseract OCR + rule-based extraction
+- Document in README that this was a performance-driven decision
+- Note that production deployment could use specialized OCR hardware
+
+### Implications
+
+**Technical:**
+- FastAPI will call Ollama API at http://localhost:11434
+- Use ollama Python library for integration
+- Design prompts for JSON-structured output extraction
+- Handle Ollama errors gracefully
+
+**Deployment:**
+- Docker Compose with two services: ollama + api
+- Model downloaded during container build or first run
+- Persistent volume for model storage
+
+**Development:**
+- Can develop locally with Ollama installed
+- Use same Docker Compose for local testing
+- Mock Ollama responses for fast iteration if needed
+
+### Success Metrics
+- Image processing completes in < 5 seconds
+- Accurate text extraction (>90% accuracy on clear labels)
+- Works without external API calls
+- Deployable to chosen AWS service
+
+### References
+- Ollama: https://ollama.ai/
+- Ollama Python SDK: https://github.com/ollama/ollama-python
+- Tesseract OCR: https://github.com/tesseract-ocr/tesseract
+- AWS Lambda Limits: https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
+
+---
+
+## Decision 004: Deployment Platform
+
+**Date:** 2026-02-14  
+**Status:** ✅ Decided  
+**Decision:** AWS EC2 deployment (dropping Lambda approach)
+
+### Context
+- AWS is the chosen cloud provider
+- Lambda was initial consideration
+- Choice depends on AI/OCR service selection
+
+### Options Considered
+
+#### Option 1: AWS Lambda + API Gateway
+**Pros:**
+- Serverless, auto-scaling
+- Pay per request
+- Easy to deploy with SAM/CDK
+- No server management
+
+**Cons:**
+- ❌ Incompatible with Ollama (model size limits)
+- 15-minute timeout limit
+- Cold start latency
+- 10GB storage limit
+
+#### Option 2: AWS EC2 (t3.xlarge or larger)
+**Pros:**
+- ✅ Can run Ollama with vision models
+- Full control over environment
+- Persistent storage
+- Can use GPU instances if needed
+
+**Cons:**
+- More expensive (running 24/7)
+- Manual scaling
+- More deployment complexity
+
+#### Option 3: AWS ECS Fargate
+**Pros:**
+- Container-based deployment
+- Better scaling than EC2
+- No server management
+- Can run Ollama in container
+
+**Cons:**
+- More expensive than Lambda
+- Requires container registry setup
+- More complex than Lambda
+
+#### Option 4: AWS App Runner
+**Pros:**
+- Easy container deployment
+- Auto-scaling
+- Built-in load balancing
+
+**Cons:**
+- Limited to 4 vCPU / 12GB RAM
+- May not be sufficient for Ollama
+
+### Decision Rationale
+
+**EC2 selected to support self-contained Ollama deployment:**
+
+1. **Enables Ollama:** EC2 can handle 4-8GB vision models that Lambda cannot
+2. **Self-Contained Requirement:** Meets TTB's firewall constraints (no external APIs)
+3. **Performance Control:** Can select instance type to meet 5-second requirement
+4. **Flexibility:** Can add GPU if needed for faster inference
+5. **Prototype Realistic:** Mirrors how TTB would actually deploy (on-premise or gov cloud)
+
+**Trade-offs Accepted:**
+- More complex deployment than Lambda
+- Higher baseline cost (running instance vs. pay-per-request)
+- Manual scaling (but acceptable for prototype)
+- Requires instance management
+
+**Deployment Plan:**
+- Use EC2 instance (t3.xlarge or larger based on performance testing)
+- Docker container with FastAPI + Ollama
+- nginx reverse proxy for production serving
+- Elastic IP for stable endpoint
+- Security group for port 80/443 only
+
+### Implementation Details
+
+**Instance Selection:**
+- Start with t3.xlarge (4 vCPU, 16GB RAM)
+- Monitor Ollama performance with vision model
+- Scale up if needed (t3.2xlarge or g4dn for GPU)
+
+**Docker Setup:**
+```yaml
+# docker-compose.yml structure
+services:
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollama_data:/root/.ollama
+  
+  api:
+    build: ./backend
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=ollama:11434
+```
+
+**Frontend Hosting:**
+- Option A: Serve static frontend from same EC2 (nginx)
+- Option B: Host frontend on S3 + CloudFront (recommended for separation)
+
+### Next Steps
+1. Set up EC2 instance with Docker
+2. Install and test Ollama with llama3.2-vision or llava
+3. Benchmark performance with sample label images
+4. Optimize instance size if needed
+5. Document deployment process
+
+---
+
+## Decision 005: Sample Label Generator Approach
+
+**Date:** 2026-02-14  
+**Status:** ✅ Decided  
+**Decision:** Build a Python script (`gen_samples.py`) to generate realistic synthetic alcohol beverage labels for testing
+
+### Context
+- Need test data to validate the label verification system
+- Can't use real TTB COLA data (privacy, permissions)
+- Need both GOOD (compliant) and BAD (non-compliant) labels
+- Labels must reflect actual 27 CFR regulatory requirements
+- Need ground truth data (JSON metadata) for validation testing
+
+### Options Considered
+
+#### Option 1: Use Real Labels from TTB Public COLA Registry
+**Pros:**
+- Authentic real-world labels
+- Already approved/verified by TTB
+- No generation needed
+
+**Cons:**
+- Can't create BAD examples (all are approved)
+- No ground truth metadata
+- May have copyright/usage restrictions
+- Limited control over test scenarios
+- Can't test specific violation types
+
+#### Option 2: Manually Create Labels in Design Software
+**Pros:**
+- Full creative control
+- Can create specific test cases
+- Professional appearance
+
+**Cons:**
+- Time-consuming (would take days for 100+ labels)
+- Not scalable
+- Hard to ensure regulatory accuracy
+- Manual metadata creation error-prone
+
+#### Option 3: Generate Synthetic Labels with Python Script ✅ SELECTED
+**Pros:**
+- Scalable - generate hundreds of labels quickly
+- Fully automated with command-line control
+- Can create specific violation types systematically
+- Generates ground truth metadata automatically
+- Ensures regulatory accuracy (based on CFR analysis)
+- Randomization creates realistic variety
+- Reproducible test data
+
+**Cons:**
+- Initial development time (~6-7 hours)
+- May not look as polished as manual design
+- Limited to programmatic design elements
+
+### Decision Rationale
+
+**Selected synthetic generation approach because:**
+
+1. **Testing Requirements:** Need systematic test coverage of both compliant and non-compliant cases
+   - GOOD labels test baseline functionality
+   - BAD labels test specific violation detection (15+ types)
+   - Need many examples to test robustness
+
+2. **Ground Truth Essential:** For validation testing, need to know:
+   - What text SHOULD be extracted from each label
+   - Which regulations each label violates
+   - Expected validation outcome (COMPLIANT/NON_COMPLIANT)
+   - Manual labels would require manual metadata creation (error-prone)
+
+3. **Scalability:** Command-line generation allows:
+   - Quick iteration: regenerate all samples if requirements change
+   - Large test sets: easily create 100+ labels
+   - Specific scenarios: target specific violation types
+   - Batch processing testing: generate many labels at once
+
+4. **Regulatory Accuracy:** Script enforces requirements from TTB_REGULATORY_SUMMARY.md:
+   - Type size calculations based on container size
+   - Exact government warning text
+   - Proper format requirements (bold, all caps, etc.)
+   - Product-specific requirements (spirits vs wine vs malt)
+
+5. **Development Time Acceptable:** ~6-7 hours to build generator is worthwhile because:
+   - Saves days of manual label creation
+   - Enables unlimited regeneration
+   - Provides foundation for future test expansion
+
+### Implementation Details
+
+**Architecture:**
+- Single Python file: `gen_samples.py`
+- Minimal dependencies: Pillow + standard library
+- Component-based design:
+  - `FieldRandomizer` - generate valid field values
+  - `Label` - data structure
+  - `ViolationGenerator` - apply specific violations
+  - `LabelRenderer` - draw label to image (PIL)
+  - `LabelGenerator` - orchestrate + CLI
+
+**Design Philosophy: Keep it simple!**
+- Randomize all parameters within regulatory bounds
+- Realistic but not overly complex designs
+- Standard canvas sizes based on actual bottle labels
+- No intentional image degradation (labels are exports from design software, not photos)
+
+**Command Line Interface:**
+```bash
+python gen_samples.py --good 50 --bad 50
+python gen_samples.py --good 100 --bad 0
+python gen_samples.py --seed 42  # optional reproducibility
+```
+
+**Output per Label:**
+- `label_good_001.jpg` - JPEG image (< 750 KB per TTB requirement)
+- `label_good_001.tif` - TIFF image (< 750 KB)
+- `label_good_001.json` - Metadata with ground truth
+
+**Violation Types Supported:**
+- Missing required fields (warning, brand, ABV, net contents, etc.)
+- Warning format violations (not all caps, body bold, wrong text)
+- Value mismatches (ABV outside tolerance, wrong net contents)
+- Format violations (type size too small, missing import phrase)
+- Mix of single and multiple violations per label
+
+### Implications
+
+**For Development:**
+- Separate work stream for sample generator
+- Develop before main verification system
+- Can test generator output manually before integration
+
+**For Testing:**
+- Comprehensive test coverage of regulations
+- Ground truth enables automated validation testing
+- Can regenerate samples if requirements change
+- Supports batch processing testing
+
+**For Documentation:**
+- `SAMPLE_GENERATOR.md` provides complete specification
+- Implementation plan with 8 phases (~6-7 hours)
+- Clear testing strategy and success criteria
+
+**For Future:**
+- Can extend with more violation types
+- Can add image quality variations if needed
+- Foundation for continuous test data generation
+
+### Success Metrics
+
+**Generator Functionality:**
+- [✅] Script runs without errors
+- [✅] Generates specified number of GOOD and BAD labels
+- [✅] All output files created (JPEG, TIFF, JSON)
+- [✅] All files < 750 KB
+
+**Label Quality:**
+- [✅] GOOD labels comply with all 27 CFR requirements
+- [✅] BAD labels have documented violations
+- [✅] Labels are visually realistic
+- [✅] Text is readable (proper contrast and size)
+- [✅] Type sizes meet regulatory minimums (GOOD labels)
+
+**Testing Support:**
+- [ ] GOOD labels validate as COMPLIANT in main system (pending main system build)
+- [ ] BAD labels validate as NON_COMPLIANT with correct violations (pending main system build)
+- [✅] Ground truth metadata is accurate and complete
+- [✅] Can generate 100+ labels in reasonable time
+
+### References
+- `SAMPLE_GENERATOR.md` - Complete technical specification
+- `TTB_REGULATORY_SUMMARY.md` - Regulatory requirements
+- 27 CFR XML files in `cfr_regulations/` directory
+
+---
+
+## Decision 006: Deterministic Generation vs AI Image Generation
+
+**Date:** 2026-02-15  
+**Status:** ✅ Decided  
+**Decision:** Use deterministic programmatic generation (PIL/Pillow) rather than AI image generation tools for creating sample labels
+
+### Context
+- External documentation suggested: "AI image generation tools work well for this"
+- Need to choose between AI-generated images vs programmatic rendering
+- Must have accurate ground truth for validation testing
+- Need control over specific regulatory violations
+- Want to generate labels that look realistic but are deterministic
+
+### Options Considered
+
+#### Option 1: AI Image Generation (DALL-E, Midjourney, Stable Diffusion)
+**Pros:**
+- More realistic/varied visual designs
+- Can generate diverse artistic styles
+- Less programming complexity
+- Potentially more professional appearance
+- Follows suggestion in external docs
+
+**Cons:**
+- ❌ **No control over text accuracy** - AI might misspell, alter text
+- ❌ **Ground truth uncertain** - would need OCR to extract what AI actually wrote
+- ❌ **Violation generation challenging** - hard to prompt for specific violations
+- ❌ **Expensive/slow** - API costs and generation time per image
+- ❌ **Inconsistent** - AI might not follow regulatory requirements exactly
+- ❌ **Two-step process** - Generate image, then OCR it to get ground truth
+- No guarantee of regulatory accuracy
+
+#### Option 2: Programmatic Generation with PIL/Pillow ✅ SELECTED
+**Pros:**
+- ✅ **Complete control** over every element
+- ✅ **Guaranteed regulatory accuracy** - we render exactly what we specify
+- ✅ **Known ground truth** - we know precisely what text is on each label
+- ✅ **Deterministic output** - same parameters = same result
+- ✅ **Fast generation** - seconds per label, no API calls
+- ✅ **No API costs** - free after Pillow installation
+- ✅ **Violation control** - can create specific regulatory violations systematically
+- ✅ **Works offline** - no network dependency
+
+**Cons:**
+- Labels may look somewhat "synthetic" or template-like
+- Limited visual variety in design styles
+- Requires careful PIL/Pillow programming
+- Less impressive visually than AI-generated images
+
+#### Option 3: Hybrid Approach
+**Pros:**
+- Use programmatic for guaranteed accuracy
+- Use AI for additional visual variety
+- Best of both worlds
+
+**Cons:**
+- More complex implementation
+- Two different generation pipelines
+- Still have ground truth issues with AI-generated labels
+
+### Decision Rationale
+
+**Selected programmatic generation (Option 2) because:**
+
+1. **Ground Truth is Critical:** For testing the verification system, we MUST know exactly what text should be extracted
+   - With AI generation: AI might write "Goverment Warning" or "45.2% ABV" when we wanted "45.0% ABV"
+   - With programmatic: We render exactly "GOVERNMENT WARNING:" and "45.0% ABV"
+   - Ground truth is essential for automated validation testing
+
+2. **Violation Control:** Need to systematically test specific violations
+   - Must create labels with "warning not all caps" violation
+   - Must create labels with "ABV outside tolerance" violation
+   - Very difficult to prompt AI to generate these specific regulatory violations
+   - Programmatic generation: simply set `warning_header_all_caps = False`
+
+3. **Regulatory Accuracy:** Labels must follow precise 27 CFR requirements
+   - Type sizes must be exactly 1mm, 2mm, or 3mm based on container size
+   - Warning text must be word-for-word exact
+   - AI models aren't trained on TTB regulations
+   - Programmatic: we implement exact requirements from CFR
+
+4. **Human Expertise Requirements:** Deterministic methods were necessary for sample generation so that we could KNOW with some degree of certainty that we were generating definitively GOOD or BAD samples
+   - With AI-generated samples, a human well-versed in the regulations would have to either:
+     a) Train the AI to reliably generate GOOD and BAD samples (requires extensive prompt engineering and validation), OR
+     b) Manually sort images created by an AI-based sample generator into GOOD and BAD categories
+   - Given the time constraints, it seemed unlikely for the human operator to become conversant enough in the 27 CFR regulations (spanning 1,400+ pages) to make accurate compliance determinations
+   - The regulations contain subtle requirements (e.g., "GOVERNMENT WARNING:" must be bold but body text must not be bold, ABV tolerances vary by product type) that are difficult for humans to quickly master
+   - Programmatic generation embeds regulatory knowledge directly in code, removing human judgment from the classification process
+
+5. **Speed & Scale:** Can generate 100+ labels in minutes
+   - Programmatic: ~2 seconds per label, no API latency
+   - AI generation: 10-30 seconds per label + API costs
+   - For testing, need ability to regenerate entire test set quickly
+
+6. **Deterministic Testing:** Same seed = same labels
+   - Critical for reproducible test results
+   - Debugging: can regenerate exact same problematic label
+   - AI generation is inherently non-deterministic
+
+7. **Cost & Availability:**
+   - Programmatic: Free after Pillow installation
+   - AI APIs: $0.02-$0.20+ per image, adds up for 100+ labels
+   - No API keys or accounts needed
+
+### Implementation Approach
+
+**Programmatic rendering with PIL/Pillow:**
+- Use `ImageDraw` to create canvas and draw text
+- Calculate type sizes: `mm * 300 DPI / 25.4 ≈ mm * 11.8 pixels`
+- Load system fonts with fallback to default
+- Render text with bold/regular weights
+- Add decorative elements (borders, lines, corners)
+- Ensure contrast (light backgrounds, dark text)
+
+**Visual Quality Improvements:**
+- Randomize background colors from palette
+- Randomize layout positions slightly
+- Add decorative elements (borders, corner ornaments)
+- Vary font sizes within regulatory bounds
+- Different canvas sizes for different container sizes
+
+**Result:** Labels look "designed" rather than "photographed" - appropriate for the use case (labels are design exports, not photos of bottles)
+
+### Implications
+
+**For Testing:**
+- 100% accurate ground truth for validation
+- Can test specific violation types systematically
+- Reproducible test sets with seeds
+- Fast iteration when requirements change
+
+**For Development:**
+- More initial programming (vs AI prompting)
+- Need to handle font loading, text rendering
+- But: Complete control over output
+
+**For Future:**
+- Could add AI generation as supplementary tool later
+- Could use AI for additional visual variety
+- Foundation is solid programmatic generation with known ground truth
+
+### Success Metrics
+
+- [✅] Generated 40 labels (20 GOOD + 20 BAD) successfully
+- [✅] All files < 750 KB
+- [✅] Ground truth JSON matches rendered images exactly
+- [✅] Specific violations render correctly (warning not caps, missing fields, etc.)
+- [✅] Labels are visually acceptable (readable, contrasting, organized)
+- [✅] Generation speed: ~2 seconds per label
+
+### References
+- PIL/Pillow Documentation: https://pillow.readthedocs.io/
+- `gen_samples.py` - Implementation (~1,100 lines)
+- `SAMPLE_GENERATOR.md` - Technical specification
+
+---
+
+## Decision 007: [To Be Determined]
+
+**Date:** TBD  
+**Status:** 🔄 Pending  
+**Decision:** [Next decision to be documented]
+
+---
+
+## Template for Future Decisions
+
+**Date:** YYYY-MM-DD  
+**Status:** 🔄 Pending | ✅ Decided | ❌ Rejected | 🔄 Revised  
+**Decision:** [Clear statement of the decision]
+
+### Context
+[Why is this decision needed? What problem does it solve?]
+
+### Options Considered
+[List alternatives with pros/cons]
+
+### Decision Rationale
+[Why was this option chosen?]
+
+### Implications
+[What does this mean for the project?]
+
+### Success Metrics
+[How will we know this was the right choice?]
+
+### References
+[Links to relevant documentation or resources]
+
+---
+
+**Document Maintained By:** Project Team  
+**Last Updated:** 2026-02-15 (Decision 006 added: Deterministic vs AI Generation)

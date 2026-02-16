@@ -1,0 +1,604 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>LABELING PROCEEDINGS</TITLE>
+        <GRANULENUM>13</GRANULENUM>
+        <HEADING>PART 13</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 13</EAR>
+        <HD SOURCE="HED">PART 13—LABELING PROCEEDINGS</HD>
+        <CONTENTS>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—Scope and Construction of Regulations</HD>
+                <SECHD>Sec.</SECHD>
+                <SECTNO>13.1</SECTNO>
+                <SUBJECT>Scope of part.</SUBJECT>
+                <SECTNO>13.2</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <SECTNO>13.3</SECTNO>
+                <SUBJECT>Related regulations.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart B—Definitions</HD>
+                <SECTNO>13.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Applications</HD>
+                <SECTNO>13.20</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <SECTNO>13.21</SECTNO>
+                <SUBJECT>Application for certificate.</SUBJECT>
+                <SECTNO>13.22</SECTNO>
+                <SUBJECT>Withdrawal of applications.</SUBJECT>
+                <SECTNO>13.23</SECTNO>
+                <SUBJECT>Notice of denial.</SUBJECT>
+                <SECTNO>13.25</SECTNO>
+                <SUBJECT>Appeal of qualification or denial.</SUBJECT>
+                <SECTNO>13.26</SECTNO>
+                <SUBJECT>Decision after appeal of qualification or denial.</SUBJECT>
+                <SECTNO>13.27</SECTNO>
+                <SUBJECT>Second appeal of qualification or denial.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—Revocations of Specific Certificates</HD>
+                <SECTNO>13.41</SECTNO>
+                <SUBJECT>Authority to revoke certificates.</SUBJECT>
+                <SECTNO>13.42</SECTNO>
+                <SUBJECT>Notice of proposed revocation.</SUBJECT>
+                <SECTNO>13.43</SECTNO>
+                <SUBJECT>Decision after notice of proposed revocation.</SUBJECT>
+                <SECTNO>13.44</SECTNO>
+                <SUBJECT>Appeal of revocation.</SUBJECT>
+                <SECTNO>13.45</SECTNO>
+                <SUBJECT>Final decision after appeal.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart E—Revocation by Operation of Law or Regulation</HD>
+                <SECTNO>13.51</SECTNO>
+                <SUBJECT>Revocation by operation of law or regulation.</SUBJECT>
+                <SECTNO>13.52</SECTNO>
+                <SUBJECT>Notice of revocation.</SUBJECT>
+                <SECTNO>13.53</SECTNO>
+                <SUBJECT>Appeal of notice of revocation.</SUBJECT>
+                <SECTNO>13.54</SECTNO>
+                <SUBJECT>Decision after appeal.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart F—Miscellaneous</HD>
+                <SECTNO>13.61</SECTNO>
+                <SUBJECT>Publicity of information.</SUBJECT>
+                <SECTNO>13.62</SECTNO>
+                <SUBJECT>Third-party comment on certificates.</SUBJECT>
+                <SECTNO>13.71</SECTNO>
+                <SUBJECT>Informal conferences.</SUBJECT>
+                <SECTNO>13.72</SECTNO>
+                <SUBJECT>Effective dates of revocations.</SUBJECT>
+                <SECTNO>13.73</SECTNO>
+                <SUBJECT>Effect of revocation.</SUBJECT>
+                <SECTNO>13.74</SECTNO>
+                <SUBJECT>Surrender of certificates.</SUBJECT>
+                <SECTNO>13.75</SECTNO>
+                <SUBJECT>Evidence of receipt by TTB.</SUBJECT>
+                <SECTNO>13.76</SECTNO>
+                <SUBJECT>Service on applicant or certificate holder.</SUBJECT>
+                <SECTNO>13.81</SECTNO>
+                <SUBJECT>Representation before TTB.</SUBJECT>
+                <SECTNO>13.91</SECTNO>
+                <SUBJECT>Computation of time.</SUBJECT>
+                <SECTNO>13.92</SECTNO>
+                <SUBJECT>Extensions.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart G—Appeals Concerning Other Agencies' Rules</HD>
+                <SECTNO>13.101</SECTNO>
+                <SUBJECT>Appeals concerning use of the term “organic.”</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>27 U.S.C. 205(e), 26 U.S.C. 5301 and 7805.</P>
+        </AUTH>
+        <SOURCE>
+            <PRTPAGE P="450"/>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, unless otherwise noted.</P>
+        </SOURCE>
+        <EDNOTE>
+            <HD SOURCE="HED">Editorial Note:</HD>
+            <P>Nomenclature changes to part 13 appear by T.D. ATF-449, 66 FR 19085, Apr. 13, 2001.</P>
+        </EDNOTE>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—Scope and Construction of Regulations</HD>
+            <SECTION>
+                <SECTNO>§ 13.1</SECTNO>
+                <SUBJECT>Scope of part.</SUBJECT>
+                <P>The regulations in this part govern the procedure and practice in connection with the issuance, denial, and revocation of certificates of label approval, certificates of exemption from label approval, and distinctive liquor bottle approvals under 27 U.S.C. 205(e) and 26 U.S.C. 5301. The regulations in this part also provide for appeal procedures when applications for label approval, exemptions from label approval, or distinctive liquor bottle approvals are denied, when such applications are approved with qualifications, or when these applications are approved and then subsequently revoked. The appeal process in this part does not apply to organic claims on alcohol beverage labels. See § 13.101.</P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-483, 67 FR 62858, Oct. 8, 2002 ]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.2</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    The regulatory authorities of the Administrator contained in this part are delegated to appropriate TTB officers. These TTB officers are specified in TTB Order 1135.13, Delegation of the Administrator's Authorities in 27 CFR Part 13, Labeling Proceedings. You may obtain a copy of this order by accessing the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. TTB-44, 71 FR 16924, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.3</SECTNO>
+                <SUBJECT>Related regulations.</SUBJECT>
+                <P>The following regulations also relate to this part:</P>
+                <EXTRACT>
+                    <FP SOURCE="FP-1">7 CFR Part 205—National Organic Program</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 1—Basic Permit Requirements Under the Federal Alcohol Administration Act, Nonindustrial Use of Distilled Spirits and Wine, Bulk Sales and Bottling of Distilled Spirits</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 4—Labeling and Advertising of Wine</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 5—Labeling and Advertising of Distilled Spirits</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 7—Labeling and Advertising of Malt Beverages</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 9—American Viticultural Areas</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 12—Foreign Nongeneric Names of Geographic Significance Used in the Designation of Wines</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 16—Alcoholic Beverage Health Warning Statement</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 19—Distilled Spirits Plants</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 24—Wine</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 25—Beer</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 26—Liquors and Articles from Puerto Rico and the Virgin Islands</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 27—Importation of Distilled Spirits, Wines, and Beer</FP>
+                    <FP SOURCE="FP-1">27 CFR 28—Exportation of Alcohol</FP>
+                    <FP SOURCE="FP-1">27 CFR Part 71—Rules of Practice in Permit Proceedings</FP>
+                </EXTRACT>
+                <CITA>[T.D. ATF-483, 67 FR 62858, Oct. 8, 2002, as amended by T.D. TTB-8, 69 FR 3829, Jan. 27, 2004]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart B—Definitions</HD>
+            <SECTION>
+                <SECTNO>§ 13.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <P>Where used in this part and in forms prescribed under this part, where not otherwise distinctly expressed or manifestly incompatible with the intent thereof, terms shall have the meaning ascribed in this subpart. Words in the plural form shall include the singular, and vice versa, and words importing the masculine gender shall include the feminine. The terms “include” and “including” do not exclude things not enumerated that are in the same general class.</P>
+                <P>
+                    <E T="03">Act.</E>
+                     The Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">Applicant.</E>
+                     The permittee or brewer whose name, address, and basic permit number, or plant registry number, appears on an unapproved Form 5100.31, application for a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval.
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any functions relating 
+                    <PRTPAGE P="451"/>
+                    to the administration or enforcement of this part by TTB Order 1135.13, Delegation of the Administrator's Authorities in 27 CFR Part 13, Labeling Proceedings.
+                </P>
+                <P>
+                    <E T="03">Brewer.</E>
+                     Any person who brews beer (except a person who produces only beer exempt from tax under 26 U.S.C. 5053(e)) and any person who produces beer for sale.
+                </P>
+                <P>
+                    <E T="03">Certificate holder.</E>
+                     The permittee or brewer whose name, address, and basic permit number, or plant registry number, appears on an approved Form 5100.31, certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval.
+                </P>
+                <P>
+                    <E T="03">Certificate of exemption from label approval.</E>
+                     A certificate issued on Form 5100.31 which authorizes the bottling of wine or distilled spirits, under the condition that the product will under no circumstances be sold, offered for sale, shipped, delivered for shipment, or otherwise introduced by the applicant, directly or indirectly, into interstate or foreign commerce.
+                </P>
+                <P>
+                    <E T="03">Certificate of label approval.</E>
+                     A certificate issued on Form 5100.31 that authorizes the bottling or packing of wine, distilled spirits, or malt beverages, or the removal of bottled wine, distilled spirits, or malt beverages from customs custody for introduction into commerce, as long as the project bears labels identical to the labels affixed to the face of the certificate, or labels with changes authorized by the certificate.
+                </P>
+                <P>
+                    <E T="03">Distilled spirits.</E>
+                     Ethyl alcohol, hydrated oxide of ethyl, spirits of wine, whisky, rum, brandy, gin, and other distilled spirits, including all dilutions and mixtures thereof for nonindustrial use. The term “distilled spirits” does not include mixtures containing wine, bottled at 48 degrees of proof or less, if the mixture contains more than 50 percent wine on a proof gallon basis.
+                </P>
+                <P>
+                    <E T="03">Distinctive liquor bottle.</E>
+                     A liquor bottle of distinctive shape or design.
+                </P>
+                <P>
+                    <E T="03">Distinctive liquor bottle approval.</E>
+                     Approval issued on Form 5100.31 that authorizes the bottling of distilled spirits, or the removal of bottled distilled spirits from customs custody for introduction into commerce, as long as the bottle is identical to the photograph affixed to the face of the form.
+                </P>
+                <P>
+                    <E T="03">Interstate or foreign commerce.</E>
+                     Commerce between any State and any place outside that State, or commerce within any Territory or the District of Columbia, or between points within the same State but through any place outside that State.
+                </P>
+                <P>
+                    <E T="03">Liquor bottle:</E>
+                     A bottle made of glass or earthenware, or of other suitable material approved by the Food and Drug Administration, which has been designed or is intended for use as a container for distilled spirits for sale for beverage purposes, and which has been determined by the appropriate TTB officer to protect the revenue adequately.
+                </P>
+                <P>
+                    <E T="03">Malt beverage.</E>
+                     A beverage made by the alcoholic fermentation of an infusion or decoction, or combination of both, in potable brewing water, of malted barley with hops, or their parts, or their products, and with or without other malted cereals, and with or without the addition of unmalted or prepared cereals, other carbohydrates, or products prepared therefrom, and with or without the addition of carbon dioxide, and with or without other wholesome products suitable for human food consumption.
+                </P>
+                <P>
+                    <E T="03">Permittee.</E>
+                     Any person holding a basic permit under the Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Person.</E>
+                     Any individual, partnership, joint stock company, business trust, association, corporation, or other form of business enterprise, including a receiver, trustee, or liquidating agent and including an officer or employee of any agency of a State or political subdivision thereof.
+                </P>
+                <P>
+                    <E T="03">TTB.</E>
+                     The Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">United States.</E>
+                     The several States and Territories and the District of Columbia; the term “State” includes a Territory and the District of Columbia; and the term “Territory” means the Commonwealth of Puerto Rico.
+                </P>
+                <P>
+                    <E T="03">Use of other terms.</E>
+                     Any other term defined in the Federal Alcohol Administration Act and used in this part shall have the same meaning assigned to it by the Act.
+                    <PRTPAGE P="452"/>
+                </P>
+                <P>
+                    <E T="03">Wine.</E>
+                     (1) Wine as defined in section 610 and section 617 of the Revenue Act of 1918 (26 U.S.C. 5381-5392), only if for nonindustrial use and containing not less than 7 percent and not more than 24 percent of alcohol by volume; and
+                </P>
+                <P>(2) Other alcoholic beverages not so defined, but made in the manner of wine, including sparkling and carbonated wine, wine made from condensed grape must, wine made from other agricultural products than the juice of sound, ripe grapes, imitation wine, compounds sold as wine, vermouth, cider, perry, and sake, only if for nonindustrial use and containing not less than 7 percent and not more than 24 percent of alcohol by volume.</P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19085, Apr. 13, 2001; T.D. TTB-44, 71 FR 16924, Apr. 4, 2006; T.D. TTB-91, 76 FR 5477, Feb. 1, 2011]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart C—Applications</HD>
+            <SECTION>
+                <SECTNO>§ 13.20</SECTNO>
+                <SUBJECT>Forms prescribed.</SUBJECT>
+                <P>(a) The appropriate TTB officer is authorized to prescribe all forms required by this part. All of the information called for in each form must be furnished as indicated by the headings on the form and the instructions on or pertaining to the form. In addition, the information called for in each form is that which is required by this part. The form will be filed in accordance with the instructions on the form.</P>
+                <P>
+                    (b) Forms prescribed by this part are available for printing through the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. ATF-449, 66 FR 19085, Apr. 13, 2001, as amended by T.D. TTB-44, 71 FR 16924, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.21</SECTNO>
+                <SUBJECT>Application for certificate.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Form of application.</E>
+                     An applicant for a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, must send or deliver signed duplicate copies of TTB Form 5100.31, “Application For And Certification/Exemption Of Label/Bottle Approval” according to the instructions for that form. If the application complies with applicable laws and regulations, a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval will be issued. If the approval is qualified in any manner, such qualifications will be set forth in the appropriate space on the form.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Time period for action on application.</E>
+                     Within 90 days of receipt of an application, the appropriate TTB officer must notify the applicant whether the application has been approved or denied. The appropriate TTB officer may extend this period of time once, by an additional 90 days, if he or she finds that unusual circumstances require additional time to consider the issues presented by an application. If the appropriate TTB officer extends the period, he or she must notify the applicant by letter, along with a brief explanation of the issues presented by the label. If the applicant receives no decision from the appropriate TTB officer within the time periods set forth in this paragraph, the applicant may file an appeal as provided in § 13.25.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19085, Apr. 13, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.22</SECTNO>
+                <SUBJECT>Withdrawal of applications.</SUBJECT>
+                <P>A person who has filed an application for a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, may withdraw such application at any time before TTB takes action on the application.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.23</SECTNO>
+                <SUBJECT>Notice of denial.</SUBJECT>
+                <P>
+                    Whenever an application for a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval is denied, the appropriate TTB officer must issue to the applicant a notice of denial on a certificate of label approval rejection document briefly setting forth the reasons why the label or bottle is not in compliance with the applicable laws or regulations. The applicant may then submit a new application for approval 
+                    <PRTPAGE P="453"/>
+                    after making the necessary corrections.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19085, Apr. 13, 2001; T.D. TTB-91, 76 FR 5477, Feb. 1, 2011]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.25</SECTNO>
+                <SUBJECT>Appeal of qualification or denial.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Form of appeal.</E>
+                     If an applicant for a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval wishes to appeal the qualified approval or denial of an application, the applicant may file a written appeal with the appropriate TTB officer within 45 days after the date of the notice of qualification or denial. The appeal should explain why the applicant believes that the label or bottle is in compliance with applicable laws and regulations. If no appeal is filed within 45 days after the date of the notice of qualification or denial, the notice will be the final decision of TTB.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Informal resolution.</E>
+                     Applicants may choose to pursue informal resolution of disagreements regarding correction sheets or qualifications by requesting an informal conference with the appropriate TTB officer. However, formal administrative appeals must comply with the provisions of paragraph (a) of this section.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.26</SECTNO>
+                <SUBJECT>Decision after appeal of qualification or denial.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Decision.</E>
+                     After considering any written arguments or evidence presented by the applicant, the appropriate TTB officer must issue a written decision to the applicant. If the decision is that the qualified approval or denial should stand, a copy of the application, marked “appeal denied,” must be returned to the applicant with an explanation of the decision and the specific laws or regulations relied upon in qualifying or denying the application. If the decision is that the certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle application should be approved without qualification, the applicant should resubmit TTB Form 5100.31 and the certificate will be issued.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Time limits for decision.</E>
+                     Within 90 days of receipt of an appeal, the appropriate TTB officer must notify the appellant whether the appeal has been granted or denied. If an applicant requests an informal conference as part of an appeal, as authorized in § 13.71, the 90-day period will begin 10 days after the date of the conference to allow for consideration of any written arguments, facts or evidence submitted after the conference. The appropriate TTB officer may extend this period of time once by an additional 90 days if he or she finds that unusual circumstances require additional time to consider the issues presented by an appeal. If the appropriate TTB officer extends the period, he or she must notify the applicant by letter, briefly explaining the issues presented by the label. If the appellant receives no decision from the appropriate TTB officer within the time periods set forth in this paragraph, the appellant may appeal as provided in § 13.27.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Judicial review.</E>
+                     Prior to applying to the Federal courts for review, an applicant must first exhaust his or her administrative remedies, including the appeal rights set forth in this section and § 13.27.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.27</SECTNO>
+                <SUBJECT>Second appeal of qualification or denial.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Form of appeal.</E>
+                     The decision after appeal of qualification or denial may be appealed in writing to the appropriate TTB officer within 45 days after the date of that decision. If the appropriate TTB officer concludes that the qualified approval or denial was correct, a copy of the application, marked “appeal denied,” must be returned to the applicant, with an explanation of the decision and the specific laws or regulations relied upon in qualifying or denying the application. If the appropriate TTB officer concludes that the certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle application should be approved without qualification, the applicant may resubmit TTB Form 5100.31 and the certificate will be issued.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Time limits for decision after second appeal.</E>
+                     Within 90 days of receipt of the second appeal, the appropriate TTB officer must notify the appellant whether the appeal has been granted or denied. 
+                    <PRTPAGE P="454"/>
+                    If an applicant requests an informal conference as part of an appeal, as authorized in § 13.71, the 90-day period will begin 10 days after the date of the conference to allow for consideration of any written arguments, facts or evidence submitted after the conference. The appropriate TTB officer may extend this period of time once, by an additional 90 days, if he or she finds that unusual circumstances require additional time to consider the unique issues presented by an appeal. If the appropriate TTB officer extends the time period, he or she must notify the applicant by letter, briefly explaining the issues presented by the label. The decision made on the second appeal shall be the final decision of TTB.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Judicial review.</E>
+                     An appeal to the appropriate TTB officer is required prior to application to the Federal courts for review of any denial or qualification of an application.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999; T.D. ATF-406a, 64 FR 10949, Mar. 8, 1999, as amended by T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—Revocations of Specific Certificates</HD>
+            <SECTION>
+                <SECTNO>§ 13.41</SECTNO>
+                <SUBJECT>Authority to revoke certificates.</SUBJECT>
+                <P>Certificates of label approval, certificates of exemption from label approval, and distinctive liquor bottle approvals, previously approved on TTB Form 5100.31, may be revoked by the appropriate TTB officer upon a finding that the label or bottle at issue is not in compliance with the applicable laws or regulations.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.42</SECTNO>
+                <SUBJECT>Notice of proposed revocation.</SUBJECT>
+                <P>Except as provided in § 13.51, when the appropriate TTB officer determines that a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval has been issued for a label or bottle that is not in compliance with the laws or regulations, he or she must issue to the certificate holder a notice of proposed revocation. The notice must set forth the basis for the proposed revocation and must provide the certificate holder with 45 days from the date of receipt of the notice to present written arguments or evidence why the revocation should not occur.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.43</SECTNO>
+                <SUBJECT>Decision after notice of proposed revocation.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Decision.</E>
+                     After considering any written arguments or evidence presented by the certificate holder, the appropriate TTB officer must issue a decision. If the decision is to revoke the certificate, a letter must be sent to the holder explaining the revocation of the certificate, and the specific laws or regulations relied upon in determining that the label or bottle was not in conformance with law or regulations. If the decision is to withdraw the proposed revocation, a letter of explanation must be sent.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Time limits for decision.</E>
+                     Within 90 days of receipt of written arguments or evidence from the certificate holder, the appropriate TTB officer shall notify the appellant of his or her decision. If a certificate holder requests an informal conference as part of an appeal, as authorized in § 13.71, the 90-day period will begin 10 days after the date of the conference to allow for consideration of any written arguments, facts or evidence submitted after the conference. The appropriate TTB officer may extend this period of time once by an additional 90 days if he or she finds that unusual circumstances require additional time to consider the issues presented by a proposed revocation. If the appropriate TTB officer extends the time period, he or she must notify the applicant by letter, along with a brief explanation of the issues under consideration.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.44</SECTNO>
+                <SUBJECT>Appeal of revocation.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Filing of appeal.</E>
+                     A certificate holder who wishes to appeal the decision to revoke a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, may file a written appeal setting forth why the holder believes that the decision was erroneous. The appeal must be filed with the appropriate TTB officer within 45 days after the date of receipt of the decision to revoke a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval.
+                    <PRTPAGE P="455"/>
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Judicial review.</E>
+                     An appeal to the appropriate TTB officer is required prior to application to the Federal courts for review of any revocation of a certificate.
+                </P>
+                <CITA>[T.D. ATF-449, 66 FR 19086, Apr.13, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.45</SECTNO>
+                <SUBJECT>Final decision after appeal.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Issuance of decision.</E>
+                     After considering any written arguments or evidence presented by the certificate holder or the holder's representative, the appropriate TTB officer must issue a final decision. If the decision is to revoke the certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, a letter must be issued explaining the basis for the revocation, and the specific laws or regulations relied upon in determining that the label or bottle was not in conformance with law or regulations. If the decision is to withdraw the proposed revocation, a letter explaining the decision must be sent.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Time limits for decision.</E>
+                     Within 90 days of receipt of an appeal, the appropriate TTB officer must notify the holder whether the appeal has been granted or denied. If a certificate holder requests an informal conference as part of an appeal, as authorized in § 13.71, the 90-day period will begin 10 days after the date of the conference to allow for consideration of any written arguments, facts or evidence submitted after the conference. The appropriate TTB officer may extend this period of time once by an additional 90 days if he or she finds that unusual circumstances require additional time to consider the issues presented by an appeal. If the appropriate TTB officer extends the period, he or she must notify the holder by letter, briefly explaining the issues presented by the label. The final decision after appeal will be the final decision of TTB.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart E—Revocation by Operation of Law or Regulation</HD>
+            <SECTION>
+                <SECTNO>§ 13.51</SECTNO>
+                <SUBJECT>Revocation by operation of law or regulation.</SUBJECT>
+                <P>TTB will not individually notify all holders of certificates of label approval, certificates of exemption from label approval, or distinctive liquor bottle approvals that their approvals have been revoked if the revocation occurs by operation of either TTB-administered law or regulation or applicable law or regulation of other agencies. If changes in labeling or other requirements are made as a result of amendments or revisions to the law or regulations, the certificate holder must voluntarily surrender all certificates that are no longer in compliance. The holder must submit applications for new certificates in compliance with the new requirements, unless TTB determines that new applications are not necessary. If a new application is unnecessary, it is the responsibility of the certificate holder to ensure that labels are in compliance with their requirements of the new regulations or law.</P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-483, 67 FR 62858, Oct. 8, 2002]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.52</SECTNO>
+                <SUBJECT>Notice of revocation.</SUBJECT>
+                <P>If TTB determines that a certificate holder is still using a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval that is no longer in compliance due to amendments or revisions in the law or regulations, the appropriate TTB officer will notify the certificate holder in writing that the subject certificate has been revoked by operation of law or regulations, with a brief description of the grounds for such revocation.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.53</SECTNO>
+                <SUBJECT>Appeal of notice of revocation.</SUBJECT>
+                <P>Within 45 days after the date of receipt of a notice of revocation by operation of law or regulations, the certificate holder may file a written appeal with the appropriate TTB officer. The appeal should set forth the reasons why the certificate holder believes that the regulation or law at issue does not require the revocation of the certificate.</P>
+            </SECTION>
+            <SECTION>
+                <PRTPAGE P="456"/>
+                <SECTNO>§ 13.54</SECTNO>
+                <SUBJECT>Decision after appeal.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Issuance of decision.</E>
+                     After considering all written arguments and evidence submitted by the certificate holder, the appropriate TTB officer must issue a final decision regarding the revocation by operation of law or regulation of the certificate. If the decision is that the law or regulation at issue requires the revocation of the certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, a letter must be issued explaining the basis for the revocation, and citing the specific laws or regulations which required the revocation of the certificate. If the decision is that the law or regulation at issue does not require the revocation of such certificate, a letter explaining the decision must be sent to the certificate holder. The decision after appeal will be the final decision of the TTB.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Time limits for decision.</E>
+                     Within 90 days of receipt of an appeal, the appropriate TTB officer must notify the holder whether the appeal has been granted or denied. If a certificate holder requests an informal conference as part of an appeal, as authorized in § 13.71, the 90-day period will begin 10 days after the date of the conference to allow for consideration of any written arguments, facts or evidence submitted after the conference. The appropriate TTB officer may extend this period of time once by an additional 90 days if he or she finds that unusual circumstances require additional time to consider the issues presented by an appeal. If the appropriate TTB officer extends the period, he or she must notify the holder by letter, briefly explaining the issues presented by the label. The decision of the appropriate TTB officer shall be the final decision of the TTB.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart F—Miscellaneous</HD>
+            <SECTION>
+                <SECTNO>§ 13.61</SECTNO>
+                <SUBJECT>Publicity of information.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Pending and denied applications</E>
+                    —(1) 
+                    <E T="03">General.</E>
+                     Pending and denied applications for certificates of label approval, certificates of exemption from label approval, or distinctive liquor bottle approvals are treated as proprietary information, unless the applicant or certificate holder provides written authorization to release such information.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Labels that make organic claims.</E>
+                     TTB will disclose applications for approval of labels that make organic claims to the appropriate office of the United States Department of Agriculture to assure such labels comply with National Organic Program rules.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Approved applications.</E>
+                     The appropriate TTB officer shall cause to be maintained in the TTB public reading room for public inspection, a copy of each approved application for certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval. These documents may be viewed during business hours at 1310 G Street NW., Washington, DC, or by viewing the Public COLA Registry on the TTB Web site at (
+                    <E T="03">http://www.ttb.gov</E>
+                    ).
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Revoked certificates.</E>
+                     If an approved certificate is subsequently revoked, the record of the approved application will remain on file for public inspection, but the index will be annotated to show it was revoked.
+                </P>
+                <P>
+                    (d) 
+                    <E T="03">Further disclosure of information on denied or revoked certificates.</E>
+                     If an applicant whose application is pending or has been denied, or a holder of a revoked certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, issues public statements concerning TTB action in connection with such application or certificate, then TTB may issue a statement to clarify its position or correct any misstatements of fact, including a disclosure of information contained on the application or certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-483, 67 FR 62859, Oct. 8, 2002]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.62</SECTNO>
+                <SUBJECT>Third-party comment on certificates.</SUBJECT>
+                <P>
+                    When a third party (such as foreign government, another Federal agency, a State agency, an industry association, a competitor of a certificate holder, a 
+                    <PRTPAGE P="457"/>
+                    consumer or consumer group, or any other interested person) wishes to comment on an approved certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, such comments should be submitted in writing to the appropriate TTB officer who will review the subject of the comment. If the comment raises an issue that is outside the scope of TTB's statutory or regulatory authority, or the appropriate TTB officer determines that the certificate is in compliance with applicable law and regulations, the commenter will be informed that no further action will be taken. If the appropriate TTB officer determines that the commenter has raised a valid issue that TTB has authority to address, he or she will initiate appropriate action. The appropriate TTB officer may, in his or her discretion, notify the commenter as to the action being taken by TTB with respect to the certificate.
+                </P>
+                <CITA>[T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.71</SECTNO>
+                <SUBJECT>Informal conferences.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     As part of a timely filed written appeal of a notice of denial, a notice of proposed revocation, or a decision to revoke a certificate, an applicant or certificate holder may file a written request for an informal conference with the appropriate TTB officer deciding the appeal.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Informal conference procedures.</E>
+                     The appropriate TTB officer and the applicant or certificate holder will agree upon a date for an informal conference. The informal conference is for purposes of discussion only, and no transcript shall be made. If the applicant or certificate holder wishes to rely upon arguments, facts, or evidence presented at the informal conference, he or she has 10 days after the date of the conference to incorporate such arguments, facts, or evidence in a written submission to the appropriate TTB officer.
+                </P>
+                <CITA>[T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.72</SECTNO>
+                <SUBJECT>Effective dates of revocations.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Effective dates</E>
+                    —(1) 
+                    <E T="03">Revocation of specific certificates.</E>
+                     A written decision to revoke a certificate becomes effective 60 days after the date of the decision.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Revocation by operation of law or regulation.</E>
+                     If a certificate is revoked by operation of law or regulation, the revocation becomes effective on the effective date of the change in law or regulation with which the certificate does not comply, or if a separate label compliance date is given, on that date.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Use of certificate during period of appeal.</E>
+                     If a certificate holder files a timely appeal after receipt of a decision to revoke a certificate pursuant to § 13.44, the holder may continue to use the certificate at issue until the effective date of a final decision issued by the appropriate TTB officer. However, the effective date of a notice of revocation by operation of law or regulations, issued pursuant to § 13.52, is not stayed pending the appeal.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.73</SECTNO>
+                <SUBJECT>Effect of revocation.</SUBJECT>
+                <P>On and after the effective date of a revocation of a certificate of label approval, certificate or exemption from label approval, or distinctive liquor bottle approval, the label or distinctive liquor bottle in question may not be used to bottle or pack distilled spirits, wine or malt beverages, to remove such products from the place where they were bottled or packed, or to remove such products from customs custody for consumption.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.74</SECTNO>
+                <SUBJECT>Surrender of certificates.</SUBJECT>
+                <P>
+                    On the effective date of a final decision that has been issued to revoke a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval, the certificate holder must surrender the original of the certificate to TTB for manual cancellation. Regardless of whether the original certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval has been manually canceled or not, the certificate is null and void after the effective date of the revocation. It is a violation of this section for any certificate holder to present a certificate of label approval, certificate of exemption from label approval, or distinctive liquor bottle approval to an official of the United 
+                    <PRTPAGE P="458"/>
+                    States Government as a valid certificate after the effective date of the revocation of the certificate if the certificate holder has been previously notified that such certificate has been revoked by TTB.
+                </P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.75</SECTNO>
+                <SUBJECT>Evidence of receipt by TTB.</SUBJECT>
+                <P>If there is a time limit on TTB action that runs from TTB's receipt of a document, the date of receipt may be established by a certified mail receipt or equivalent written acknowledgment secured by a commercial delivery service or by a written acknowledgment of personal delivery. In the absence of proof of receipt, the date the document is logged in by TTB will be considered the date of receipt.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.76</SECTNO>
+                <SUBJECT>Service on applicant or certificate holder.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Method of service.</E>
+                     TTB must serve notices of denial on an applicant by first class mail, or by personal delivery. TTB must serve notices of proposed revocation and notices of revocation on a certificate holder by certified mail, return receipt requested, by a commercial delivery service that will provide an equivalent written acknowledgment from the recipient, or by personal delivery.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Date of receipt.</E>
+                     If there is a time limit on a certificate holder's action that runs from the holder's receipt of a document, the date of receipt may be established by a certified mail receipt, an equivalent written acknowledgment secured by a commercial delivery service, or by a written acknowledgment of personal delivery.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Person to be served.</E>
+                     When service is by mail or other commercial delivery service, a copy of the document must be sent to the applicant or certificate holder at the address stated in the application or at the last known address. If authorized by the applicant or certificate holder, the copy of the document may be mailed to a designated representative. If service is by personal delivery, a copy of the document must be delivered to the certificate holder or to a designated representative. In the case of a corporation, partnership, or association, personal delivery may be made to an officer, manager, or general agent thereof, or to the attorney of record.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.81</SECTNO>
+                <SUBJECT>Representation before TTB.</SUBJECT>
+                <P>An applicant or certificate holder may be represented by an attorney, certified public accountant, or other person recognized to practice before TTB as provided in 31 CFR part 8 (Practice Before the Bureau of Alcohol, Tobacco and Firearms). The applicable requirements of 26 CFR 601.521 through 601.527 (conference and practice requirements for alcohol, tobacco, and firearms activities) shall apply.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.91</SECTNO>
+                <SUBJECT>Computation of time.</SUBJECT>
+                <P>In computing any period of time prescribed or allowed by this part, the day of the act, event or default after which the designated period of time is to run, is not counted. The last day of the period to be computed is counted, unless it is a Saturday, Sunday, or legal holiday, in which case the period runs until the next day that is not a Saturday, Sunday, or legal holiday. Papers or documents that are required or permitted to be filed under this part must be received at the appropriate office within the filing time limits, if any.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 13.92</SECTNO>
+                <SUBJECT>Extensions.</SUBJECT>
+                <P>An applicant or certificate holder may apply to the appropriate TTB officer deciding the appeal for an extension of any time limit prescribed in this part. The time limit may be extended if TTB agrees the request is reasonable.</P>
+                <CITA>[T.D. ATF-406, 64 FR 2129, Jan. 13, 1999, as amended by T.D. ATF-449, 66 FR 19086, Apr. 13, 2001]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart G—Appeals Concerning Other Agencies' Rules</HD>
+            <SECTION>
+                <SECTNO>§ 13.101</SECTNO>
+                <SUBJECT>Appeals concerning use of the term “organic.”</SUBJECT>
+                <P>
+                    To appeal a determination that an organic claim on a label does not comply with the National Organic Program rules in 7 CFR part 205, contact the Program Manager, National Organic 
+                    <PRTPAGE P="459"/>
+                    Program (NOP), Agricultural Marketing Service, United States Department of Agriculture. See the NOP appeal process in 7 CFR 205.680.
+                </P>
+                <CITA>[T.D. ATF-483, 67 FR 62859, Oct. 8, 2002]</CITA>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

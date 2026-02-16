@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>COMMERCIAL BRIBERY</TITLE>
+        <GRANULENUM>10</GRANULENUM>
+        <HEADING>PART 10</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 10</EAR>
+        <HD SOURCE="HED">PART 10—COMMERCIAL BRIBERY</HD>
+        <CONTENTS>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—Scope of Regulations</HD>
+                <SECHD>Sec.</SECHD>
+                <SECTNO>10.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>10.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <SECTNO>10.3</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <SECTNO>10.4</SECTNO>
+                <SUBJECT>Jurisdictional limits.</SUBJECT>
+                <SECTNO>10.5</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <SECTNO>10.6</SECTNO>
+                <SUBJECT>Administrative provisions.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart B—Definitions</HD>
+                <SECTNO>10.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Commercial Bribery</HD>
+                <SECTNO>10.21</SECTNO>
+                <SUBJECT>Commercial bribery.</SUBJECT>
+                <SECTNO>10.22</SECTNO>
+                <SUBJECT>Employee associations.</SUBJECT>
+                <SECTNO>10.23</SECTNO>
+                <SUBJECT>Gifts or payments to wholesalers.</SUBJECT>
+                <SECTNO>10.24</SECTNO>
+                <SUBJECT>Sales promotion contests.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—Exclusion</HD>
+                <SECTNO>10.51</SECTNO>
+                <SUBJECT>Exclusion, in general.</SUBJECT>
+                <SECTNO>10.52</SECTNO>
+                <SUBJECT>Practice which puts trade buyer independence at risk.</SUBJECT>
+                <SECTNO>10.53</SECTNO>
+                <SUBJECT>Practices not resulting in exclusion. [Reserved]</SUBJECT>
+                <SECTNO>10.54</SECTNO>
+                <SUBJECT>Criteria for determining trade buyer independence.</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>15 U.S.C. 49-50; 27 U.S.C. 202 and 205; 44 U.S.C. 3504(h).</P>
+        </AUTH>
+        <SOURCE>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. ATF-74, 45 FR 63257, Sept. 30, 1980, unless otherwise noted.</P>
+        </SOURCE>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—Scope of Regulations</HD>
+            <SECTION>
+                <SECTNO>§ 10.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>The regulations in this part, issued pursuant to section 105 of the Federal Alcohol Administration Act (27 U.S.C. 205), specify practices which may result in violations of section 105(c) of the Act and criteria for determining whether a practice is a violation of section 105(c) of the Act. This part does not attempt to enumerate all of the practices prohibited by section 105(c) of the Act. Nothing in this part shall operate to exempt any person from the requirements of any State law or regulation.</P>
+                <CITA>[T.D. ATF-364, 60 FR 20426, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <P>This part applies to the several States of the United States, the District of Columbia, and Puerto Rico.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.3</SECTNO>
+                <SUBJECT>Application.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The regulations in this part apply to transactions between industry members and employees, officers, or representatives of trade buyers.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Transactions involving State agencies.</E>
+                     The regulations in this part apply only to transactions between industry members and employees of State agencies operating as retailers, wholesalers, or both. The regulations do not apply to State agencies with regard to their dealings with employees, officers, or representatives of trade buyers.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.4</SECTNO>
+                <SUBJECT>Jurisdictional limits.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The regulations in this part apply where:
+                </P>
+                <P>(1) The industry member induces a trade buyer to purchase distilled spirits, wine, or malt beverages from such industry member to the exclusion, in whole or in part, of products sold or offered for sale by other persons in interstate or foreign commerce; and</P>
+                <P>
+                    (2) If: (i) The inducement is made in the course of interstate or foreign commerce; or
+                    <PRTPAGE P="440"/>
+                </P>
+                <P>(ii) The industry member engages in the practice of using an inducement to such an extent as substantially to restrain or prevent transactions in interstate or foreign commerce in any such products; or</P>
+                <P>(iii) The direct effect of the inducement is to prevent, deter, hinder, or restrict other persons from selling or offering for sale any such products to such retailer in interstate or foreign commerce.</P>
+                <P>
+                    (b) 
+                    <E T="03">Malt beverages.</E>
+                     In the case of malt beverages, this part applies to transactions between an employee, officer, or representative of a trade buyer in any State and a brewer, importer, or wholesaler of malt beverages inside or outside such State only to the extent that the law of such State imposes requirements similar to the requirements of section 5(c) of the Federal Alcohol Administration Act (27 U.S.C. 205(c)), with respect to similar transactions between an employee, officer, or representative of a trade buyer in such State and a brewer, importer, or wholesaler of malt beverages in such State.
+                </P>
+                <CITA>[T.D. ATF-74, 45 FR 63257, Sept. 30, 1980, as amended by T.D. ATF-364, 60 FR 20426, Apr. 26, 1995]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.5</SECTNO>
+                <SUBJECT>Delegations of the Administrator.</SUBJECT>
+                <P>
+                    Most of the regulatory authorities of the Administrator contained in this part are delegated to appropriate TTB officers. These TTB officers are specified in TTB Order 1135.10, Delegation of the Administrator's Authorities in 27 CFR Part 10, Commercial Bribery. You may obtain a copy of this order by accessing the TTB Web site (
+                    <E T="03">http://www.ttb.gov</E>
+                    ) or by mailing a request to the Alcohol and Tobacco Tax and Trade Bureau, National Revenue Center, 550 Main Street, Room 1516, Cincinnati, OH 45202.
+                </P>
+                <CITA>[T.D. TTB-44, 71 FR 16923, Apr. 4, 2006]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.6</SECTNO>
+                <SUBJECT>Administrative provisions.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The Act makes applicable the provisions including penalties of sections 49 and 50 of Title 15, United States Code, to the jurisdiction, powers and duties of the Administrator under this Act, and to any person (whether or not a corporation) subject to the provisions of law administered by the Administrator under this Act. The Act also provides that the Administrator is authorized to require, in such manner and such form as he or she shall prescribe, such reports as are necessary to carry out the powers and duties under this chapter.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Examination and subpoena.</E>
+                     Any appropriate TTB officer shall at all reasonable times have access to, for the purpose of examination, and the right to copy any documentary evidence of any person, partnership, or corporation being investigated or proceeded against. An appropriate TTB officer shall also have the power to require by subpoena the attendance and testimony of witnesses and the production of all such documentary evidence relating to any matter under investigation, upon a satisfactory showing the requested evidence may reasonably be expected to yield information relevant to any matter being investigated under the Act.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Reports required by the appropriate TTB officer</E>
+                    —(1) 
+                    <E T="03">General.</E>
+                     The appropriate TTB officer may, as part of a trade practice investigation of an industry member, require such industry member to submit a written report containing information on sponsorships, advertisements, promotions, and other activities pertaining to its business subject to the Act conducted by, or on behalf of, or benefiting the industry member.
+                </P>
+                <P>
+                    (2) 
+                    <E T="03">Preparation.</E>
+                     The report will be prepared by the industry member in letter form, executed under the penalties of perjury, and will contain the information specified by the appropriate TTB officer. The period covered by the report will not exceed three years.
+                </P>
+                <P>
+                    (3) 
+                    <E T="03">Filing.</E>
+                     The report will be filed in accordance with the instructions of the appropriate TTB officer.
+                </P>
+                <APPRO>(Approved by the Office of Management and Budget under control number 1512-0392)</APPRO>
+                <CITA>[T.D. ATF-364, 60 FR 20426, Apr. 26, 1995. Redesignated and amended by T.D. ATF-428, 65 FR 52020, Aug. 28, 2000]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <PRTPAGE P="441"/>
+            <HD SOURCE="HED">Subpart B—Definitions</HD>
+            <SECTION>
+                <SECTNO>§ 10.11</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <P>As used in this part, unless the context otherwise requires, terms have the meanings given in this section. Any other term defined in the Federal Alcohol Administration Act and used in this part shall have the meaning assigned to it by that Act.</P>
+                <P>
+                    <E T="03">Act.</E>
+                     The Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Administrator.</E>
+                     The Administrator, Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">Appropriate TTB officer.</E>
+                     An officer or employee of the Alcohol and Tobacco Tax and Trade Bureau (TTB) authorized to perform any functions relating to the administration or enforcement of this part by TTB Order 1135.10, Delegation of the Administrator's Authorities in 27 CFR Part 10, Commercial Bribery.
+                </P>
+                <P>
+                    <E T="03">Industry member.</E>
+                     Any person engaged in business as a distiller, brewer, recitifier, blender, or other producer, or as an importer or wholesaler of distilled spirits, wine or malt beverages, or as a bottler, or warehouseman and bottler, of distilled spirits; industry member does not include an agency of a State or political subdivision thereof, or an officer or employee of such agency.
+                </P>
+                <P>
+                    <E T="03">Officer.</E>
+                     All corporate executives, including presidents, vice presidents, treasurers, and chief executive officers.
+                </P>
+                <P>
+                    <E T="03">Product.</E>
+                     Distilled spirits, wine or malt beverages, as defined in the Federal Alcohol Administration Act.
+                </P>
+                <P>
+                    <E T="03">Trade buyer.</E>
+                     Any person who is a wholesaler or retailer of distilled spirits, wine, or malt beverages.
+                </P>
+                <CITA>[T.D. ATF-74, 45 FR 63257, Sept. 30, 1980, as amended by T.D. ATF-364, 60 FR 20426, Apr. 26, 1995; T.D. ATF-428, 65 FR 52020, Aug. 28, 2000; T.D. TTB-44, 71 FR 16924, Apr. 4, 2006]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart C—Commercial Bribery</HD>
+            <SECTION>
+                <SECTNO>§ 10.21</SECTNO>
+                <SUBJECT>Commercial bribery.</SUBJECT>
+                <P>It is unlawful for an industry member, directly or indirectly or through an affiliate, to induce a trade buyer to purchase the industry member's products, to the complete or partial exclusion of products sold or offered for sale by other persons in interstate or foreign commerce, by offering or giving a bonus, premium, compensation, or other thing of value to any officer, employee, or representative of the trade buyer. The bonus, premium, compensation, or other thing of value need not be offered or given for the purpose of directly inducing a trade buyer to purchase from the seller, but rather is applicable if an industry member induces officers, employees or representatives of the trade buyer to promote sales of the industry member's products and thereby indirectly induces the trade buyer to purchase from the industry member.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.22</SECTNO>
+                <SUBJECT>Employee associations.</SUBJECT>
+                <P>Gifts, donations, and other payments such as for advertising in publications, by an industry member, to trade buyer employee associations are considered the same as bonuses, premiums, compensation, or other things of value given directly to the employees, since the benefits resulting from the gifts or payments flow to the individual members of the association.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.23</SECTNO>
+                <SUBJECT>Gifts or payments to wholesalers.</SUBJECT>
+                <P>
+                    Although industry members are not prohibited from offering or giving money or other things of value to a wholesale entity (
+                    <E T="03">i.e.</E>
+                    , the corporation, partnership, or individual who owns the business), the wholesaler will be considered as acting as a mere conduit between its officers, employees, or representatives and the industry member, if:
+                </P>
+                <P>(a) There is an agreement or understanding, implied or explicit, that the money or thing of value will be passed on to the officers, employees, or representatives, or</P>
+                <P>(b) It is obvious by the very nature of the item given (such as a free trip) that a pass through to the officers, employees, or representatives is clearly contemplated, or</P>
+                <P>
+                    (c) The records of the recipient wholesaler do not accurately reflect such money or item as an asset or the wholesale entity, thus being subject to all ensuing tax consequences as distinguished from the receipt of the money 
+                    <PRTPAGE P="442"/>
+                    or item as a personal asset of an officer, employee, or representative.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.24</SECTNO>
+                <SUBJECT>Sales promotion contests.</SUBJECT>
+                <P>Sales contests sponsored by an industry member which offer prizes directly or indirectly to trade buyer officers, employees or representatives are inducements within the meaning of the Act.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—Exclusion</HD>
+            <SOURCE>
+                <HD SOURCE="HED">Source:</HD>
+                <P>T.D. ATF-364, 60 FR 20427, Apr. 26, 1995, unless otherwise noted.</P>
+            </SOURCE>
+            <SECTION>
+                <SECTNO>§ 10.51</SECTNO>
+                <SUBJECT>Exclusion, in general.</SUBJECT>
+                <P>(a) Exclusion, in whole or in part occurs:</P>
+                <P>(1) When a practice by an industry member, whether direct, indirect, or through an affiliate, places (or has the potential to place) trade buyer independence at risk by means of a tie or link between the industry member and trade buyer or by any other means of industry member control over the trade buyer, and</P>
+                <P>(2) Such practice results in the trade buyer purchasing less than it would have of a competitor's product.</P>
+                <P>(b) Section 10.52 lists practices that create a tie or link that places trade buyer independence at risk. Section 10.53 is reserved and will list practices not resulting in exclusion. Section 10.54 lists the criteria used for determining whether other practices can put trade buyer independence at risk.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.52</SECTNO>
+                <SUBJECT>Practice which puts trade buyer independence at risk.</SUBJECT>
+                <P>The practice specified in this section is deemed to place trade buyer independence at risk within the description of exclusion in § 10.51: Industry member payments of money to the employee(s) of a trade buyer without the knowledge or consent of the trade buyer-employer in return for the employee agreeing to order distilled spirits, wine, or malt beverages from the industry member. The practice enumerated here is an example and does not constitute a complete list of those situations which result in such control.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.53</SECTNO>
+                <RESERVED>Practices not resulting in exclusion. [Reserved]</RESERVED>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 10.54</SECTNO>
+                <SUBJECT>Criteria for determining trade buyer independence.</SUBJECT>
+                <P>The criteria specified in this section are indications that a particular practice between an industry member and an officer, employee, or representative of a trade buyer, other than those in § 10.52, places trade buyer independence at risk. A practice need not meet all of the criteria specified in this section in order to place trade buyer independence at risk.</P>
+                <P>(a) The practice restricts or hampers the free economic choice of a trade buyer to decide which products to purchase or the quantity in which to purchase them for sale to retailers and consumers.</P>
+                <P>(b) The industry member obligates the trade buyer to participate in the promotion to obtain the industry member's product.</P>
+                <P>(c) The trade buyer has a continuing obligation to purchase or otherwise promote the industry member's product.</P>
+                <P>(d) The trade buyer has a commitment not to terminate its relationship with the industry member with respect to purchase of the industry member's products.</P>
+                <P>(e) The practice involves the industry member in the day-to-day operations of the trade buyer. For example, the industry member controls the trade buyer's decisions on which brand of products to purchase, the pricing of products, or the manner in which the products will be displayed on the trade buyer's premises.</P>
+                <P>(f) The practice is discriminatory in that it is not offered to all trade buyers in the local market on the same terms without business reasons present to justify the difference in treatment.</P>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

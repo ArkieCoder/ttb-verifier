@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="cfr.xsl"?>
+<CFRGRANULE xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CFRMergedXML.xsd">
+    <FDSYS>
+        <CFRTITLE>27</CFRTITLE>
+        <CFRTITLETEXT>Alcohol, Tobacco Products and Firearms</CFRTITLETEXT>
+        <VOL>1</VOL>
+        <DATE>2024-04-01</DATE>
+        <ORIGINALDATE>2024-04-01</ORIGINALDATE>
+        <COVERONLY>false</COVERONLY>
+        <TITLE>ALCOHOLIC BEVERAGE HEALTH WARNING STATEMENT</TITLE>
+        <GRANULENUM>16</GRANULENUM>
+        <HEADING>PART 16</HEADING>
+        <ANCESTORS>
+            <PARENT HEADING="Title 27" SEQ="2">Alcohol, Tobacco Products and Firearms</PARENT>
+            <PARENT HEADING="CHAPTER I" SEQ="1">ALCOHOL AND TOBACCO TAX AND TRADE BUREAU, DEPARTMENT OF THE TREASURY</PARENT>
+            <PARENT HEADING="SUBCHAPTER A" SEQ="0">ALCOHOL</PARENT>
+        </ANCESTORS>
+    </FDSYS>
+    <PART>
+        <EAR>Pt. 16</EAR>
+        <HD SOURCE="HED">PART 16—ALCOHOLIC BEVERAGE HEALTH WARNING STATEMENT</HD>
+        <CONTENTS>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart A—Scope</HD>
+                <SECHD>Sec.</SECHD>
+                <SECTNO>16.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>16.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart B—Definitions</HD>
+                <SECTNO>16.10</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart C—Health Warning Statement Requirements for Alcoholic Beverages</HD>
+                <SECTNO>16.20</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <SECTNO>16.21</SECTNO>
+                <SUBJECT>Mandatory label information.</SUBJECT>
+                <SECTNO>16.22</SECTNO>
+                <SUBJECT>General requirements.</SUBJECT>
+            </SUBPART>
+            <SUBPART>
+                <HD SOURCE="HED">Subpart D—General Provisions</HD>
+                <SECTNO>16.30</SECTNO>
+                <SUBJECT>Certificates of label approval.</SUBJECT>
+                <SECTNO>16.31</SECTNO>
+                <SUBJECT>Exports.</SUBJECT>
+                <SECTNO>16.32</SECTNO>
+                <SUBJECT>Preemption.</SUBJECT>
+                <SECTNO>16.33</SECTNO>
+                <SUBJECT>Civil penalties; adjustments.</SUBJECT>
+            </SUBPART>
+        </CONTENTS>
+        <AUTH>
+            <HD SOURCE="HED">Authority:</HD>
+            <P>27 U.S.C. 205, 215, 218; 28 U.S.C. 2461 note.</P>
+        </AUTH>
+        <SOURCE>
+            <HD SOURCE="HED">Source:</HD>
+            <P>T.D. ATF-294, 55 FR 5421, Feb. 14, 1990, unless otherwise noted.</P>
+        </SOURCE>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart A—Scope</HD>
+            <SECTION>
+                <SECTNO>§ 16.1</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>The regulations in this part relate to a health warning statement on labels of containers of alcoholic beverages.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 16.2</SECTNO>
+                <SUBJECT>Territorial extent.</SUBJECT>
+                <P>This part applies to the several States of the United States, the District of Columbia, and the territories and possessions of the United States.</P>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart B—Definitions</HD>
+            <SECTION>
+                <SECTNO>§ 16.10</SECTNO>
+                <SUBJECT>Meaning of terms.</SUBJECT>
+                <P>As used in this part, unless the context otherwise requires, terms shall have the meaning ascribed in this section.</P>
+                <P>
+                    <E T="03">Act.</E>
+                     The Alcoholic Beverage Labeling Act of 1988.
+                </P>
+                <P>
+                    <E T="03">Alcoholic beverage.</E>
+                     Includes any beverage in liquid form which contains not less than one-half of one percent (.5%) of alcohol by volume and is intended for human consumption.
+                </P>
+                <P>
+                    <E T="03">Bottle.</E>
+                     To fill a container with an alcoholic beverage and to seal such container.
+                </P>
+                <P>
+                    <E T="03">Bottler.</E>
+                     A person who bottles an alcoholic beverage.
+                </P>
+                <P>
+                    <E T="03">Brand label.</E>
+                     The label carrying, in the usual distinctive design, the brand name of the alcoholic beverage.
+                </P>
+                <P>
+                    <E T="03">Container.</E>
+                     The innermost sealed container, irrespective of the material from which made, in which an alcoholic beverage is placed by the bottler and in which such beverage is offered for sale to members of the general public.
+                </P>
+                <P>
+                    <E T="03">Health.</E>
+                     Includes, but is not limited to, the prevention of accidents.
+                </P>
+                <P>
+                    <E T="03">Person.</E>
+                     Any individual, partnership, joint-stock company, business trust, association, corporation, or any other business or legal entity, including a receiver, trustee, or liquidating agent, and also includes any State, any State agency, or any officer or employee thereof.
+                </P>
+                <P>
+                    <E T="03">Sale and distribution.</E>
+                     Includes sampling or any other distribution not for sale.
+                </P>
+                <P>
+                    <E T="03">State.</E>
+                     Includes any political subdivision of any State, the District of Columbia, the Commonwealth of Puerto Rico, the Commonwealth of the Northern Mariana Islands, Guam, the Virgin Islands, American Samoa, Wake Island, the Midway Islands, Kingman Reef, or Johnston Island.
+                </P>
+                <P>
+                    <E T="03">State law.</E>
+                     Includes State statutes, regulations and principles and rules having the force of law.
+                </P>
+                <P>
+                    <E T="03">TTB.</E>
+                     The Alcohol and Tobacco Tax and Trade Bureau, Department of the Treasury, Washington, DC.
+                </P>
+                <P>
+                    <E T="03">United States.</E>
+                     The several States, the District of Columbia, the Commonwealth of Puerto Rico, the Commonwealth of the Northern Mariana Islands, Guam, the Virgin Islands, American Samoa, Wake Island, the Midway Islands, Kingman Reef, and Johnston Island.
+                </P>
+                <P>
+                    <E T="03">Use of other terms.</E>
+                     Any other term defined in the Alcoholic Beverage Labeling Act and used in this part shall have 
+                    <PRTPAGE P="460"/>
+                    the same meaning as assigned to it by the Act.
+                </P>
+                <CITA>[T.D. ATF-294, 55 FR 5421, Feb. 14, 1990, as amended by T.D. ATF-425, 65 FR 11892, Mar. 7, 2000; T.D. TTB-44, 71 FR 16925, Apr. 4, 2006]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart C—Health Warning Statement Requirements for Alcoholic Beverages</HD>
+            <SECTION>
+                <SECTNO>§ 16.20</SECTNO>
+                <SUBJECT>General.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Domestic products.</E>
+                     On and after November 18, 1989, no person shall bottle for sale or distribution in the United States any alcoholic beverage unless the container of such beverage bears the health warning statement required by § 16.21. It is the responsibility of the bottler to provide, upon request, sufficient evidence to establish that the alcoholic beverage was bottled prior to November 18, 1989.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Imported products.</E>
+                     On and after November 18, 1989, no person shall import for sale or distribution in the United States any alcoholic beverage unless the container of such beverage bears the health warning statement required by § 16.21. This requirement does not apply to alcoholic beverages that were bottled in the foreign country prior to November 18, 1989. It is the responsibility of the importer to provide, upon request, sufficient evidence to establish that the alcoholic beverage was bottled prior to such date.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 16.21</SECTNO>
+                <SUBJECT>Mandatory label information.</SUBJECT>
+                <P>There shall be stated on the brand label or separate front label, or on a back or side label, separate and apart from all other information, the following statement:</P>
+                <EXTRACT>
+                    <P>GOVERNMENT WARNING: (1) According to the Surgeon General, women should not drink alcoholic beverages during pregnancy because of the risk of birth defects.</P>
+                    <P>(2) Consumption of alcoholic beverages impairs your ability to drive a car or operate machinery, and may cause health problems.</P>
+                </EXTRACT>
+                <SECAUTH>(Authority: Sec. 8001, Pub. L. 100-690, 102 Stat. 4181, 27 U.S.C. 215)</SECAUTH>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 16.22</SECTNO>
+                <SUBJECT>General requirements.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">Legibility.</E>
+                     (1) All labels shall be so designed that the statement required by § 16.21 is readily legible under ordinary conditions, and such statement shall be on a contrasting background.
+                </P>
+                <P>(2) The first two words of the statement required by § 16.21, i.e., “GOVERNMENT WARNING,” shall appear in capital letters and in bold type. The remainder of the warning statement may not appear in bold type.</P>
+                <P>(3) The letters and/or words of the statement required by § 16.21 shall not be compressed in such a manner that the warning statement is not readily legible.</P>
+                <P>
+                    (4) The warning statement required by § 16.21 shall appear in a maximum number of characters (
+                    <E T="03">i.e.</E>
+                    , letters, numbers, marks) per inch, as follows:
+                </P>
+                <GPOTABLE COLS="2" OPTS="L2" CDEF="s25,10">
+                    <BOXHD>
+                        <CHED H="1">Minimum required type size for warning statement</CHED>
+                        <CHED H="1">Maximum number of characters per inch</CHED>
+                    </BOXHD>
+                    <ROW>
+                        <ENT I="01">1 millimeter</ENT>
+                        <ENT>40</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">2 millimeters</ENT>
+                        <ENT>25</ENT>
+                    </ROW>
+                    <ROW>
+                        <ENT I="01">3 millimeters</ENT>
+                        <ENT>12</ENT>
+                    </ROW>
+                </GPOTABLE>
+                <P>
+                    (b) 
+                    <E T="03">Size of type.</E>
+                     (1) Containers of 237 milliliters (8 fl. oz.) or less. The mandatory statement required by § 16.21 shall be in script, type, or printing not smaller than 1 millimeter.
+                </P>
+                <P>(2) Containers of more than 237 milliliters (8 fl. oz.) up to 3 liters (101 fl. oz.). The mandatory statement required by § 16.21 shall be in script, type, or printing not smaller than 2 millimeters.</P>
+                <P>(3) Containers of more than 3 liters (101 fl. oz.). The mandatory statement required by § 16.21 shall be in script, type, or printing not smaller than 3 millimeters.</P>
+                <P>
+                    (c) 
+                    <E T="03">Labels firmly affixed.</E>
+                     Labels bearing the statement required by § 16.21 which are not an integral part of the container shall be affixed to containers of alcoholic beverages in such manner that they cannot be removed without thorough application of water or other solvents.
+                </P>
+                <CITA>[T.D. ATF-294, 55 FR 5421, Feb. 14, 1990, as amended by T.D. 372, 61 FR 20723, May 8, 1996; T.D. TTB-91, 76 FR 5477, Feb. 1, 2011]</CITA>
+            </SECTION>
+        </SUBPART>
+        <SUBPART>
+            <HD SOURCE="HED">Subpart D—General Provisions</HD>
+            <SECTION>
+                <SECTNO>§ 16.30</SECTNO>
+                <SUBJECT>Certificates of label approval.</SUBJECT>
+                <P>
+                    Certificates of label/bottle approval or certificates of exemption from label approval on TTB Form 5100.31, issued pursuant to parts 4, 5, and 7 of this 
+                    <PRTPAGE P="461"/>
+                    chapter for imported and domestically bottled wine, distilled spirits, and malt beverages, shall not be approved with respect to such beverage bottled on and after November 18, 1989, unless the label for the container of such beverage bears the health warning statement required.
+                </P>
+                <CITA>[T.D. ATF-294, 55 FR 5421, Feb. 14, 1990, as amended by T.D. ATF-425, 65 FR 11892, Mar. 7, 2000]</CITA>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 16.31</SECTNO>
+                <SUBJECT>Exports.</SUBJECT>
+                <P>
+                    The regulations in this part shall not apply with respect to alcoholic beverages that are produced, imported, bottled, or labeled for export from the United States, or for delivery to a vessel or aircraft, as supplies, for consumption beyond the jurisdiction of the internal revenue laws of the United States: 
+                    <E T="03">Provided,</E>
+                     That this exemption shall not apply with respect to alcoholic beverages that are produced, imported, bottled, or labeled for sale, distribution, or shipment to members or units of the Armed Forces of the United States, including those located outside the United States.
+                </P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 16.32</SECTNO>
+                <SUBJECT>Preemption.</SUBJECT>
+                <P>No statement relating to alcoholic beverages and health, other than the statement required by § 16.21, shall be required under State law to be placed on any container of an alcoholic beverage, or on any box, carton, or other package, irrespective of the material from which made, that contains such a container.</P>
+            </SECTION>
+            <SECTION>
+                <SECTNO>§ 16.33</SECTNO>
+                <SUBJECT>Civil penalties; adjustments.</SUBJECT>
+                <P>
+                    (a) 
+                    <E T="03">General.</E>
+                     The Act provides that any person who violates the provisions of this part shall be subject to a civil penalty of not more than $10,000. However, pursuant to the provisions of the Federal Civil Penalties Inflation Adjustment Act of 1990, as amended, this civil penalty is subject to periodic cost-of-living adjustment. Accordingly, any person who violates the provisions of this part shall be subject to a civil penalty of not more than the amount listed at 
+                    <E T="03">https://www.ttb.gov/regulation_guidance/ablapenalty.html.</E>
+                     Each day shall constitute a separate offense.
+                </P>
+                <P>
+                    (b) 
+                    <E T="03">Notice of cost-of-living adjustment.</E>
+                     TTB will provide notice in the 
+                    <E T="04">Federal Register</E>
+                     and at the Web site referenced in paragraph (a) of this section of cost-of-living adjustments to the civil penalty for violations of this part.
+                </P>
+                <P>
+                    (c) 
+                    <E T="03">Applicability of increases in penalty.</E>
+                     Any increase in the penalty described in paragraph (a) of this section shall apply only to penalties, including those whose associated violation predated such an increase, which are assessed after the date the increase takes effect. An increase will take effect on the date a notice is published in the 
+                    <E T="04">Federal Register</E>
+                     announcing the increase. The effective date of the increase also will be listed at the Web site in paragraph (a) of this section.
+                </P>
+                <CITA>[T.D.TTB-138, 81 FR 43065, July 1, 2016]</CITA>
+            </SECTION>
+        </SUBPART>
+    </PART>
+</CFRGRANULE>

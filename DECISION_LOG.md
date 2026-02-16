@@ -2128,11 +2128,94 @@ CORS_ORIGINS=[
 
 ---
 
-## Decision 015: [To Be Determined]
+## Decision 015: Container Registry - GitHub Container Registry (GHCR)
 
-**Date:** TBD  
-**Status:** 🔄 Pending  
-**Decision:** [Next decision to be documented]
+**Date:** 2026-02-16  
+**Status:** ✅ Decided  
+**Decision:** Use GitHub Container Registry (GHCR) for container image storage and distribution
+
+### Context
+- Need to deploy Docker images from CI/CD pipeline to AWS EC2 instances
+- Must choose between GitHub Container Registry (GHCR) and AWS Elastic Container Registry (ECR)
+- Project is in prototype/POC phase, deploying to AWS infrastructure
+- Already using GitHub for source control
+- Budget is not a constraint but simplicity is valued
+
+### Options Considered
+
+#### Option 1: GitHub Container Registry (GHCR) ✅ SELECTED
+**Pros:**
+- Native GitHub integration - single platform for code and containers
+- GitHub Actions can push without credential configuration (uses `GITHUB_TOKEN`)
+- Free for private repositories (500MB storage, unlimited bandwidth)
+- Simpler CI/CD setup (5-10 minutes vs 20-30 minutes)
+- Unified access control with GitHub repository permissions
+- Packages linked directly to repository for easy discovery
+- No separate billing or AWS account coordination needed
+
+**Cons:**
+- Not AWS-native - EC2 pulls over internet (slight latency vs VPC)
+- Limited vulnerability scanning (basic only, not Inspector-grade)
+- Fewer advanced registry features (lifecycle policies, immutable tags)
+- Cross-region bandwidth charges (GHCR → AWS)
+
+#### Option 2: AWS Elastic Container Registry (ECR)
+**Pros:**
+- AWS-native integration with EC2 (same network, VPC endpoints)
+- Sub-second image pulls within same AWS region
+- Native IAM integration (EC2 instance profiles)
+- Advanced vulnerability scanning (Amazon Inspector)
+- Image lifecycle policies for cost optimization
+- Encryption at rest with AWS KMS
+- Better for government compliance (FedRAMP, etc.)
+
+**Cons:**
+- Cost: ~$0.10 per GB/month storage + bandwidth charges (~$2-5/month)
+- More complex CI/CD setup (AWS credentials in GitHub Secrets)
+- Additional authentication steps (`aws ecr get-login-password`)
+- More moving parts (IAM policies, ECR policies, credentials rotation)
+
+### Decision Rationale
+
+**GHCR was chosen for the following reasons:**
+
+1. **Rapid Iteration Priority**: Currently in prototype/POC phase where speed of implementation matters more than production optimization
+2. **Simplicity**: Unified GitHub workflow reduces complexity and maintenance burden
+3. **Zero Additional Cost**: Free for private repositories eliminates budget approval delays
+4. **Sufficient for Current Needs**: Basic vulnerability scanning and unlimited bandwidth meet prototype requirements
+5. **Easy Migration Path**: Can migrate to ECR later if production deployment requires AWS-native features
+6. **One Less Service**: Reduces operational overhead during development phase
+
+### Implications
+
+**Immediate:**
+- CI/CD pipeline will be simpler and faster to implement
+- No AWS credential management needed for container registry
+- EC2 instances will pull images over internet (acceptable latency for prototype)
+
+**Future Migration Path:**
+- If production deployment requires ECR (compliance, performance, VPC isolation):
+  - Migration is straightforward: re-tag and push existing images
+  - GitHub Actions workflow changes are minimal (swap registry endpoint)
+  - No code changes required in application
+
+**Best Practice:**
+- Use this prototype phase to validate the full deployment process
+- Re-evaluate before production launch if:
+  - Government compliance mandates AWS-only infrastructure
+  - Image pull performance becomes critical (multi-region, high frequency)
+  - Advanced registry features are needed (lifecycle policies, cross-region replication)
+
+### Success Metrics
+- ✅ CI/CD pipeline setup completed in <30 minutes
+- ✅ Image build and push time <10 minutes
+- ✅ EC2 image pull time <60 seconds (acceptable for prototype)
+- ✅ Zero registry-related costs during development
+
+### References
+- [GHCR Documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+- [AWS ECR Pricing](https://aws.amazon.com/ecr/pricing/)
+- [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) - Updated with GHCR instructions
 
 ---
 
@@ -2165,7 +2248,7 @@ CORS_ORIGINS=[
 **Document Maintained By:** Project Team  
 **Last Updated:** 2026-02-16  
 **Recent Additions:**
-- Decision 011: Remove Pretty-Print Option - JSON-Only Output
 - Decision 012: Docker Strategy with Separate Ollama Service  
 - Decision 013: Pytest Test Suite with 80% Coverage Target
 - Decision 014: FastAPI with Open Access and Minimal Observability
+- Decision 015: Container Registry - GitHub Container Registry (GHCR)

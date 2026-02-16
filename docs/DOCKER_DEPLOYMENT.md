@@ -912,14 +912,28 @@ trivy image ttb-verifier:latest
 
 ## Integration with CI/CD
 
-### Container Registry Options
+### Container Registry Selection
 
-This project can be deployed with either **GitHub Container Registry (GHCR)** or **AWS Elastic Container Registry (ECR)**. Choose based on your infrastructure:
+**Decision: GitHub Container Registry (GHCR) - Selected for this project**
 
-- **GitHub Container Registry**: Recommended for GitHub-hosted projects, free for public repos
-- **AWS ECR**: Recommended if already using AWS infrastructure, integrates with EC2/ECS
+This project uses **GitHub Container Registry (GHCR)** for container image storage and distribution. See [DECISION_LOG.md Decision 015](/DECISION_LOG.md#decision-015-container-registry---github-container-registry-ghcr) for full rationale.
 
-### Option 1: GitHub Container Registry (GHCR)
+**Why GHCR:**
+- ✅ Native GitHub integration (single platform for code + containers)
+- ✅ Free for private repositories (500MB storage, unlimited bandwidth)
+- ✅ Simpler CI/CD setup (no AWS credentials needed)
+- ✅ Unified access control with GitHub repository permissions
+- ✅ Easy migration to AWS ECR later if production requirements change
+
+**Alternative: AWS ECR** is documented below for reference but is not currently used. It may be considered for production deployment if:
+- Government compliance mandates AWS-only infrastructure
+- VPC-isolated container pulls are required
+- Advanced vulnerability scanning (Amazon Inspector) is needed
+- Cross-region replication or lifecycle policies are required
+
+---
+
+### Option 1: GitHub Container Registry (GHCR) ⭐ SELECTED
 
 **Workflow File:** `.github/workflows/build-and-push.yml`
 
@@ -980,7 +994,9 @@ services:
 docker compose up -d
 ```
 
-### Option 2: AWS Elastic Container Registry (ECR)
+### Option 2: AWS Elastic Container Registry (ECR) - Reference Only
+
+**Note:** This option is documented for reference but is **not currently used** in this project. See Decision 015 in DECISION_LOG.md for why GHCR was selected instead.
 
 **Workflow File:** `.github/workflows/build-and-push-ecr.yml`
 

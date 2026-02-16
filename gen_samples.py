@@ -500,6 +500,7 @@ class Label:
         self.text_color = None
         self.canvas_size = None
         self.fonts_used = {}  # Track which fonts were actually used: {field: font_name}
+        self.embellishment_level = None  # Set by renderer: minimal, moderate, prominent, maximum
         
         # Violation flag
         self._type_size_violation = False
@@ -846,6 +847,82 @@ class LabelRenderer:
         '/usr/share/fonts/truetype/freefont/FreeSans.ttf',
     ]
     
+    # Embellishment parameters by magnitude level
+    EMBELLISHMENT_PARAMS = {
+        'minimal': {
+            'border_width': (3, 6),
+            'corner_size': (25, 40),
+            'badge_radius': (42, 70),
+            'medallion_radius': (45, 60),
+            'divider_length': 0.6,
+            'icon_size': 50,
+            'line_weight': (2, 3),
+            'frame_width': 3
+        },
+        'moderate': {
+            'border_width': (5, 9),
+            'corner_size': (40, 60),
+            'badge_radius': (60, 90),
+            'medallion_radius': (60, 85),
+            'divider_length': 0.7,
+            'icon_size': 70,
+            'line_weight': (3, 5),
+            'frame_width': 5
+        },
+        'prominent': {
+            'border_width': (7, 12),
+            'corner_size': (55, 80),
+            'badge_radius': (80, 115),
+            'medallion_radius': (75, 105),
+            'divider_length': 0.75,
+            'icon_size': 95,
+            'line_weight': (5, 7),
+            'frame_width': 7
+        },
+        'maximum': {
+            'border_width': (10, 15),
+            'corner_size': (70, 100),
+            'badge_radius': (100, 130),
+            'medallion_radius': (90, 120),
+            'divider_length': 0.8,
+            'icon_size': 120,
+            'line_weight': (6, 9),
+            'frame_width': 10
+        }
+    }
+    
+    # Embellishment probabilities by magnitude level
+    EMBELLISHMENT_PROBABILITIES = {
+        'minimal': {
+            'border': 0.50, 'corners': 0.40, 'badge': 0.30,
+            'frame': 0.15, 'medallion': 0.20, 'divider': 0.35,
+            'icon': 0.25, 'gradient': 0.40,
+            'background_pattern': 0.10, 'ribbon': 0.15,
+            'vignette': 0.05, 'metallic': 0.20, 'filigree': 0.15
+        },
+        'moderate': {
+            'border': 0.70, 'corners': 0.65, 'badge': 0.55,
+            'frame': 0.35, 'medallion': 0.45, 'divider': 0.60,
+            'icon': 0.50, 'gradient': 0.65,
+            'background_pattern': 0.25, 'ribbon': 0.35,
+            'vignette': 0.20, 'metallic': 0.45, 'filigree': 0.35
+        },
+        'prominent': {
+            'border': 0.85, 'corners': 0.80, 'badge': 0.75,
+            'frame': 0.55, 'medallion': 0.65, 'divider': 0.75,
+            'icon': 0.70, 'gradient': 0.80,
+            'background_pattern': 0.40, 'ribbon': 0.50,
+            'vignette': 0.35, 'metallic': 0.65, 'filigree': 0.55
+        },
+        'maximum': {
+            'border': 0.95, 'corners': 0.90, 'badge': 0.85,
+            'frame': 0.70, 'medallion': 0.80, 'divider': 0.85,
+            'icon': 0.85, 'gradient': 0.90,
+            'background_pattern': 0.55, 'ribbon': 0.65,
+            'vignette': 0.50, 'metallic': 0.80, 'filigree': 0.70
+        }
+    }
+    
     def __init__(self, label):
         self.label = label
         self.image = None
@@ -853,12 +930,22 @@ class LabelRenderer:
         self.occupied_regions = []  # Track occupied space for collision detection
         self.accent_color = None  # For metallic/color accents
         self.font_downloader = GoogleFontDownloader()  # Initialize font downloader
+        
+        # Select embellishment magnitude level (15/35/35/15 distribution)
+        self.embellishment_level = random.choices(
+            ['minimal', 'moderate', 'prominent', 'maximum'],
+            weights=[15, 35, 35, 15]
+        )[0]
+        self.embellishments_drawn = []  # Track which embellishments were applied
     
     def render(self):
         """Main rendering pipeline with enhancements."""
         # 1. Create canvas (with potential gradient)
         self.image = self._create_canvas()
         self.draw = ImageDraw.Draw(self.image, 'RGBA')  # RGBA for transparency effects
+        
+        # Store embellishment level in label for metadata
+        self.label.embellishment_level = self.embellishment_level
         
         # 2. Draw background enhancements (textures, gradients)
         self._draw_background_enhancements()
@@ -981,135 +1068,201 @@ class LabelRenderer:
                 self.draw.point((x, y), fill=(0, 0, 0, alpha))
     
     def _draw_decorative_elements(self):
-        """Draw comprehensive decorative elements."""
+        """Draw comprehensive decorative elements based on embellishment level."""
         width, height = self.label.canvas_size
         color = self.label.text_color
+        params = self.EMBELLISHMENT_PARAMS[self.embellishment_level]
+        probs = self.EMBELLISHMENT_PROBABILITIES[self.embellishment_level]
         
-        # 1. Outer border with possible double-line effect (70% chance - increased)
-        if random.random() < 0.7:
-            border_style = random.choice(['single', 'double', 'ornate'])
+        # Draw in layers (back to front for proper stacking)
+        
+        # Layer 1: Background pattern (behind everything)
+        if random.random() < probs['background_pattern']:
+            self._draw_background_pattern()
+            self.embellishments_drawn.append('background_pattern')
+        
+        # Layer 2: Borders
+        if random.random() < probs['border']:
+            border_style = random.choice(['single', 'double', 'triple', 'ornate'])
+            border_width = random.randint(*params['border_width'])
+            margin = random.randint(8, 15)
             
             if border_style == 'single':
-                border_width = random.randint(3, 6)
-                margin = 10
                 self.draw.rectangle(
                     [(margin, margin), (width - margin, height - margin)],
                     outline=color,
                     width=border_width
                 )
-            
             elif border_style == 'double':
-                # Double border
                 outer = 8
                 self.draw.rectangle(
                     [(outer, outer), (width - outer, height - outer)],
                     outline=color,
-                    width=2
+                    width=max(2, border_width // 2)
                 )
                 inner = 14
                 self.draw.rectangle(
                     [(inner, inner), (width - inner, height - inner)],
                     outline=color,
-                    width=2
+                    width=max(2, border_width // 2)
                 )
-            
-            elif border_style == 'ornate':
-                # Ornate border with corner embellishments
-                margin = 10
+            elif border_style == 'triple':
+                for i, offset in enumerate([8, 12, 16]):
+                    self.draw.rectangle(
+                        [(offset, offset), (width - offset, height - offset)],
+                        outline=color,
+                        width=max(1, border_width // 3)
+                    )
+            else:  # ornate
                 self.draw.rectangle(
                     [(margin, margin), (width - margin, height - margin)],
                     outline=self.accent_color,
-                    width=4
+                    width=border_width
                 )
+            self.embellishments_drawn.append('border')
         
-        # 2. Decorative frame (NEW - 30% chance)
-        if random.random() < 0.3:
+        # Layer 3: Decorative frame
+        if random.random() < probs['frame']:
             self._draw_decorative_frame()
+            self.embellishments_drawn.append('frame')
         
-        # 3. Corner ornaments (70% chance - increased from 50%)
-        if random.random() < 0.7:
+        # Layer 4: Corner ornaments
+        if random.random() < probs['corners']:
             self._draw_corner_ornaments()
+            self.embellishments_drawn.append('corners')
         
-        # 4. Vintage badge/seal (60% chance - increased from 30%)
-        if random.random() < 0.6:
+        # Layer 5: Ribbon banner
+        if random.random() < probs['ribbon']:
+            self._draw_ribbon_banner()
+            self.embellishments_drawn.append('ribbon')
+        
+        # Layer 6: Vintage badge
+        if random.random() < probs['badge']:
             self._draw_vintage_badge(width // 2, int(height * 0.08))
+            self.embellishments_drawn.append('badge')
         
-        # 5. Seal/medallion (NEW - 40% chance)
-        if random.random() < 0.4:
+        # Layer 7: Seal/medallion
+        if random.random() < probs['medallion']:
             self._draw_seal_medallion()
+            self.embellishments_drawn.append('medallion')
         
-        # 6. Ornamental dividers (60% chance - increased from 40%)
-        if random.random() < 0.6:
+        # Layer 8: Ornamental dividers
+        if random.random() < probs['divider']:
             self._draw_ornamental_divider(int(height * 0.38))
+            self.embellishments_drawn.append('divider')
         
-        # 7. Product-appropriate icon (50% chance - increased from 30%, larger size)
-        if random.random() < 0.5:
+        # Layer 9: Product icon
+        if random.random() < probs['icon']:
             self._draw_product_icon()
+            self.embellishments_drawn.append('icon')
+        
+        # Layer 10: Illustrated vignette
+        if random.random() < probs['vignette']:
+            self._draw_illustrated_vignette()
+            self.embellishments_drawn.append('vignette')
+        
+        # Layer 11: Filigree
+        if random.random() < probs['filigree']:
+            self._draw_filigree()
+            self.embellishments_drawn.append('filigree')
+        
+        # Layer 12: Metallic effects (top layer, enhances existing elements)
+        if random.random() < probs['metallic']:
+            self._apply_metallic_effects()
+            self.embellishments_drawn.append('metallic')
     
     def _draw_corner_ornaments(self):
-        """Draw decorative corner elements."""
+        """Draw decorative corner elements with variable sizing."""
         width, height = self.label.canvas_size
         color = self.accent_color
-        size = random.randint(25, 40)
+        params = self.EMBELLISHMENT_PARAMS[self.embellishment_level]
+        size = random.randint(*params['corner_size'])
+        line_weight = random.randint(*params['line_weight'])
         offset = 15
         
-        style = random.choice(['simple', 'flourish', 'bracket'])
+        # Add more style options for prominent/maximum levels
+        if self.embellishment_level in ['prominent', 'maximum']:
+            style = random.choice(['simple', 'flourish', 'bracket', 'art_nouveau', 'art_deco'])
+        else:
+            style = random.choice(['simple', 'flourish', 'bracket'])
         
         if style == 'simple':
             # Simple L-shaped corners
-            # Top left
-            self.draw.line([(offset, offset), (offset + size, offset)], fill=color, width=3)
-            self.draw.line([(offset, offset), (offset, offset + size)], fill=color, width=3)
-            # Top right
-            self.draw.line([(width - offset - size, offset), (width - offset, offset)], fill=color, width=3)
-            self.draw.line([(width - offset, offset), (width - offset, offset + size)], fill=color, width=3)
-            # Bottom left
-            self.draw.line([(offset, height - offset - size), (offset, height - offset)], fill=color, width=3)
-            self.draw.line([(offset, height - offset), (offset + size, height - offset)], fill=color, width=3)
-            # Bottom right
-            self.draw.line([(width - offset - size, height - offset), (width - offset, height - offset)], fill=color, width=3)
-            self.draw.line([(width - offset, height - offset - size), (width - offset, height - offset)], fill=color, width=3)
+            for corner in ['tl', 'tr', 'bl', 'br']:
+                if corner == 'tl':
+                    self.draw.line([(offset, offset), (offset + size, offset)], fill=color, width=line_weight)
+                    self.draw.line([(offset, offset), (offset, offset + size)], fill=color, width=line_weight)
+                elif corner == 'tr':
+                    self.draw.line([(width - offset - size, offset), (width - offset, offset)], fill=color, width=line_weight)
+                    self.draw.line([(width - offset, offset), (width - offset, offset + size)], fill=color, width=line_weight)
+                elif corner == 'bl':
+                    self.draw.line([(offset, height - offset - size), (offset, height - offset)], fill=color, width=line_weight)
+                    self.draw.line([(offset, height - offset), (offset + size, height - offset)], fill=color, width=line_weight)
+                else:  # br
+                    self.draw.line([(width - offset - size, height - offset), (width - offset, height - offset)], fill=color, width=line_weight)
+                    self.draw.line([(width - offset, height - offset - size), (width - offset, height - offset)], fill=color, width=line_weight)
         
         elif style == 'flourish':
             # Curved flourish corners
             for corner_x, corner_y in [(offset, offset), (width-offset, offset), 
                                         (offset, height-offset), (width-offset, height-offset)]:
-                # Draw small arc/curve
                 self.draw.arc(
                     [(corner_x - size//2, corner_y - size//2), 
                      (corner_x + size//2, corner_y + size//2)],
-                    start=0, end=90, fill=color, width=2
+                    start=0, end=90, fill=color, width=line_weight
                 )
         
         elif style == 'bracket':
             # Bracket-style corners
             bracket_len = size
             bracket_width = size // 3
-            # Top left
             pts = [(offset, offset + bracket_len), (offset, offset), (offset + bracket_width, offset)]
-            self.draw.line(pts, fill=color, width=3, joint='curve')
-            # Similar for other corners (abbreviated for brevity)
+            self.draw.line(pts, fill=color, width=line_weight, joint='curve')
+            # Other corners similar...
+        
+        elif style == 'art_nouveau':
+            # Flowing organic curves (for prominent/maximum)
+            for corner_x, corner_y in [(offset+size//2, offset+size//2), (width-offset-size//2, offset+size//2)]:
+                self.draw.ellipse(
+                    [(corner_x-size//3, corner_y-size//3), (corner_x+size//3, corner_y+size//3)],
+                    outline=color, width=line_weight
+                )
+        
+        elif style == 'art_deco':
+            # Geometric stepped pattern (for prominent/maximum)
+            step_size = size // 4
+            for i in range(4):
+                offset_val = offset + i * step_size
+                length = size - i * step_size
+                self.draw.line([(offset_val, offset_val), (offset_val + length, offset_val)], 
+                              fill=color, width=max(1, line_weight - i))
     
     def _draw_vintage_badge(self, x, y):
-        """Draw a vintage circular badge or seal (40% larger)."""
-        radius = random.randint(42, 70)  # Increased from 30-50
+        """Draw a vintage circular badge or seal with variable sizing."""
+        import math
+        params = self.EMBELLISHMENT_PARAMS[self.embellishment_level]
+        radius = random.randint(*params['badge_radius'])
+        line_weight = random.randint(*params['line_weight'])
         color = self.accent_color
         
-        style = random.choice(['circle', 'shield', 'star'])
+        # More style options for prominent/maximum levels
+        if self.embellishment_level in ['prominent', 'maximum']:
+            style = random.choice(['circle', 'shield', 'star', 'hexagon', 'octagon', 'laurel'])
+        else:
+            style = random.choice(['circle', 'shield', 'star'])
         
         if style == 'circle':
-            # Double circle badge
+            # Multi-circle badge
             self.draw.ellipse(
                 [(x - radius, y - radius), (x + radius, y + radius)],
                 outline=color,
-                width=3
+                width=line_weight
             )
             self.draw.ellipse(
                 [(x - radius + 5, y - radius + 5), (x + radius - 5, y + radius - 5)],
                 outline=color,
-                width=2
+                width=max(2, line_weight - 1)
             )
-        
         elif style == 'shield':
             # Shield shape
             pts = [
@@ -1120,75 +1273,107 @@ class LabelRenderer:
                 (x - radius*0.6, y + radius*0.5),
                 (x - radius*0.6, y - radius*0.3),
             ]
-            self.draw.polygon(pts, outline=color, width=3)
-        
-        elif style == 'star':
-            # 6-point star badge
-            import math
+            self.draw.polygon(pts, outline=color, width=line_weight)
+        elif style in ['star', 'hexagon', 'octagon']:
+            # Polygon badges
+            num_points = 12 if style == 'star' else (6 if style == 'hexagon' else 8)
             points = []
-            for i in range(12):
-                angle = i * math.pi / 6
-                r = radius if i % 2 == 0 else radius * 0.5
+            for i in range(num_points if style == 'star' else num_points):
+                angle = i * (math.pi / (num_points // 2 if style == 'star' else num_points))
+                r = radius if (i % 2 == 0 or style != 'star') else radius * 0.5
                 px = x + r * math.cos(angle - math.pi/2)
                 py = y + r * math.sin(angle - math.pi/2)
                 points.append((px, py))
-            self.draw.polygon(points, outline=color, width=2)
+            self.draw.polygon(points, outline=color, width=line_weight)
+        elif style == 'laurel':
+            # Laurel wreath (simple version for speed)
+            self.draw.ellipse(
+                [(x - radius, y - radius), (x + radius, y + radius)],
+                outline=color, width=line_weight
+            )
+            # Add leaves as small arcs
+            for i in range(8):
+                angle = i * math.pi / 4
+                lx = x + radius * 0.8 * math.cos(angle)
+                ly = y + radius * 0.8 * math.sin(angle)
+                self.draw.ellipse([(lx-5, ly-8), (lx+5, ly+8)], outline=color, width=1)
     
     def _draw_ornamental_divider(self, y):
-        """Draw ornamental horizontal divider."""
+        """Draw ornamental horizontal divider with variable length."""
         width = self.label.canvas_size[0]
         color = self.accent_color
+        params = self.EMBELLISHMENT_PARAMS[self.embellishment_level]
+        line_weight = random.randint(*params['line_weight'])
         
+        # Use divider_length from params (as fraction of width)
+        divider_length = params['divider_length']
         style = random.choice(['simple', 'decorated', 'flourish'])
         
         center_x = width // 2
-        line_len = int(width * 0.6)
+        line_len = int(width * divider_length)
         start_x = center_x - line_len // 2
         end_x = center_x + line_len // 2
         
         if style == 'simple':
             # Simple line with end caps
-            self.draw.line([(start_x, y), (end_x, y)], fill=color, width=2)
-            # End decorations
-            self.draw.ellipse([(start_x-3, y-3), (start_x+3, y+3)], fill=color)
-            self.draw.ellipse([(end_x-3, y-3), (end_x+3, y+3)], fill=color)
+            self.draw.line([(start_x, y), (end_x, y)], fill=color, width=line_weight)
+            # End decorations - size scales with level
+            cap_size = 3 if self.embellishment_level == 'minimal' else 5
+            self.draw.ellipse([(start_x-cap_size, y-cap_size), (start_x+cap_size, y+cap_size)], fill=color)
+            self.draw.ellipse([(end_x-cap_size, y-cap_size), (end_x+cap_size, y+cap_size)], fill=color)
         
         elif style == 'decorated':
             # Line with center diamond
-            self.draw.line([(start_x, y), (center_x - 15, y)], fill=color, width=2)
-            self.draw.line([(center_x + 15, y), (end_x, y)], fill=color, width=2)
+            diamond_size = 8 if self.embellishment_level in ['minimal', 'moderate'] else 12
+            self.draw.line([(start_x, y), (center_x - diamond_size*2, y)], fill=color, width=line_weight)
+            self.draw.line([(center_x + diamond_size*2, y), (end_x, y)], fill=color, width=line_weight)
             # Center diamond
             diamond_pts = [
-                (center_x, y - 8),
-                (center_x + 8, y),
-                (center_x, y + 8),
-                (center_x - 8, y)
+                (center_x, y - diamond_size),
+                (center_x + diamond_size, y),
+                (center_x, y + diamond_size),
+                (center_x - diamond_size, y)
             ]
-            self.draw.polygon(diamond_pts, outline=color, width=2)
+            self.draw.polygon(diamond_pts, outline=color, width=line_weight)
         
         elif style == 'flourish':
             # Wavy decorative line
-            self.draw.line([(start_x, y), (end_x, y)], fill=color, width=1)
-            # Small decorative circles along line
-            for i in range(5):
-                cx = start_x + (end_x - start_x) * i // 4
-                self.draw.ellipse([(cx-2, y-2), (cx+2, y+2)], fill=color)
+            self.draw.line([(start_x, y), (end_x, y)], fill=color, width=line_weight)
+            # Small decorative circles along line - more for higher levels
+            num_circles = 5 if self.embellishment_level in ['minimal', 'moderate'] else 7
+            for i in range(num_circles):
+                cx = start_x + (end_x - start_x) * i // (num_circles - 1)
+                circle_size = 2 if self.embellishment_level == 'minimal' else 3
+                self.draw.ellipse([(cx-circle_size, y-circle_size), (cx+circle_size, y+circle_size)], fill=color)
     
     def _draw_decorative_frame(self):
-        """Draw ornate decorative frame around entire label."""
+        """Draw ornate decorative frame around entire label with variable width."""
         width, height = self.label.canvas_size
         color = self.accent_color
+        params = self.EMBELLISHMENT_PARAMS[self.embellishment_level]
+        
         margin = 20
+        frame_width = params['frame_width']
+        line_weight = random.randint(*params['line_weight'])
         
         # Draw main frame rectangle
         self.draw.rectangle(
             [(margin, margin), (width - margin, height - margin)],
             outline=color,
-            width=3
+            width=frame_width
         )
         
-        # Add corner flourishes
-        corner_size = 30
+        # Add additional inner frame for prominent/maximum levels
+        if self.embellishment_level in ['prominent', 'maximum']:
+            inner_offset = margin + frame_width + 5
+            self.draw.rectangle(
+                [(inner_offset, inner_offset), (width - inner_offset, height - inner_offset)],
+                outline=color,
+                width=max(1, frame_width - 1)
+            )
+        
+        # Add corner flourishes - larger for higher levels
+        corner_size = 20 if self.embellishment_level == 'minimal' else (30 if self.embellishment_level == 'moderate' else 45)
         corners = [
             (margin, margin),  # Top left
             (width - margin, margin),  # Top right
@@ -1197,7 +1382,7 @@ class LabelRenderer:
         ]
         
         for i, (cx, cy) in enumerate(corners):
-            # Draw small ornamental corner piece
+            # Draw ornamental corner piece
             if i == 0:  # Top left
                 pts = [(cx, cy + corner_size), (cx, cy), (cx + corner_size, cy)]
             elif i == 1:  # Top right
@@ -1207,36 +1392,56 @@ class LabelRenderer:
             else:  # Bottom right
                 pts = [(cx - corner_size, cy), (cx, cy), (cx, cy - corner_size)]
             
-            self.draw.line(pts, fill=color, width=4, joint='curve')
+            self.draw.line(pts, fill=color, width=line_weight, joint='curve')
+            
+            # Add extra flourish for prominent/maximum
+            if self.embellishment_level in ['prominent', 'maximum']:
+                flourish_offset = 10
+                if i == 0:  # Top left
+                    self.draw.arc([(cx, cy), (cx + flourish_offset*2, cy + flourish_offset*2)], 
+                                 start=180, end=270, fill=color, width=line_weight)
+                elif i == 1:  # Top right
+                    self.draw.arc([(cx - flourish_offset*2, cy), (cx, cy + flourish_offset*2)], 
+                                 start=270, end=360, fill=color, width=line_weight)
+                elif i == 2:  # Bottom left
+                    self.draw.arc([(cx, cy - flourish_offset*2), (cx + flourish_offset*2, cy)], 
+                                 start=90, end=180, fill=color, width=line_weight)
+                else:  # Bottom right
+                    self.draw.arc([(cx - flourish_offset*2, cy - flourish_offset*2), (cx, cy)], 
+                                 start=0, end=90, fill=color, width=line_weight)
     
     def _draw_seal_medallion(self):
-        """Draw circular seal/medallion with text."""
+        """Draw circular seal/medallion with text and variable sizing."""
         import math
         width, height = self.label.canvas_size
         color = self.accent_color
+        params = self.EMBELLISHMENT_PARAMS[self.embellishment_level]
         
         # Position in lower right corner
         x = int(width * 0.15)
         y = int(height * 0.85)
-        radius = 45
+        radius = random.randint(*params['medallion_radius'])
+        line_weight = random.randint(*params['line_weight'])
         
         # Outer circle
         self.draw.ellipse(
             [(x - radius, y - radius), (x + radius, y + radius)],
             outline=color,
-            width=3
+            width=line_weight
         )
         
         # Inner circle
+        inner_offset = max(6, radius // 6)
         self.draw.ellipse(
-            [(x - radius + 8, y - radius + 8), (x + radius - 8, y + radius - 8)],
+            [(x - radius + inner_offset, y - radius + inner_offset), 
+             (x + radius - inner_offset, y + radius - inner_offset)],
             outline=color,
-            width=2
+            width=max(2, line_weight - 1)
         )
         
         # Draw small stars or dots around the perimeter (between circles)
-        num_stars = 8
-        star_radius = radius - 4
+        num_stars = 8 if self.embellishment_level in ['minimal', 'moderate'] else 12
+        star_radius = radius - (inner_offset // 2)
         for i in range(num_stars):
             angle = i * (2 * math.pi / num_stars)
             sx = x + star_radius * math.cos(angle)
@@ -1251,56 +1456,297 @@ class LabelRenderer:
                 [(sx, sy - star_size), (sx, sy + star_size)],
                 fill=color, width=2
             )
+        
+        # Add text inside for prominent/maximum levels
+        if self.embellishment_level in ['prominent', 'maximum']:
+            seal_texts = ['QUALITY', 'PREMIUM', 'AUTHENTIC', 'CERTIFIED']
+            seal_text = random.choice(seal_texts)
+            font = self._get_font(1.5, True, self.BODY_FONTS, None)
+            bbox = self.draw.textbbox((0, 0), seal_text, font=font)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
+            self.draw.text((x - text_width//2, y - text_height//2), seal_text, fill=color, font=font)
     
     def _draw_product_icon(self):
-        """Draw product-appropriate icon (2x larger than before)."""
+        """Draw product-appropriate icon with variable sizing and detail."""
         width, height = self.label.canvas_size
         color = self.accent_color
+        params = self.EMBELLISHMENT_PARAMS[self.embellishment_level]
         
         # Position in corner or near product type
         icon_x = int(width * 0.85)
         icon_y = int(height * 0.12)
-        size = 50  # Doubled from 25
+        size = params['icon_size']
+        line_weight = random.randint(*params['line_weight'])
+        
+        # More detail for prominent/maximum levels
+        is_detailed = self.embellishment_level in ['prominent', 'maximum']
         
         if self.label.product_type == 'wine':
-            # Grape cluster (2x larger)
-            for i in range(3):
-                for j in range(2):
-                    cx = icon_x + i * 16 - 16  # Doubled spacing
-                    cy = icon_y + j * 16
+            # Grape cluster (variable size)
+            grape_size = size // 6
+            spacing = size // 3
+            num_rows = 3 if is_detailed else 2
+            num_cols = 3
+            for i in range(num_cols):
+                for j in range(num_rows):
+                    cx = icon_x + i * spacing - spacing
+                    cy = icon_y + j * spacing
                     self.draw.ellipse(
-                        [(cx-8, cy-8), (cx+8, cy+8)],  # Doubled radius
+                        [(cx-grape_size, cy-grape_size), (cx+grape_size, cy+grape_size)],
                         outline=color,
-                        width=3  # Thicker lines
+                        width=line_weight
                     )
+            # Add vine leaf for detailed versions
+            if is_detailed:
+                leaf_y = icon_y - spacing
+                self.draw.polygon(
+                    [(icon_x, leaf_y-size//4), (icon_x+size//4, leaf_y), 
+                     (icon_x, leaf_y+size//4), (icon_x-size//4, leaf_y)],
+                    outline=color, width=line_weight
+                )
         
         elif self.label.product_type == 'malt_beverage':
-            # Barley/wheat stalks (2x larger)
-            for i in range(3):
-                x = icon_x + (i - 1) * 16  # Doubled spacing
-                self.draw.line([(x, icon_y + size), (x, icon_y)], fill=color, width=3)
-                # Grain kernels
-                for j in range(4):
-                    y = icon_y + j * 12  # Doubled spacing
-                    self.draw.ellipse([(x-4, y-4), (x+4, y+4)], fill=color)  # Doubled size
+            # Barley/wheat stalks (variable size)
+            spacing = size // 3
+            num_stalks = 3 if not is_detailed else 5
+            for i in range(num_stalks):
+                x = icon_x + (i - num_stalks//2) * spacing
+                self.draw.line([(x, icon_y + size), (x, icon_y)], fill=color, width=line_weight)
+                # Grain kernels - more for detailed versions
+                kernel_size = size // 10
+                num_kernels = 4 if not is_detailed else 6
+                for j in range(num_kernels):
+                    y = icon_y + j * (size // num_kernels)
+                    self.draw.ellipse([(x-kernel_size, y-kernel_size), (x+kernel_size, y+kernel_size)], fill=color)
         
         elif self.label.product_type == 'distilled_spirits':
-            # Barrel shape (2x larger)
-            barrel_w = 40  # Doubled
-            barrel_h = 50  # Doubled
+            # Barrel shape (variable size)
+            barrel_w = int(size * 0.8)
+            barrel_h = size
             # Barrel outline
             self.draw.arc(
                 [(icon_x - barrel_w//2, icon_y), 
                  (icon_x + barrel_w//2, icon_y + barrel_h)],
-                start=270, end=450, fill=color, width=2
+                start=270, end=450, fill=color, width=line_weight
             )
-            # Barrel bands
-            for i in [0.3, 0.7]:
+            # Barrel bands - more for detailed versions
+            band_positions = [0.3, 0.7] if not is_detailed else [0.2, 0.5, 0.8]
+            for i in band_positions:
                 y = icon_y + int(barrel_h * i)
                 self.draw.line(
                     [(icon_x - barrel_w//2, y), (icon_x + barrel_w//2, y)],
-                    fill=color, width=1
+                    fill=color, width=line_weight
                 )
+            # Add bung hole for detailed versions
+            if is_detailed:
+                bung_y = icon_y + int(barrel_h * 0.4)
+                self.draw.ellipse(
+                    [(icon_x-size//12, bung_y-size//12), (icon_x+size//12, bung_y+size//12)],
+                    outline=color, width=line_weight
+                )
+    
+    def _draw_background_pattern(self):
+        """Draw subtle background pattern - optimized for speed."""
+        width, height = self.label.canvas_size
+        color = self.label.text_color
+        
+        # Simple patterns: dots, crosses, or small diamonds
+        pattern = random.choice(['dots', 'crosses', 'diamonds'])
+        spacing = random.randint(80, 120)  # Sparse for speed
+        alpha = random.randint(10, 20)  # Very subtle
+        
+        if pattern == 'dots':
+            for y in range(0, height, spacing):
+                for x in range(0, width, spacing):
+                    self.draw.ellipse([(x-2, y-2), (x+2, y+2)], fill=color + (alpha,) if isinstance(color, tuple) else color)
+        elif pattern == 'crosses':
+            size = 5
+            for y in range(0, height, spacing):
+                for x in range(0, width, spacing):
+                    self.draw.line([(x-size, y), (x+size, y)], fill=color, width=1)
+                    self.draw.line([(x, y-size), (x, y+size)], fill=color, width=1)
+        else:  # diamonds
+            size = 6
+            for y in range(0, height, spacing):
+                for x in range(0, width, spacing):
+                    pts = [(x, y-size), (x+size, y), (x, y+size), (x-size, y)]
+                    self.draw.polygon(pts, outline=color, width=1)
+    
+    def _draw_ribbon_banner(self):
+        """Draw ribbon banner with text - optimized for speed."""
+        import datetime
+        width, height = self.label.canvas_size
+        color = self.accent_color
+        
+        # Position: top or bottom
+        position = random.choice(['top', 'bottom'])
+        y_pos = int(height * 0.15) if position == 'top' else int(height * 0.85)
+        banner_height = random.randint(40, 70)
+        
+        # Simple rectangle banner
+        margin = int(width * 0.1)
+        self.draw.rectangle(
+            [(margin, y_pos - banner_height//2), (width - margin, y_pos + banner_height//2)],
+            outline=color,
+            fill=None,
+            width=3
+        )
+        
+        # Add text inside banner
+        texts = [
+            f"Est. {random.randint(1850, 1950)}",
+            "Premium Quality",
+            "Aged",
+            "Reserve",
+            "Limited Edition"
+        ]
+        banner_text = random.choice(texts)
+        
+        # Use small font for banner text
+        font = self._get_font(1.8, True, self.BODY_FONTS, None)
+        bbox = self.draw.textbbox((0, 0), banner_text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_x = width // 2 - text_width // 2
+        self.draw.text((text_x, y_pos - 8), banner_text, fill=color, font=font)
+    
+    def _draw_illustrated_vignette(self):
+        """Draw product vignette - mix of abstract/literal, speed optimized."""
+        width, height = self.label.canvas_size
+        color = self.accent_color
+        
+        # Position in corner
+        corner = random.choice(['tl', 'tr', 'bl', 'br'])
+        size = random.randint(60, 100)
+        offset = 40
+        
+        if corner == 'tl':
+            x, y = offset + size//2, offset + size//2
+        elif corner == 'tr':
+            x, y = width - offset - size//2, offset + size//2
+        elif corner == 'bl':
+            x, y = offset + size//2, height - offset - size//2
+        else:  # br
+            x, y = width - offset - size//2, height - offset - size//2
+        
+        # Mix of abstract and literal based on product type
+        use_abstract = random.random() < 0.5
+        
+        if use_abstract:
+            # Abstract geometric shapes
+            num_shapes = random.randint(3, 5)
+            for i in range(num_shapes):
+                shape_x = x + random.randint(-size//3, size//3)
+                shape_y = y + random.randint(-size//3, size//3)
+                shape_size = random.randint(10, 25)
+                
+                shape_type = random.choice(['circle', 'triangle', 'square'])
+                if shape_type == 'circle':
+                    self.draw.ellipse(
+                        [(shape_x-shape_size, shape_y-shape_size), (shape_x+shape_size, shape_y+shape_size)],
+                        outline=color, width=2
+                    )
+                elif shape_type == 'triangle':
+                    pts = [(shape_x, shape_y-shape_size), (shape_x+shape_size, shape_y+shape_size), (shape_x-shape_size, shape_y+shape_size)]
+                    self.draw.polygon(pts, outline=color, width=2)
+                else:  # square
+                    self.draw.rectangle(
+                        [(shape_x-shape_size, shape_y-shape_size), (shape_x+shape_size, shape_y+shape_size)],
+                        outline=color, width=2
+                    )
+        else:
+            # Simplified literal drawings (max 15 lines for speed)
+            if self.label.product_type == 'wine':
+                # Simple grape bunch
+                for i in range(2):
+                    for j in range(3):
+                        cx = x + (i - 0.5) * 12
+                        cy = y + j * 12
+                        self.draw.ellipse([(cx-6, cy-6), (cx+6, cy+6)], outline=color, width=2)
+                # Vine
+                self.draw.line([(x, y-20), (x, y)], fill=color, width=2)
+            elif self.label.product_type == 'malt_beverage':
+                # Wheat stalks
+                for i in range(3):
+                    stalk_x = x + (i - 1) * 15
+                    self.draw.line([(stalk_x, y+size//2), (stalk_x, y-size//2)], fill=color, width=2)
+                    # Grain heads
+                    for j in range(3):
+                        grain_y = y - size//2 + j * 8
+                        self.draw.ellipse([(stalk_x-3, grain_y-3), (stalk_x+3, grain_y+3)], fill=color)
+            else:  # spirits
+                # Simple barrel
+                barrel_w, barrel_h = 30, 40
+                self.draw.ellipse([(x-barrel_w//2, y-barrel_h//2), (x+barrel_w//2, y-barrel_h//2+10)], outline=color, width=2)
+                self.draw.line([(x-barrel_w//2, y-barrel_h//2), (x-barrel_w//2, y+barrel_h//2)], fill=color, width=2)
+                self.draw.line([(x+barrel_w//2, y-barrel_h//2), (x+barrel_w//2, y+barrel_h//2)], fill=color, width=2)
+                self.draw.ellipse([(x-barrel_w//2, y+barrel_h//2-10), (x+barrel_w//2, y+barrel_h//2)], outline=color, width=2)
+    
+    def _draw_filigree(self):
+        """Draw scrollwork filigree - pre-computed curves for speed."""
+        width, height = self.label.canvas_size
+        color = self.accent_color
+        
+        # Position: corners or edges
+        position = random.choice(['corners', 'top_edge', 'bottom_edge'])
+        size = random.randint(30, 60)
+        
+        if position == 'corners':
+            # Simple scrollwork in corners using arcs
+            for corner_x, corner_y in [(size, size), (width-size, size)]:
+                # S-curve scroll
+                self.draw.arc([(corner_x-size, corner_y-size//2), (corner_x, corner_y+size//2)], 
+                             start=0, end=180, fill=color, width=2)
+                self.draw.arc([(corner_x, corner_y-size//2), (corner_x+size, corner_y+size//2)], 
+                             start=180, end=360, fill=color, width=2)
+        elif position == 'top_edge':
+            # Scrollwork along top edge
+            center_x = width // 2
+            for offset in [-size, 0, size]:
+                x = center_x + offset
+                self.draw.arc([(x-size//2, 20), (x+size//2, 20+size)], 
+                             start=0, end=180, fill=color, width=2)
+        else:  # bottom_edge
+            # Scrollwork along bottom edge
+            center_x = width // 2
+            y_base = height - 40
+            for offset in [-size, 0, size]:
+                x = center_x + offset
+                self.draw.arc([(x-size//2, y_base-size), (x+size//2, y_base)], 
+                             start=180, end=360, fill=color, width=2)
+    
+    def _apply_metallic_effects(self):
+        """Apply metallic highlight effects - lightweight."""
+        width, height = self.label.canvas_size
+        
+        # Use lighter shade of accent color for highlights
+        base_color = self.accent_color
+        if isinstance(base_color, str) and base_color.startswith('#'):
+            # Lighten the color by adding to RGB values
+            r, g, b = int(base_color[1:3], 16), int(base_color[3:5], 16), int(base_color[5:7], 16)
+            r, g, b = min(255, r + 40), min(255, g + 40), min(255, b + 40)
+            highlight_color = f'#{r:02x}{g:02x}{b:02x}'
+        else:
+            highlight_color = base_color
+        
+        # Add highlight lines to outer border if it exists
+        if 'border' in self.embellishments_drawn:
+            margin = 11
+            self.draw.rectangle(
+                [(margin, margin), (width - margin, height - margin)],
+                outline=highlight_color,
+                width=1
+            )
+        
+        # Add highlights to badge/medallion if they exist
+        if 'badge' in self.embellishments_drawn:
+            # Small highlight arc on badge
+            badge_x, badge_y = width // 2, int(height * 0.08)
+            radius = 45
+            self.draw.arc(
+                [(badge_x - radius, badge_y - radius), (badge_x + radius, badge_y + radius)],
+                start=45, end=135, fill=highlight_color, width=2
+            )
     
     def _calculate_layout_with_spacing(self):
         """Calculate layout positions with collision detection."""
@@ -1681,7 +2127,7 @@ class LabelGenerator:
         image = renderer.render()
         
         # 4. Create metadata
-        metadata = self._create_metadata(label, 'GOOD', [])
+        metadata = self._create_metadata(label, 'GOOD', [], renderer)
         
         return image, metadata
     
@@ -1735,11 +2181,11 @@ class LabelGenerator:
         image = renderer.render()
         
         # 4. Create metadata
-        metadata = self._create_metadata(label, 'BAD', violations)
+        metadata = self._create_metadata(label, 'BAD', violations, renderer)
         
         return image, metadata
     
-    def _create_metadata(self, label, label_type, violations):
+    def _create_metadata(self, label, label_type, violations, renderer=None):
         """Create metadata dictionary."""
         metadata = {
             'generated_at': datetime.now().isoformat(),
@@ -1755,7 +2201,9 @@ class LabelGenerator:
                 'canvas_size_px': label.canvas_size,
                 'background_color': label.background_color,
                 'text_color': label.text_color,
-                'fonts_used': label.fonts_used  # Track which fonts were used
+                'fonts_used': label.fonts_used,  # Track which fonts were used
+                'embellishment_level': label.embellishment_level,  # Track embellishment magnitude
+                'embellishments_count': len(renderer.embellishments_drawn) if renderer else 0
             },
             'violations_introduced': violations
         }
@@ -1785,38 +2233,51 @@ class LabelGenerator:
         return metadata
     
     def save_label(self, image, metadata, filename_base):
-        """Save label as JPEG, TIFF, and JSON."""
-        # Save JPEG
+        """Save label as JPEG, TIFF, and JSON with file size management."""
         jpeg_path = f"{filename_base}.jpg"
-        quality = 90
-        
-        # Ensure < 750 KB
-        while True:
-            image.save(jpeg_path, 'JPEG', quality=quality)
-            size_kb = Path(jpeg_path).stat().st_size / 1024
-            
-            if size_kb < 750 or quality < 50:
-                break
-            quality -= 5
-        
-        # Save TIFF (with compression)
         tiff_path = f"{filename_base}.tif"
-        image.save(tiff_path, 'TIFF', compression='tiff_lzw')
         
-        # Verify TIFF size
+        # Quality cascade for JPEG: 90 → 85 → 80 → 75 → 70
+        quality_levels = [90, 85, 80, 75, 70]
+        current_image = image
+        
+        # Try quality reduction first
+        for quality in quality_levels:
+            current_image.save(jpeg_path, 'JPEG', quality=quality)
+            size_kb = Path(jpeg_path).stat().st_size / 1024
+            if size_kb < 750:
+                break
+        
+        # If still too large after quality reduction, resize canvas
+        if size_kb >= 750:
+            scale = 0.95
+            while size_kb >= 750 and scale > 0.6:
+                new_size = (int(image.width * scale), int(image.height * scale))
+                current_image = image.resize(new_size, Image.Resampling.LANCZOS)
+                current_image.save(jpeg_path, 'JPEG', quality=70)
+                size_kb = Path(jpeg_path).stat().st_size / 1024
+                scale -= 0.05
+        
+        # Save TIFF with compression
+        current_image.save(tiff_path, 'TIFF', compression='tiff_lzw')
+        
+        # Verify TIFF size and resize if needed
         tiff_size_kb = Path(tiff_path).stat().st_size / 1024
         if tiff_size_kb >= 750:
-            # If TIFF still too large, resize image
-            scale = 0.9
-            while tiff_size_kb >= 750 and scale > 0.5:
+            scale = 0.95
+            while tiff_size_kb >= 750 and scale > 0.6:
                 new_size = (int(image.width * scale), int(image.height * scale))
                 resized = image.resize(new_size, Image.Resampling.LANCZOS)
                 resized.save(tiff_path, 'TIFF', compression='tiff_lzw')
                 tiff_size_kb = Path(tiff_path).stat().st_size / 1024
-                scale -= 0.1
+                scale -= 0.05
         
         # Save metadata
         metadata['filename'] = f"{filename_base}.jpg"
+        metadata['file_sizes_kb'] = {
+            'jpeg': round(Path(jpeg_path).stat().st_size / 1024, 2),
+            'tiff': round(Path(tiff_path).stat().st_size / 1024, 2)
+        }
         json_path = f"{filename_base}.json"
         with open(json_path, 'w') as f:
             json.dump(metadata, f, indent=2)

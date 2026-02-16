@@ -3,3 +3,6 @@ samples/
 label_*.jpg
 label_*.tif
 label_*.json
+
+# Downloaded Google Fonts cache
+fonts/

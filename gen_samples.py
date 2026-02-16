@@ -17,6 +17,133 @@ import json
 import argparse
 from datetime import datetime
 from pathlib import Path
+import requests
+
+
+# ============================================================================
+# GOOGLE FONTS DOWNLOADER
+# ============================================================================
+
+class GoogleFontDownloader:
+    """Download and cache Google Fonts from GitHub repository.
+    
+    Downloads fonts lazily (on-demand) from the google/fonts GitHub repo
+    and caches them locally. Falls back silently to system fonts if download fails.
+    """
+    
+    FONT_CACHE_DIR = Path(__file__).parent / 'fonts'
+    GITHUB_RAW_BASE = 'https://github.com/google/fonts/raw/main'
+    LICENSE_DIRS = ['ofl', 'apache', 'ufl']  # OFL = Open Font License (most fonts)
+    
+    def __init__(self):
+        """Initialize downloader with connectivity check."""
+        self.FONT_CACHE_DIR.mkdir(exist_ok=True)
+        self.download_enabled = self._check_connectivity()
+        self.failed_downloads = set()  # Don't retry failed downloads in same session
+    
+    def _check_connectivity(self):
+        """Quick connectivity check to GitHub."""
+        try:
+            requests.head('https://github.com', timeout=2)
+            return True
+        except:
+            return False
+    
+    def get_font_path(self, family_name, variant='Regular'):
+        """Get path to font file, downloading if necessary.
+        
+        Args:
+            family_name: Font family name (e.g., "Playfair Display")
+            variant: Font variant (e.g., "Regular", "Bold", "Italic")
+        
+        Returns:
+            str: Path to TTF file, or None if unavailable
+        """
+        # 1. Check cache first (fastest)
+        cached = self._find_in_cache(family_name, variant)
+        if cached:
+            return cached
+        
+        # 2. Try to download (if enabled and not previously failed)
+        if self.download_enabled and family_name not in self.failed_downloads:
+            downloaded = self._download_font(family_name, variant)
+            if downloaded:
+                return downloaded
+            else:
+                self.failed_downloads.add(family_name)
+        
+        # 3. Return None (caller will fallback to system fonts)
+        return None
+    
+    def _find_in_cache(self, family_name, variant):
+        """Search local cache for font file."""
+        family_dir = self.FONT_CACHE_DIR / self._sanitize_name(family_name)
+        if not family_dir.exists():
+            return None
+        
+        # Try different filename patterns Google Fonts might use
+        patterns = [
+            f"{family_name.replace(' ', '')}-{variant}.ttf",
+            f"{self._sanitize_name(family_name)}-{variant}.ttf",
+            f"{family_name.replace(' ', '')}_{variant}.ttf",
+        ]
+        
+        for pattern in patterns:
+            font_file = family_dir / pattern
+            if font_file.exists():
+                return str(font_file)
+        
+        return None
+    
+    def _download_font(self, family_name, variant):
+        """Download font from GitHub google/fonts repository.
+        
+        Tries each license directory (ofl, apache, ufl) until successful.
+        """
+        family_dir = self.FONT_CACHE_DIR / self._sanitize_name(family_name)
+        family_dir.mkdir(exist_ok=True)
+        
+        # Try each license directory
+        for license_dir in self.LICENSE_DIRS:
+            url = self._build_url(family_name, variant, license_dir)
+            
+            try:
+                response = requests.get(url, timeout=10, stream=True)
+                if response.status_code == 200:
+                    # Save font file with sanitized name
+                    filename = f"{family_name.replace(' ', '')}-{variant}.ttf"
+                    filepath = family_dir / filename
+                    
+                    with open(filepath, 'wb') as f:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                    
+                    return str(filepath)
+            except:
+                # Silently continue to next license dir or fail
+                continue
+        
+        # All attempts failed
+        return None
+    
+    def _build_url(self, family_name, variant, license_dir):
+        """Build GitHub raw URL for font file.
+        
+        Example: https://github.com/google/fonts/raw/main/ofl/playfairdisplay/PlayfairDisplay-Bold.ttf
+        """
+        # Convert "Playfair Display" -> "playfairdisplay" for directory name
+        dir_name = family_name.lower().replace(' ', '')
+        
+        # Convert "Playfair Display" -> "PlayfairDisplay" for file prefix
+        file_prefix = family_name.replace(' ', '')
+        
+        # Build full URL
+        return f"{self.GITHUB_RAW_BASE}/{license_dir}/{dir_name}/{file_prefix}-{variant}.ttf"
+    
+    @staticmethod
+    def _sanitize_name(name):
+        """Sanitize font name for filesystem."""
+        return name.replace(' ', '_').replace('-', '_')
 
 
 # ============================================================================
@@ -603,28 +730,81 @@ class LabelRenderer:
     DPI = 300
     MM_TO_PX = DPI / 25.4  # ~11.8 pixels per mm
     
-    # Font families to try (in order of preference)
+    # Font families - Google Fonts (tuples) with system font fallbacks (strings)
+    # Format: ('Font Family', 'Variant') for Google Fonts, 'FontName' for system fonts
+    
     BRAND_FONTS_DISPLAY = [
-        'Georgia-Bold', 'Georgia Bold', 'Times-Bold', 'Times New Roman Bold',
-        'Palatino-Bold', 'Impact', 'Arial-Black', 'Arial Black',
-        'Copperplate', 'Copperplate Gothic Bold', 'Didot', 'Didot Bold', 'Bodoni MT'
+        # Google Fonts - Elegant display fonts for wine/spirits
+        ('Playfair Display', 'Bold'),
+        ('Cinzel', 'Bold'),
+        ('Abril Fatface', 'Regular'),
+        ('Bebas Neue', 'Regular'),
+        ('Righteous', 'Regular'),
+        ('Oswald', 'Bold'),
+        
+        # System fallbacks
+        'DejaVuSerif-Bold',
+        '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf',
     ]
+    
     BRAND_FONTS_SERIF = [
-        'Georgia', 'Times', 'Times New Roman', 'Palatino', 'Garamond',
-        'Baskerville', 'Baskerville Old Face', 'Century', 'Century Schoolbook', 
-        'Bookman', 'Bookman Old Style'
+        # Google Fonts - Traditional serif fonts
+        ('Playfair Display', 'Regular'),
+        ('Merriweather', 'Bold'),
+        ('Lora', 'Bold'),
+        ('Crimson Text', 'Bold'),
+        ('Libre Baskerville', 'Bold'),
+        ('EB Garamond', 'Bold'),
+        
+        # System fallbacks
+        'DejaVuSerif',
+        '/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf',
+        'LiberationSerif-Bold',
+        '/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf',
     ]
+    
     BRAND_FONTS_SANS = [
-        'Arial-Bold', 'Arial Bold', 'Helvetica-Bold', 'Helvetica Bold',
-        'Verdana-Bold', 'Futura-Bold', 'Trebuchet MS Bold', 'Tahoma Bold', 'Calibri Bold'
+        # Google Fonts - Modern sans-serif fonts
+        ('Montserrat', 'Bold'),
+        ('Open Sans', 'Bold'),
+        ('Raleway', 'Bold'),
+        ('Source Sans Pro', 'Bold'),
+        ('Oswald', 'Bold'),
+        ('Roboto', 'Bold'),
+        
+        # System fallbacks
+        'DejaVuSans-Bold',
+        '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+        'LiberationSans-Bold',
+        '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
     ]
+    
     BRAND_FONTS_SCRIPT = [
-        'Brush Script MT', 'Brush Script', 'Lucida Handwriting', 'Lucida Calligraphy',
-        'Script MT Bold', 'Edwardian Script ITC'
+        # Google Fonts - Script/handwritten fonts (brand names only)
+        ('Parisienne', 'Regular'),
+        ('Dancing Script', 'Bold'),
+        ('Great Vibes', 'Regular'),
+        ('Satisfy', 'Regular'),
+        ('Allura', 'Regular'),
+        ('Tangerine', 'Bold'),
+        
+        # No system script font fallbacks (they don't exist)
     ]
+    
     BODY_FONTS = [
-        'Arial', 'Helvetica', 'Verdana', 'DejaVuSans', 'Liberation Sans', 'FreeSans',
-        'Trebuchet MS', 'Tahoma', 'Calibri'
+        # Google Fonts - Clean, readable body text
+        ('Open Sans', 'Regular'),
+        ('Roboto', 'Regular'),
+        ('Lato', 'Regular'),
+        ('Montserrat', 'Regular'),
+        
+        # System fallbacks
+        'DejaVuSans',
+        '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+        'LiberationSans-Regular',
+        '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+        'FreeSans',
+        '/usr/share/fonts/truetype/freefont/FreeSans.ttf',
     ]
     
     def __init__(self, label):
@@ -633,6 +813,7 @@ class LabelRenderer:
         self.draw = None
         self.occupied_regions = []  # Track occupied space for collision detection
         self.accent_color = None  # For metallic/color accents
+        self.font_downloader = GoogleFontDownloader()  # Initialize font downloader
     
     def render(self):
         """Main rendering pipeline with enhancements."""
@@ -1323,29 +1504,42 @@ class LabelRenderer:
             self.draw.text((x, y), line, fill=self.label.text_color, font=font)
     
     def _get_font(self, size_mm, bold, font_family_list=None):
-        """Get font with enhanced family selection."""
+        """Get font with Google Fonts support and system font fallbacks."""
         size_px = int(size_mm * self.MM_TO_PX)
         
         if font_family_list is None:
             font_family_list = self.BODY_FONTS
         
         # Try each font in the list
-        for font_name in font_family_list:
-            try:
-                return ImageFont.truetype(font_name, size_px)
-            except:
-                continue
-        
-        # Try adding Bold suffix if not already there
-        if bold:
-            for font_name in font_family_list:
-                for suffix in ['-Bold', ' Bold', 'Bold']:
+        for font_spec in font_family_list:
+            # Check if it's a Google Font tuple: ('Font Family', 'Variant')
+            if isinstance(font_spec, tuple):
+                family, variant = font_spec
+                font_path = self.font_downloader.get_font_path(family, variant)
+                if font_path:
                     try:
-                        return ImageFont.truetype(font_name + suffix, size_px)
+                        return ImageFont.truetype(font_path, size_px)
                     except:
                         continue
+            
+            # Otherwise try as system font name or path (string)
+            else:
+                try:
+                    return ImageFont.truetype(font_spec, size_px)
+                except:
+                    continue
         
-        # Fallback to default
+        # Try adding Bold suffix to system fonts if not already there
+        if bold:
+            for font_spec in font_family_list:
+                if isinstance(font_spec, str):  # Only for system fonts
+                    for suffix in ['-Bold', ' Bold', 'Bold']:
+                        try:
+                            return ImageFont.truetype(font_spec + suffix, size_px)
+                        except:
+                            continue
+        
+        # Final fallback to default font
         try:
             return ImageFont.load_default()
         except:

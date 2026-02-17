@@ -197,7 +197,7 @@ Set environment variables in `.env` (see `.env.example`):
 ```bash
 # Ollama Configuration
 OLLAMA_HOST=http://ollama:11434
-OLLAMA_MODEL=llama3.2-vision
+OLLAMA_MODEL=llama3.2-vision  # Change to use custom models
 OLLAMA_TIMEOUT_SECONDS=60
 
 # App Configuration
@@ -209,6 +209,23 @@ DEFAULT_OCR_BACKEND=tesseract
 # CORS Configuration
 CORS_ORIGINS=["*"]
 ```
+
+### Using Custom Ollama Models
+
+To use a custom Ollama model:
+
+1. **Set the model name** in `.env` or `docker-compose.yml`:
+   ```bash
+   OLLAMA_MODEL=my-custom-model
+   ```
+
+2. **For production (EC2):**
+   - Upload your model tarball to S3: `s3://ttb-verifier-ollama-models-{account}/models/my-custom-model.tar.gz`
+   - The tarball should contain the `models/` directory from `.ollama` (created with: `tar czf my-custom-model.tar.gz -C /root/.ollama models`)
+   - Or let the system download it from Ollama registry on first boot (slower)
+
+3. **For local development:**
+   - The model will be pulled from Ollama registry automatically on first use
 
 ## Project Structure
 

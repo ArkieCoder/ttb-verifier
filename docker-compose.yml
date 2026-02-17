@@ -39,6 +39,8 @@ services:
     environment:
       # Ollama configuration
       - OLLAMA_HOST=http://ollama:11434
+      # Model name - change to use custom models from S3 or Ollama registry
+      # Custom models should be uploaded to s3://{bucket}/models/{MODEL_NAME}.tar.gz
       - OLLAMA_MODEL=llama3.2-vision
       
       # App configuration

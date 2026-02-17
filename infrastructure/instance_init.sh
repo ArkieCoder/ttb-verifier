@@ -180,7 +180,8 @@ echo "========================================="
 
 # Get the S3 bucket name from Terraform/user data (passed as environment variable)
 S3_BUCKET="${S3_BUCKET:-ttb-verifier-ollama-models-${AWS_ACCOUNT_ID}}"
-MODEL_NAME="llama3.2-vision"
+# Model name from environment variable (allows users to specify custom models)
+MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
 
 # Run model download in background process
 (

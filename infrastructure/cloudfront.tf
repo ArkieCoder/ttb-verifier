@@ -41,7 +41,7 @@ resource "aws_cloudfront_distribution" "ttb" {
 
     forwarded_values {
       query_string = true
-      headers      = ["Host", "Authorization", "Cookie"]
+      headers      = ["Host", "Authorization"]
 
       cookies {
         forward = "all"

@@ -1,4 +1,13 @@
 # GitHub Repository for TTB Verifier
+#
+# IMPORTANT: This repository has lifecycle.prevent_destroy = true
+# to prevent accidental deletion during terragrunt destroy.
+# The repository contains code and history that should be preserved.
+#
+# To destroy the repository, you must:
+# 1. Remove the "prevent_destroy = true" line
+# 2. Run `terragrunt apply` to update the state
+# 3. Then run `terragrunt destroy`
 resource "github_repository" "ttb_verifier" {
   name        = var.github_repo_name
   description = "AI-powered alcohol beverage label verification system for U.S. Treasury Department TTB"
@@ -31,6 +40,10 @@ resource "github_repository" "ttb_verifier" {
     "docker",
     "terraform"
   ]
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Branch protection for master branch

@@ -19,9 +19,9 @@ resource "aws_instance" "ttb" {
   
   iam_instance_profile = aws_iam_instance_profile.ssm.name
 
-  # Storage for Docker images + Ollama models
+  # Storage for Docker images + Ollama models + temp space for S3 export
   root_block_device {
-    volume_size = 30
+    volume_size = 50  # Increased from 30 to allow model export to S3
     volume_type = "gp3"
   }
 

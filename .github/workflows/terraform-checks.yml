@@ -1,0 +1,130 @@
+name: Terraform Checks
+
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/**/*.tf'
+      - 'infrastructure/**/*.hcl'
+      - 'infrastructure/**/*.sh'
+      - '.github/workflows/terraform-checks.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform-checks:
+    name: Terraform Lint and Plan
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: infrastructure
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terragrunt
+        run: |
+          # Install Terragrunt
+          TERRAGRUNT_VERSION="v0.55.1"
+          wget -q "https://github.com/gruntwork-io/terragrunt/releases/download/${TERRAGRUNT_VERSION}/terragrunt_linux_amd64" -O terragrunt
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/
+          terragrunt --version
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.6.0
+          tofu_wrapper: false
+
+      - name: Terraform Format Check
+        id: fmt
+        run: tofu fmt -check -recursive
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terragrunt init --backend=false
+        env:
+          TF_INPUT: false
+
+      - name: Terraform Validate
+        id: validate
+        run: terragrunt validate -no-color
+
+      - name: TFLint Setup
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+
+      - name: TFLint Init
+        run: tflint --init
+
+      - name: TFLint Check
+        id: tflint
+        run: tflint --recursive --format compact
+        continue-on-error: true
+
+      - name: Shellcheck
+        id: shellcheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './infrastructure'
+          severity: warning
+        continue-on-error: true
+
+      - name: Terraform Plan (Dry Run)
+        id: plan
+        run: terragrunt plan -no-color -input=false
+        env:
+          TF_INPUT: false
+          # Note: This will fail without AWS credentials, but validates syntax
+          # In a real PR, you'd need to configure AWS credentials
+        continue-on-error: true
+
+      - name: Comment PR with Results
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌 \`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️ \`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖 \`${{ steps.validate.outcome }}\`
+            #### TFLint 🔍 \`${{ steps.tflint.outcome }}\`
+            #### Shellcheck 🐚 \`${{ steps.shellcheck.outcome }}\`
+            #### Terraform Plan 📖 \`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Validation Output</summary>
+
+            \`\`\`
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+
+      - name: Check Results
+        if: |
+          steps.fmt.outcome == 'failure' ||
+          steps.init.outcome == 'failure' ||
+          steps.validate.outcome == 'failure' ||
+          steps.tflint.outcome == 'failure'
+        run: |
+          echo "::error::Terraform checks failed"
+          echo "Format: ${{ steps.fmt.outcome }}"
+          echo "Init: ${{ steps.init.outcome }}"
+          echo "Validate: ${{ steps.validate.outcome }}"
+          echo "TFLint: ${{ steps.tflint.outcome }}"
+          exit 1

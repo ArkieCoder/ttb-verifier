@@ -40,7 +40,9 @@ systemctl enable amazon-ssm-agent
 # Create application directory
 echo "Creating application directory..."
 mkdir -p /app
+mkdir -p /home/ec2-user/tmp
 chown -R ec2-user:ec2-user /app
+chown -R ec2-user:ec2-user /home/ec2-user/tmp
 
 # Create production docker-compose.yml
 echo "Creating docker-compose configuration..."
@@ -73,7 +75,10 @@ services:
       - MAX_FILE_SIZE_MB=10
       - MAX_BATCH_SIZE=50
       - DEFAULT_OCR_BACKEND=tesseract
+      - TMPDIR=/app/tmp
       - CORS_ORIGINS=["*"]
+    volumes:
+      - /home/ec2-user/tmp:/app/tmp
     depends_on:
       - ollama
     restart: unless-stopped
@@ -188,9 +193,26 @@ else
   docker-compose exec -T ollama ollama pull llama3.2-vision
   
   echo ""
-  echo "⚠️  NOTE: Model downloaded from Ollama servers."
-  echo "To speed up future deployments, run:"
-  echo "  cd infrastructure/scripts && ./export-ollama-model-to-s3.sh"
+  echo "✅ Model downloaded successfully from Ollama servers."
+  echo "📦 Exporting model to S3 to speed up future deployments..."
+  echo "This will take an additional 5-7 minutes..."
+  
+  # Self-healing: Export model to S3 for future instances
+  # Use /home directory to avoid tmpfs space issues
+  docker run --rm \
+    --volumes-from ttb-ollama \
+    -v /home:/backup \
+    alpine:latest \
+    tar czf /backup/model.tar.gz -C /root/.ollama models
+  
+  echo "Uploading compressed model to S3..."
+  aws s3 cp /home/model.tar.gz "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz"
+  
+  # Clean up local copy
+  rm -f /home/model.tar.gz
+  
+  echo "✅ Model exported to S3 successfully!"
+  echo "Future EC2 instances will download from S3 (1-2 min) instead of Ollama (5-15 min)."
 fi
 
 # Verify model is available

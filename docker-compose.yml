@@ -47,8 +47,14 @@ services:
       - MAX_BATCH_SIZE=50
       - DEFAULT_OCR_BACKEND=tesseract
       
+      # Temp directory for file uploads (avoid tmpfs space issues)
+      - TMPDIR=/app/tmp
+      
       # CORS (allow all for prototype)
       - CORS_ORIGINS=["*"]
+    volumes:
+      # Mount host directory for temp file storage during uploads
+      - ./tmp:/app/tmp
     depends_on:
       - ollama
     healthcheck:

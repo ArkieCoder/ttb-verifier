@@ -43,7 +43,9 @@ COPY --from=builder /root/.local /root/.local
 
 # Copy application code
 COPY *.py ./
-COPY samples/ ./samples/
+
+# Create samples directory (optional - for golden samples)
+RUN mkdir -p ./samples
 
 # Set environment
 ENV PATH=/root/.local/bin:$PATH \

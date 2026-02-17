@@ -10,6 +10,10 @@ resource "aws_s3_bucket" "ollama_models" {
     ManagedBy = "terragrunt"
     Purpose   = "Ollama model storage for fast instance recovery"
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Block public access to the models bucket

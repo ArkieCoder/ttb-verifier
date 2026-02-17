@@ -519,8 +519,8 @@ docker inspect $(docker-compose ps -q verifier) | jq '.[0].State.Health'
 ### Manual Health Check
 
 ```bash
-# Verifier health (when implemented)
-curl http://localhost:8000/health
+# Verifier health (root endpoint)
+curl http://localhost:8000/
 
 # Ollama health
 docker-compose exec ollama ollama list

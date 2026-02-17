@@ -18,7 +18,57 @@ The deployment guide includes:
 
 This infrastructure is fully configurable and can be deployed to any AWS account and GitHub organization by simply editing `terraform.tfvars`.
 
-## Architecture Overview
+## Two-Layer Architecture
+
+The infrastructure is separated into **two independent layers** with separate Terraform state files:
+
+### Foundation Layer (`foundation/`)
+**Protected, long-lived resources deployed once:**
+- ACM Certificate (HTTPS/TLS)
+- GitHub Repository (code + settings)
+- S3 Bucket for Ollama models (performance optimization)
+- State: `s3://unitedentropy-ttb-tfstate/foundation/terraform.tfstate`
+
+**Key Features:**
+- All resources have `prevent_destroy = true` lifecycle protection
+- Rarely modified after initial deployment
+- Preserves critical resources during application layer updates
+
+### Application Layer (`.`)
+**Ephemeral resources that can be destroyed/recreated:**
+- EC2 instance (Docker host)
+- Application Load Balancer + listeners
+- IAM roles and policies
+- Security groups
+- GitHub Actions secrets
+- State: `s3://unitedentropy-ttb-tfstate/infrastructure/terraform.tfstate`
+
+**Key Features:**
+- References foundation via Terraform remote state
+- Can be destroyed with `terragrunt destroy` (no targeting required)
+- Fast disaster recovery (8-12 minutes with S3 model cache)
+
+### Cross-Layer Communication
+
+Application layer accesses foundation resources via remote state data source:
+```hcl
+data "terraform_remote_state" "foundation" {
+  backend = "s3"
+  config = {
+    bucket = "unitedentropy-ttb-tfstate"
+    key    = "foundation/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
+# Example usage
+locals {
+  certificate_arn = data.terraform_remote_state.foundation.outputs.certificate_arn
+  s3_bucket_id    = data.terraform_remote_state.foundation.outputs.s3_bucket_id
+}
+```
+
+## Application Architecture Overview
 
 ```
 Internet (HTTPS)
@@ -63,41 +113,100 @@ You'll need access to your **DNS provider** to add:
 1. CNAME for ACM certificate validation (temporary)
 2. CNAME for the application pointing to the ALB (permanent)
 
-## Quick Start
+## Deployment Order
 
-### Step 1: Initialize Terragrunt
+### First-Time Setup (Both Layers)
+
+**1. Deploy Foundation Layer:**
+```bash
+cd infrastructure/foundation
+terragrunt init
+terragrunt plan
+terragrunt apply
+```
+
+**Time:** ~5 minutes  
+**Creates:** ACM certificate, GitHub repository, S3 model bucket
+
+**2. Deploy Application Layer:**
+```bash
+cd infrastructure  # parent directory
+terragrunt init
+terragrunt plan
+terragrunt apply
+```
+
+**Time:** ~8-15 minutes (includes EC2 initialization + model download)  
+**Creates:** EC2, ALB, IAM roles, security groups, GitHub secrets
+
+### Day-to-Day Operations
+
+**For most infrastructure changes**, you'll only work in the application layer:
 
 ```bash
 cd infrastructure
+terragrunt plan
+terragrunt apply
+```
+
+**Foundation layer** is only modified when:
+- Changing the domain name (ACM certificate)
+- Modifying repository settings
+- Updating S3 bucket configuration
+
+### Disaster Recovery
+
+**To test complete infrastructure rebuild:**
+
+```bash
+# Destroy application layer (safe - foundation protected)
+cd infrastructure
+terragrunt destroy  # No targeting required!
+
+# Recreate application layer
+terragrunt apply
+```
+
+**RTO:** 8-12 minutes (uses S3 model cache)
+
+**Note:** Foundation layer resources have `prevent_destroy = true` and cannot be accidentally destroyed.
+
+## Quick Start (Existing Infrastructure)
+
+If the infrastructure already exists and you just need to make changes:
+
+## Quick Start (Existing Infrastructure)
+
+If the infrastructure already exists and you just need to make changes:
+
+### Step 1: Initialize Terragrunt (Application Layer)
+
+```bash
+cd infrastructure  # application layer
 terragrunt init
 ```
 
 **What happens:**
-- Terragrunt auto-creates S3 bucket: `unitedentropy-ttb-tfstate`
-- Terragrunt auto-creates DynamoDB table: `unitedentropy-ttb-tfstate`
+- Connects to existing S3 backend: `unitedentropy-ttb-tfstate`
+- Uses state file: `infrastructure/terraform.tfstate`
 - Downloads AWS provider plugins
 - Generates `backend.tf` and `provider.tf`
 
-**Time:** ~2 minutes
+**Time:** ~30 seconds
 
-### Step 2: Plan Infrastructure
+### Step 2: Plan Infrastructure Changes
 
 ```bash
 terragrunt plan
 ```
 
 **Review the plan:**
-- EC2 t3.medium instance (Amazon Linux 2023, 30GB storage)
-- Application Load Balancer (internet-facing)
-- ALB target group (port 8000, health checks)
-- Security groups (ALB + EC2)
-- ACM certificate (pending DNS validation)
-- IAM roles (EC2 SSM + GitHub Actions OIDC)
-- OIDC provider for GitHub
+- Shows what will be added, changed, or destroyed
+- Includes references to foundation resources via remote state
 
 **Time:** ~1 minute
 
-### Step 3: Apply Infrastructure
+### Step 3: Apply Infrastructure Changes
 
 ```bash
 terragrunt apply

@@ -21,17 +21,6 @@ output "alb_dns_name" {
   value       = aws_lb.ttb.dns_name
 }
 
-output "certificate_validation_records" {
-  description = "DNS records for ACM certificate validation - Add to your DNS provider"
-  value = {
-    for dvo in aws_acm_certificate.ttb.domain_validation_options : dvo.domain_name => {
-      name  = dvo.resource_record_name
-      type  = dvo.resource_record_type
-      value = dvo.resource_record_value
-    }
-  }
-}
-
 # ====================================
 # Additional Outputs for Verification
 # ====================================
@@ -46,19 +35,9 @@ output "alb_url" {
   value       = "https://ttb-verifier.unitedentropy.com (after DNS configured)"
 }
 
-output "certificate_arn" {
-  description = "ACM certificate ARN"
-  value       = aws_acm_certificate.ttb.arn
-}
-
 output "instance_availability_zone" {
   description = "EC2 instance availability zone"
   value       = aws_instance.ttb.availability_zone
-}
-
-output "ollama_models_bucket" {
-  description = "S3 bucket for Ollama models"
-  value       = aws_s3_bucket.ollama_models.id
 }
 
 # ====================================

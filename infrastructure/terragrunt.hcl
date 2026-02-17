@@ -8,7 +8,7 @@ remote_state {
   
   config = {
     bucket         = "unitedentropy-ttb-tfstate"
-    key            = "infrastructure/tofu.tfstate"
+    key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
     dynamodb_table = "unitedentropy-ttb-tfstate"
@@ -61,4 +61,20 @@ provider "github" {
   # Authentication via GITHUB_TOKEN environment variable
 }
 EOF
+}
+
+# Shared inputs for all child configurations
+# These values are inherited by both foundation and application layers
+inputs = {
+  github_owner    = "ArkieCoder"
+  github_repo_name = "ttb-verifier"
+  project_name    = "ttb-verifier"
+  domain_name     = "ttb-verifier.unitedentropy.com"
+  aws_region      = "us-east-1"
+  aws_account_id  = "253490750467"
+  
+  # Application-specific defaults (used by application layer)
+  instance_type     = "t3.medium"
+  root_volume_size  = 50
+  environment       = "production"
 }

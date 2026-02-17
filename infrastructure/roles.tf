@@ -46,8 +46,8 @@ resource "aws_iam_policy" "s3_ollama_models" {
           "s3:ListBucket"
         ],
         Resource = [
-          aws_s3_bucket.ollama_models.arn,
-          "${aws_s3_bucket.ollama_models.arn}/*"
+          local.s3_bucket_arn,
+          "${local.s3_bucket_arn}/*"
         ]
       }
     ]

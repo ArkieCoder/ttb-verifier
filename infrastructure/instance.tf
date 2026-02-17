@@ -10,7 +10,7 @@ resource "aws_instance" "ttb" {
 
   user_data = <<-EOF
     #!/bin/bash
-    export S3_BUCKET="${aws_s3_bucket.ollama_models.id}"
+    export S3_BUCKET="${local.s3_bucket_id}"
     export AWS_ACCOUNT_ID="${var.aws_account_id}"
     
     # Source the main init script

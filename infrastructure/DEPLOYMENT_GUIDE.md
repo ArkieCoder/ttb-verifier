@@ -136,36 +136,55 @@ aws sts get-caller-identity --query Account --output text
 
 ## Deployment Steps
 
-### 1. Initialize Terragrunt
+### Infrastructure Architecture
+
+The infrastructure is separated into **two layers** with independent Terraform state:
+
+1. **Foundation Layer** (`infrastructure/foundation/`)
+   - Protected resources: ACM certificate, GitHub repository, S3 model bucket
+   - Deployed once, rarely modified
+   - State file: `foundation/terraform.tfstate`
+
+2. **Application Layer** (`infrastructure/`)
+   - Ephemeral resources: EC2, ALB, IAM roles, security groups
+   - Can be destroyed and recreated safely
+   - State file: `infrastructure/terraform.tfstate`
+
+### First-Time Deployment
+
+#### Step 1: Deploy Foundation Layer
+
+The foundation layer contains protected resources that should persist across application deployments.
 
 ```bash
-cd infrastructure
+cd infrastructure/foundation
 export GITHUB_TOKEN=$(gh auth token)
-terragrunt init --backend-bootstrap
+terragrunt init
 ```
 
 This will:
-- Create S3 bucket for Terraform state
-- Create DynamoDB table for state locking
+- Create S3 bucket for Terraform state (if it doesn't exist)
+- Create DynamoDB table for state locking (if it doesn't exist)
 - Download required provider plugins
 
-### 2. Review the plan
-
+**Review the foundation plan:**
 ```bash
 terragrunt plan
 ```
 
-Review the resources that will be created (~17 AWS resources + 3-5 GitHub resources).
+You should see ~9 resources to be created:
+- ACM certificate (for HTTPS)
+- GitHub repository and branch protection
+- S3 bucket for Ollama models (with versioning, encryption, lifecycle policies)
 
-### 3. Apply the infrastructure
-
+**Apply foundation infrastructure:**
 ```bash
 terragrunt apply
 ```
 
 **Important:** This will pause during ACM certificate validation. Follow the prompts to add the DNS CNAME record to your DNS provider.
 
-#### ACM Certificate Validation
+##### ACM Certificate Validation
 
 When the apply pauses, you'll see output like:
 
@@ -185,11 +204,45 @@ Waiting for DNS propagation and ACM validation...
 
 1. Add the CNAME record to your DNS provider
 2. Wait for DNS propagation (5-30 minutes)
-3. The script will automatically poll ACM and continue once validated
+3. The infrastructure will automatically continue once validated
 
 **Note:** After the certificate is issued, you can remove this validation CNAME record from your DNS. It's only needed during initial certificate creation. ACM will auto-renew without needing the validation record.
 
-### 4. Configure DNS CNAME for your application
+**Foundation outputs** will include:
+- `certificate_arn` - Used by application layer ALB
+- `s3_bucket_id` - Used by EC2 for model caching
+- `repository_name` - Used for GitHub secrets
+
+#### Step 2: Deploy Application Layer
+
+The application layer references foundation resources via Terraform remote state.
+
+```bash
+cd infrastructure  # parent directory (application layer)
+terragrunt init
+```
+
+**Review the application plan:**
+```bash
+terragrunt plan
+```
+
+Review the resources that will be created (~21 AWS resources + 3 GitHub secrets):
+- EC2 t3.medium instance
+- Application Load Balancer + listeners
+- ALB target group with health checks
+- Security groups (ALB + EC2)
+- IAM roles (EC2 SSM + GitHub Actions OIDC)
+- GitHub Actions secrets
+
+**Apply application infrastructure:**
+```bash
+terragrunt apply
+```
+
+**Time:** ~5 minutes for AWS resources + 8-15 minutes for EC2 initialization
+
+#### Step 3: Configure DNS CNAME for your application
 
 After `apply` completes, you'll see instructions to add a CNAME record pointing your domain to the ALB:
 
@@ -202,9 +255,9 @@ Value: ttb-verifier-alb-XXXXXXXX.us-east-1.elb.amazonaws.com
 
 Add this CNAME to your DNS provider. This record should remain in place permanently.
 
-### 5. Monitor EC2 initialization
+#### Step 4: Monitor EC2 initialization
 
-The EC2 instance will take 15-20 minutes to fully initialize (Docker, Ollama model download):
+The EC2 instance will take 8-15 minutes to fully initialize (Docker, Ollama model download from S3):
 
 ```bash
 # Get instance ID from outputs
@@ -274,6 +327,75 @@ curl -X POST "https://ttb-verifier.yourdomain.com/verify" \
   -H "Content-Type: multipart/form-data" \
   -F "file=@path/to/label.jpg"
 ```
+
+## Day-to-Day Operations
+
+### Updating Application Infrastructure
+
+For most infrastructure changes, you'll only work in the application layer:
+
+```bash
+cd infrastructure  # application layer
+terragrunt plan
+terragrunt apply
+```
+
+The foundation layer is only modified when:
+- Changing the domain name (requires new ACM certificate)
+- Modifying GitHub repository settings
+- Updating S3 bucket configuration
+
+### Disaster Recovery Testing
+
+The two-layer architecture enables safe disaster recovery testing:
+
+**Destroy application layer** (foundation protected):
+```bash
+cd infrastructure
+terragrunt destroy  # No targeting required!
+```
+
+This will destroy:
+- EC2 instance
+- Application Load Balancer
+- IAM roles and policies
+- Security groups
+- GitHub Actions secrets
+
+Foundation resources (certificate, repository, S3 bucket) are protected with `prevent_destroy = true` and remain intact.
+
+**Recreate application layer:**
+```bash
+cd infrastructure
+terragrunt apply
+```
+
+**Recovery Time Objective (RTO):** 8-12 minutes
+- Foundation resources already exist (no certificate validation wait)
+- EC2 downloads model from S3 cache (much faster than Ollama)
+- Application deployed via GitHub Actions
+
+### Modifying Foundation Resources
+
+**Warning:** Foundation resources are protected and should rarely be modified.
+
+If you need to modify foundation resources:
+
+```bash
+cd infrastructure/foundation
+terragrunt plan
+terragrunt apply
+```
+
+To destroy foundation resources, you must:
+1. Remove `prevent_destroy = true` from the resource definition
+2. Run `terragrunt apply` to update state
+3. Run `terragrunt destroy`
+
+**Never destroy foundation resources unless intentional** - they contain:
+- ACM certificate (requires DNS validation wait on recreation)
+- GitHub repository (contains code and settings)
+- S3 model bucket (contains 6.7 GiB cached model)
 
 ## Troubleshooting
 

@@ -1,0 +1,33 @@
+# Terraform state files
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Lock files
+.terraform.lock.hcl
+
+# Exclude all .terraform directories
+**/.terraform/*
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Variable values (sensitive)
+terraform.tfvars
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Generated provider file (from parent terragrunt.hcl)
+provider.tf
+backend.tf

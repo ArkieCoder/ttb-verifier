@@ -27,6 +27,33 @@ open http://localhost:8000/docs
 docker compose down
 ```
 
+## Web UI Access
+
+The service includes a web-based UI for easy label verification without using the API directly.
+
+**Production:** `https://<your-domain>`
+
+**Configuration:**
+- Set your domain via `DOMAIN_NAME` environment variable or Terraform `domain_name` variable
+- Default allowed hosts: `localhost`, `127.0.0.1`
+- For custom hosts: Set `ALLOWED_HOSTS` environment variable as JSON array
+
+**Login Credentials:**
+- Stored securely in AWS Secrets Manager (`TTB_DEFAULT_USER`, `TTB_DEFAULT_PASS`)
+- Configure via: `./scripts/setup_secrets.sh <username> <password>`
+
+**Features:**
+- 🖼️ **Single Label Verification** - Upload individual images with optional metadata
+- 📦 **Batch Processing** - Upload ZIP files with up to 50 labels
+- 🤖 **Ollama Toggle** - Choose between Tesseract (fast) and Ollama (accurate)
+- ⏱️ **Real-time Status** - Live monitoring of Ollama availability
+- 📊 **Results Dashboard** - Visual compliance status with detailed violations
+
+**Testing the UI API:**
+```bash
+./scripts/test_api.sh https://<your-domain> <username> <password>
+```
+
 ### Using Python Directly
 
 **Install dependencies:**
@@ -50,15 +77,17 @@ python app/verify_label.py test_samples/label_good_001.jpg \
 
 ## Features
 
+- ✅ **Web UI** with Bootstrap 5, session authentication, and batch processing
 - ✅ **Fast OCR** with Tesseract (< 1 second per label)
 - ✅ **AI OCR** with Ollama llama3.2-vision (~58s, higher accuracy)
-- ✅ **REST API** with FastAPI for web integration
+- ✅ **REST API** with FastAPI for web integration (requires authentication)
 - ✅ **Batch processing** for up to 50 labels at once
 - ✅ **Fuzzy matching** for brand names with 90% threshold
 - ✅ **Government warning validation** with exact format checking
 - ✅ **Product-specific tolerances** for ABV (wine: ±1.0%, spirits: ±0.3%)
 - ✅ **Docker support** with multi-stage builds and testing
 - ✅ **Comprehensive testing** with 76.9% code coverage
+- ✅ **CloudFront + S3** custom error pages for graceful degradation
 
 ## Architecture
 
@@ -83,6 +112,8 @@ python app/verify_label.py test_samples/label_good_001.jpg \
 ```
 
 ## API Endpoints
+
+**Note:** API endpoints require authentication. Login via `/ui/login` to obtain a session cookie, or use the test script at `scripts/test_api.sh`.
 
 ### POST /verify
 Verify a single label image.
@@ -138,6 +169,7 @@ See [API_README.md](docs/API_README.md) for complete API documentation.
 ## Documentation
 
 ### Getting Started
+- **[docs/UI_GUIDE.md](docs/UI_GUIDE.md)** - Complete web UI guide with authentication
 - **[docs/API_README.md](docs/API_README.md)** - Complete REST API reference
 - **[docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** - Running tests (bash + pytest)
 

@@ -54,6 +54,16 @@ class Settings(BaseSettings):
         description="JSON array of allowed CORS origins"
     )
     
+    # UI Configuration
+    allowed_hosts: str = Field(
+        default='["localhost", "127.0.0.1"]',
+        description="JSON array of allowed hostnames for UI access"
+    )
+    domain_name: str = Field(
+        default="",
+        description="Primary domain name for the application (e.g., 'ttb-verifier.example.com')"
+    )
+    
     # Model configuration
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -118,6 +128,21 @@ class Settings(BaseSettings):
             return origins
         except json.JSONDecodeError:
             return ["*"]
+    
+    def get_allowed_hosts(self) -> List[str]:
+        """Parse allowed hosts from JSON string and add domain_name if set."""
+        try:
+            hosts = json.loads(self.allowed_hosts)
+            if not isinstance(hosts, list):
+                hosts = ["localhost", "127.0.0.1"]
+        except json.JSONDecodeError:
+            hosts = ["localhost", "127.0.0.1"]
+        
+        # Add domain_name if configured
+        if self.domain_name and self.domain_name not in hosts:
+            hosts.append(self.domain_name)
+        
+        return hosts
     
     @property
     def max_file_size_bytes(self) -> int:

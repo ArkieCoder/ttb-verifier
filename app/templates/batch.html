@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Batch Verification - TTB Label Verifier{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4">
+            <i class="bi bi-folder-fill"></i> Batch Label Verification
+        </h1>
+        
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error:</strong> {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+        
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" action="/ui/batch" enctype="multipart/form-data" id="batchForm">
+                    <!-- ZIP Upload -->
+                    <div class="mb-4">
+                        <label for="batch_file" class="form-label fw-bold">
+                            <i class="bi bi-file-zip"></i> Batch ZIP File *
+                        </label>
+                        <input 
+                            type="file" 
+                            class="form-control" 
+                            id="batch_file" 
+                            name="batch_file" 
+                            accept="application/zip,application/x-zip-compressed" 
+                            required
+                        >
+                        <div class="form-text">
+                            Upload a ZIP file containing label images (max {{ max_batch_size }} images)
+                        </div>
+                    </div>
+                    
+                    <!-- ZIP Structure Info -->
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle"></i> ZIP File Structure
+                        </h6>
+                        <p class="mb-2">Your ZIP file should contain:</p>
+                        <ul class="mb-0 small">
+                            <li><strong>Images:</strong> JPEG or PNG files</li>
+                            <li><strong>Ground Truth (optional):</strong> JSON files with same name as images
+                                <ul>
+                                    <li>Example: <code>label_001.jpg</code> + <code>label_001.json</code></li>
+                                    <li>JSON format: <code>{"brand_name": "...", "abv": 7.5, ...}</code></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- OCR Backend Selection -->
+                    <h5 class="mb-3">
+                        <i class="bi bi-gear"></i> OCR Settings
+                    </h5>
+                    
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="use_ollama" 
+                                name="use_ollama"
+                            >
+                            <label class="form-check-label" for="use_ollama">
+                                Use Ollama Vision AI 
+                                <span class="ollama-status ms-2" id="ollamaStatus">
+                                    <span class="status-indicator status-checking"></span>
+                                    <span class="status-text">Checking...</span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            Ollama provides more accurate OCR but may be slower. Falls back to Tesseract if disabled.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3" id="timeoutField" style="display: none;">
+                        <label for="ollama_timeout" class="form-label">Ollama Timeout (seconds per image)</label>
+                        <input 
+                            type="number" 
+                            class="form-control" 
+                            id="ollama_timeout" 
+                            name="ollama_timeout"
+                            value="{{ default_timeout }}"
+                            min="10"
+                            max="300"
+                        >
+                        <div class="form-text">
+                            Timeout applies to each image individually
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            <i class="bi bi-cloud-upload"></i> Upload & Process Batch
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="bi bi-clock-history"></i> Processing Time
+                </h6>
+                <p class="mb-0 small">
+                    Batch processing is <strong>synchronous</strong>. Expect approximately 
+                    2-5 seconds per image with Tesseract, or 10-30 seconds per image with Ollama.
+                    Please be patient during processing.
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="bi bi-question-circle"></i> Example ZIP Structure
+                </h6>
+                <pre class="mb-0 small"><code>batch.zip
+├── label_001.jpg
+├── label_001.json   (optional)
+├── label_002.jpg
+├── label_002.json   (optional)
+└── label_003.png</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Ollama status checking
+    const ollamaCheckbox = document.getElementById('use_ollama');
+    const timeoutField = document.getElementById('timeoutField');
+    const ollamaStatusEl = document.getElementById('ollamaStatus');
+    const statusIndicator = ollamaStatusEl.querySelector('.status-indicator');
+    const statusText = ollamaStatusEl.querySelector('.status-text');
+    
+    // Show/hide timeout field based on checkbox
+    ollamaCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            timeoutField.style.display = 'block';
+        } else {
+            timeoutField.style.display = 'none';
+        }
+    });
+    
+    // Check Ollama availability
+    async function checkOllamaStatus() {
+        try {
+            const response = await fetch('/health');
+            const data = await response.json();
+            
+            const ollamaAvailable = data.backends?.ollama?.available || false;
+            const ollamaError = data.backends?.ollama?.error || null;
+            
+            if (ollamaAvailable) {
+                statusIndicator.className = 'status-indicator status-available';
+                statusText.textContent = 'Available';
+                ollamaCheckbox.disabled = false;
+            } else {
+                statusIndicator.className = 'status-indicator status-unavailable';
+                statusText.textContent = ollamaError ? 'Unavailable' : 'Not Ready';
+                ollamaCheckbox.disabled = true;
+                ollamaCheckbox.checked = false;
+                timeoutField.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Failed to check Ollama status:', error);
+            statusIndicator.className = 'status-indicator status-unavailable';
+            statusText.textContent = 'Unknown';
+        }
+    }
+    
+    // Check status on page load
+    checkOllamaStatus();
+    
+    // Poll status every 30 seconds
+    setInterval(checkOllamaStatus, 30000);
+    
+    // Form submission - show loading state
+    document.getElementById('batchForm').addEventListener('submit', function() {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing batch... This may take several minutes.';
+    });
+</script>
+{% endblock %}

@@ -20,13 +20,15 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, status
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ValidationError
 
 from config import get_settings
 from label_validator import LabelValidator
+from auth import get_current_user
+from middleware import HostCheckMiddleware
 
 
 # ============================================================================
@@ -159,6 +161,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add host checking middleware
+app.add_middleware(
+    HostCheckMiddleware,
+    allowed_hosts=settings.get_allowed_hosts()
+)
+
+# Mount UI routes
+from ui_routes import router as ui_router
+app.include_router(ui_router)
 
 
 # ============================================================================
@@ -363,7 +375,8 @@ async def verify_label(
     image: UploadFile = File(..., description="Label image file (max 10MB)"),
     ground_truth: Optional[str] = Form(None, description="Ground truth JSON string"),
     ocr_backend: Optional[str] = Form(None, description="OCR backend: tesseract or ollama"),
-    timeout: Optional[int] = Form(None, description="Timeout in seconds for OCR processing")
+    timeout: Optional[int] = Form(None, description="Timeout in seconds for OCR processing"),
+    username: str = Depends(get_current_user)
 ) -> VerifyResponse:
     """
     Verify a single alcohol beverage label.
@@ -468,7 +481,8 @@ async def verify_label(
 async def verify_batch(
     batch_file: UploadFile = File(..., description="ZIP file containing label images"),
     ocr_backend: Optional[str] = Form(None, description="OCR backend: tesseract or ollama"),
-    timeout: Optional[int] = Form(None, description="Timeout in seconds for OCR processing")
+    timeout: Optional[int] = Form(None, description="Timeout in seconds for OCR processing"),
+    username: str = Depends(get_current_user)
 ) -> BatchResponse:
     """
     Verify multiple alcohol beverage labels in batch.
@@ -682,14 +696,9 @@ async def general_exception_handler(request, exc: Exception):
 
 @app.get("/")
 async def root():
-    """Root endpoint - reserved for future UI."""
-    return {
-        "message": "TTB Label Verifier API",
-        "version": "1.0.0",
-        "health": "/health",
-        "docs": "/docs",
-        "redoc": "/redoc"
-    }
+    """Root endpoint - redirects to UI."""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/ui/verify", status_code=status.HTTP_302_FOUND)
 
 
 @app.get("/health")

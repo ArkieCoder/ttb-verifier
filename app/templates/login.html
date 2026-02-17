@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Login - TTB Label Verifier{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">
+                    <i class="bi bi-shield-lock"></i> Login
+                </h2>
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> {{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="post" action="/ui/login">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="username" 
+                            name="username" 
+                            required 
+                            autofocus
+                            autocomplete="username"
+                        >
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            id="password" 
+                            name="password" 
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i> 
+                        Credentials are stored in AWS Secrets Manager
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="bi bi-question-circle"></i> About This Service
+                </h6>
+                <p class="card-text small text-muted mb-0">
+                    This service validates alcohol beverage labels against 27 CFR regulations.
+                    It performs structural validation and optional accuracy checks using OCR technology.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

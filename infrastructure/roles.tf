@@ -66,6 +66,42 @@ resource "aws_iam_role_policy_attachment" "ssm_s3_models" {
   policy_arn = aws_iam_policy.s3_ollama_models.arn
 }
 
+# Custom policy for EC2 to access UI credentials from Secrets Manager
+resource "aws_iam_policy" "secrets_access" {
+  name        = "ttb-secrets-access-policy"
+  description = "Allow EC2 instance to read UI credentials from Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "ReadUISecrets",
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
+        Resource = [
+          "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:TTB_DEFAULT_USER-*",
+          "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:TTB_DEFAULT_PASS-*"
+        ]
+      }
+    ]
+  })
+
+  tags = {
+    Name      = "ttb-secrets-access-policy"
+    Project   = "ttb-verifier"
+    ManagedBy = "terragrunt"
+  }
+}
+
+# Attach Secrets Manager policy to EC2 role
+resource "aws_iam_role_policy_attachment" "ssm_secrets_access" {
+  role       = aws_iam_role.ssm.name
+  policy_arn = aws_iam_policy.secrets_access.arn
+}
+
 # EC2 Instance Profile (required to attach IAM role to EC2)
 resource "aws_iam_instance_profile" "ssm" {
   name = "ttb-ssm-instance-profile"

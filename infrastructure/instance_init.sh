@@ -199,8 +199,9 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     docker-compose stop ollama
     
     # Extract model files into the ollama volume
+    # Note: docker-compose prefixes volume names with directory name (app_)
     docker run --rm \
-      -v ollama_models:/root/.ollama \
+      -v app_ollama_models:/root/.ollama \
       -v /home:/backup \
       alpine:latest \
       sh -c "mkdir -p /root/.ollama && cd /root/.ollama && tar xzf /backup/model.tar.gz"

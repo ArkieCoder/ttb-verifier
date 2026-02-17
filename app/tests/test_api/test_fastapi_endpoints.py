@@ -23,6 +23,24 @@ def client():
 
 
 @pytest.fixture
+def authenticated_client(client, mock_secrets):
+    """
+    FastAPI test client with authenticated session.
+    
+    Creates a session and adds the session cookie to the client.
+    """
+    from auth import create_session, SESSION_COOKIE_NAME
+    
+    # Create a session for test user
+    session_id = create_session("testuser")
+    
+    # Add session cookie to client
+    client.cookies.set(SESSION_COOKIE_NAME, session_id)
+    
+    return client
+
+
+@pytest.fixture
 def sample_image_bytes(good_label_path):
     """Load sample image as bytes."""
     if not good_label_path.exists():
@@ -101,9 +119,9 @@ def large_image_bytes():
 # Single Verify Endpoint Tests
 # ============================================================================
 
-def test_verify_success_no_ground_truth(client, sample_image_bytes):
+def test_verify_success_no_ground_truth(authenticated_client, sample_image_bytes):
     """Test single label verification without ground truth (structural only)."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={"ocr_backend": "tesseract"}
@@ -125,9 +143,9 @@ def test_verify_success_no_ground_truth(client, sample_image_bytes):
     assert data["validation_level"] == "STRUCTURAL_ONLY"
 
 
-def test_verify_success_with_ground_truth(client, sample_image_bytes, sample_ground_truth_json):
+def test_verify_success_with_ground_truth(authenticated_client, sample_image_bytes, sample_ground_truth_json):
     """Test single label verification with ground truth (full validation)."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={
@@ -145,7 +163,7 @@ def test_verify_success_with_ground_truth(client, sample_image_bytes, sample_gro
 
 
 @patch('api.LabelValidator')
-def test_verify_with_ollama_backend(mock_validator_class, client, sample_image_bytes):
+def test_verify_with_ollama_backend(mock_validator_class, authenticated_client, sample_image_bytes):
     """Test single label verification with Ollama backend."""
     # Mock the validator to avoid actual Ollama call
     mock_validator = Mock()
@@ -167,7 +185,7 @@ def test_verify_with_ollama_backend(mock_validator_class, client, sample_image_b
     }
     mock_validator_class.return_value = mock_validator
     
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={"ocr_backend": "ollama"}
@@ -181,9 +199,9 @@ def test_verify_with_ollama_backend(mock_validator_class, client, sample_image_b
     mock_validator_class.assert_called_once_with(ocr_backend="ollama")
 
 
-def test_verify_with_custom_timeout(client, sample_image_bytes):
+def test_verify_with_custom_timeout(authenticated_client, sample_image_bytes):
     """Test single label verification with custom timeout."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={
@@ -196,11 +214,11 @@ def test_verify_with_custom_timeout(client, sample_image_bytes):
     assert response.status_code == 200
 
 
-def test_verify_invalid_file_type(client):
+def test_verify_invalid_file_type(authenticated_client):
     """Test verification with invalid file type (not an image)."""
     text_content = b"This is a text file, not an image"
     
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("document.txt", text_content, "text/plain")}
     )
@@ -210,9 +228,9 @@ def test_verify_invalid_file_type(client):
     assert "Invalid file type" in data["detail"]
 
 
-def test_verify_invalid_ground_truth_json(client, sample_image_bytes):
+def test_verify_invalid_ground_truth_json(authenticated_client, sample_image_bytes):
     """Test verification with invalid ground truth JSON."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={"ground_truth": "this is not valid JSON{"}
@@ -223,9 +241,9 @@ def test_verify_invalid_ground_truth_json(client, sample_image_bytes):
     assert "Invalid ground truth JSON" in data["detail"]
 
 
-def test_verify_missing_image(client):
+def test_verify_missing_image(authenticated_client):
     """Test verification without image file."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         data={"ocr_backend": "tesseract"}
     )
@@ -233,9 +251,9 @@ def test_verify_missing_image(client):
     assert response.status_code == 422  # Validation error
 
 
-def test_verify_invalid_ocr_backend(client, sample_image_bytes):
+def test_verify_invalid_ocr_backend(authenticated_client, sample_image_bytes):
     """Test verification with invalid OCR backend name."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={"ocr_backend": "invalid_backend"}
@@ -247,14 +265,14 @@ def test_verify_invalid_ocr_backend(client, sample_image_bytes):
 
 
 @patch('api.LabelValidator')
-def test_verify_ocr_failure(mock_validator_class, client, sample_image_bytes):
+def test_verify_ocr_failure(mock_validator_class, authenticated_client, sample_image_bytes):
     """Test verification when OCR processing fails."""
     # Mock validator to raise an exception
     mock_validator = Mock()
     mock_validator.validate_label.side_effect = Exception("OCR processing failed")
     mock_validator_class.return_value = mock_validator
     
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={"ocr_backend": "tesseract"}
@@ -269,9 +287,9 @@ def test_verify_ocr_failure(mock_validator_class, client, sample_image_bytes):
 # Batch Verify Endpoint Tests
 # ============================================================================
 
-def test_batch_success(client, sample_batch_zip):
+def test_batch_success(authenticated_client, sample_batch_zip):
     """Test batch verification with valid ZIP file."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")},
         data={"ocr_backend": "tesseract"}
@@ -303,10 +321,10 @@ def test_batch_success(client, sample_batch_zip):
         assert "image_path" in result
 
 
-def test_batch_with_ground_truth(client, sample_batch_zip):
+def test_batch_with_ground_truth(authenticated_client, sample_batch_zip):
     """Test batch verification with ground truth JSON files in ZIP."""
     # The sample_batch_zip fixture includes JSON files
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")},
         data={"ocr_backend": "tesseract"}
@@ -323,9 +341,9 @@ def test_batch_with_ground_truth(client, sample_batch_zip):
     assert len(full_validations) > 0
 
 
-def test_batch_invalid_zip(client, invalid_zip_bytes):
+def test_batch_invalid_zip(authenticated_client, invalid_zip_bytes):
     """Test batch verification with invalid/corrupt ZIP file."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", invalid_zip_bytes, "application/zip")}
     )
@@ -335,9 +353,9 @@ def test_batch_invalid_zip(client, invalid_zip_bytes):
     assert "Invalid" in data["detail"] or "corrupt" in data["detail"].lower()
 
 
-def test_batch_empty_zip(client, empty_zip_bytes):
+def test_batch_empty_zip(authenticated_client, empty_zip_bytes):
     """Test batch verification with ZIP containing no images."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", empty_zip_bytes, "application/zip")}
     )
@@ -347,9 +365,9 @@ def test_batch_empty_zip(client, empty_zip_bytes):
     assert "No image files found" in data["detail"]
 
 
-def test_batch_invalid_file_type(client):
+def test_batch_invalid_file_type(authenticated_client):
     """Test batch verification with non-ZIP file."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("document.txt", b"not a zip", "text/plain")}
     )
@@ -360,7 +378,7 @@ def test_batch_invalid_file_type(client):
 
 
 @pytest.mark.parametrize("num_images", [51, 100])
-def test_batch_too_many_images(client, samples_dir, num_images):
+def test_batch_too_many_images(authenticated_client, samples_dir, num_images):
     """Test batch verification with too many images."""
     settings = get_settings()
     
@@ -379,7 +397,7 @@ def test_batch_too_many_images(client, samples_dir, num_images):
     
     zip_buffer.seek(0)
     
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", zip_buffer.getvalue(), "application/zip")}
     )
@@ -393,9 +411,9 @@ def test_batch_too_many_images(client, samples_dir, num_images):
 # CORS & Documentation Tests
 # ============================================================================
 
-def test_cors_headers(client, sample_image_bytes):
+def test_cors_headers(authenticated_client, sample_image_bytes):
     """Test that CORS headers are present in responses."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         headers={"Origin": "http://example.com"}
@@ -419,13 +437,10 @@ def test_redoc_endpoint(client):
 
 
 def test_root_endpoint(client):
-    """Test root endpoint returns API info."""
-    response = client.get("/")
-    assert response.status_code == 200
-    data = response.json()
-    assert "version" in data
-    assert "health" in data
-    assert "docs" in data
+    """Test root endpoint redirects to UI."""
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code == 302
+    assert response.headers["location"] == "/ui/verify"
 
 
 def test_health_endpoint(client):
@@ -457,10 +472,10 @@ def test_health_endpoint(client):
 # Error Response Tests
 # ============================================================================
 
-def test_error_response_structure(client):
+def test_error_response_structure(authenticated_client):
     """Test that error responses have consistent structure."""
     # Trigger a 400 error
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("document.txt", b"not an image", "text/plain")}
     )
@@ -478,7 +493,7 @@ def test_error_response_structure(client):
 # Edge Cases
 # ============================================================================
 
-def test_verify_with_png_image(client, samples_dir):
+def test_verify_with_png_image(authenticated_client, samples_dir):
     """Test verification with PNG image (if available)."""
     # Try to find a PNG sample or skip
     png_files = list(samples_dir.glob("*.png"))
@@ -488,7 +503,7 @@ def test_verify_with_png_image(client, samples_dir):
     with open(png_files[0], 'rb') as f:
         png_bytes = f.read()
     
-    response = client.post(
+    response = authenticated_client.post(
         "/verify",
         files={"image": ("label.png", png_bytes, "image/png")}
     )
@@ -496,9 +511,9 @@ def test_verify_with_png_image(client, samples_dir):
     assert response.status_code == 200
 
 
-def test_batch_with_custom_timeout(client, sample_batch_zip):
+def test_batch_with_custom_timeout(authenticated_client, sample_batch_zip):
     """Test batch verification with custom timeout."""
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")},
         data={
@@ -513,7 +528,7 @@ def test_batch_with_custom_timeout(client, sample_batch_zip):
 
 
 @patch('api.LabelValidator')
-def test_batch_partial_failure(mock_validator_class, client, sample_batch_zip):
+def test_batch_partial_failure(mock_validator_class, authenticated_client, sample_batch_zip):
     """Test batch processing when some images fail (should return partial results)."""
     # Mock validator to fail on second image
     mock_validator = Mock()
@@ -536,7 +551,7 @@ def test_batch_partial_failure(mock_validator_class, client, sample_batch_zip):
     mock_validator.validate_label.side_effect = side_effect
     mock_validator_class.return_value = mock_validator
     
-    response = client.post(
+    response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")}
     )

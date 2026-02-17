@@ -3,6 +3,7 @@ import pytest
 import json
 from pathlib import Path
 from typing import Dict, Any
+from unittest.mock import patch
 
 
 # Paths
@@ -102,3 +103,20 @@ def sample_ground_truth():
         'bottler': 'Imported by Black Brewing, San Francisco, CA',
         'product_type': 'Hefeweizen'
     }
+
+
+# Authentication mocking
+@pytest.fixture
+def mock_secrets():
+    """Mock AWS Secrets Manager for testing."""
+    with patch('app.secrets.get_secret') as mock_get_secret:
+        def side_effect(secret_name):
+            if secret_name == 'TTB_DEFAULT_USER':
+                return 'testuser'
+            elif secret_name == 'TTB_DEFAULT_PASS':
+                return 'testpass'
+            raise Exception(f"Unknown secret: {secret_name}")
+        
+        mock_get_secret.side_effect = side_effect
+        yield mock_get_secret
+

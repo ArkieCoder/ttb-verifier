@@ -4,7 +4,7 @@
 
 # Include parent configuration for shared settings
 include "root" {
-  path = find_in_parent_folders()
+  path = find_in_parent_folders("root.hcl")
 }
 
 # Override source to use current directory
@@ -12,4 +12,4 @@ terraform {
   source = "."
 }
 
-# Inputs are inherited from parent terragrunt.hcl via include
+# Inputs are inherited from parent root.hcl via include

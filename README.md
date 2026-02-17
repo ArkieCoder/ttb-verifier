@@ -31,12 +31,12 @@ docker compose down
 
 **Install dependencies:**
 ```bash
-pip install -r requirements.txt
+pip install -r app/requirements.txt
 ```
 
 **Verify a label:**
 ```bash
-python verify_label.py samples/label_good_001.jpg
+python app/verify_label.py samples/label_good_001.jpg
 ```
 
 ## Features
@@ -129,20 +129,20 @@ See [API_README.md](docs/API_README.md) for complete API documentation.
 ## Documentation
 
 ### Getting Started
-- **[QUICKSTART.md](QUICKSTART.md)** - Quick start guide for CLI and API usage
+- **[docs/QUICKSTART.md](docs/QUICKSTART.md)** - Quick start guide for CLI and API usage
 - **[docs/API_README.md](docs/API_README.md)** - Complete REST API reference
-- **[VERIFIER_README.md](VERIFIER_README.md)** - CLI tool documentation
+- **[docs/VERIFIER_README.md](docs/VERIFIER_README.md)** - CLI tool documentation
 
 ### Development
 - **[docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md)** - Docker build and deployment guide
 - **[docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** - Running tests (bash + pytest)
-- **[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)** - Development phases and progress
+- **[docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)** - Development phases and progress
 
 ### Reference
-- **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Complete project overview
-- **[TTB_REGULATORY_SUMMARY.md](TTB_REGULATORY_SUMMARY.md)** - 27 CFR regulations summary
-- **[OCR_ANALYSIS.md](OCR_ANALYSIS.md)** - OCR performance analysis
-- **[DECISION_LOG.md](DECISION_LOG.md)** - Architectural decisions
+- **[docs/PROJECT_SUMMARY.md](docs/PROJECT_SUMMARY.md)** - Complete project overview
+- **[docs/TTB_REGULATORY_SUMMARY.md](docs/TTB_REGULATORY_SUMMARY.md)** - 27 CFR regulations summary
+- **[docs/OCR_ANALYSIS.md](docs/OCR_ANALYSIS.md)** - OCR performance analysis
+- **[docs/DECISION_LOG.md](docs/DECISION_LOG.md)** - Architectural decisions
 
 ## Requirements
 
@@ -167,7 +167,7 @@ See [API_README.md](docs/API_README.md) for complete API documentation.
 docker build --target test -t ttb-verifier:test .
 
 # Using Python directly
-pytest tests/ --cov=. --cov-fail-under=75 -v
+pytest app/tests/ --cov=app --cov-fail-under=75 -v
 ```
 
 **Test suite:**
@@ -202,25 +202,29 @@ CORS_ORIGINS=["*"]
 
 ```
 .
-├── api.py                    # FastAPI REST API
-├── config.py                 # Configuration management
-├── label_validator.py        # Main validation orchestrator
-├── field_validators.py       # Field-level validation logic
-├── label_extractor.py        # OCR text extraction
-├── ocr_backends.py          # Tesseract & Ollama OCR
-├── verify_label.py          # CLI interface
+├── app/                      # Application code
+│   ├── api.py               # FastAPI REST API
+│   ├── config.py            # Configuration management
+│   ├── label_validator.py   # Main validation orchestrator
+│   ├── field_validators.py  # Field-level validation logic
+│   ├── label_extractor.py   # OCR text extraction
+│   ├── ocr_backends.py      # Tesseract & Ollama OCR
+│   ├── verify_label.py      # CLI interface
+│   ├── requirements.txt     # Python dependencies
+│   └── tests/               # Test suite (pytest)
+│       ├── test_api/        # API endpoint tests
+│       ├── test_unit/       # Unit tests
+│       └── test_integration/ # Integration tests
+├── infrastructure/           # Terraform/Terragrunt IaC
+├── scripts/                  # Deployment scripts
 ├── samples/                  # 40 golden test samples
-├── tests/                    # Test suite (pytest)
-│   ├── test_api/            # API endpoint tests
-│   ├── test_unit/           # Unit tests
-│   └── test_integration/    # Integration tests
 └── docs/                     # Documentation
 ```
 
 ## Development Workflow
 
-1. **Make changes** to Python files
-2. **Run tests** locally: `pytest tests/`
+1. **Make changes** to Python files in `app/`
+2. **Run tests** locally: `pytest app/tests/`
 3. **Build Docker** image: `docker build -t ttb-verifier:latest .`
 4. **Test in Docker**: `docker run -p 8000:8000 ttb-verifier:latest`
 5. **Commit** changes with descriptive message
@@ -261,7 +265,7 @@ Validates labels against **27 CFR** regulations:
 - **Government warning** exact format validation
 - **Country of origin** for imports
 
-See [TTB_REGULATORY_SUMMARY.md](TTB_REGULATORY_SUMMARY.md) for complete requirements.
+See [docs/TTB_REGULATORY_SUMMARY.md](docs/TTB_REGULATORY_SUMMARY.md) for complete requirements.
 
 ## License
 
@@ -271,5 +275,5 @@ This is a prototype system developed for the U.S. Treasury Department TTB.
 
 For questions or issues:
 1. Check documentation in `/docs` directory
-2. Review [DECISION_LOG.md](DECISION_LOG.md) for architectural decisions
-3. See [QUICKSTART.md](QUICKSTART.md) for common use cases
+2. Review [docs/DECISION_LOG.md](docs/DECISION_LOG.md) for architectural decisions
+3. See [docs/QUICKSTART.md](docs/QUICKSTART.md) for common use cases

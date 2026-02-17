@@ -13,14 +13,14 @@ RUN apt-get update && \
 FROM base as builder
 
 WORKDIR /build
-COPY requirements.txt requirements-dev.txt ./
+COPY app/requirements.txt app/requirements-dev.txt ./
 
 RUN pip install --user --no-cache-dir -r requirements.txt -r requirements-dev.txt
 
-# Stage 3: Test runner (fails build if tests fail or coverage < 75%)
+# Stage 3: Test runner (fails build if tests fail or coverage < 50%)
 FROM builder as test
 
-COPY . /app
+COPY app/ /app
 WORKDIR /app
 
 ENV PATH=/root/.local/bin:$PATH
@@ -42,7 +42,7 @@ WORKDIR /app
 COPY --from=builder /root/.local /root/.local
 
 # Copy application code
-COPY *.py ./
+COPY app/*.py ./
 
 # Create samples directory (optional - for golden samples)
 RUN mkdir -p ./samples

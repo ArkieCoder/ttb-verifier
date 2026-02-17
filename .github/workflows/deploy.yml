@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'app/**'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'scripts/deploy.sh'
+      - 'scripts/health-check.sh'
+      - '.github/workflows/deploy.yml'
 
 # Prevent concurrent workflows - if infrastructure deploy is running, wait
 concurrency:

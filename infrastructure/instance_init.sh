@@ -227,3 +227,24 @@ echo "Docker Compose: $(docker-compose --version)"
 echo "SSM Agent: Active"
 echo "Ollama Model: llama3.2-vision (ready)"
 echo "========================================="
+
+# Auto-deploy verifier application (fail-open)
+echo ""
+echo "========================================="
+echo "Auto-deploying TTB Verifier Application"
+echo "========================================="
+echo "Pulling latest image from GHCR..."
+
+if /app/deploy.sh; then
+  echo "✅ Verifier application deployed successfully!"
+else
+  echo "⚠️  Initial deployment failed, but EC2 is ready for manual deployment"
+  echo "   You can manually deploy using:"
+  echo "   - GitHub Actions Deploy workflow"
+  echo "   - AWS SSM: /app/deploy.sh"
+  exit 0  # Don't fail EC2 initialization
+fi
+
+echo "========================================="
+echo "System Ready - Application Online"
+echo "========================================="

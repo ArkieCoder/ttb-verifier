@@ -4,6 +4,11 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - 'app/**'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.github/workflows/test.yml'
 
 # Prevent concurrent workflows - if infrastructure deploy is running, wait
 concurrency:

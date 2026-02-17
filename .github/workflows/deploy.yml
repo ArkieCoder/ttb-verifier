@@ -5,6 +5,11 @@ on:
     branches:
       - master
 
+# Prevent concurrent workflows - if infrastructure deploy is running, wait
+concurrency:
+  group: ${{ github.repository }}-all-workflows
+  cancel-in-progress: false
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}

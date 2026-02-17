@@ -1,0 +1,139 @@
+name: Infrastructure Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target resource (leave empty to deploy all resources)'
+        required: false
+        default: ''
+        type: string
+      confirmation:
+        description: 'Type "APPLY" to confirm deployment'
+        required: true
+        type: string
+
+# CRITICAL: This concurrency group prevents ANY workflow from running concurrently
+# If any workflow (test, deploy, terraform-checks, etc.) is running, this will queue
+concurrency:
+  group: ${{ github.repository }}-all-workflows
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  validate-input:
+    name: Validate Confirmation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirmation }}" != "APPLY" ]; then
+            echo "❌ Confirmation failed. You must type 'APPLY' to proceed."
+            exit 1
+          fi
+          echo "✅ Confirmation received. Proceeding with deployment."
+
+  infrastructure-apply:
+    name: Apply Infrastructure Changes
+    needs: validate-input
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: infrastructure
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terragrunt
+        run: |
+          echo "📦 Installing Terragrunt..."
+          TERRAGRUNT_VERSION="v0.55.1"
+          wget -q "https://github.com/gruntwork-io/terragrunt/releases/download/${TERRAGRUNT_VERSION}/terragrunt_linux_amd64" -O terragrunt
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/
+          terragrunt --version
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.6.0
+          tofu_wrapper: false
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GitHubActions-InfrastructureDeploy
+
+      - name: Terragrunt Init
+        run: |
+          echo "🔧 Initializing Terragrunt..."
+          terragrunt init
+        env:
+          TF_INPUT: false
+
+      - name: Terragrunt Plan
+        id: plan
+        run: |
+          echo "📋 Running Terragrunt Plan..."
+          if [ -n "${{ github.event.inputs.target }}" ]; then
+            echo "🎯 Target: ${{ github.event.inputs.target }}"
+            terragrunt plan -no-color -target="${{ github.event.inputs.target }}" -out=tfplan
+          else
+            echo "🎯 Target: All resources"
+            terragrunt plan -no-color -out=tfplan
+          fi
+        env:
+          TF_INPUT: false
+
+      - name: Display Plan Summary
+        run: |
+          echo "========================================="
+          echo "Terragrunt Plan Summary"
+          echo "========================================="
+          terragrunt show -no-color tfplan | head -100
+
+      - name: Terragrunt Apply
+        id: apply
+        run: |
+          echo "🚀 Applying infrastructure changes..."
+          echo "========================================="
+          if [ -n "${{ github.event.inputs.target }}" ]; then
+            echo "Target: ${{ github.event.inputs.target }}"
+            terragrunt apply -auto-approve -no-color tfplan
+          else
+            echo "Target: All resources"
+            terragrunt apply -auto-approve -no-color tfplan
+          fi
+        env:
+          TF_INPUT: false
+
+      - name: Show Outputs
+        if: success()
+        run: |
+          echo "========================================="
+          echo "Infrastructure Outputs"
+          echo "========================================="
+          terragrunt output -no-color
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "========================================="
+          echo "Infrastructure Deployment Summary"
+          echo "========================================="
+          echo "Status: ${{ steps.apply.outcome }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          if [ -n "${{ github.event.inputs.target }}" ]; then
+            echo "Target: ${{ github.event.inputs.target }}"
+          else
+            echo "Target: All resources"
+          fi
+          echo "========================================="

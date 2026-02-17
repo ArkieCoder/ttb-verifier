@@ -8,7 +8,15 @@ resource "aws_instance" "ttb" {
     aws_security_group.ec2.name
   ]
 
-  user_data            = file("${path.module}/instance_init.sh")
+  user_data = <<-EOF
+    #!/bin/bash
+    export S3_BUCKET="${aws_s3_bucket.ollama_models.id}"
+    export AWS_ACCOUNT_ID="${var.aws_account_id}"
+    
+    # Source the main init script
+    ${file("${path.module}/instance_init.sh")}
+  EOF
+  
   iam_instance_profile = aws_iam_instance_profile.ssm.name
 
   # Storage for Docker images + Ollama models

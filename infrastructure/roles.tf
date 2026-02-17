@@ -29,6 +29,43 @@ resource "aws_iam_role_policy_attachment" "ssm_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Custom policy for EC2 to access Ollama models in S3
+resource "aws_iam_policy" "s3_ollama_models" {
+  name        = "ttb-s3-ollama-models-policy"
+  description = "Allow EC2 instance to read/write Ollama models from S3"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "ReadWriteOllamaModels",
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          aws_s3_bucket.ollama_models.arn,
+          "${aws_s3_bucket.ollama_models.arn}/*"
+        ]
+      }
+    ]
+  })
+
+  tags = {
+    Name      = "ttb-s3-ollama-models-policy"
+    Project   = "ttb-verifier"
+    ManagedBy = "terragrunt"
+  }
+}
+
+# Attach S3 policy to EC2 role
+resource "aws_iam_role_policy_attachment" "ssm_s3_models" {
+  role       = aws_iam_role.ssm.name
+  policy_arn = aws_iam_policy.s3_ollama_models.arn
+}
+
 # EC2 Instance Profile (required to attach IAM role to EC2)
 resource "aws_iam_instance_profile" "ssm" {
   name = "ttb-ssm-instance-profile"

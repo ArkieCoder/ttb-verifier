@@ -56,6 +56,11 @@ output "instance_availability_zone" {
   value       = aws_instance.ttb.availability_zone
 }
 
+output "ollama_models_bucket" {
+  description = "S3 bucket for Ollama models"
+  value       = aws_s3_bucket.ollama_models.id
+}
+
 # ====================================
 # Setup Instructions
 # ====================================

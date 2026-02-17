@@ -1,9 +1,14 @@
-#!/bin/bash
+# Variables are exported from user_data in instance.tf
+# S3_BUCKET - bucket containing Ollama models
+# AWS_ACCOUNT_ID - AWS account ID
+
 set -e
 
 echo "========================================="
 echo "TTB Verifier EC2 Instance Initialization"
 echo "========================================="
+echo "S3 Bucket: ${S3_BUCKET:-not set}"
+echo ""
 
 # Update system packages
 echo "Updating system packages..."
@@ -142,15 +147,54 @@ docker-compose up -d ollama
 echo "Waiting for Ollama to start (30 seconds)..."
 sleep 30
 
-# Pre-download llama3.2-vision model (~7.9GB)
+# Download llama3.2-vision model from S3 (much faster than pulling from Ollama)
 echo "========================================="
-echo "Downloading llama3.2-vision model"
-echo "This will take 5-15 minutes depending on connection speed..."
+echo "Downloading llama3.2-vision model from S3"
+echo "This will take 1-2 minutes..."
 echo "========================================="
-docker-compose exec -T ollama ollama pull llama3.2-vision
 
-# Verify model downloaded
-echo "Verifying model download..."
+# Get the S3 bucket name from Terraform/user data (passed as environment variable)
+S3_BUCKET="${S3_BUCKET:-ttb-verifier-ollama-models-${AWS_ACCOUNT_ID}}"
+MODEL_NAME="llama3.2-vision"
+
+# Check if model exists in S3, if not fall back to ollama pull
+if aws s3 ls "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" >/dev/null 2>&1; then
+  echo "Found model in S3, downloading..."
+  
+  # Download and extract model
+  aws s3 cp "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" /tmp/model.tar.gz
+  
+  # Stop ollama temporarily
+  docker-compose stop ollama
+  
+  # Extract model files into the ollama volume
+  docker run --rm \
+    -v ollama_models:/root/.ollama \
+    -v /tmp:/tmp \
+    alpine:latest \
+    sh -c "cd /root/.ollama/models && tar xzf /tmp/model.tar.gz"
+  
+  # Clean up
+  rm -f /tmp/model.tar.gz
+  
+  # Restart ollama
+  docker-compose start ollama
+  sleep 10
+  
+  echo "Model restored from S3 successfully"
+else
+  echo "Model not found in S3, falling back to ollama pull..."
+  echo "This will take 5-15 minutes depending on connection speed..."
+  docker-compose exec -T ollama ollama pull llama3.2-vision
+  
+  echo ""
+  echo "⚠️  NOTE: Model downloaded from Ollama servers."
+  echo "To speed up future deployments, run:"
+  echo "  cd infrastructure/scripts && ./export-ollama-model-to-s3.sh"
+fi
+
+# Verify model is available
+echo "Verifying model..."
 docker-compose exec -T ollama ollama list
 
 echo "========================================="

@@ -87,16 +87,23 @@ resource "aws_iam_policy" "github_actions_ssm" {
         Sid    = "SSMSendCommand",
         Effect = "Allow",
         Action = [
-          "ssm:SendCommand",
-          "ssm:GetCommandInvocation",
-          "ssm:ListCommandInvocations"
+          "ssm:SendCommand"
         ],
         Resource = [
           # Limit to specific EC2 instance
-          "arn:aws:ec2:us-east-1:253490750467:instance/${aws_instance.ttb.id}",
+          "arn:aws:ec2:${var.aws_region}:${var.aws_account_id}:instance/${aws_instance.ttb.id}",
           # Allow using AWS-RunShellScript document
-          "arn:aws:ssm:us-east-1::document/AWS-RunShellScript"
+          "arn:aws:ssm:${var.aws_region}::document/AWS-RunShellScript"
         ]
+      },
+      {
+        Sid    = "SSMGetCommandStatus",
+        Effect = "Allow",
+        Action = [
+          "ssm:GetCommandInvocation",
+          "ssm:ListCommandInvocations"
+        ],
+        Resource = "*"
       },
       {
         Sid      = "SSMDescribeInstance",

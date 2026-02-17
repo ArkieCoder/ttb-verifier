@@ -306,17 +306,17 @@ def test_host_restriction_allows_health():
 @patch('boto3.client')
 def test_get_secret_success(mock_boto_client):
     """Test successful secret retrieval."""
-    from secrets import get_secret
+    import app.secrets
     
     # Clear cache
-    get_secret.cache_clear()
+    app.secrets.get_secret.cache_clear()
     
     # Mock Secrets Manager response
     mock_sm = MagicMock()
     mock_sm.get_secret_value.return_value = {'SecretString': 'test_value'}
     mock_boto_client.return_value = mock_sm
     
-    result = get_secret('TTB_DEFAULT_USER')
+    result = app.secrets.get_secret('TTB_DEFAULT_USER')
     assert result == 'test_value'
     mock_sm.get_secret_value.assert_called_once_with(SecretId='TTB_DEFAULT_USER')
 
@@ -324,10 +324,10 @@ def test_get_secret_success(mock_boto_client):
 @patch('boto3.client')
 def test_get_secret_fallback_to_env(mock_boto_client, monkeypatch):
     """Test secret falls back to environment variable."""
-    from secrets import get_secret
+    import app.secrets
     
     # Clear cache
-    get_secret.cache_clear()
+    app.secrets.get_secret.cache_clear()
     
     # Mock Secrets Manager failure
     mock_sm = MagicMock()
@@ -337,20 +337,20 @@ def test_get_secret_fallback_to_env(mock_boto_client, monkeypatch):
     # Set environment variable
     monkeypatch.setenv('TTB_DEFAULT_USER', 'env_user')
     
-    result = get_secret('TTB_DEFAULT_USER')
+    result = app.secrets.get_secret('TTB_DEFAULT_USER')
     assert result == 'env_user'
 
 
 @patch('app.secrets.get_secret')
 def test_get_ui_credentials(mock_get_secret):
     """Test getting UI credentials."""
-    from secrets import get_ui_credentials
+    import app.secrets
     
     mock_get_secret.side_effect = lambda name: {
         'TTB_DEFAULT_USER': 'testuser',
         'TTB_DEFAULT_PASS': 'testpass'
     }[name]
     
-    username, password = get_ui_credentials()
+    username, password = app.secrets.get_ui_credentials()
     assert username == 'testuser'
     assert password == 'testpass'

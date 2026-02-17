@@ -99,7 +99,7 @@ jobs:
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=["/app/scripts/deploy.sh"]' \
+            --parameters 'commands=["/app/deploy.sh"]' \
             --comment "GitHub Actions deployment - commit ${{ github.sha }}" \
             --output text \
             --query "Command.CommandId")

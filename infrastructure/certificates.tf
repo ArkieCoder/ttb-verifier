@@ -1,10 +1,21 @@
 # ACM Certificate for application domain
+# 
+# IMPORTANT: This certificate has lifecycle.prevent_destroy = true
+# to prevent accidental deletion. DNS validation takes time to complete,
+# so destroying and recreating the certificate would require re-adding
+# the DNS validation CNAME record and waiting for validation again.
+#
+# If you really need to destroy the certificate, you must:
+# 1. Remove the "prevent_destroy = true" line from this file
+# 2. Run `terragrunt apply` to update the state
+# 3. Then run `terragrunt destroy`
 resource "aws_acm_certificate" "ttb" {
   domain_name       = var.domain_name
   validation_method = "DNS"
 
   lifecycle {
     create_before_destroy = true
+    prevent_destroy       = true
   }
 
   tags = {

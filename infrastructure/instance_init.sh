@@ -202,7 +202,7 @@ MODEL_NAME="llama3.2-vision"
       -v ollama_models:/root/.ollama \
       -v /home:/backup \
       alpine:latest \
-      sh -c "cd /root/.ollama/models && tar xzf /backup/model.tar.gz"
+      sh -c "mkdir -p /root/.ollama && cd /root/.ollama && tar xzf /backup/model.tar.gz"
     
     # Clean up
     rm -f /home/model.tar.gz

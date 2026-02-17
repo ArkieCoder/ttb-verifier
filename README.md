@@ -34,9 +34,18 @@ docker compose down
 pip install -r app/requirements.txt
 ```
 
-**Verify a label:**
+**Verify a label (CLI):**
 ```bash
-python app/verify_label.py samples/label_good_001.jpg
+# Basic verification
+python app/verify_label.py test_samples/label_good_001.jpg
+
+# With ground truth for accuracy check
+python app/verify_label.py test_samples/label_good_001.jpg \
+  --ground-truth test_samples/label_good_001.json
+
+# Use Ollama backend (slower but more accurate)
+python app/verify_label.py test_samples/label_good_001.jpg \
+  --ocr-backend ollama
 ```
 
 ## Features
@@ -129,17 +138,20 @@ See [API_README.md](docs/API_README.md) for complete API documentation.
 ## Documentation
 
 ### Getting Started
-- **[docs/QUICKSTART.md](docs/QUICKSTART.md)** - Quick start guide for CLI and API usage
 - **[docs/API_README.md](docs/API_README.md)** - Complete REST API reference
-- **[docs/VERIFIER_README.md](docs/VERIFIER_README.md)** - CLI tool documentation
-
-### Development
-- **[docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md)** - Docker build and deployment guide
 - **[docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** - Running tests (bash + pytest)
-- **[docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)** - Development phases and progress
+
+### Architecture & Operations
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and fail-open design
+- **[docs/OPERATIONS.md](docs/OPERATIONS.md)** - Operational runbook and troubleshooting
+- **[infrastructure/README.md](infrastructure/README.md)** - Infrastructure deployment guide
+- **[infrastructure/FUTURE_ENHANCEMENTS.md](infrastructure/FUTURE_ENHANCEMENTS.md)** - Planned improvements
+
+### Development & Tools
+- **[docs/DEVELOPMENT_HISTORY.md](docs/DEVELOPMENT_HISTORY.md)** - Requirements, implementation phases, and project history
+- **[tools/generator/](tools/generator/)** - Sample label generator tool and specifications
 
 ### Reference
-- **[docs/PROJECT_SUMMARY.md](docs/PROJECT_SUMMARY.md)** - Complete project overview
 - **[docs/TTB_REGULATORY_SUMMARY.md](docs/TTB_REGULATORY_SUMMARY.md)** - 27 CFR regulations summary
 - **[docs/OCR_ANALYSIS.md](docs/OCR_ANALYSIS.md)** - OCR performance analysis
 - **[docs/DECISION_LOG.md](docs/DECISION_LOG.md)** - Architectural decisions
@@ -217,7 +229,8 @@ CORS_ORIGINS=["*"]
 │       └── test_integration/ # Integration tests
 ├── infrastructure/           # Terraform/Terragrunt IaC
 ├── scripts/                  # Deployment scripts
-├── samples/                  # 40 golden test samples
+├── tools/generator/          # Sample label generator tool
+├── test_samples/             # Test images
 └── docs/                     # Documentation
 ```
 
@@ -237,11 +250,11 @@ docker compose up -d
 ```
 
 ### Production (EC2)
-See [docs/DOCKER_DEPLOYMENT.md](docs/DOCKER_DEPLOYMENT.md) for:
+See [infrastructure/README.md](infrastructure/README.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for:
 - GitHub Actions CI/CD pipeline
-- Container registry setup (GHCR or AWS ECR)
-- EC2 deployment configuration
-- Monitoring and logging
+- Infrastructure deployment with Terraform/Terragrunt
+- EC2 instance configuration
+- Monitoring and health checks
 
 ## Known Limitations
 
@@ -276,4 +289,4 @@ This is a prototype system developed for the U.S. Treasury Department TTB.
 For questions or issues:
 1. Check documentation in `/docs` directory
 2. Review [docs/DECISION_LOG.md](docs/DECISION_LOG.md) for architectural decisions
-3. See [docs/QUICKSTART.md](docs/QUICKSTART.md) for common use cases
+3. See [docs/DEVELOPMENT_HISTORY.md](docs/DEVELOPMENT_HISTORY.md) for implementation details

@@ -20,7 +20,7 @@ def client():
 @pytest.fixture
 def mock_secrets_fixture():
     """Mock AWS Secrets Manager for testing."""
-    with patch('app.secrets.get_secret') as mock_get_secret:
+    with patch('app.aws_secrets.get_secret') as mock_get_secret:
         def side_effect(secret_name):
             if secret_name == 'TTB_DEFAULT_USER':
                 return 'testuser'
@@ -82,7 +82,7 @@ def test_verify_credentials_failure(mock_secrets_fixture):
     assert result is False
 
 
-@patch('app.secrets.get_secret')
+@patch('app.aws_secrets.get_secret')
 def test_verify_credentials_exception(mock_get_secret):
     """Test credential verification handles exceptions gracefully."""
     mock_get_secret.side_effect = Exception("Secrets Manager unavailable")
@@ -306,17 +306,17 @@ def test_host_restriction_allows_health():
 @patch('boto3.client')
 def test_get_secret_success(mock_boto_client):
     """Test successful secret retrieval."""
-    import app.secrets
+    import app.aws_secrets
     
     # Clear cache
-    app.secrets.get_secret.cache_clear()
+    app.aws_secrets.get_secret.cache_clear()
     
     # Mock Secrets Manager response
     mock_sm = MagicMock()
     mock_sm.get_secret_value.return_value = {'SecretString': 'test_value'}
     mock_boto_client.return_value = mock_sm
     
-    result = app.secrets.get_secret('TTB_DEFAULT_USER')
+    result = app.aws_secrets.get_secret('TTB_DEFAULT_USER')
     assert result == 'test_value'
     mock_sm.get_secret_value.assert_called_once_with(SecretId='TTB_DEFAULT_USER')
 
@@ -324,10 +324,10 @@ def test_get_secret_success(mock_boto_client):
 @patch('boto3.client')
 def test_get_secret_fallback_to_env(mock_boto_client, monkeypatch):
     """Test secret falls back to environment variable."""
-    import app.secrets
+    import app.aws_secrets
     
     # Clear cache
-    app.secrets.get_secret.cache_clear()
+    app.aws_secrets.get_secret.cache_clear()
     
     # Mock Secrets Manager failure
     mock_sm = MagicMock()
@@ -337,20 +337,20 @@ def test_get_secret_fallback_to_env(mock_boto_client, monkeypatch):
     # Set environment variable
     monkeypatch.setenv('TTB_DEFAULT_USER', 'env_user')
     
-    result = app.secrets.get_secret('TTB_DEFAULT_USER')
+    result = app.aws_secrets.get_secret('TTB_DEFAULT_USER')
     assert result == 'env_user'
 
 
-@patch('app.secrets.get_secret')
+@patch('app.aws_secrets.get_secret')
 def test_get_ui_credentials(mock_get_secret):
     """Test getting UI credentials."""
-    import app.secrets
+    import app.aws_secrets
     
     mock_get_secret.side_effect = lambda name: {
         'TTB_DEFAULT_USER': 'testuser',
         'TTB_DEFAULT_PASS': 'testpass'
     }[name]
     
-    username, password = app.secrets.get_ui_credentials()
+    username, password = app.aws_secrets.get_ui_credentials()
     assert username == 'testuser'
     assert password == 'testpass'

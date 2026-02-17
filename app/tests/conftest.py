@@ -109,7 +109,7 @@ def sample_ground_truth():
 @pytest.fixture
 def mock_secrets():
     """Mock AWS Secrets Manager for testing."""
-    with patch('app.secrets.get_secret') as mock_get_secret:
+    with patch('app.aws_secrets.get_secret') as mock_get_secret:
         def side_effect(secret_name):
             if secret_name == 'TTB_DEFAULT_USER':
                 return 'testuser'

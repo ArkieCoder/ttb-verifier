@@ -190,8 +190,8 @@ MODEL_NAME="llama3.2-vision"
   if aws s3 ls "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" >/dev/null 2>&1; then
     echo "[Background] Found model in S3, downloading..."
     
-    # Download and extract model
-    aws s3 cp "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" /tmp/model.tar.gz
+    # Download and extract model (use /home to avoid tmpfs space issues)
+    aws s3 cp "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" /home/model.tar.gz
     
     # Stop ollama temporarily
     cd /app
@@ -200,12 +200,12 @@ MODEL_NAME="llama3.2-vision"
     # Extract model files into the ollama volume
     docker run --rm \
       -v ollama_models:/root/.ollama \
-      -v /tmp:/tmp \
+      -v /home:/backup \
       alpine:latest \
-      sh -c "cd /root/.ollama/models && tar xzf /tmp/model.tar.gz"
+      sh -c "cd /root/.ollama/models && tar xzf /backup/model.tar.gz"
     
     # Clean up
-    rm -f /tmp/model.tar.gz
+    rm -f /home/model.tar.gz
     
     # Restart ollama
     docker-compose start ollama

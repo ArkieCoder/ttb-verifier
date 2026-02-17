@@ -23,7 +23,7 @@ def client():
 
 
 @pytest.fixture
-def authenticated_client(client, mock_secrets):
+def authenticated_client(client):
     """
     FastAPI test client with authenticated session.
     
@@ -31,7 +31,7 @@ def authenticated_client(client, mock_secrets):
     """
     from auth import create_session, SESSION_COOKIE_NAME
     
-    # Create a session for test user
+    # Create a session for test user (no AWS secrets needed - just a session)
     session_id = create_session("testuser")
     
     # Add session cookie to client

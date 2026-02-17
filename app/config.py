@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     
     # UI Configuration
     allowed_hosts: str = Field(
-        default='["localhost", "127.0.0.1"]',
+        default='["localhost", "127.0.0.1", "testserver"]',
         description="JSON array of allowed hostnames for UI access"
     )
     domain_name: str = Field(
@@ -134,9 +134,9 @@ class Settings(BaseSettings):
         try:
             hosts = json.loads(self.allowed_hosts)
             if not isinstance(hosts, list):
-                hosts = ["localhost", "127.0.0.1"]
+                hosts = ["localhost", "127.0.0.1", "testserver"]
         except json.JSONDecodeError:
-            hosts = ["localhost", "127.0.0.1"]
+            hosts = ["localhost", "127.0.0.1", "testserver"]
         
         # Add domain_name if configured
         if self.domain_name and self.domain_name not in hosts:

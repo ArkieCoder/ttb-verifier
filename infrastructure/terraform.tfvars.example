@@ -1,0 +1,21 @@
+# ====================================
+# TTB Verifier Infrastructure Configuration
+# ====================================
+# Copy this file to terraform.tfvars and customize for your deployment
+
+github_owner    = "ArkieCoder"
+github_repo_name = "ttb-verifier"
+domain_name     = "ttb-verifier.unitedentropy.com"
+aws_account_id  = "253490750467"
+aws_region      = "us-east-1"
+
+# Optional: Override defaults
+# instance_type     = "t3.medium"
+# root_volume_size  = 30
+# environment       = "production"
+
+# Optional: Add custom tags
+# tags = {
+#   Owner = "Your Name"
+#   CostCenter = "Engineering"
+# }

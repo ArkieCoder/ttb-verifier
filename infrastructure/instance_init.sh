@@ -1,0 +1,163 @@
+#!/bin/bash
+set -e
+
+echo "========================================="
+echo "TTB Verifier EC2 Instance Initialization"
+echo "========================================="
+
+# Update system packages
+echo "Updating system packages..."
+dnf update -y
+
+# Install Docker
+echo "Installing Docker..."
+dnf install -y docker
+systemctl start docker
+systemctl enable docker
+usermod -a -G docker ec2-user
+
+# Install Docker Compose
+echo "Installing Docker Compose..."
+DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
+curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+# Verify Docker and Docker Compose installation
+docker --version
+docker-compose --version
+
+# Verify SSM Agent is running (pre-installed on Amazon Linux 2023)
+echo "Verifying SSM Agent..."
+systemctl status amazon-ssm-agent
+systemctl enable amazon-ssm-agent
+
+# Create application directory
+echo "Creating application directory..."
+mkdir -p /app
+chown -R ec2-user:ec2-user /app
+
+# Create production docker-compose.yml
+echo "Creating docker-compose configuration..."
+cat > /app/docker-compose.yml <<'EOF'
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ttb-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  verifier:
+    image: ghcr.io/arkiecoder/ttb-verifier:latest
+    container_name: ttb-verifier
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2-vision
+      - LOG_LEVEL=INFO
+      - MAX_FILE_SIZE_MB=10
+      - MAX_BATCH_SIZE=50
+      - DEFAULT_OCR_BACKEND=tesseract
+      - CORS_ORIGINS=["*"]
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  ollama_models:
+    driver: local
+EOF
+
+chown ec2-user:ec2-user /app/docker-compose.yml
+
+# Create deployment script for GitHub Actions to call
+cat > /app/deploy.sh <<'EOFSCRIPT'
+#!/bin/bash
+set -e
+
+echo "========================================="
+echo "Deploying TTB Verifier"
+echo "========================================="
+
+cd /app
+
+# Login to GitHub Container Registry (using public access for public repo)
+echo "Pulling latest images from GHCR..."
+docker-compose pull
+
+# Stop existing containers
+echo "Stopping existing containers..."
+docker-compose down || true
+
+# Start containers with new images
+echo "Starting containers..."
+docker-compose up -d
+
+# Wait for services to be ready
+echo "Waiting for services to start..."
+sleep 15
+
+# Check Ollama health
+echo "Checking Ollama service..."
+docker-compose exec -T ollama ollama list
+
+# Check verifier health
+echo "Checking verifier service..."
+curl -f http://localhost:8000/ || {
+  echo "Health check failed!"
+  docker-compose logs --tail=50
+  exit 1
+}
+
+echo "========================================="
+echo "Deployment successful!"
+echo "========================================="
+EOFSCRIPT
+
+chmod +x /app/deploy.sh
+chown ec2-user:ec2-user /app/deploy.sh
+
+# Pull and start Ollama service
+echo "Starting Ollama service..."
+cd /app
+docker-compose up -d ollama
+
+# Wait for Ollama to be ready
+echo "Waiting for Ollama to start (30 seconds)..."
+sleep 30
+
+# Pre-download llama3.2-vision model (~7.9GB)
+echo "========================================="
+echo "Downloading llama3.2-vision model"
+echo "This will take 5-15 minutes depending on connection speed..."
+echo "========================================="
+docker-compose exec -T ollama ollama pull llama3.2-vision
+
+# Verify model downloaded
+echo "Verifying model download..."
+docker-compose exec -T ollama ollama list
+
+echo "========================================="
+echo "EC2 Instance Initialization Complete!"
+echo "========================================="
+echo "Docker: $(docker --version)"
+echo "Docker Compose: $(docker-compose --version)"
+echo "SSM Agent: Active"
+echo "Ollama Model: llama3.2-vision (ready)"
+echo "========================================="

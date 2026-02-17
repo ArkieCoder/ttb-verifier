@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Ollama service for AI OCR
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ttb-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - ttb-network
+
+  # Main TTB Label Verifier API - pulls from GHCR
+  verifier:
+    image: ghcr.io/arkiecoder/ttb-verifier:latest
+    pull_policy: always
+    container_name: ttb-verifier
+    ports:
+      - "8000:8000"
+    environment:
+      # Ollama configuration
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2-vision
+      
+      # App configuration
+      - LOG_LEVEL=INFO
+      - MAX_FILE_SIZE_MB=10
+      - MAX_BATCH_SIZE=50
+      - DEFAULT_OCR_BACKEND=tesseract
+      
+      # CORS (allow all for prototype)
+      - CORS_ORIGINS=["*"]
+    depends_on:
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - ttb-network
+
+volumes:
+  ollama_models:
+    driver: local
+
+networks:
+  ttb-network:
+    driver: bridge

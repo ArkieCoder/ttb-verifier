@@ -45,11 +45,15 @@ class OCRBackend(ABC):
 
 
 class OllamaOCR(OCRBackend):
-    """OCR backend using Ollama vision models."""
+    """OCR backend using Ollama vision models with lazy initialization."""
     
     def __init__(self, model: str = "llama3.2-vision", host: str = "http://localhost:11434"):
         """
         Initialize Ollama OCR backend.
+        
+        Initialization does NOT verify Ollama availability - this allows the API
+        to start even when Ollama is not ready. Availability is checked lazily
+        when extract_text() is called.
         
         Args:
             model: Ollama model name (llama3.2-vision, llava, moondream)
@@ -57,20 +61,25 @@ class OllamaOCR(OCRBackend):
         """
         self.model = model
         self.host = host
-        self._verify_ollama_available()
+        self._availability_checked = False
+        self._is_available = False
+        self._availability_error = None
         
         # Import ollama library
         try:
             import ollama
             self.ollama = ollama
         except ImportError:
-            raise RuntimeError(
-                "ollama Python library not installed. "
-                "Install with: pip install ollama"
-            )
+            self._is_available = False
+            self._availability_error = "ollama Python library not installed. Install with: pip install ollama"
     
-    def _verify_ollama_available(self):
-        """Check if Ollama is running and model is available."""
+    def check_availability(self) -> tuple[bool, Optional[str]]:
+        """
+        Check if Ollama is running and model is available.
+        
+        Returns:
+            (is_available, error_message) tuple
+        """
         import requests
         
         try:
@@ -78,7 +87,7 @@ class OllamaOCR(OCRBackend):
             response = requests.get(f"{self.host}/api/tags", timeout=5)
             
             if response.status_code != 200:
-                raise RuntimeError(f"Ollama not available: HTTP {response.status_code}")
+                return False, f"Ollama not available: HTTP {response.status_code}"
             
             # Check if requested model is downloaded
             models_data = response.json()
@@ -86,19 +95,51 @@ class OllamaOCR(OCRBackend):
             model_base = self.model.split(':')[0]
             
             if model_base not in available_models:
-                raise RuntimeError(
+                return False, (
                     f"Model '{self.model}' not found. "
-                    f"Available models: {', '.join(available_models)}"
+                    f"Available models: {', '.join(available_models) if available_models else 'none'}"
                 )
+            
+            return True, None
                 
         except requests.exceptions.RequestException as e:
-            raise RuntimeError(
-                f"Cannot connect to Ollama at {self.host}: {str(e)}"
-            )
+            return False, f"Cannot connect to Ollama at {self.host}: {str(e)}"
+    
+    def _ensure_available(self):
+        """
+        Verify Ollama is available before use (lazy check).
+        
+        Raises:
+            RuntimeError: If Ollama is not available
+        """
+        # Check cached availability (don't check repeatedly)
+        if self._availability_checked and self._is_available:
+            return
+        
+        # Perform availability check
+        self._is_available, self._availability_error = self.check_availability()
+        self._availability_checked = True
+        
+        if not self._is_available:
+            raise RuntimeError(self._availability_error)
     
     def extract_text(self, image_path: str) -> Dict[str, Any]:
         """Extract text using Ollama vision model."""
         start_time = time.time()
+        
+        # Lazy availability check - only verify when actually used
+        try:
+            self._ensure_available()
+        except RuntimeError as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'metadata': {
+                    'backend': 'ollama',
+                    'model': self.model,
+                    'processing_time_seconds': time.time() - start_time
+                }
+            }
         
         try:
             # Verify image exists

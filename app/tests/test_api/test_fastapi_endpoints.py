@@ -424,7 +424,33 @@ def test_root_endpoint(client):
     assert response.status_code == 200
     data = response.json()
     assert "version" in data
+    assert "health" in data
     assert "docs" in data
+
+
+def test_health_endpoint(client):
+    """Test health endpoint returns backend status."""
+    response = client.get("/health")
+    assert response.status_code == 200
+    data = response.json()
+    
+    # Check structure
+    assert "status" in data
+    assert "backends" in data
+    assert "capabilities" in data
+    
+    # Check backends
+    assert "tesseract" in data["backends"]
+    assert "ollama" in data["backends"]
+    
+    # Tesseract should be available (always installed in container)
+    assert data["backends"]["tesseract"]["available"] is True
+    
+    # Check capabilities
+    assert "ocr_backends" in data["capabilities"]
+    assert "degraded_mode" in data["capabilities"]
+    assert isinstance(data["capabilities"]["ocr_backends"], list)
+
 
 
 # ============================================================================

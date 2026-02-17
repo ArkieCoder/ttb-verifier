@@ -40,8 +40,17 @@ MAX_ATTEMPTS=30
 ATTEMPT=0
 
 while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-  if curl -f -s http://localhost:8000/ > /dev/null 2>&1; then
+  if curl -f -s http://localhost:8000/health > /dev/null 2>&1; then
     echo "✅ Verifier is healthy"
+    
+    # Show backend availability status
+    HEALTH_STATUS=$(curl -s http://localhost:8000/health | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+    if [ "$HEALTH_STATUS" = "degraded" ]; then
+      echo "⚠️  Running in DEGRADED MODE (Tesseract-only)"
+      echo "   Ollama backend will be available after model download completes"
+    else
+      echo "✅ All backends operational"
+    fi
     break
   fi
   

@@ -560,6 +560,23 @@ These subnets are from the AWS default VPC and are reused to avoid infrastructur
 - ✅ All API requests logged by ALB
 - ✅ Infrastructure changes tracked in Terragrunt state
 
+**Known Security Considerations:**
+- ⚠️ **Public IP on EC2 Instance:** The EC2 instance currently has a public IP address assigned by the default VPC's auto-assign public IP setting. While the security group restricts access (only ALB can reach port 8000), this is not ideal for a production environment.
+  
+  **Why it exists:** The default VPC has no NAT Gateway or VPC endpoints. The instance needs internet access to:
+  - Pull Docker images from Docker Hub
+  - Download Ollama models from S3 (no S3 Gateway Endpoint)
+  - Communicate with AWS SSM (no SSM VPC Endpoints)
+  
+  **Production remediation options:**
+  1. **Add VPC Endpoints** (recommended): Deploy S3 Gateway Endpoint + SSM VPC Endpoints + NAT Gateway for Docker Hub access (~$50-60/month)
+  2. **NAT Gateway only**: Deploy NAT Gateway and move instance to private subnet (~$35-40/month)
+  3. **Custom VPC**: Create private subnet architecture with proper NAT and endpoint design
+  
+  **Current mitigation:** Security group rules strictly limit access. Only the ALB security group can reach port 8000. No SSH access is configured. The public IP provides no actual inbound access due to security group restrictions.
+  
+  **Risk assessment:** Acceptable for demo/development environments. Should be remediated before production deployment.
+
 ## Next Steps
 
 After infrastructure is deployed:

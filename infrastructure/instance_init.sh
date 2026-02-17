@@ -149,94 +149,21 @@ cd /app
 docker-compose up -d ollama
 
 # Wait for Ollama to be ready
-echo "Waiting for Ollama to start (30 seconds)..."
-sleep 30
+echo "Waiting for Ollama to start (10 seconds)..."
+sleep 10
 
-# Download llama3.2-vision model from S3 (much faster than pulling from Ollama)
-echo "========================================="
-echo "Downloading llama3.2-vision model from S3"
-echo "This will take 1-2 minutes..."
-echo "========================================="
-
-# Get the S3 bucket name from Terraform/user data (passed as environment variable)
-S3_BUCKET="${S3_BUCKET:-ttb-verifier-ollama-models-${AWS_ACCOUNT_ID}}"
-MODEL_NAME="llama3.2-vision"
-
-# Check if model exists in S3, if not fall back to ollama pull
-if aws s3 ls "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" >/dev/null 2>&1; then
-  echo "Found model in S3, downloading..."
-  
-  # Download and extract model
-  aws s3 cp "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" /tmp/model.tar.gz
-  
-  # Stop ollama temporarily
-  docker-compose stop ollama
-  
-  # Extract model files into the ollama volume
-  docker run --rm \
-    -v ollama_models:/root/.ollama \
-    -v /tmp:/tmp \
-    alpine:latest \
-    sh -c "cd /root/.ollama/models && tar xzf /tmp/model.tar.gz"
-  
-  # Clean up
-  rm -f /tmp/model.tar.gz
-  
-  # Restart ollama
-  docker-compose start ollama
-  sleep 10
-  
-  echo "Model restored from S3 successfully"
-else
-  echo "Model not found in S3, falling back to ollama pull..."
-  echo "This will take 5-15 minutes depending on connection speed..."
-  docker-compose exec -T ollama ollama pull llama3.2-vision
-  
-  echo ""
-  echo "✅ Model downloaded successfully from Ollama servers."
-  echo "📦 Exporting model to S3 to speed up future deployments..."
-  echo "This will take an additional 5-7 minutes..."
-  
-  # Self-healing: Export model to S3 for future instances
-  # Use /home directory to avoid tmpfs space issues
-  docker run --rm \
-    --volumes-from ttb-ollama \
-    -v /home:/backup \
-    alpine:latest \
-    tar czf /backup/model.tar.gz -C /root/.ollama models
-  
-  echo "Uploading compressed model to S3..."
-  aws s3 cp /home/model.tar.gz "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz"
-  
-  # Clean up local copy
-  rm -f /home/model.tar.gz
-  
-  echo "✅ Model exported to S3 successfully!"
-  echo "Future EC2 instances will download from S3 (1-2 min) instead of Ollama (5-15 min)."
-fi
-
-# Verify model is available
-echo "Verifying model..."
-docker-compose exec -T ollama ollama list
-
-echo "========================================="
-echo "EC2 Instance Initialization Complete!"
-echo "========================================="
-echo "Docker: $(docker --version)"
-echo "Docker Compose: $(docker-compose --version)"
-echo "SSM Agent: Active"
-echo "Ollama Model: llama3.2-vision (ready)"
-echo "========================================="
-
-# Auto-deploy verifier application (fail-open)
+# Auto-deploy verifier application immediately (fail-open - degraded mode OK)
 echo ""
 echo "========================================="
 echo "Auto-deploying TTB Verifier Application"
 echo "========================================="
-echo "Pulling latest image from GHCR..."
+echo "Deploying application in degraded mode (Tesseract-only)..."
+echo "Ollama model will be downloaded in background."
 
 if /app/deploy.sh; then
   echo "✅ Verifier application deployed successfully!"
+  echo "   Status: DEGRADED MODE (Tesseract OCR available)"
+  echo "   Ollama backend will become available after model download completes."
 else
   echo "⚠️  Initial deployment failed, but EC2 is ready for manual deployment"
   echo "   You can manually deploy using:"
@@ -245,6 +172,103 @@ else
   exit 0  # Don't fail EC2 initialization
 fi
 
+# Download llama3.2-vision model from S3 in BACKGROUND (non-blocking)
+echo ""
 echo "========================================="
-echo "System Ready - Application Online"
+echo "Background: Downloading llama3.2-vision model"
+echo "========================================="
+
+# Get the S3 bucket name from Terraform/user data (passed as environment variable)
+S3_BUCKET="${S3_BUCKET:-ttb-verifier-ollama-models-${AWS_ACCOUNT_ID}}"
+MODEL_NAME="llama3.2-vision"
+
+# Run model download in background process
+(
+  echo "[Background] Starting model download process..."
+  
+  # Check if model exists in S3, if not fall back to ollama pull
+  if aws s3 ls "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" >/dev/null 2>&1; then
+    echo "[Background] Found model in S3, downloading..."
+    
+    # Download and extract model
+    aws s3 cp "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz" /tmp/model.tar.gz
+    
+    # Stop ollama temporarily
+    cd /app
+    docker-compose stop ollama
+    
+    # Extract model files into the ollama volume
+    docker run --rm \
+      -v ollama_models:/root/.ollama \
+      -v /tmp:/tmp \
+      alpine:latest \
+      sh -c "cd /root/.ollama/models && tar xzf /tmp/model.tar.gz"
+    
+    # Clean up
+    rm -f /tmp/model.tar.gz
+    
+    # Restart ollama
+    docker-compose start ollama
+    sleep 10
+    
+    echo "[Background] ✅ Model restored from S3 successfully"
+    echo "[Background] Ollama backend is now available for API requests."
+  else
+    echo "[Background] Model not found in S3, falling back to ollama pull..."
+    echo "[Background] This will take 5-15 minutes depending on connection speed..."
+    cd /app
+    docker-compose exec -T ollama ollama pull llama3.2-vision
+    
+    echo "[Background] ✅ Model downloaded successfully from Ollama servers."
+    echo "[Background] 📦 Exporting model to S3 to speed up future deployments..."
+    
+    # Self-healing: Export model to S3 for future instances
+    # Use /home directory to avoid tmpfs space issues
+    docker run --rm \
+      --volumes-from ttb-ollama \
+      -v /home:/backup \
+      alpine:latest \
+      tar czf /backup/model.tar.gz -C /root/.ollama models
+    
+    echo "[Background] Uploading compressed model to S3..."
+    aws s3 cp /home/model.tar.gz "s3://$S3_BUCKET/models/$MODEL_NAME.tar.gz"
+    
+    # Clean up local copy
+    rm -f /home/model.tar.gz
+    
+    echo "[Background] ✅ Model exported to S3 successfully!"
+    echo "[Background] Future EC2 instances will download from S3 (1-2 min) instead of Ollama (5-15 min)."
+  fi
+  
+  # Verify model is available
+  echo "[Background] Verifying model..."
+  cd /app
+  docker-compose exec -T ollama ollama list
+  
+  echo "[Background] ========================================="
+  echo "[Background] Model Download Complete!"
+  echo "[Background] ========================================="
+  echo "[Background] Ollama backend is now fully operational."
+  
+) >> /var/log/ollama-model-download.log 2>&1 &
+
+# Log background process PID
+BACKGROUND_PID=$!
+echo "Model download running in background (PID: $BACKGROUND_PID)"
+echo "Progress can be monitored: tail -f /var/log/ollama-model-download.log"
+
+echo "========================================="
+echo "EC2 Instance Initialization Complete!"
+echo "========================================="
+echo "Docker: $(docker --version)"
+echo "Docker Compose: $(docker-compose --version)"
+echo "SSM Agent: Active"
+echo "Application: ONLINE (Degraded Mode - Tesseract only)"
+echo "Ollama Model: Downloading in background..."
+echo "========================================="
+echo ""
+echo "✅ System is operational and serving traffic!"
+echo "   - Tesseract OCR: Available immediately"
+echo "   - Ollama OCR: Will be available in ~2-5 minutes"
+echo "   - Check status: curl http://localhost:8000/health"
 echo "========================================="

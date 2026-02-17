@@ -3,6 +3,12 @@ resource "aws_instance" "ttb" {
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = "t3.medium"
 
+  # NOTE: This instance gets a public IP from the default VPC (MapPublicIpOnLaunch=true)
+  # While the security group restricts access (only ALB can reach port 8000), this is
+  # not ideal for production. See infrastructure/FUTURE_ENHANCEMENTS.md for remediation
+  # options (VPC endpoints + NAT Gateway). Acceptable for demo/dev environments.
+  # To disable: add `associate_public_ip_address = false` and deploy NAT Gateway.
+
   # Use default VPC security groups
   security_groups = [
     aws_security_group.ec2.name

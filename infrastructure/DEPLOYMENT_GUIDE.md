@@ -518,6 +518,16 @@ Monthly costs (us-east-1):
 - ALB security group allows public HTTPS (443) only
 - No direct SSH access - use SSM Session Manager
 
+**Known Limitation - Public IP on EC2:**
+- ⚠️ The EC2 instance currently gets a public IP address from the default VPC
+- **Mitigation:** Security group rules prevent any direct inbound access; only the ALB can reach the application on port 8000
+- **Why it exists:** Default VPC has no NAT Gateway or VPC endpoints. Instance needs internet access for Docker Hub, S3, and SSM communication
+- **Production recommendation:** Before production deployment, implement one of these options:
+  1. Add VPC endpoints (S3 Gateway + SSM endpoints) + NAT Gateway (~$50-60/month)
+  2. Create custom VPC with private subnets and NAT Gateway (~$35-40/month)
+  3. At minimum, add `associate_public_ip_address = false` to instance.tf and deploy NAT Gateway
+- **Risk assessment:** Acceptable for development/demo environments due to security group restrictions. Should be remediated for production use.
+
 ### Certificate Management
 
 - ACM certificates auto-renew before expiration

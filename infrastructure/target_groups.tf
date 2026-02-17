@@ -6,9 +6,11 @@ resource "aws_lb_target_group" "ttb" {
   vpc_id   = data.aws_vpc.default.id
 
   # Health check configuration
+  # Uses /health endpoint which returns 200 even in degraded mode (Tesseract-only)
+  # This allows the instance to serve traffic immediately while Ollama model downloads
   health_check {
     enabled             = true
-    path                = "/"
+    path                = "/health"
     protocol            = "HTTP"
     port                = "8000"
     healthy_threshold   = 2

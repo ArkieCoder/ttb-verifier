@@ -439,6 +439,23 @@ async def verify_label(
             
             return VerifyResponse(**result)
         
+        except RuntimeError as e:
+            # Handle Ollama unavailability specifically
+            error_msg = str(e)
+            if backend.lower() == "ollama" and ("Cannot connect" in error_msg or "not found" in error_msg):
+                logger.warning(f"[{correlation_id}] Ollama backend unavailable: {e}")
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail={
+                        "message": f"Ollama backend unavailable: {error_msg}",
+                        "suggestion": "Try using 'tesseract' backend or wait for model download to complete",
+                        "available_backends": ["tesseract"],
+                        "retry_after": 60
+                    }
+                )
+            # Re-raise if not Ollama-related
+            raise
+        
         except Exception as e:
             logger.error(f"[{correlation_id}] Verification failed: {e}", exc_info=True)
             raise HTTPException(
@@ -513,12 +530,30 @@ async def verify_batch(
         image_files = await extract_zip_file(batch_file, temp_path, correlation_id)
         logger.info(f"[{correlation_id}] Found {len(image_files)} images to process")
         
-        # Initialize validator (reuse for all images)
-        validator = LabelValidator(ocr_backend=backend.lower())
+        try:
+            # Initialize validator (reuse for all images)
+            validator = LabelValidator(ocr_backend=backend.lower())
+            
+            # Set timeout for Ollama if applicable
+            if backend.lower() == "ollama" and hasattr(validator.ocr, 'timeout'):
+                validator.ocr.timeout = ocr_timeout
         
-        # Set timeout for Ollama if applicable
-        if backend.lower() == "ollama" and hasattr(validator.ocr, 'timeout'):
-            validator.ocr.timeout = ocr_timeout
+        except RuntimeError as e:
+            # Handle Ollama unavailability specifically
+            error_msg = str(e)
+            if backend.lower() == "ollama" and ("Cannot connect" in error_msg or "not found" in error_msg):
+                logger.warning(f"[{correlation_id}] Ollama backend unavailable: {e}")
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail={
+                        "message": f"Ollama backend unavailable: {error_msg}",
+                        "suggestion": "Try using 'tesseract' backend or wait for model download to complete",
+                        "available_backends": ["tesseract"],
+                        "retry_after": 60
+                    }
+                )
+            # Re-raise if not Ollama-related
+            raise
         
         # Process each image
         results = []
@@ -642,15 +677,94 @@ async def general_exception_handler(request, exc: Exception):
 
 
 # ============================================================================
-# Health Check (for development/debugging)
+# Health & Status Endpoints
 # ============================================================================
 
 @app.get("/")
 async def root():
-    """Root endpoint - redirects to docs."""
+    """Root endpoint - reserved for future UI."""
     return {
         "message": "TTB Label Verifier API",
         "version": "1.0.0",
+        "health": "/health",
         "docs": "/docs",
         "redoc": "/redoc"
+    }
+
+
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint that reports backend availability.
+    
+    Returns service health and available OCR backends. This endpoint always
+    returns HTTP 200 as long as the API is running, even in degraded mode
+    (Tesseract-only). This allows the load balancer to route traffic to the
+    instance while Ollama model is still downloading.
+    
+    Returns:
+        {
+            "status": "healthy" | "degraded",
+            "backends": {
+                "tesseract": {"available": bool, "error": str|null},
+                "ollama": {"available": bool, "error": str|null, "model": str}
+            },
+            "capabilities": {
+                "ocr_backends": ["tesseract", "ollama"],  # Available backends
+                "degraded_mode": bool  # True if any backend unavailable
+            }
+        }
+    """
+    from ocr_backends import TesseractOCR, OllamaOCR
+    import os
+    
+    # Check Tesseract availability
+    tesseract_available = True
+    tesseract_error = None
+    try:
+        tesseract_ocr = TesseractOCR()
+    except RuntimeError as e:
+        tesseract_available = False
+        tesseract_error = str(e)
+    
+    # Check Ollama availability (lazy check - no exception raised)
+    ollama_host = settings.ollama_host
+    ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2-vision")
+    ollama_available = False
+    ollama_error = None
+    
+    try:
+        ollama_ocr = OllamaOCR(model=ollama_model, host=ollama_host)
+        ollama_available, ollama_error = ollama_ocr.check_availability()
+    except Exception as e:
+        ollama_error = str(e)
+    
+    # Determine available backends
+    available_backends = []
+    if tesseract_available:
+        available_backends.append("tesseract")
+    if ollama_available:
+        available_backends.append("ollama")
+    
+    # Determine overall status
+    degraded_mode = not ollama_available
+    overall_status = "degraded" if degraded_mode else "healthy"
+    
+    return {
+        "status": overall_status,
+        "backends": {
+            "tesseract": {
+                "available": tesseract_available,
+                "error": tesseract_error
+            },
+            "ollama": {
+                "available": ollama_available,
+                "error": ollama_error,
+                "model": ollama_model
+            }
+        },
+        "capabilities": {
+            "ocr_backends": available_backends,
+            "degraded_mode": degraded_mode
+        }
     }

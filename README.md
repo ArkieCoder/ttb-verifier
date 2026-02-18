@@ -39,7 +39,10 @@ The service includes a web-based UI for easy label verification without using th
 - For custom hosts: Set `ALLOWED_HOSTS` environment variable as JSON array
 
 **Login Credentials:**
-- Stored securely in AWS Secrets Manager (`TTB_DEFAULT_USER`, `TTB_DEFAULT_PASS`)
+- Stored securely in AWS Secrets Manager:
+  - `TTB_DEFAULT_USER` - UI login username
+  - `TTB_DEFAULT_PASS` - UI login password  
+  - `TTB_SESSION_SECRET_KEY` - Signed cookie secret key
 - Configure via: `./scripts/setup_secrets.sh <username> <password>`
 
 **Features:**

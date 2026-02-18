@@ -8,6 +8,11 @@
 #   ./scripts/setup_secrets.sh              # Use defaults (takehome/corcos)
 #   ./scripts/setup_secrets.sh myuser mypass  # Custom credentials
 #
+# Creates three secrets:
+#   - TTB_DEFAULT_USER: UI login username
+#   - TTB_DEFAULT_PASS: UI login password
+#   - TTB_SESSION_SECRET_KEY: Signed cookie secret key (auto-generated)
+#
 # Production Note:
 #   For production deployments, use AWS Cognito instead of Secrets Manager
 #   for proper user management, MFA, and federated identity.
@@ -63,6 +68,20 @@ else
         --secret-string "$DEFAULT_PASS" \
         --description "TTB Verifier UI default password"
     echo "✅ Created TTB_DEFAULT_PASS"
+fi
+
+# Create session secret key if it doesn't exist
+if aws secretsmanager describe-secret --secret-id TTB_SESSION_SECRET_KEY >/dev/null 2>&1; then
+    echo "✅ TTB_SESSION_SECRET_KEY already exists (keeping existing value)"
+else
+    echo "Creating TTB_SESSION_SECRET_KEY..."
+    # Generate secure random key
+    SESSION_KEY=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")
+    aws secretsmanager create-secret \
+        --name TTB_SESSION_SECRET_KEY \
+        --secret-string "$SESSION_KEY" \
+        --description "Session secret key for signing cookies in TTB Label Verifier"
+    echo "✅ Created TTB_SESSION_SECRET_KEY"
 fi
 
 echo ""

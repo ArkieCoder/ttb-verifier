@@ -367,6 +367,15 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     sleep 10
     
     echo "[Background] ✅ Model restored from S3 successfully"
+    
+    # Pre-warm the model into GPU memory
+    echo "[Background] Pre-warming model into GPU memory..."
+    if docker-compose exec -T ollama sh -c 'echo "test" | ollama run llama3.2-vision --keepalive 999h' 2>&1 | tee -a /var/log/ollama-prewarm.log; then
+      echo "[Background] ✅ Model pre-warmed successfully and loaded into GPU!"
+    else
+      echo "[Background] ⚠️  Pre-warm failed, model will load on first API request"
+    fi
+    
     echo "[Background] Ollama backend is now available for API requests."
   else
     echo "[Background] Model not found in S3, falling back to ollama pull..."
@@ -375,6 +384,15 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     docker-compose exec -T ollama ollama pull llama3.2-vision
     
     echo "[Background] ✅ Model downloaded successfully from Ollama servers."
+    
+    # Pre-warm the model into GPU memory
+    echo "[Background] Pre-warming model into GPU memory..."
+    if docker-compose exec -T ollama sh -c 'echo "test" | ollama run llama3.2-vision --keepalive 999h' 2>&1 | tee -a /var/log/ollama-prewarm.log; then
+      echo "[Background] ✅ Model pre-warmed successfully and loaded into GPU!"
+    else
+      echo "[Background] ⚠️  Pre-warm failed, model will load on first API request"
+    fi
+    
     echo "[Background] 📦 Exporting model to S3 to speed up future deployments..."
     
     # Self-healing: Export model to S3 for future instances
@@ -404,7 +422,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
   echo "[Background] Model Download Complete!"
   echo "[Background] ========================================="
   echo "[Background] Ollama backend is now fully operational."
-  echo "[Background] Model will auto-load into GPU memory on first API request."
+  echo "[Background] Model is pre-warmed and loaded in GPU memory."
   echo "[Background] Subsequent requests will be fast (model stays loaded with keep_alive=-1)."
   
 ) >> /var/log/ollama-model-download.log 2>&1 &

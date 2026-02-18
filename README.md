@@ -51,8 +51,23 @@ The service includes a web-based UI for easy label verification without using th
 
 **Testing the UI API:**
 ```bash
+# Run comprehensive API test suite (11 tests)
 ./scripts/test_api.sh https://<your-domain> <username> <password>
+
+# Example:
+./scripts/test_api.sh https://ttb-verifier.unitedentropy.com hireme please
 ```
+
+**Test Coverage:**
+- Health check and backend availability
+- Authentication and session management  
+- Single label verification (compliant & non-compliant)
+- Metadata-enhanced verification
+- Ollama backend testing
+- Batch verification with ZIP files
+- Error handling (invalid images, file sizes)
+
+The test script uses real sample images from the `samples/` directory and validates end-to-end functionality.
 
 ### Using Python Directly
 

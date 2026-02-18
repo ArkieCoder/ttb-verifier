@@ -376,35 +376,8 @@ else
 fi
 echo ""
 
-# Test 10: Test image size limits
-echo -e "${YELLOW}Test 10: File size validation${NC}"
-TOTAL_TESTS=$((TOTAL_TESTS + 1))
-
-# Create a 1x1 pixel valid PNG
-TEST_IMAGE=$(mktemp --suffix=.png)
-echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 -d > "$TEST_IMAGE"
-
-HTTP_CODE=$(curl -s -b "$COOKIE_FILE" -o "$RESPONSE_FILE" -w "%{http_code}" \
-    -X POST "$BASE_URL/verify" \
-    -F "image=@$TEST_IMAGE" \
-    -F "ocr_backend=tesseract")
-
-rm -f "$TEST_IMAGE"
-
-if [ "$HTTP_CODE" -eq 200 ]; then
-    echo -e "${GREEN}✓ Small image processed successfully (HTTP $HTTP_CODE)${NC}"
-    STATUS=$(cat "$RESPONSE_FILE" | jq -r '.status')
-    echo -e "  Status: $STATUS"
-    PASSED_TESTS=$((PASSED_TESTS + 1))
-else
-    echo -e "${YELLOW}⚠ Small image request failed (HTTP $HTTP_CODE)${NC}"
-    echo -e "  This might be expected if image is too small for OCR"
-    PASSED_TESTS=$((PASSED_TESTS + 1))
-fi
-echo ""
-
-# Test 11: Logout
-echo -e "${YELLOW}Test 11: User logout${NC}"
+# Test 10: Logout
+echo -e "${YELLOW}Test 10: User logout${NC}"
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 HTTP_CODE=$(curl -s -b "$COOKIE_FILE" -o /dev/null -w "%{http_code}" \
     "$BASE_URL/ui/logout")

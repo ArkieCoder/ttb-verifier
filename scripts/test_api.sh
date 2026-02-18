@@ -211,12 +211,23 @@ if [ -f "samples/label_good_002.jpg" ] && [ -f "samples/label_good_002.json" ]; 
         VALIDATION_LEVEL=$(cat "$RESPONSE_FILE" | jq -r '.validation_level')
         PROCESSING_TIME=$(cat "$RESPONSE_FILE" | jq -r '.processing_time_seconds')
         
-        echo -e "${GREEN}✓ Request with metadata successful (HTTP $HTTP_CODE)${NC}"
-        echo -e "  Metadata: product_type=$PRODUCT_TYPE, container_size=$CONTAINER_SIZE, is_import=$IS_IMPORT"
-        echo -e "  Status: ${CYAN}$STATUS${NC}"
-        echo -e "  Validation level: $VALIDATION_LEVEL"
-        echo -e "  Processing time: ${PROCESSING_TIME}s"
-        PASSED_TESTS=$((PASSED_TESTS + 1))
+        # label_good_002 should be COMPLIANT
+        if [ "$STATUS" = "COMPLIANT" ]; then
+            echo -e "${GREEN}✓ Good label correctly marked as COMPLIANT (HTTP $HTTP_CODE)${NC}"
+            echo -e "  Metadata: product_type=$PRODUCT_TYPE, container_size=$CONTAINER_SIZE, is_import=$IS_IMPORT"
+            echo -e "  Status: ${CYAN}$STATUS${NC}"
+            echo -e "  Validation level: $VALIDATION_LEVEL"
+            echo -e "  Processing time: ${PROCESSING_TIME}s"
+            PASSED_TESTS=$((PASSED_TESTS + 1))
+        else
+            echo -e "${RED}✗ Good label incorrectly marked as $STATUS (HTTP $HTTP_CODE)${NC}"
+            echo -e "  Metadata: product_type=$PRODUCT_TYPE, container_size=$CONTAINER_SIZE, is_import=$IS_IMPORT"
+            echo -e "  Status: ${CYAN}$STATUS${NC}"
+            echo -e "  Validation level: $VALIDATION_LEVEL"
+            echo -e "  Processing time: ${PROCESSING_TIME}s"
+            echo -e "${RED}  Expected: COMPLIANT for label_good_002${NC}"
+            FAILED_TESTS=$((FAILED_TESTS + 1))
+        fi
     else
         echo -e "${RED}✗ Request failed (HTTP $HTTP_CODE)${NC}"
         cat "$RESPONSE_FILE"

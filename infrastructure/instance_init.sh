@@ -115,7 +115,7 @@ echo "Pre-warming llama3.2-vision model into GPU memory..."
 echo "This takes 60-90 seconds on first load but ensures all API requests are fast..."
 curl -X POST http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
-  -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "keep_alive": -1}' \
+  -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "stream": false, "keep_alive": -1}' \
   >/dev/null 2>&1
 
 # Create marker file indicating model is loaded and ready
@@ -176,7 +176,7 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
-      test: ["/usr/local/bin/ollama-healthcheck.sh"]
+      test: ["CMD", "/usr/local/bin/ollama-healthcheck.sh"]
       interval: 10s
       timeout: 5s
       retries: 5

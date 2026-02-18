@@ -111,11 +111,16 @@ def get_current_user(request: Request) -> str:
     return session["username"]
 
 
+class UnauthenticatedError(Exception):
+    """Custom exception for unauthenticated UI access that needs redirect."""
+    pass
+
+
 def get_current_user_ui(request: Request) -> str:
     """
     Get username from session cookie for UI routes.
     
-    Redirects to login page if not authenticated (instead of returning JSON error).
+    Raises UnauthenticatedError if not authenticated (caught by exception handler).
     
     Args:
         request: FastAPI request object
@@ -124,19 +129,13 @@ def get_current_user_ui(request: Request) -> str:
         Username from session
         
     Raises:
-        HTTPException 302: Redirect to login if not authenticated
+        UnauthenticatedError: If not authenticated or session expired
     """
-    from fastapi.responses import RedirectResponse
-    
     session_id = request.cookies.get(SESSION_COOKIE_NAME)
     session = get_session(session_id)
     
     if not session:
-        raise HTTPException(
-            status_code=status.HTTP_302_FOUND,
-            detail="Redirecting to login",
-            headers={"Location": "/ui/login"}
-        )
+        raise UnauthenticatedError("User not authenticated")
     
     return session["username"]
 

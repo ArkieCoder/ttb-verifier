@@ -670,6 +670,17 @@ async def http_exception_handler(request, exc: HTTPException):
     )
 
 
+# Import after app is defined to avoid circular imports
+from auth import UnauthenticatedError
+from fastapi.responses import RedirectResponse as FastAPIRedirectResponse
+
+@app.exception_handler(UnauthenticatedError)
+async def unauthenticated_handler(request, exc: UnauthenticatedError):
+    """Handle unauthenticated UI access by redirecting to login."""
+    logger.info(f"Redirecting unauthenticated user to login from {request.url.path}")
+    return FastAPIRedirectResponse(url="/ui/login", status_code=status.HTTP_302_FOUND)
+
+
 @app.exception_handler(Exception)
 async def general_exception_handler(request, exc: Exception):
     """Handle unexpected exceptions."""

@@ -87,9 +87,9 @@ services:
       - ollama
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
-      timeout: 3s
+      timeout: 10s
       retries: 3
       start_period: 10s
 

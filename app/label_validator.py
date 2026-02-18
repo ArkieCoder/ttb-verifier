@@ -95,6 +95,13 @@ class LabelValidator:
             return {
                 "status": "ERROR",
                 "error": ocr_result.get('error', 'OCR extraction failed'),
+                "validation_level": "STRUCTURAL_ONLY",
+                "extracted_fields": {},
+                "validation_results": {
+                    "structural": [],
+                    "accuracy": []
+                },
+                "violations": [],
                 "processing_time_seconds": round(time.time() - start_time, 3)
             }
         

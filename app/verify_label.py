@@ -100,8 +100,16 @@ def validate_single_label(image_path: str,
     # Check if image exists
     if not os.path.exists(image_path):
         return {
+            "status": "ERROR",
             "error": f"Image file not found: {image_path}",
-            "status": "ERROR"
+            "validation_level": "STRUCTURAL_ONLY",
+            "extracted_fields": {},
+            "validation_results": {
+                "structural": [],
+                "accuracy": []
+            },
+            "violations": [],
+            "processing_time_seconds": 0.0
         }
     
     # Load ground truth if provided

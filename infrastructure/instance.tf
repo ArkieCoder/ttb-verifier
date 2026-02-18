@@ -1,7 +1,7 @@
 # EC2 instance running TTB Label Verifier in Docker containers
 resource "aws_instance" "ttb" {
   ami           = data.aws_ami.amazon_linux_2023.id
-  instance_type = "t3.medium"
+  instance_type = "r6i.large"  # Memory-optimized: 2 vCPU, 16GB RAM for Ollama llama3.2-vision
 
   # NOTE: This instance gets a public IP from the default VPC (MapPublicIpOnLaunch=true)
   # While the security group restricts access (only ALB can reach port 8000), this is

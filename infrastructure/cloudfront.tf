@@ -20,8 +20,8 @@ resource "aws_cloudfront_distribution" "ttb" {
       https_port               = 443
       origin_protocol_policy   = "http-only"
       origin_ssl_protocols     = ["TLSv1.2"]
-      origin_read_timeout      = 180  # Match ALB idle timeout for long Ollama requests
-      origin_keepalive_timeout = 60   # Keep connections alive
+      origin_read_timeout      = 60  # CloudFront max (Ollama requests may still timeout)
+      origin_keepalive_timeout = 60  # Keep connections alive
     }
   }
 

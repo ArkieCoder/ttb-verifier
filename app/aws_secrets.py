@@ -28,7 +28,9 @@ def get_secret(secret_name: str) -> str:
         Exception: If secret cannot be fetched and no fallback available
     """
     try:
-        client = boto3.client('secretsmanager')
+        # Get region from environment or use default
+        region = os.getenv('AWS_REGION', os.getenv('AWS_DEFAULT_REGION', 'us-east-1'))
+        client = boto3.client('secretsmanager', region_name=region)
         response = client.get_secret_value(SecretId=secret_name)
         logger.info(f"Successfully fetched secret: {secret_name}")
         return response['SecretString']

@@ -80,6 +80,7 @@ services:
       - TMPDIR=/app/tmp
       - CORS_ORIGINS=["*"]
       - DOMAIN_NAME=${DOMAIN_NAME}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
     volumes:
       - /home/ec2-user/tmp:/app/tmp
     depends_on:
@@ -103,6 +104,7 @@ chown ec2-user:ec2-user /app/docker-compose.yml
 echo "Creating .env file..."
 cat > /app/.env <<EOF
 DOMAIN_NAME=${DOMAIN_NAME}
+AWS_REGION=${AWS_REGION:-us-east-1}
 EOF
 
 chown ec2-user:ec2-user /app/.env

@@ -43,6 +43,9 @@ services:
       # Domain configuration for host checking
       # Set via environment variable or defaults to empty (localhost only)
       - DOMAIN_NAME=${DOMAIN_NAME:-}
+      
+      # AWS configuration
+      - AWS_REGION=${AWS_REGION:-us-east-1}
     depends_on:
       ollama:
         condition: service_healthy

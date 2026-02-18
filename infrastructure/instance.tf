@@ -19,6 +19,7 @@ resource "aws_instance" "ttb" {
     export S3_BUCKET="${local.s3_bucket_id}"
     export AWS_ACCOUNT_ID="${var.aws_account_id}"
     export DOMAIN_NAME="${var.domain_name}"
+    export AWS_REGION="${var.aws_region}"
     
     # Source the main init script
     ${file("${path.module}/instance_init.sh")}

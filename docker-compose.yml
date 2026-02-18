@@ -55,6 +55,9 @@ services:
       # Alternatively, set allowed hosts directly:
       # - ALLOWED_HOSTS=${ALLOWED_HOSTS:-["localhost", "127.0.0.1"]}
       
+      # AWS configuration
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      
       # Temp directory for file uploads (avoid tmpfs space issues)
       - TMPDIR=/app/tmp
       

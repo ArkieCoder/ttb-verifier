@@ -144,8 +144,6 @@ fi
 # Re-enable set -e for rest of script
 set -e
 
-# Create marker file indicating Ollama is ready (even if model not yet downloaded)
-touch /tmp/model_ready
 echo "✅ Ollama container is ready!"
 
 # Keep the script running and forward signals to Ollama
@@ -156,20 +154,12 @@ EOFWRAPPER
 chmod +x /app/ollama-entrypoint.sh
 chown ubuntu:ubuntu /app/ollama-entrypoint.sh
 
-# Create healthcheck script that verifies model is loaded
+# Create healthcheck script that verifies Ollama is running and model is available
 echo "Creating Ollama healthcheck script..."
 cat > /app/ollama-healthcheck.sh <<'EOFHEALTH'
-#!/bin/bash
-# Check if Ollama service is running
-if ! curl -s http://localhost:11434/api/tags >/dev/null 2>&1; then
-  exit 1
-fi
-
-# Check if model pre-warming is complete
-if [ ! -f /tmp/model_ready ]; then
-  exit 1
-fi
-
+#!/bin/sh
+# Check if Ollama server is responsive and llama3.2-vision model is available
+/bin/ollama list | grep -q 'llama3.2-vision' || exit 1
 exit 0
 EOFHEALTH
 

@@ -738,6 +738,13 @@ async def health_check():
     (Tesseract-only). This allows the load balancer to route traffic to the
     instance while Ollama model is still downloading.
     
+    Ollama is marked as "available" only when ALL three conditions are met:
+    1. Ollama server is responsive (GET /api/tags succeeds)
+    2. Model is downloaded and available (appears in /api/tags response)
+    3. Model is loaded in GPU RAM (appears in /api/ps response)
+    
+    If the model is downloaded but not loaded, use GET /health/prewarm to load it.
+    
     Returns:
         {
             "status": "healthy" | "degraded",
@@ -764,6 +771,10 @@ async def health_check():
         tesseract_error = str(e)
     
     # Check Ollama availability (lazy check - no exception raised)
+    # Ollama is considered "available" if:
+    # 1. Server is responsive
+    # 2. Model is downloaded (exists in /api/tags)
+    # 3. Model is loaded in GPU RAM (appears in /api/ps)
     ollama_host = settings.ollama_host
     ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2-vision")
     ollama_available = False
@@ -772,6 +783,8 @@ async def health_check():
     try:
         # Use short timeout for health check to avoid blocking
         import requests
+        
+        # Check 1: Is server responsive and model downloaded?
         response = requests.get(f"{ollama_host}/api/tags", timeout=2)
         
         if response.status_code == 200:
@@ -779,10 +792,22 @@ async def health_check():
             available_models = [m.get('name', '').split(':')[0] for m in models_data.get('models', [])]
             model_base = ollama_model.split(':')[0]
             
-            if model_base in available_models:
-                ollama_available = True
+            if model_base not in available_models:
+                ollama_error = f"Model '{ollama_model}' not downloaded"
             else:
-                ollama_error = f"Model '{ollama_model}' not found"
+                # Check 2: Is model loaded in GPU RAM?
+                ps_response = requests.get(f"{ollama_host}/api/ps", timeout=2)
+                
+                if ps_response.status_code == 200:
+                    loaded_models = ps_response.json().get('models', [])
+                    loaded_model_names = [m.get('name', '').split(':')[0] for m in loaded_models]
+                    
+                    if model_base in loaded_model_names:
+                        ollama_available = True
+                    else:
+                        ollama_error = f"Model not loaded in GPU (use /health/prewarm to load)"
+                else:
+                    ollama_error = f"Cannot check GPU status: HTTP {ps_response.status_code}"
         else:
             ollama_error = f"Ollama not available: HTTP {response.status_code}"
             
@@ -822,3 +847,77 @@ async def health_check():
             "degraded_mode": degraded_mode
         }
     }
+
+
+@app.get("/health/prewarm", tags=["health"])
+async def prewarm_ollama():
+    """
+    Pre-warm the Ollama model by loading it into GPU memory.
+    This endpoint triggers a warmup inference to load the model into GPU RAM.
+    Once loaded with keep_alive=-1, the model stays in GPU indefinitely.
+    
+    Returns:
+        JSON with status and timing information
+    """
+    import requests
+    import time
+    
+    ollama_host = settings.ollama_host
+    ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2-vision")
+    
+    try:
+        # Check if model is already loaded
+        ps_response = requests.get(f"{ollama_host}/api/ps", timeout=2)
+        if ps_response.status_code == 200:
+            loaded_models = ps_response.json().get('models', [])
+            model_base = ollama_model.split(':')[0]
+            loaded_model_names = [m.get('name', '').split(':')[0] for m in loaded_models]
+            
+            if model_base in loaded_model_names:
+                return {
+                    "status": "already_loaded",
+                    "message": f"Model '{ollama_model}' is already loaded in GPU",
+                    "model": ollama_model
+                }
+        
+        # Load model into GPU with a warmup request
+        start_time = time.time()
+        response = requests.post(
+            f"{ollama_host}/api/chat",
+            json={
+                "model": ollama_model,
+                "messages": [{"role": "user", "content": "warmup"}],
+                "stream": False,
+                "keep_alive": -1  # Keep loaded indefinitely
+            },
+            timeout=120  # Allow up to 2 minutes for initial GPU load
+        )
+        load_time = time.time() - start_time
+        
+        if response.status_code == 200:
+            return {
+                "status": "success",
+                "message": f"Model '{ollama_model}' loaded into GPU successfully",
+                "model": ollama_model,
+                "load_time_seconds": round(load_time, 2)
+            }
+        else:
+            return {
+                "status": "error",
+                "message": f"Failed to load model: HTTP {response.status_code}",
+                "model": ollama_model,
+                "error": response.text
+            }
+            
+    except requests.exceptions.Timeout:
+        return {
+            "status": "error",
+            "message": "Model loading timed out after 120 seconds",
+            "model": ollama_model
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Error loading model: {str(e)}",
+            "model": ollama_model
+        }

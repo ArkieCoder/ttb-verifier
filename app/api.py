@@ -771,9 +771,11 @@ async def health_check():
             ollama_error = f"Ollama not available: HTTP {response.status_code}"
             
     except requests.exceptions.Timeout:
-        ollama_error = "Ollama busy or slow to respond (timeout after 2s)"
+        ollama_error = "Unreachable (timeout after 2s)"
+    except requests.exceptions.ConnectionError:
+        ollama_error = "Unreachable (connection failed)"
     except Exception as e:
-        ollama_error = str(e)
+        ollama_error = f"Unreachable ({str(e)})"
     
     # Determine available backends
     available_backends = []

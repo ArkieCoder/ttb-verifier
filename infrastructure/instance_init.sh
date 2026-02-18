@@ -1,6 +1,7 @@
 # Variables are exported from user_data in instance.tf
 # S3_BUCKET - bucket containing Ollama models
 # AWS_ACCOUNT_ID - AWS account ID
+# DOMAIN_NAME - primary domain name for the application
 
 set -e
 
@@ -8,6 +9,7 @@ echo "========================================="
 echo "TTB Verifier EC2 Instance Initialization"
 echo "========================================="
 echo "S3 Bucket: ${S3_BUCKET:-not set}"
+echo "Domain Name: ${DOMAIN_NAME:-not set}"
 echo ""
 
 # Update system packages
@@ -77,6 +79,7 @@ services:
       - DEFAULT_OCR_BACKEND=tesseract
       - TMPDIR=/app/tmp
       - CORS_ORIGINS=["*"]
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - /home/ec2-user/tmp:/app/tmp
     depends_on:

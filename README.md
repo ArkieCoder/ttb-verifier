@@ -240,7 +240,20 @@ DEFAULT_OCR_BACKEND=tesseract
 
 # CORS Configuration
 CORS_ORIGINS=["*"]
+
+# Domain Configuration (for production)
+DOMAIN_NAME=your-domain.com  # Leave empty for local dev (allows localhost)
 ```
+
+### Domain Configuration
+
+The `DOMAIN_NAME` environment variable configures which domain is allowed to access the UI:
+
+- **Local Development**: Leave empty or set to `localhost` - allows `localhost` and `127.0.0.1`
+- **Production**: Set to your actual domain (e.g., `ttb-verifier.example.com`)
+- **Terraform**: Automatically configured from `infrastructure/terraform.tfvars`
+
+The domain restriction is enforced by `HostCheckMiddleware` to prevent unauthorized access. The `/health` endpoint is always accessible for ALB health checks.
 
 ### Using Custom Ollama Models
 

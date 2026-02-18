@@ -38,27 +38,28 @@ services:
       - "8000:8000"
     environment:
       # Ollama configuration
-      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://ollama:11434}
       # Model name - change to use custom models from S3 or Ollama registry
       # Custom models should be uploaded to s3://{bucket}/models/{MODEL_NAME}.tar.gz
-      - OLLAMA_MODEL=llama3.2-vision
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2-vision}
       
       # App configuration
-      - LOG_LEVEL=INFO
-      - MAX_FILE_SIZE_MB=10
-      - MAX_BATCH_SIZE=50
-      - DEFAULT_OCR_BACKEND=tesseract
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - MAX_FILE_SIZE_MB=${MAX_FILE_SIZE_MB:-10}
+      - MAX_BATCH_SIZE=${MAX_BATCH_SIZE:-50}
+      - DEFAULT_OCR_BACKEND=${DEFAULT_OCR_BACKEND:-tesseract}
       
       # UI configuration - set your domain for host checking
-      - DOMAIN_NAME=localhost
+      # For local development, set to localhost or use .env file
+      - DOMAIN_NAME=${DOMAIN_NAME:-localhost}
       # Alternatively, set allowed hosts directly:
-      # - ALLOWED_HOSTS=["localhost", "127.0.0.1"]
+      # - ALLOWED_HOSTS=${ALLOWED_HOSTS:-["localhost", "127.0.0.1"]}
       
       # Temp directory for file uploads (avoid tmpfs space issues)
       - TMPDIR=/app/tmp
       
       # CORS (allow all for prototype)
-      - CORS_ORIGINS=["*"]
+      - CORS_ORIGINS=${CORS_ORIGINS:-["*"]}
     volumes:
       # Mount host directory for temp file storage during uploads
       - ./tmp:/app/tmp

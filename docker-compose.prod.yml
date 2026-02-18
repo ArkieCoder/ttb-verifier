@@ -41,7 +41,8 @@ services:
       - CORS_ORIGINS=["*"]
       
       # Domain configuration for host checking
-      - DOMAIN_NAME=ttb-verifier.unitedentropy.com
+      # Set via environment variable or defaults to empty (localhost only)
+      - DOMAIN_NAME=${DOMAIN_NAME:-}
     depends_on:
       ollama:
         condition: service_healthy

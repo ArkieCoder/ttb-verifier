@@ -10,16 +10,6 @@ echo ""
 
 cd /app
 
-# Fetch latest docker-compose.prod.yml from repository
-echo "📝 Fetching latest docker-compose configuration..."
-if curl -f -s -o /tmp/docker-compose.prod.yml.new \
-  https://raw.githubusercontent.com/ArkieCoder/ttb-verifier/master/docker-compose.prod.yml; then
-  mv /tmp/docker-compose.prod.yml.new /app/docker-compose.yml
-  echo "✅ Updated docker-compose.yml from repository"
-else
-  echo "⚠️  Failed to fetch docker-compose.prod.yml, using existing configuration"
-fi
-
 # Pull latest images
 echo "📥 Pulling latest Docker images from GHCR..."
 docker-compose pull

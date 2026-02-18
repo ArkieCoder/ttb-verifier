@@ -167,6 +167,7 @@ services:
       - /app/ollama-entrypoint.sh:/usr/local/bin/ollama-entrypoint.sh:ro
       - /app/ollama-healthcheck.sh:/usr/local/bin/ollama-healthcheck.sh:ro
     entrypoint: ["/usr/local/bin/ollama-entrypoint.sh"]
+    runtime: nvidia
     deploy:
       resources:
         reservations:

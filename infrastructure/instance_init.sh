@@ -110,14 +110,18 @@ for i in {1..30}; do
   sleep 1
 done
 
-# Pre-warm the model by loading it into GPU memory
+# Pre-warm the model by loading it into GPU memory (WAIT for completion)
 echo "Pre-warming llama3.2-vision model into GPU memory..."
+echo "This takes 60-90 seconds on first load but ensures all API requests are fast..."
 curl -X POST http://localhost:11434/api/chat \
+  -H "Content-Type: application/json" \
   -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "keep_alive": -1}' \
-  >/dev/null 2>&1 &
+  >/dev/null 2>&1
 
-echo "Model pre-warming initiated in background"
-echo "Ollama is ready to serve requests"
+# Create marker file indicating model is loaded and ready
+touch /tmp/model_ready
+
+echo "✅ Model pre-warming complete! Ollama is ready to serve requests."
 
 # Keep the script running and forward signals to Ollama
 trap "kill $OLLAMA_PID" SIGTERM SIGINT
@@ -126,6 +130,26 @@ EOFWRAPPER
 
 chmod +x /app/ollama-entrypoint.sh
 chown ubuntu:ubuntu /app/ollama-entrypoint.sh
+
+# Create healthcheck script that verifies model is loaded
+echo "Creating Ollama healthcheck script..."
+cat > /app/ollama-healthcheck.sh <<'EOFHEALTH'
+#!/bin/bash
+# Check if Ollama service is running
+if ! curl -s http://localhost:11434/api/tags >/dev/null 2>&1; then
+  exit 1
+fi
+
+# Check if model pre-warming is complete
+if [ ! -f /tmp/model_ready ]; then
+  exit 1
+fi
+
+exit 0
+EOFHEALTH
+
+chmod +x /app/ollama-healthcheck.sh
+chown ubuntu:ubuntu /app/ollama-healthcheck.sh
 
 # Create production docker-compose.yml
 echo "Creating docker-compose configuration..."
@@ -141,6 +165,7 @@ services:
     volumes:
       - ollama_models:/root/.ollama
       - /app/ollama-entrypoint.sh:/usr/local/bin/ollama-entrypoint.sh:ro
+      - /app/ollama-healthcheck.sh:/usr/local/bin/ollama-healthcheck.sh:ro
     entrypoint: ["/usr/local/bin/ollama-entrypoint.sh"]
     deploy:
       resources:
@@ -151,11 +176,11 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "ollama", "list"]
+      test: ["/usr/local/bin/ollama-healthcheck.sh"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 120s
 
   verifier:
     image: ghcr.io/arkiecoder/ttb-verifier:latest

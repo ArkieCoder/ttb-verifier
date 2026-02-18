@@ -99,6 +99,14 @@ EOF
 
 chown ec2-user:ec2-user /app/docker-compose.yml
 
+# Create .env file with DOMAIN_NAME for docker-compose
+echo "Creating .env file..."
+cat > /app/.env <<EOF
+DOMAIN_NAME=${DOMAIN_NAME}
+EOF
+
+chown ec2-user:ec2-user /app/.env
+
 # Create deployment script for GitHub Actions to call
 cat > /app/deploy.sh <<'EOFSCRIPT'
 #!/bin/bash

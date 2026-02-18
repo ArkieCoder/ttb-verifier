@@ -1,94 +1,88 @@
 """
 Session-based authentication for TTB Label Verifier UI.
 
-Implements simple session management with secure cookies for prototype authentication.
-For production, use AWS Cognito or a proper auth service.
+Uses signed cookies for stateless authentication that works with multiple workers.
+For production, consider AWS Cognito or a proper auth service.
 """
 
-import secrets
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, Optional
-from fastapi import Request, HTTPException, status, Depends
+from typing import Optional
+from fastapi import Request, HTTPException, status, Depends, Response
 from fastapi.security import APIKeyHeader
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+import os
 
 logger = logging.getLogger(__name__)
-
-# In-memory session store
-# Production: Use Redis or DynamoDB for persistence
-sessions: Dict[str, Dict[str, any]] = {}
 
 # Session configuration
 SESSION_DURATION_HOURS = 4
 SESSION_COOKIE_NAME = "session_id"
 
+# Secret key for signing cookies (from environment or generate)
+# In production, this should come from AWS Secrets Manager
+SECRET_KEY = os.getenv("SESSION_SECRET_KEY", "dev-secret-key-change-in-production")
+serializer = URLSafeTimedSerializer(SECRET_KEY)
+
 # Optional API key header for API access
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
-def create_session(username: str) -> str:
+def create_session_cookie(username: str) -> str:
     """
-    Create new session for authenticated user.
+    Create signed session cookie for authenticated user.
     
     Args:
         username: Username to associate with session
         
     Returns:
-        Session ID (secure random token)
+        Signed cookie value containing username and expiry
     """
-    session_id = secrets.token_urlsafe(32)
-    expires = datetime.now() + timedelta(hours=SESSION_DURATION_HOURS)
-    
-    sessions[session_id] = {
+    session_data = {
         "username": username,
-        "expires": expires,
-        "created_at": datetime.now()
+        "created_at": datetime.now().isoformat()
     }
     
+    # Create signed token (expires after SESSION_DURATION_HOURS)
+    token = serializer.dumps(session_data)
+    
+    expires = datetime.now() + timedelta(hours=SESSION_DURATION_HOURS)
     logger.info(f"Created session for user: {username}, expires: {expires}")
-    return session_id
+    return token
 
 
-def destroy_session(session_id: str) -> None:
+def verify_session_cookie(cookie_value: Optional[str]) -> Optional[str]:
     """
-    Destroy session by ID.
+    Verify and decode signed session cookie.
     
     Args:
-        session_id: Session ID to destroy
-    """
-    if session_id in sessions:
-        username = sessions[session_id].get("username", "unknown")
-        del sessions[session_id]
-        logger.info(f"Destroyed session for user: {username}")
-
-
-def get_session(session_id: Optional[str]) -> Optional[Dict[str, any]]:
-    """
-    Get session data by ID.
-    
-    Args:
-        session_id: Session ID from cookie
+        cookie_value: Signed cookie value
         
     Returns:
-        Session data dict or None if invalid/expired
+        Username if valid, None if invalid/expired
     """
-    if not session_id or session_id not in sessions:
+    if not cookie_value:
         return None
     
-    session = sessions[session_id]
-    
-    # Check expiration
-    if datetime.now() > session["expires"]:
-        logger.info(f"Session expired for user: {session.get('username')}")
-        del sessions[session_id]
+    try:
+        # Verify signature and check expiry (max_age in seconds)
+        max_age = SESSION_DURATION_HOURS * 3600
+        session_data = serializer.loads(cookie_value, max_age=max_age)
+        return session_data.get("username")
+    except SignatureExpired:
+        logger.info("Session expired")
         return None
-    
-    return session
+    except BadSignature:
+        logger.warning("Invalid session signature")
+        return None
+    except Exception as e:
+        logger.error(f"Error verifying session: {e}")
+        return None
 
 
 def get_current_user(request: Request) -> str:
     """
-    Get username from session cookie.
+    Get username from signed session cookie.
     
     Args:
         request: FastAPI request object
@@ -99,16 +93,16 @@ def get_current_user(request: Request) -> str:
     Raises:
         HTTPException 401: If not authenticated or session expired
     """
-    session_id = request.cookies.get(SESSION_COOKIE_NAME)
-    session = get_session(session_id)
+    cookie_value = request.cookies.get(SESSION_COOKIE_NAME)
+    username = verify_session_cookie(cookie_value)
     
-    if not session:
+    if not username:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated"
         )
     
-    return session["username"]
+    return username
 
 
 class UnauthenticatedError(Exception):
@@ -118,7 +112,7 @@ class UnauthenticatedError(Exception):
 
 def get_current_user_ui(request: Request) -> str:
     """
-    Get username from session cookie for UI routes.
+    Get username from signed session cookie for UI routes.
     
     Raises UnauthenticatedError if not authenticated (caught by exception handler).
     
@@ -131,18 +125,18 @@ def get_current_user_ui(request: Request) -> str:
     Raises:
         UnauthenticatedError: If not authenticated or session expired
     """
-    session_id = request.cookies.get(SESSION_COOKIE_NAME)
-    session = get_session(session_id)
+    cookie_value = request.cookies.get(SESSION_COOKIE_NAME)
+    username = verify_session_cookie(cookie_value)
     
-    if not session:
+    if not username:
         raise UnauthenticatedError("User not authenticated")
     
-    return session["username"]
+    return username
 
 
 async def get_current_user_optional(request: Request) -> Optional[str]:
     """
-    Get username from session cookie, return None if not authenticated.
+    Get username from signed session cookie, return None if not authenticated.
     
     Args:
         request: FastAPI request object
@@ -150,13 +144,8 @@ async def get_current_user_optional(request: Request) -> Optional[str]:
     Returns:
         Username from session or None
     """
-    session_id = request.cookies.get(SESSION_COOKIE_NAME)
-    session = get_session(session_id)
-    
-    if not session:
-        return None
-    
-    return session["username"]
+    cookie_value = request.cookies.get(SESSION_COOKIE_NAME)
+    return verify_session_cookie(cookie_value)
 
 
 def verify_credentials(username: str, password: str) -> bool:
@@ -192,37 +181,27 @@ def cleanup_expired_sessions() -> int:
     """
     Remove expired sessions from memory.
     
+    NOTE: With signed cookies, this is a no-op since sessions are stateless.
+    Kept for backward compatibility.
+    
     Returns:
-        Number of sessions removed
+        Always returns 0
     """
-    now = datetime.now()
-    expired_sessions = [
-        sid for sid, session in sessions.items()
-        if now > session["expires"]
-    ]
-    
-    for sid in expired_sessions:
-        del sessions[sid]
-    
-    if expired_sessions:
-        logger.info(f"Cleaned up {len(expired_sessions)} expired sessions")
-    
-    return len(expired_sessions)
+    return 0
 
 
-def get_session_stats() -> Dict[str, int]:
+def get_session_stats() -> dict:
     """
     Get session statistics for monitoring.
     
-    Returns:
-        Dict with active session count and other stats
-    """
-    cleanup_expired_sessions()
+    NOTE: With signed cookies, we can't track active sessions.
+    Returns placeholder data for backward compatibility.
     
+    Returns:
+        Dict with placeholder stats
+    """
     return {
-        "active_sessions": len(sessions),
-        "oldest_session_age_seconds": min(
-            [(datetime.now() - s["created_at"]).total_seconds() for s in sessions.values()],
-            default=0
-        )
+        "active_sessions": 0,
+        "session_type": "signed_cookies",
+        "note": "Stateless authentication - cannot track active session count"
     }

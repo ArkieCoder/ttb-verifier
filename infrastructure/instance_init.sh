@@ -81,6 +81,7 @@ services:
       - CORS_ORIGINS=["*"]
       - DOMAIN_NAME=${DOMAIN_NAME}
       - AWS_REGION=${AWS_REGION:-us-east-1}
+      - SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
     volumes:
       - /home/ec2-user/tmp:/app/tmp
     depends_on:
@@ -102,9 +103,15 @@ chown ec2-user:ec2-user /app/docker-compose.yml
 
 # Create .env file with DOMAIN_NAME for docker-compose
 echo "Creating .env file..."
+
+# Fetch session secret key from Secrets Manager
+echo "Fetching session secret key from AWS Secrets Manager..."
+SESSION_SECRET_KEY=$(aws secretsmanager get-secret-value --secret-id TTB_SESSION_SECRET_KEY --query SecretString --output text --region ${AWS_REGION:-us-east-1})
+
 cat > /app/.env <<EOF
 DOMAIN_NAME=${DOMAIN_NAME}
 AWS_REGION=${AWS_REGION:-us-east-1}
+SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
 EOF
 
 chown ec2-user:ec2-user /app/.env

@@ -21,8 +21,7 @@ from fastapi.templating import Jinja2Templates
 from PIL import Image
 
 from auth import (
-    create_session, 
-    destroy_session, 
+    create_session_cookie, 
     get_current_user,
     get_current_user_ui,
     get_current_user_optional,
@@ -148,13 +147,13 @@ async def ui_login_submit(
     Process login form submission.
     """
     if verify_credentials(username, password):
-        session_id = create_session(username)
+        session_cookie = create_session_cookie(username)
         
         # Redirect to main verification page
         response = RedirectResponse(url="/ui/verify", status_code=status.HTTP_302_FOUND)
         response.set_cookie(
             key=SESSION_COOKIE_NAME,
-            value=session_id,
+            value=session_cookie,
             httponly=True,
             secure=True,  # Only over HTTPS
             samesite="lax",
@@ -171,12 +170,8 @@ async def ui_login_submit(
 @router.get("/ui/logout")
 async def ui_logout(request: Request):
     """
-    Logout user and destroy session.
+    Logout user by deleting session cookie.
     """
-    session_id = request.cookies.get(SESSION_COOKIE_NAME)
-    if session_id:
-        destroy_session(session_id)
-    
     response = RedirectResponse(url="/ui/login", status_code=status.HTTP_302_FOUND)
     response.delete_cookie(SESSION_COOKIE_NAME)
     return response

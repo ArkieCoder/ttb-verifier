@@ -29,13 +29,13 @@ def authenticated_client(client):
     
     Creates a session and adds the session cookie to the client.
     """
-    from auth import create_session, SESSION_COOKIE_NAME
+    from auth import create_session_cookie, SESSION_COOKIE_NAME
     
     # Create a session for test user (no AWS secrets needed - just a session)
-    session_id = create_session("testuser")
+    session_cookie = create_session_cookie("testuser")
     
     # Add session cookie to client
-    client.cookies.set(SESSION_COOKIE_NAME, session_id)
+    client.cookies.set(SESSION_COOKIE_NAME, session_cookie)
     
     return client
 

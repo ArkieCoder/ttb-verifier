@@ -24,6 +24,7 @@ from auth import (
     create_session, 
     destroy_session, 
     get_current_user,
+    get_current_user_ui,
     get_current_user_optional,
     verify_credentials,
     SESSION_COOKIE_NAME
@@ -182,7 +183,7 @@ async def ui_logout(request: Request):
 
 
 @router.get("/ui/verify", response_class=HTMLResponse)
-async def ui_verify_page(request: Request, username: str = Depends(get_current_user)):
+async def ui_verify_page(request: Request, username: str = Depends(get_current_user_ui)):
     """
     Main verification page for single image upload.
     """
@@ -208,7 +209,7 @@ async def ui_verify_submit(
     product_type: Optional[str] = Form(None),
     use_ollama: Optional[str] = Form(None),
     ollama_timeout: Optional[int] = Form(None),
-    username: str = Depends(get_current_user)
+    username: str = Depends(get_current_user_ui)
 ):
     """
     Process single image verification form.
@@ -308,7 +309,7 @@ async def ui_verify_submit(
 
 
 @router.get("/ui/batch", response_class=HTMLResponse)
-async def ui_batch_page(request: Request, username: str = Depends(get_current_user)):
+async def ui_batch_page(request: Request, username: str = Depends(get_current_user_ui)):
     """
     Batch verification page for ZIP upload.
     """
@@ -330,7 +331,7 @@ async def ui_batch_submit(
     batch_file: UploadFile = File(...),
     use_ollama: Optional[str] = Form(None),
     ollama_timeout: Optional[int] = Form(None),
-    username: str = Depends(get_current_user)
+    username: str = Depends(get_current_user_ui)
 ):
     """
     Process batch ZIP file verification.

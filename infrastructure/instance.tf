@@ -1,6 +1,6 @@
 # EC2 instance running TTB Label Verifier in Docker containers
 resource "aws_instance" "ttb" {
-  ami           = data.aws_ami.amazon_linux_2023.id
+  ami           = data.aws_ami.ubuntu_2204.id
   instance_type = "g4dn.xlarge"  # GPU-accelerated: 4 vCPU, 16GB RAM, 1x NVIDIA T4 GPU (16GB) for fast Ollama inference
 
   # NOTE: This instance gets a public IP from the default VPC (MapPublicIpOnLaunch=true)

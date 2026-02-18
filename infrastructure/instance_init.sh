@@ -14,59 +14,80 @@ echo ""
 
 # Update system packages
 echo "Updating system packages..."
-dnf update -y
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get upgrade -y
+
+# Install AWS CLI (not pre-installed on Ubuntu)
+echo "Installing AWS CLI..."
+apt-get install -y unzip curl
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+unzip -q /tmp/awscliv2.zip -d /tmp
+/tmp/aws/install
+rm -rf /tmp/aws /tmp/awscliv2.zip
+
+# Install SSM Agent (not pre-installed on Ubuntu)
+echo "Installing SSM Agent..."
+snap install amazon-ssm-agent --classic
+systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
+systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
 
 # Install Docker
 echo "Installing Docker..."
-dnf install -y docker
+apt-get install -y ca-certificates gnupg lsb-release
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 systemctl start docker
 systemctl enable docker
-usermod -a -G docker ec2-user
+usermod -a -G docker ubuntu
 
 # Install NVIDIA drivers and Docker GPU support for g4dn instances
 echo "Installing NVIDIA GPU support..."
-# Install NVIDIA driver
-dnf install -y gcc kernel-devel-$(uname -r)
-aws s3 cp --recursive s3://ec2-linux-nvidia-drivers/latest/ /tmp/nvidia-drivers/ || {
-    echo "Downloading NVIDIA drivers from official source..."
-    wget -q https://us.download.nvidia.com/tesla/470.239.06/NVIDIA-Linux-x86_64-470.239.06.run -P /tmp/nvidia-drivers/
-}
-chmod +x /tmp/nvidia-drivers/*.run
-/tmp/nvidia-drivers/*.run --silent --disable-nouveau || echo "NVIDIA driver install attempted"
-rm -rf /tmp/nvidia-drivers
+
+# Ubuntu has excellent NVIDIA driver support via APT
+apt-get install -y ubuntu-drivers-common
+ubuntu-drivers devices
+apt-get install -y nvidia-driver-550 nvidia-dkms-550
+
+# Load NVIDIA kernel modules
+modprobe nvidia || echo "Waiting for driver to initialize..."
+modprobe nvidia-uvm || echo "Waiting for nvidia-uvm to initialize..."
 
 # Install NVIDIA Container Toolkit
 echo "Installing NVIDIA Container Toolkit..."
-dnf config-manager --add-repo https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo
-dnf install -y nvidia-container-toolkit
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+apt-get update
+apt-get install -y nvidia-container-toolkit
 nvidia-ctk runtime configure --runtime=docker
 systemctl restart docker
 
 # Verify GPU is accessible
 nvidia-smi || echo "GPU not detected yet, may need reboot"
 
-# Install Docker Compose
-echo "Installing Docker Compose..."
+# Install Docker Compose standalone (for compatibility)
+echo "Installing Docker Compose standalone..."
 DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
 curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
-ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # Verify Docker and Docker Compose installation
 docker --version
 docker-compose --version
 
-# Verify SSM Agent is running (pre-installed on Amazon Linux 2023)
-echo "Verifying SSM Agent..."
-systemctl status amazon-ssm-agent
-systemctl enable amazon-ssm-agent
-
 # Create application directory
 echo "Creating application directory..."
 mkdir -p /app
-mkdir -p /home/ec2-user/tmp
-chown -R ec2-user:ec2-user /app
-chown -R ec2-user:ec2-user /home/ec2-user/tmp
+mkdir -p /home/ubuntu/tmp
+chown -R ubuntu:ubuntu /app
+chown -R ubuntu:ubuntu /home/ubuntu/tmp
 
 # Create production docker-compose.yml
 echo "Creating docker-compose configuration..."
@@ -77,6 +98,8 @@ services:
     container_name: ttb-ollama
     ports:
       - "11434:11434"
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1
     volumes:
       - ollama_models:/root/.ollama
     deploy:
@@ -112,7 +135,7 @@ services:
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
     volumes:
-      - /home/ec2-user/tmp:/app/tmp
+      - /home/ubuntu/tmp:/app/tmp
     depends_on:
       - ollama
     restart: unless-stopped
@@ -128,7 +151,7 @@ volumes:
     driver: local
 EOF
 
-chown ec2-user:ec2-user /app/docker-compose.yml
+chown ubuntu:ubuntu /app/docker-compose.yml
 
 # Create .env file with DOMAIN_NAME for docker-compose
 echo "Creating .env file..."
@@ -143,7 +166,7 @@ AWS_REGION=${AWS_REGION:-us-east-1}
 SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
 EOF
 
-chown ec2-user:ec2-user /app/.env
+chown ubuntu:ubuntu /app/.env
 
 # Create deployment script for GitHub Actions to call
 cat > /app/deploy.sh <<'EOFSCRIPT'
@@ -190,7 +213,7 @@ echo "========================================="
 EOFSCRIPT
 
 chmod +x /app/deploy.sh
-chown ec2-user:ec2-user /app/deploy.sh
+chown ubuntu:ubuntu /app/deploy.sh
 
 # Pull and start Ollama service
 echo "Starting Ollama service..."
@@ -296,10 +319,16 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
   cd /app
   docker-compose exec -T ollama ollama list
   
+  # Pre-warm the model by loading it into GPU memory
+  echo "[Background] Pre-warming model into GPU memory..."
+  echo "[Background] This prevents 60s+ cold start on first API request..."
+  docker-compose exec -T ollama ollama run llama3.2-vision "warmup" --keepalive -1 >/dev/null 2>&1 || true
+  
   echo "[Background] ========================================="
   echo "[Background] Model Download Complete!"
   echo "[Background] ========================================="
   echo "[Background] Ollama backend is now fully operational."
+  echo "[Background] Model pre-loaded into GPU memory for fast inference."
   
 ) >> /var/log/ollama-model-download.log 2>&1 &
 

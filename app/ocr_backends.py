@@ -177,7 +177,8 @@ Format your response as plain text, with each distinct text element on its own l
                 }],
                 options={
                     'temperature': 0.1,  # Low temperature for consistent extraction
-                }
+                },
+                keep_alive=-1  # Keep model loaded indefinitely to avoid 60s+ reload times
             )
             
             extracted_text = response['message']['content'].strip()

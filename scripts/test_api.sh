@@ -242,9 +242,6 @@ elif [ "$OLLAMA_AVAILABLE" != "true" ]; then
 elif [ ! -f "samples/label_good_002.jpg" ] || [ ! -f "samples/label_good_002.json" ]; then
     echo -e "${YELLOW}⚠ Skipped - samples/label_good_002.jpg or .json not found${NC}"
 fi
-else
-    echo -e "${YELLOW}⚠ Skipped - samples/label_good_002.jpg or .json not found${NC}"
-fi
 echo ""
 
 # Test 7: Verify with Ollama backend

@@ -21,6 +21,11 @@ output "cloudfront_domain_name" {
   value       = aws_cloudfront_distribution.ttb.domain_name
 }
 
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID"
+  value       = aws_cloudfront_distribution.ttb.id
+}
+
 output "alb_dns_name" {
   description = "ALB DNS name (for reference only - DNS should point to CloudFront, not ALB)"
   value       = aws_lb.ttb.dns_name

@@ -28,3 +28,4 @@ override.tf.json
 # OS
 .DS_Store
 Thumbs.db
+infrastructure/tfplan

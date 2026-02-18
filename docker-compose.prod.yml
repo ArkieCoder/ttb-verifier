@@ -39,6 +39,9 @@ services:
       
       # CORS (allow all for prototype)
       - CORS_ORIGINS=["*"]
+      
+      # Domain configuration for host checking
+      - DOMAIN_NAME=ttb-verifier.unitedentropy.com
     depends_on:
       ollama:
         condition: service_healthy

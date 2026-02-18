@@ -225,11 +225,11 @@ See [API_README.md](docs/API_README.md) for complete API documentation.
 
 **Run all tests:**
 ```bash
-# Using Docker (recommended)
+# Using Docker (recommended - what CI/CD runs)
 docker build --target test -t ttb-verifier:test .
 
-# Using Python directly
-pytest app/tests/ --cov=app --cov-fail-under=75 -v
+# Using Python directly (from app directory)
+cd app && pytest tests/ --cov=. --cov-fail-under=50 -v
 ```
 
 **Test suite:**
@@ -296,28 +296,37 @@ To use a custom Ollama model:
 .
 ├── app/                      # Application code
 │   ├── api.py               # FastAPI REST API
+│   ├── ui_routes.py         # Web UI routes
 │   ├── config.py            # Configuration management
 │   ├── label_validator.py   # Main validation orchestrator
 │   ├── field_validators.py  # Field-level validation logic
 │   ├── label_extractor.py   # OCR text extraction
 │   ├── ocr_backends.py      # Tesseract & Ollama OCR
 │   ├── verify_label.py      # CLI interface
+│   ├── templates/           # Jinja2 templates for web UI
 │   ├── requirements.txt     # Python dependencies
+│   ├── pytest.ini           # Pytest configuration
 │   └── tests/               # Test suite (pytest)
 │       ├── test_api/        # API endpoint tests
 │       ├── test_unit/       # Unit tests
 │       └── test_integration/ # Integration tests
 ├── infrastructure/           # Terraform/Terragrunt IaC
-├── scripts/                  # Deployment scripts
-├── tools/generator/          # Sample label generator tool
-├── test_samples/             # Test images
+├── scripts/                  # Utility scripts
+│   ├── deploy.sh            # Deployment automation
+│   ├── gen_samples.py       # Generate test label images
+│   ├── run_cli_tests.sh     # CLI test suite
+│   ├── setup_secrets.sh     # AWS secrets configuration
+│   ├── test_api.sh          # API integration tests
+│   └── test_verifier.py     # Golden dataset validation
+├── samples/                  # Golden dataset (40 test labels)
+├── tools/                    # Additional tooling
 └── docs/                     # Documentation
 ```
 
 ## Development Workflow
 
 1. **Make changes** to Python files in `app/`
-2. **Run tests** locally: `pytest app/tests/`
+2. **Run tests**: `cd app && pytest tests/` (or use Docker: `docker build --target test .`)
 3. **Build Docker** image: `docker build -t ttb-verifier:latest .`
 4. **Test in Docker**: `docker run -p 8000:8000 ttb-verifier:latest`
 5. **Commit** changes with descriptive message

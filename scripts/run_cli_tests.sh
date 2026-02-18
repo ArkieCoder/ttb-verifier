@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-# Comprehensive Test Script for TTB Label Verifier
+# Comprehensive Test Script for TTB Label Verifier CLI
 #
 # Usage:
-#   ./run_tests.sh                    # Run all tests
-#   ./run_tests.sh --quick            # Run quick tests only (skip slow Ollama)
-#   ./run_tests.sh --stop-on-error    # Stop at first failure
-#   ./run_tests.sh --verbose          # Show detailed output
-#   ./run_tests.sh --cleanup          # Clean up test artifacts after run
+#   ./scripts/run_cli_tests.sh                    # Run all tests
+#   ./scripts/run_cli_tests.sh --quick            # Run quick tests only (skip slow Ollama)
+#   ./scripts/run_cli_tests.sh --stop-on-error    # Stop at first failure
+#   ./scripts/run_cli_tests.sh --verbose          # Show detailed output
+#   ./scripts/run_cli_tests.sh --cleanup          # Clean up test artifacts after run
 
 set -euo pipefail
 
@@ -30,7 +30,16 @@ QUICK_MODE=false
 STOP_ON_ERROR=false
 VERBOSE=false
 CLEANUP=false
-TEST_OUTPUT_DIR="test_output"
+
+# Create temporary directories for test artifacts
+TEST_TEMP_DIR=$(mktemp -d /tmp/ttb_cli_tests.XXXXXX)
+TEST_OUTPUT_DIR="$TEST_TEMP_DIR/output"
+TEST_SAMPLES_DIR="$TEST_TEMP_DIR/samples"
+
+# Get script directory to find samples
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+SAMPLES_DIR="$PROJECT_DIR/samples"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -70,8 +79,29 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Create test output directory
+# Setup: Copy sample files from samples/ to temporary test directory
+echo -e "${BLUE}Setting up test environment...${NC}"
 mkdir -p "$TEST_OUTPUT_DIR"
+mkdir -p "$TEST_SAMPLES_DIR"
+
+# Copy 3 good and 3 bad samples for batch tests (total 6 files)
+cp "$SAMPLES_DIR/label_good_001.jpg" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_good_001.json" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_good_002.jpg" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_good_002.json" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_good_003.jpg" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_good_003.json" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_bad_001.jpg" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_bad_001.json" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_bad_002.jpg" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_bad_002.json" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_bad_003.jpg" "$TEST_SAMPLES_DIR/"
+cp "$SAMPLES_DIR/label_bad_003.json" "$TEST_SAMPLES_DIR/"
+
+echo -e "${GREEN}✓ Test environment ready${NC}"
+echo "  Test samples: $TEST_SAMPLES_DIR"
+echo "  Test output:  $TEST_OUTPUT_DIR"
+echo ""
 
 # Helper functions
 print_header() {
@@ -144,8 +174,7 @@ check_ollama() {
 }
 
 # Start tests
-print_header "TTB Label Verifier - Comprehensive Test Suite"
-echo "Test output directory: $TEST_OUTPUT_DIR"
+print_header "TTB Label Verifier - CLI Test Suite"
 echo "Quick mode: $QUICK_MODE"
 echo "Stop on error: $STOP_ON_ERROR"
 echo "Verbose: $VERBOSE"
@@ -157,7 +186,7 @@ echo ""
 print_header "CATEGORY 1: Single Label Verification"
 
 print_test "Single GOOD label with ground truth"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg --ground-truth samples/label_good_001.json" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg --ground-truth $SAMPLES_DIR/label_good_001.json" 1)
 if [ "$exit_code" -eq 1 ] && validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
     print_pass "Exit code 1 (non-compliant due to OCR), valid JSON"
 else
@@ -165,7 +194,7 @@ else
 fi
 
 print_test "Single BAD label with ground truth"
-exit_code=$(run_command "python3 verify_label.py samples/label_bad_001.jpg --ground-truth samples/label_bad_001.json" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_bad_001.jpg --ground-truth $SAMPLES_DIR/label_bad_001.json" 1)
 if [ "$exit_code" -eq 1 ] && validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
     print_pass "Exit code 1 (non-compliant), valid JSON"
 else
@@ -173,7 +202,7 @@ else
 fi
 
 print_test "Label without ground truth (structural only)"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg" 1)
 if validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
     output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
     if echo "$output" | grep -q '"validation_level": "STRUCTURAL_ONLY"'; then
@@ -212,7 +241,7 @@ fi
 print_header "CATEGORY 2: Output Format Options"
 
 print_test "JSON output to file"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg --ground-truth samples/label_good_001.json -o $TEST_OUTPUT_DIR/output.json" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg --ground-truth $SAMPLES_DIR/label_good_001.json -o $TEST_OUTPUT_DIR/output.json" 1)
 if [ -f "$TEST_OUTPUT_DIR/output.json" ] && validate_json "$TEST_OUTPUT_DIR/output.json"; then
     print_pass "Output file created with valid JSON"
 else
@@ -220,7 +249,7 @@ else
 fi
 
 print_test "Compact JSON output (no indentation)"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 # Check that output is compact (no leading spaces indicating indentation)
 if ! echo "$output" | grep -q "^  " && validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
@@ -230,7 +259,7 @@ else
 fi
 
 print_test "Verbose mode"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg --ground-truth samples/label_good_001.json --verbose 2>&1" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg --ground-truth $SAMPLES_DIR/label_good_001.json --verbose 2>&1" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 if echo "$output" | grep -q "Initializing"; then
     print_pass "Verbose output includes progress messages"
@@ -239,7 +268,7 @@ else
 fi
 
 print_test "JSON pipeline compatibility"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg 2>/dev/null | python3 -m json.tool > /dev/null" 0)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg 2>/dev/null | python3 -m json.tool > /dev/null" 0)
 if [ "$exit_code" -eq 0 ]; then
     print_pass "JSON output is pipeable"
 else
@@ -252,7 +281,7 @@ fi
 print_header "CATEGORY 3: Batch Processing"
 
 print_test "Small batch (6 samples)"
-exit_code=$(run_command "python3 verify_label.py --batch test_samples/ --ground-truth-dir test_samples/" 1)
+exit_code=$(run_command "python3 verify_label.py --batch $TEST_SAMPLES_DIR/ --ground-truth-dir $TEST_SAMPLES_DIR/" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 if validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
     count=$(echo "$output" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "0")
@@ -266,7 +295,7 @@ else
 fi
 
 print_test "Full batch (40 samples)"
-exit_code=$(run_command "python3 verify_label.py --batch samples/ --ground-truth-dir samples/" 1)
+exit_code=$(run_command "python3 verify_label.py --batch $SAMPLES_DIR/ --ground-truth-dir $SAMPLES_DIR/" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 if validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
     count=$(echo "$output" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "0")
@@ -280,7 +309,7 @@ else
 fi
 
 print_test "Batch with verbose output"
-exit_code=$(run_command "python3 verify_label.py --batch test_samples/ --ground-truth-dir test_samples/ --verbose 2>&1" 1)
+exit_code=$(run_command "python3 verify_label.py --batch $TEST_SAMPLES_DIR/ --ground-truth-dir $TEST_SAMPLES_DIR/ --verbose 2>&1" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 if echo "$output" | grep -q "BATCH PROCESSING SUMMARY"; then
     print_pass "Verbose batch shows summary"
@@ -289,7 +318,7 @@ else
 fi
 
 print_test "Batch output to file"
-exit_code=$(run_command "python3 verify_label.py --batch test_samples/ --ground-truth-dir test_samples/ -o $TEST_OUTPUT_DIR/batch_output.json" 1)
+exit_code=$(run_command "python3 verify_label.py --batch $TEST_SAMPLES_DIR/ --ground-truth-dir $TEST_SAMPLES_DIR/ -o $TEST_OUTPUT_DIR/batch_output.json" 1)
 if [ -f "$TEST_OUTPUT_DIR/batch_output.json" ] && validate_json "$TEST_OUTPUT_DIR/batch_output.json"; then
     print_pass "Batch output file created with valid JSON"
 else
@@ -302,7 +331,7 @@ fi
 print_header "CATEGORY 4: OCR Backend Options"
 
 print_test "Tesseract backend (default)"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg --ocr-backend tesseract" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg --ocr-backend tesseract" 1)
 if validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
     print_pass "Tesseract backend works, valid JSON"
 else
@@ -310,7 +339,7 @@ else
 fi
 
 print_test "Invalid backend name"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg --ocr-backend invalid" 2)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg --ocr-backend invalid" 2)
 if [ "$exit_code" -ne 0 ]; then
     print_pass "Correctly rejected invalid backend"
 else
@@ -321,7 +350,7 @@ if [ "$QUICK_MODE" = false ]; then
     if check_ollama; then
         print_test "Ollama backend (slow test)"
         echo -e "  ${YELLOW}Warning: This test takes ~60 seconds${NC}"
-        exit_code=$(run_command "timeout 120s python3 verify_label.py samples/label_good_001.jpg --ocr-backend ollama --ground-truth samples/label_good_001.json" 1)
+        exit_code=$(run_command "timeout 120s python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg --ocr-backend ollama --ground-truth $SAMPLES_DIR/label_good_001.json" 1)
         if validate_json "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt"; then
             output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
             time=$(echo "$output" | python3 -c "import sys, json; print(json.load(sys.stdin).get('processing_time_seconds', 0))" 2>/dev/null || echo "0")
@@ -370,7 +399,7 @@ print_header "CATEGORY 6: Performance Validation"
 
 print_test "Single label processing time < 5 seconds"
 start_time=$(date +%s.%N)
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg --ground-truth samples/label_good_001.json 2>/dev/null" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg --ground-truth $SAMPLES_DIR/label_good_001.json 2>/dev/null" 1)
 end_time=$(date +%s.%N)
 duration=$(echo "$end_time - $start_time" | bc)
 if (( $(echo "$duration < 5" | bc -l) )); then
@@ -381,7 +410,7 @@ fi
 
 print_test "Batch processing average < 1 second per label"
 start_time=$(date +%s.%N)
-exit_code=$(run_command "python3 verify_label.py --batch test_samples/ --ground-truth-dir test_samples/ 2>/dev/null" 1)
+exit_code=$(run_command "python3 verify_label.py --batch $TEST_SAMPLES_DIR/ --ground-truth-dir $TEST_SAMPLES_DIR/ 2>/dev/null" 1)
 end_time=$(date +%s.%N)
 duration=$(echo "$end_time - $start_time" | bc)
 avg=$(echo "$duration / 6" | bc -l)
@@ -420,7 +449,7 @@ fi
 print_header "CATEGORY 8: Field Extraction Validation"
 
 print_test "Extract all required fields from GOOD label"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg 2>/dev/null" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg 2>/dev/null" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 has_brand=$(echo "$output" | python3 -c "import sys, json; d=json.load(sys.stdin); print(d['extracted_fields']['brand_name'] is not None)" 2>/dev/null || echo "False")
 has_abv=$(echo "$output" | python3 -c "import sys, json; d=json.load(sys.stdin); print(d['extracted_fields']['abv_numeric'] is not None)" 2>/dev/null || echo "False")
@@ -434,7 +463,7 @@ else
 fi
 
 print_test "Detect missing ABV in BAD label"
-exit_code=$(run_command "python3 verify_label.py samples/label_bad_001.jpg --ground-truth samples/label_bad_001.json 2>/dev/null" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_bad_001.jpg --ground-truth $SAMPLES_DIR/label_bad_001.json 2>/dev/null" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 has_abv_violation=$(echo "$output" | python3 -c "import sys, json; d=json.load(sys.stdin); violations=[v for v in d.get('violations', []) if v['field']=='abv']; print(len(violations) > 0)" 2>/dev/null || echo "False")
 
@@ -445,7 +474,7 @@ else
 fi
 
 print_test "Government warning validation"
-exit_code=$(run_command "python3 verify_label.py samples/label_good_001.jpg 2>/dev/null" 1)
+exit_code=$(run_command "python3 verify_label.py $SAMPLES_DIR/label_good_001.jpg 2>/dev/null" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 warning_present=$(echo "$output" | python3 -c "import sys, json; d=json.load(sys.stdin); print(d['extracted_fields']['government_warning']['present'])" 2>/dev/null || echo "False")
 
@@ -481,8 +510,12 @@ echo "Test artifacts saved in: $TEST_OUTPUT_DIR/"
 if [ "$CLEANUP" = true ]; then
     echo ""
     echo "Cleaning up test artifacts..."
-    rm -rf "$TEST_OUTPUT_DIR"
+    rm -rf "$TEST_TEMP_DIR"
     echo -e "${GREEN}✓ Cleanup complete${NC}"
+else
+    echo ""
+    echo -e "${YELLOW}Note: Temporary files will remain in $TEST_TEMP_DIR${NC}"
+    echo "Run with --cleanup to automatically remove test artifacts"
 fi
 
 echo ""

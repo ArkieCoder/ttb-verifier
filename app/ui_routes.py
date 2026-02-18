@@ -217,6 +217,16 @@ async def ui_verify_submit(
                 "request": request,
                 "username": username,
                 "error": f"Invalid file type: {image.content_type}. Please upload JPEG or PNG.",
+                "error_field": "image",
+                "form_data": {
+                    "brand_name": brand_name,
+                    "product_type": product_type,
+                    "abv": abv,
+                    "net_contents": net_contents,
+                    "bottler": bottler,
+                    "ocr_backend": ocr_backend,
+                    "ollama_timeout": ollama_timeout
+                },
                 "ollama_host": settings.ollama_host,
                 "default_timeout": settings.ollama_timeout_seconds
             }
@@ -285,6 +295,16 @@ async def ui_verify_submit(
                     "request": request,
                     "username": username,
                     "error": error_msg,
+                    "error_field": "ocr_backend",
+                    "form_data": {
+                        "brand_name": brand_name,
+                        "product_type": product_type,
+                        "abv": abv,
+                        "net_contents": net_contents,
+                        "bottler": bottler,
+                        "ocr_backend": ocr_backend,
+                        "ollama_timeout": ollama_timeout
+                    },
                     "ollama_host": settings.ollama_host,
                     "default_timeout": settings.ollama_timeout_seconds
                 }
@@ -298,6 +318,15 @@ async def ui_verify_submit(
                     "request": request,
                     "username": username,
                     "error": f"Verification failed: {str(e)}",
+                    "form_data": {
+                        "brand_name": brand_name,
+                        "product_type": product_type,
+                        "abv": abv,
+                        "net_contents": net_contents,
+                        "bottler": bottler,
+                        "ocr_backend": ocr_backend,
+                        "ollama_timeout": ollama_timeout
+                    },
                     "ollama_host": settings.ollama_host,
                     "default_timeout": settings.ollama_timeout_seconds
                 }
@@ -340,6 +369,11 @@ async def ui_batch_submit(
                 "request": request,
                 "username": username,
                 "error": f"Invalid file type: {batch_file.content_type}. Please upload a ZIP file.",
+                "error_field": "batch_file",
+                "form_data": {
+                    "ocr_backend": ocr_backend,
+                    "ollama_timeout": ollama_timeout
+                },
                 "max_batch_size": settings.max_batch_size,
                 "ollama_host": settings.ollama_host,
                 "default_timeout": settings.ollama_timeout_seconds
@@ -467,6 +501,11 @@ async def ui_batch_submit(
                 "request": request,
                 "username": username,
                 "error": error_msg,
+                "error_field": "batch_file" if "No image files" in error_msg or "Too many" in error_msg else "ocr_backend",
+                "form_data": {
+                    "ocr_backend": ocr_backend,
+                    "ollama_timeout": ollama_timeout
+                },
                 "max_batch_size": settings.max_batch_size,
                 "ollama_host": settings.ollama_host,
                 "default_timeout": settings.ollama_timeout_seconds

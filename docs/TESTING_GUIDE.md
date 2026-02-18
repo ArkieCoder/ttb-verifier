@@ -3,26 +3,26 @@
 ## Overview
 
 The TTB Label Verifier uses a dual testing strategy:
-1. **Bash Tests** (`run_tests.sh`) - Quick smoke tests for local development
-2. **Pytest Suite** (`tests/`) - Comprehensive unit, integration, and API tests
+1. **CLI Tests** (`scripts/run_cli_tests.sh`) - Quick smoke tests for local development
+2. **Pytest Suite** (`app/tests/`) - Comprehensive unit, integration, and API tests
 
-**Coverage Target:** 80% minimum (enforced in Docker build)
+**Coverage Target:** 50% minimum (enforced in Docker build)
 
 ---
 
 ## Quick Reference
 
 ```bash
-# Bash smoke tests (30 seconds)
-./run_tests.sh --quick
+# CLI smoke tests (30 seconds)
+./scripts/run_cli_tests.sh --quick
 
-# Pytest all tests (2 minutes)
-pytest tests/ -v
+# Pytest all tests (from app directory - matches Docker/CI)
+cd app && pytest tests/ -v
 
-# Pytest with coverage
-pytest tests/ --cov=. --cov-report=html
+# Pytest with coverage (50% minimum in CI/CD)
+cd app && pytest tests/ --cov=. --cov-fail-under=50 -v
 
-# Docker build with tests
+# Docker build with tests (what CI/CD actually runs)
 docker build --target test -t ttb-verifier:test .
 
 # Run tests in Docker container
@@ -31,11 +31,11 @@ docker-compose exec verifier pytest tests/ -v
 
 ---
 
-## Bash Test Suite
+## CLI Test Suite
 
 ### Overview
 
-**File:** `run_tests.sh`  
+**File:** `scripts/run_cli_tests.sh`  
 **Tests:** 24 tests across 8 categories  
 **Runtime:** ~30 seconds (--quick mode)
 
@@ -45,26 +45,26 @@ docker-compose exec verifier pytest tests/ -v
 - Direct CLI behavior testing
 - Fast feedback loop
 
-### Running Bash Tests
+### Running CLI Tests
 
 ```bash
 # All tests including slow Ollama tests
-./run_tests.sh
+./scripts/run_cli_tests.sh
 
 # Quick mode (skip Ollama tests) - recommended
-./run_tests.sh --quick
+./scripts/run_cli_tests.sh --quick
 
 # Verbose mode (show command output)
-./run_tests.sh --quick --verbose
+./scripts/run_cli_tests.sh --quick --verbose
 
 # Stop at first failure
-./run_tests.sh --quick --stop-on-error
+./scripts/run_cli_tests.sh --quick --stop-on-error
 
 # Clean up test artifacts after run
-./run_tests.sh --quick --cleanup
+./scripts/run_cli_tests.sh --quick --cleanup
 
 # Show help
-./run_tests.sh --help
+./scripts/run_cli_tests.sh --help
 ```
 
 ### Test Categories
@@ -93,7 +93,7 @@ docker-compose exec verifier pytest tests/ -v
    - Ollama backend (slow, skipped in --quick mode)
 
 5. **Comprehensive Test Suite** (2 tests)
-   - test_verifier.py with summary
+   - scripts/test_verifier.py with summary
    - JSON output with metrics
 
 6. **Performance** (2 tests)
@@ -102,7 +102,7 @@ docker-compose exec verifier pytest tests/ -v
 
 7. **Help & Documentation** (2 tests)
    - verify_label.py --help
-   - test_verifier.py --help
+   - scripts/test_verifier.py --help
 
 8. **Field Extraction** (3 tests)
    - Extract required fields
@@ -144,9 +144,10 @@ Skipped:           1
 
 **Structure:**
 ```
-tests/
+app/tests/
 ├── __init__.py
 ├── conftest.py                       # Shared fixtures
+├── pytest.ini                        # Pytest configuration
 ├── test_unit/                        # Unit tests (fast)
 │   ├── test_field_validators.py
 │   ├── test_label_extractor.py
@@ -161,7 +162,15 @@ tests/
 
 **Total:** ~15 test files, ~1000 lines of test code
 
+**Note:** All commands assume you're in the `app/` directory (where pytest.ini is located), matching Docker/CI behavior.
+
 ### Running Pytest Tests
+
+**All commands assume you're in the `app/` directory** (matching Docker/CI environment):
+
+```bash
+cd app  # Run commands from here
+```
 
 #### Basic Commands
 
@@ -183,6 +192,40 @@ pytest tests/test_unit/test_field_validators.py::test_fuzzy_match_exact -v
 
 # Run tests matching pattern
 pytest tests/ -k "test_brand"
+```
+
+#### With Coverage
+
+```bash
+# Run with coverage
+pytest tests/ --cov=.
+
+# With HTML report
+pytest tests/ --cov=. --cov-report=html
+
+# With missing lines highlighted
+pytest tests/ --cov=. --cov-report=term-missing
+
+# Fail if coverage below 50% (CI/CD requirement)
+pytest tests/ --cov=. --cov-fail-under=50
+```
+
+#### By Category
+
+```bash
+# Unit tests only
+pytest tests/test_unit/ -v
+
+# Integration tests only
+pytest tests/test_integration/ -v
+
+# API tests only
+pytest tests/test_api/ -v
+
+# Using markers
+pytest tests/ -m unit -v
+pytest tests/ -m integration -v
+pytest tests/ -m api -v
 ```
 
 #### With Coverage
@@ -417,7 +460,7 @@ def test_good_label_passes_structural(good_label_path):
 
 1. **Generate new samples:**
 ```bash
-python gen_samples.py --count 10 --output my_samples/
+python scripts/gen_samples.py --good 10 --bad 10
 ```
 
 2. **Update test fixtures:**
@@ -430,7 +473,7 @@ def custom_samples_dir():
 
 3. **Run tests:**
 ```bash
-pytest tests/ --custom-samples my_samples/
+pytest app/tests/ --custom-samples my_samples/
 ```
 
 See `docs/GOLDEN_SAMPLES.md` for detailed instructions.

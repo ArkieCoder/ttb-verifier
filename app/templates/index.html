@@ -26,7 +26,7 @@
                         </label>
                         <input 
                             type="file" 
-                            class="form-control" 
+                            class="form-control {% if error_field == 'image' %}is-invalid{% endif %}" 
                             id="image" 
                             name="image" 
                             accept="image/jpeg,image/png" 
@@ -34,6 +34,16 @@
                         >
                         <div class="form-text">
                             Upload a clear image of the alcohol label (JPEG or PNG, max 10MB)
+                        </div>
+                        {% if error_field == 'image' %}
+                        <div class="invalid-feedback d-block">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="mt-3" style="display: none;">
+                            <img id="previewImg" src="" alt="Label preview" class="img-fluid border rounded" style="max-width: 400px; max-height: 300px;">
                         </div>
                     </div>
                     
@@ -49,10 +59,11 @@
                             <label for="brand_name" class="form-label">Brand Name</label>
                             <input 
                                 type="text" 
-                                class="form-control" 
+                                class="form-control {% if error_field == 'brand_name' %}is-invalid{% endif %}" 
                                 id="brand_name" 
                                 name="brand_name"
                                 placeholder="e.g., Ridge & Co."
+                                value="{{ form_data.brand_name if form_data else '' }}"
                             >
                         </div>
                         
@@ -60,10 +71,11 @@
                             <label for="product_type" class="form-label">Product Type</label>
                             <input 
                                 type="text" 
-                                class="form-control" 
+                                class="form-control {% if error_field == 'product_type' %}is-invalid{% endif %}" 
                                 id="product_type" 
                                 name="product_type"
                                 placeholder="e.g., Whiskey, Beer, Wine"
+                                value="{{ form_data.product_type if form_data else '' }}"
                             >
                         </div>
                     </div>
@@ -73,10 +85,11 @@
                             <label for="abv" class="form-label">Alcohol by Volume (ABV%)</label>
                             <input 
                                 type="text" 
-                                class="form-control" 
+                                class="form-control {% if error_field == 'abv' %}is-invalid{% endif %}" 
                                 id="abv" 
                                 name="abv"
                                 placeholder="e.g., 7.5"
+                                value="{{ form_data.abv if form_data else '' }}"
                             >
                         </div>
                         
@@ -84,10 +97,11 @@
                             <label for="net_contents" class="form-label">Net Contents</label>
                             <input 
                                 type="text" 
-                                class="form-control" 
+                                class="form-control {% if error_field == 'net_contents' %}is-invalid{% endif %}" 
                                 id="net_contents" 
                                 name="net_contents"
                                 placeholder="e.g., 750 ML"
+                                value="{{ form_data.net_contents if form_data else '' }}"
                             >
                         </div>
                         
@@ -95,10 +109,11 @@
                             <label for="bottler" class="form-label">Bottler</label>
                             <input 
                                 type="text" 
-                                class="form-control" 
+                                class="form-control {% if error_field == 'bottler' %}is-invalid{% endif %}" 
                                 id="bottler" 
                                 name="bottler"
                                 placeholder="e.g., Company Name"
+                                value="{{ form_data.bottler if form_data else '' }}"
                             >
                         </div>
                     </div>
@@ -114,11 +129,12 @@
                         <!-- Ollama Radio Button -->
                         <div class="form-check">
                             <input 
-                                class="form-check-input" 
+                                class="form-check-input {% if error_field == 'ocr_backend' %}is-invalid{% endif %}" 
                                 type="radio" 
                                 name="ocr_backend" 
                                 id="backend_ollama" 
                                 value="ollama"
+                                {% if form_data and form_data.ocr_backend == 'ollama' %}checked{% endif %}
                             >
                             <label class="form-check-label" for="backend_ollama">
                                 Ollama Vision AI
@@ -135,12 +151,12 @@
                         <!-- Tesseract Radio Button -->
                         <div class="form-check mt-2">
                             <input 
-                                class="form-check-input" 
+                                class="form-check-input {% if error_field == 'ocr_backend' %}is-invalid{% endif %}" 
                                 type="radio" 
                                 name="ocr_backend" 
                                 id="backend_tesseract" 
                                 value="tesseract"
-                                checked
+                                {% if not form_data or form_data.ocr_backend != 'ollama' %}checked{% endif %}
                             >
                             <label class="form-check-label" for="backend_tesseract">
                                 Tesseract OCR
@@ -149,6 +165,11 @@
                                 Faster but less accurate (~2s per image)
                             </div>
                         </div>
+                        {% if error_field == 'ocr_backend' %}
+                        <div class="invalid-feedback d-block">
+                            {{ error }}
+                        </div>
+                        {% endif %}
                     </div>
                     
                     <div class="mb-3" id="timeoutField" style="display: none;">
@@ -158,7 +179,7 @@
                             class="form-control" 
                             id="ollama_timeout" 
                             name="ollama_timeout"
-                            value="{{ default_timeout }}"
+                            value="{% if form_data and form_data.ollama_timeout %}{{ form_data.ollama_timeout }}{% else %}{{ default_timeout }}{% endif %}"
                             min="10"
                             max="300"
                         >
@@ -195,6 +216,25 @@
 
 {% block extra_scripts %}
 <script>
+    // Image preview on file selection
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none';
+        }
+    });
+    
     // Ollama status checking
     const ollamaRadio = document.getElementById('backend_ollama');
     const tesseractRadio = document.getElementById('backend_tesseract');
@@ -230,32 +270,43 @@
                 statusText.textContent = 'Available';
                 ollamaRadio.disabled = false;
                 
-                // Auto-select Ollama when available (client-side default)
+                // Only auto-select Ollama if no form data present (fresh page load)
+                {% if not form_data %}
                 ollamaRadio.checked = true;
                 tesseractRadio.checked = false;
                 timeoutField.style.display = 'block';
+                {% endif %}
             } else {
                 statusIndicator.className = 'status-indicator status-unavailable';
                 statusText.textContent = ollamaError ? 'Unavailable' : 'Not Ready';
                 ollamaRadio.disabled = true;
                 
-                // Auto-select Tesseract when Ollama unavailable
+                // Only auto-select Tesseract if no form data present
+                {% if not form_data %}
                 tesseractRadio.checked = true;
                 ollamaRadio.checked = false;
                 timeoutField.style.display = 'none';
+                {% endif %}
             }
         } catch (error) {
             console.error('Failed to check Ollama status:', error);
             statusIndicator.className = 'status-indicator status-unavailable';
             statusText.textContent = 'Unknown';
             ollamaRadio.disabled = true;
+            {% if not form_data %}
             tesseractRadio.checked = true;
             ollamaRadio.checked = false;
+            {% endif %}
         }
     }
     
     // Check status on page load
     checkOllamaStatus();
+    
+    // Show timeout field if Ollama was previously selected
+    {% if form_data and form_data.ocr_backend == 'ollama' %}
+    timeoutField.style.display = 'block';
+    {% endif %}
     
     // Poll status every 30 seconds
     setInterval(checkOllamaStatus, 30000);

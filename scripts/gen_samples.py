@@ -32,13 +32,13 @@ class GoogleFontDownloader:
     and caches them locally. Falls back silently to system fonts if download fails.
     """
     
-    FONT_CACHE_DIR = Path(__file__).parent / 'fonts'
+    FONT_CACHE_DIR = Path('/tmp/ttb_fonts')
     GITHUB_RAW_BASE = 'https://github.com/google/fonts/raw/main'
     LICENSE_DIRS = ['ofl', 'apache', 'ufl']  # OFL = Open Font License (most fonts)
     
     def __init__(self):
-        """Initialize downloader with connectivity check."""
-        self.FONT_CACHE_DIR.mkdir(exist_ok=True)
+        """Initialize downloader with connectivity check and cache directory."""
+        self.FONT_CACHE_DIR.mkdir(parents=True, exist_ok=True)
         self.download_enabled = self._check_connectivity()
         self.failed_downloads = set()  # Don't retry failed downloads in same session
     

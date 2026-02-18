@@ -6,7 +6,8 @@ Runs verification on the full golden dataset (40 samples) and generates
 accuracy metrics comparing verifier results against ground truth labels.
 
 Usage:
-    python3 test_verifier.py [--ocr-backend tesseract|ollama]
+    python3 scripts/test_verifier.py [--ocr-backend tesseract|ollama]
+    python3 scripts/test_verifier.py --samples-dir ../samples/
 
 Outputs:
     - Detailed JSON results for each label
@@ -21,16 +22,26 @@ import time
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
+# Add app directory to Python path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent / 'app'))
+
 from label_validator import LabelValidator
 
 
-def load_golden_dataset(samples_dir: str = "samples") -> List[Tuple[str, str, Dict[str, Any]]]:
+def load_golden_dataset(samples_dir: str = None) -> List[Tuple[str, str, Dict[str, Any]]]:
     """
     Load all golden dataset samples with ground truth.
+    
+    Args:
+        samples_dir: Path to samples directory. If None, uses ../samples relative to script.
     
     Returns:
         List of tuples: (image_path, label_type, ground_truth_dict)
     """
+    if samples_dir is None:
+        # Default to ../samples relative to this script location
+        samples_dir = str(Path(__file__).parent.parent / 'samples')
+    
     samples_path = Path(samples_dir)
     dataset = []
     
@@ -69,13 +80,20 @@ def load_golden_dataset(samples_dir: str = "samples") -> List[Tuple[str, str, Di
     return dataset
 
 
-def run_tests(ocr_backend: str, samples_dir: str = "samples") -> Dict[str, Any]:
+def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
     """
     Run verifier on all samples in golden dataset.
+    
+    Args:
+        ocr_backend: OCR backend to use (tesseract or ollama)
+        samples_dir: Path to samples directory. If None, uses ../samples relative to script.
     
     Returns:
         Dictionary with test results and metrics
     """
+    if samples_dir is None:
+        samples_dir = str(Path(__file__).parent.parent / 'samples')
+    
     print(f"Loading golden dataset from {samples_dir}/...", file=sys.stderr)
     dataset = load_golden_dataset(samples_dir)
     print(f"Found {len(dataset)} samples", file=sys.stderr)
@@ -241,8 +259,8 @@ def main():
     parser.add_argument('--ocr-backend', choices=['tesseract', 'ollama'],
                        default='tesseract',
                        help='OCR backend to test (default: tesseract)')
-    parser.add_argument('--samples-dir', default='samples',
-                       help='Directory containing golden dataset (default: samples/)')
+    parser.add_argument('--samples-dir', default=None,
+                       help='Directory containing golden dataset (default: ../samples relative to script)')
     parser.add_argument('--output', '-o',
                        help='Write detailed JSON results to file')
     parser.add_argument('--summary-only', action='store_true',

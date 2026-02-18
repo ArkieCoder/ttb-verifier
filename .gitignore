@@ -4,12 +4,8 @@ label_*.jpg
 label_*.tif
 label_*.json
 
-# Downloaded Google Fonts cache
+# Downloaded Google Fonts cache (now in /tmp)
 fonts/
-
-# Temp directory for file uploads
-tmp/*
-!tmp/.gitkeep
 
 # Docker
 .env

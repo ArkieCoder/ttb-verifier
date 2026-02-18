@@ -559,9 +559,9 @@ services:
 
 **Command Line Interface:**
 ```bash
-python gen_samples.py --good 50 --bad 50
-python gen_samples.py --good 100 --bad 0
-python gen_samples.py --seed 42  # optional reproducibility
+python scripts/gen_samples.py --good 50 --bad 50
+python scripts/gen_samples.py --good 100 --bad 0
+python scripts/gen_samples.py --seed 42  # optional reproducibility
 ```
 
 **Output per Label:**

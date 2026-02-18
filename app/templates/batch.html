@@ -26,7 +26,7 @@
                         </label>
                         <input 
                             type="file" 
-                            class="form-control" 
+                            class="form-control {% if error_field == 'batch_file' %}is-invalid{% endif %}" 
                             id="batch_file" 
                             name="batch_file" 
                             accept="application/zip,application/x-zip-compressed" 
@@ -35,6 +35,11 @@
                         <div class="form-text">
                             Upload a ZIP file containing label images (max {{ max_batch_size }} images)
                         </div>
+                        {% if error_field == 'batch_file' %}
+                        <div class="invalid-feedback d-block">
+                            {{ error }}
+                        </div>
+                        {% endif %}
                     </div>
                     
                     <!-- ZIP Structure Info -->
@@ -65,11 +70,12 @@
                         <!-- Ollama Radio Button -->
                         <div class="form-check">
                             <input 
-                                class="form-check-input" 
+                                class="form-check-input {% if error_field == 'ocr_backend' %}is-invalid{% endif %}" 
                                 type="radio" 
                                 name="ocr_backend" 
                                 id="backend_ollama" 
                                 value="ollama"
+                                {% if form_data and form_data.ocr_backend == 'ollama' %}checked{% endif %}
                             >
                             <label class="form-check-label" for="backend_ollama">
                                 Ollama Vision AI
@@ -86,12 +92,12 @@
                         <!-- Tesseract Radio Button -->
                         <div class="form-check mt-2">
                             <input 
-                                class="form-check-input" 
+                                class="form-check-input {% if error_field == 'ocr_backend' %}is-invalid{% endif %}" 
                                 type="radio" 
                                 name="ocr_backend" 
                                 id="backend_tesseract" 
                                 value="tesseract"
-                                checked
+                                {% if not form_data or form_data.ocr_backend != 'ollama' %}checked{% endif %}
                             >
                             <label class="form-check-label" for="backend_tesseract">
                                 Tesseract OCR
@@ -100,6 +106,11 @@
                                 Faster but less accurate (~2s per image)
                             </div>
                         </div>
+                        {% if error_field == 'ocr_backend' %}
+                        <div class="invalid-feedback d-block">
+                            {{ error }}
+                        </div>
+                        {% endif %}
                     </div>
                     
                     <div class="mb-3" id="timeoutField" style="display: none;">
@@ -109,7 +120,7 @@
                             class="form-control" 
                             id="ollama_timeout" 
                             name="ollama_timeout"
-                            value="{{ default_timeout }}"
+                            value="{% if form_data and form_data.ollama_timeout %}{{ form_data.ollama_timeout }}{% else %}{{ default_timeout }}{% endif %}"
                             min="10"
                             max="300"
                         >
@@ -195,32 +206,43 @@
                 statusText.textContent = 'Available';
                 ollamaRadio.disabled = false;
                 
-                // Auto-select Ollama when available (client-side default)
+                // Only auto-select Ollama if no form data present (fresh page load)
+                {% if not form_data %}
                 ollamaRadio.checked = true;
                 tesseractRadio.checked = false;
                 timeoutField.style.display = 'block';
+                {% endif %}
             } else {
                 statusIndicator.className = 'status-indicator status-unavailable';
                 statusText.textContent = ollamaError ? 'Unavailable' : 'Not Ready';
                 ollamaRadio.disabled = true;
                 
-                // Auto-select Tesseract when Ollama unavailable
+                // Only auto-select Tesseract if no form data present
+                {% if not form_data %}
                 tesseractRadio.checked = true;
                 ollamaRadio.checked = false;
                 timeoutField.style.display = 'none';
+                {% endif %}
             }
         } catch (error) {
             console.error('Failed to check Ollama status:', error);
             statusIndicator.className = 'status-indicator status-unavailable';
             statusText.textContent = 'Unknown';
             ollamaRadio.disabled = true;
+            {% if not form_data %}
             tesseractRadio.checked = true;
             ollamaRadio.checked = false;
+            {% endif %}
         }
     }
     
     // Check status on page load
     checkOllamaStatus();
+    
+    // Show timeout field if Ollama was previously selected
+    {% if form_data and form_data.ocr_backend == 'ollama' %}
+    timeoutField.style.display = 'block';
+    {% endif %}
     
     // Poll status every 30 seconds
     setInterval(checkOllamaStatus, 30000);

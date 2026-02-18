@@ -149,9 +149,10 @@ def test_ui_logout(client):
 
 
 def test_ui_verify_page_unauthenticated(client):
-    """Test verify page requires authentication."""
-    response = client.get("/ui/verify")
-    assert response.status_code == 401
+    """Test verify page redirects to login when unauthenticated."""
+    response = client.get("/ui/verify", follow_redirects=False)
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/ui/login"
 
 
 @pytest.mark.skip(reason="Template loading issues in test environment")
@@ -166,9 +167,10 @@ def test_ui_verify_page_authenticated(client):
 
 
 def test_ui_batch_page_unauthenticated(client):
-    """Test batch page requires authentication."""
-    response = client.get("/ui/batch")
-    assert response.status_code == 401
+    """Test batch page redirects to login when unauthenticated."""
+    response = client.get("/ui/batch", follow_redirects=False)
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/ui/login"
 
 
 @pytest.mark.skip(reason="Template loading issues in test environment")

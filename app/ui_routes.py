@@ -11,6 +11,7 @@ import tempfile
 import zipfile
 import uuid
 import shutil
+import base64
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
@@ -274,13 +275,18 @@ async def ui_verify_submit(
                 ground_truth if ground_truth else None
             )
             
+            # Encode image as base64 for display in results
+            image_base64 = base64.b64encode(content).decode('utf-8')
+            image_mime = image.content_type or 'image/jpeg'
+            
             return templates.TemplateResponse(
                 "results.html",
                 {
                     "request": request,
                     "username": username,
                     "result": result,
-                    "filename": image.filename
+                    "filename": image.filename,
+                    "image_data": f"data:{image_mime};base64,{image_base64}"
                 }
             )
         
@@ -515,3 +521,45 @@ async def ui_batch_submit(
     finally:
         # Cleanup will happen automatically via cleanup_old_temp_files()
         pass
+
+
+@router.get("/ui/health", response_class=HTMLResponse)
+async def ui_health(request: Request):
+    """
+    System health page - displays OCR backend status in a user-friendly HTML format.
+    Accessible without authentication.
+    """
+    import httpx
+    
+    # Fetch health data from /health endpoint
+    try:
+        async with httpx.AsyncClient() as client:
+            # Use localhost since we're calling our own endpoint
+            base_url = str(request.base_url).rstrip('/')
+            response = await client.get(f"{base_url}/health", timeout=5.0)
+            health_data = response.json()
+    except Exception as e:
+        logger.error(f"Failed to fetch health data: {e}")
+        health_data = {
+            "status": "error",
+            "backends": {
+                "tesseract": {"available": False, "error": "Unable to check"},
+                "ollama": {"available": False, "error": "Unable to check", "model": "unknown"}
+            },
+            "capabilities": {
+                "ocr_backends": [],
+                "degraded_mode": True
+            }
+        }
+    
+    # Pretty print JSON for display
+    health_json = json.dumps(health_data, indent=2)
+    
+    return templates.TemplateResponse(
+        "health.html",
+        {
+            "request": request,
+            "health": health_data,
+            "health_json": health_json
+        }
+    )

@@ -16,8 +16,13 @@ output "github_actions_role_arn" {
 # Outputs for DNS Configuration
 # ====================================
 
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain - Create CNAME in your DNS provider pointing your domain to this value"
+  value       = aws_cloudfront_distribution.ttb.domain_name
+}
+
 output "alb_dns_name" {
-  description = "ALB DNS name - Create CNAME in your DNS provider pointing your domain to this value"
+  description = "ALB DNS name (for reference only - DNS should point to CloudFront, not ALB)"
   value       = aws_lb.ttb.dns_name
 }
 
@@ -62,16 +67,24 @@ output "setup_instructions" {
     2. Add CNAME record to your DNS provider:
        - Hostname: ttb-verifier.unitedentropy.com
        - Type: CNAME
-       - Value: ${aws_lb.ttb.dns_name}
+       - Value: ${aws_cloudfront_distribution.ttb.domain_name}
+       
+       ⚠️  IMPORTANT: Point to CloudFront, NOT the ALB!
+       CloudFront provides custom error pages, caching, and DDoS protection.
     
     3. Wait 5-10 minutes for DNS propagation
     
-    4. Test ALB: curl https://ttb-verifier.unitedentropy.com
+    4. Test access: curl https://ttb-verifier.unitedentropy.com/health
        (Will show connection error until first GitHub Actions deployment completes)
     
     5. Monitor EC2 initialization: 
        aws ssm start-session --target ${aws_instance.ttb.id}
        docker ps  # Should show ollama container running
+    
+    ========================================
+    
+    CloudFront Distribution: ${aws_cloudfront_distribution.ttb.domain_name}
+    ALB (internal use): ${aws_lb.ttb.dns_name}
     
     ========================================
   EOT

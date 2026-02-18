@@ -243,28 +243,33 @@ terragrunt apply
 
 ### Step 4: Configure DNS (Final CNAME)
 
-After `terragrunt apply` completes, get the ALB DNS name:
+After `terragrunt apply` completes, get the CloudFront distribution domain:
 
 ```bash
-terragrunt output alb_dns_name
+terragrunt output cloudfront_domain_name
 ```
 
 **Add CNAME to your DNS provider:**
 - **Hostname:** Your application domain (e.g., `ttb-verifier.yourdomain.com`)
 - **Type:** CNAME
-- **Value:** `<alb-dns-name from output>` (e.g., `ttb-verifier-alb-123456789.us-east-1.elb.amazonaws.com`)
+- **Value:** `<cloudfront-domain from output>` (e.g., `d1bmuzubpqmnvs.cloudfront.net`)
 - **TTL:** 300 (or default)
+
+**⚠️ IMPORTANT:** Point to CloudFront, NOT the ALB!
+- CloudFront provides custom error pages during downtime
+- CloudFront provides caching and DDoS protection
+- CloudFront handles HTTPS termination efficiently
 
 **Wait 5-10 minutes for DNS propagation.**
 
 ### Step 5: Verify Infrastructure
 
 ```bash
-# Test DNS resolution
+# Test DNS resolution (should show CloudFront domain)
 nslookup ttb-verifier.unitedentropy.com
 
-# Test ALB (will show error until application deployed)
-curl https://ttb-verifier.unitedentropy.com
+# Test application (will show error until application deployed)
+curl https://ttb-verifier.unitedentropy.com/health
 
 # Check EC2 via SSM
 aws ssm start-session --target $(terragrunt output -raw ec2_instance_id)

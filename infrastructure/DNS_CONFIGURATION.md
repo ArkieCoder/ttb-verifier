@@ -69,7 +69,7 @@ TTL: 300 (or your default)
 ## 2. Application CNAME (Permanent)
 
 ### Purpose
-Routes traffic from your domain to the AWS Application Load Balancer.
+Routes traffic from your domain to the AWS CloudFront distribution.
 
 ### When to Add
 After `terragrunt apply` completes, you'll see:
@@ -78,7 +78,9 @@ After `terragrunt apply` completes, you'll see:
 2. Add CNAME record to your DNS provider:
    - Hostname: ttb-verifier.yourdomain.com
    - Type: CNAME
-   - Value: ttb-verifier-alb-1234567890.us-east-1.elb.amazonaws.com
+   - Value: d1bmuzubpqmnvs.cloudfront.net
+   
+   ⚠️  IMPORTANT: Point to CloudFront, NOT the ALB!
 ```
 
 ### Configuration Example
@@ -86,7 +88,7 @@ After `terragrunt apply` completes, you'll see:
 ```
 Type: CNAME
 Hostname: ttb-verifier.yourdomain.com
-Points to: ttb-verifier-alb-1234567890.us-east-1.elb.amazonaws.com
+Points to: d1bmuzubpqmnvs.cloudfront.net
 TTL: 300 (or your default)
 ```
 
@@ -95,9 +97,10 @@ TTL: 300 (or your default)
 **YES!** This record must remain in place as long as you want the application accessible.
 
 #### What it does:
-- Routes all traffic from `ttb-verifier.yourdomain.com` to your AWS load balancer
-- Allows AWS to handle SSL/TLS termination
-- Enables AWS to perform health checks and route traffic
+- Routes all traffic from `ttb-verifier.yourdomain.com` to CloudFront
+- CloudFront provides custom error pages during maintenance/downtime
+- CloudFront provides caching and DDoS protection
+- CloudFront handles HTTPS termination and forwards to ALB via HTTP
 
 #### What happens if I remove it:
 - ❌ Application becomes unreachable at `ttb-verifier.yourdomain.com`
@@ -142,7 +145,11 @@ dig ttb-verifier.yourdomain.com CNAME
 
 **Solutions:**
 1. Wait longer for DNS propagation (try from different network)
-2. Verify CNAME points to correct ALB DNS name
+2. Verify CNAME points to CloudFront (not ALB):
+   ```bash
+   dig ttb-verifier.yourdomain.com CNAME
+   # Should show CloudFront domain (e.g., d1bmuzubpqmnvs.cloudfront.net)
+   ```
 3. Check ALB is healthy:
    ```bash
    aws elbv2 describe-target-health \
@@ -180,7 +187,9 @@ dig ttb-verifier.yourdomain.com CNAME
 | DNS Record | Purpose | Required During | Can Remove After? |
 |------------|---------|-----------------|-------------------|
 | Validation CNAME | Prove domain ownership | Initial cert creation | ✅ Yes (once cert issued) |
-| Application CNAME | Route traffic to ALB | Always (while app running) | ❌ No (app will be unreachable) |
+| Application CNAME | Route traffic to CloudFront | Always (while app running) | ❌ No (app will be unreachable) |
+
+**Note:** The application CNAME must point to CloudFront distribution, not directly to ALB. CloudFront provides custom error pages, caching, and DDoS protection.
 
 ## Reference
 

@@ -44,6 +44,9 @@ COPY --from=builder /root/.local /root/.local
 # Copy application code
 COPY app/*.py ./
 
+# Copy templates directory for UI
+COPY app/templates ./templates
+
 # Create samples directory (optional - for golden samples)
 RUN mkdir -p ./samples
 

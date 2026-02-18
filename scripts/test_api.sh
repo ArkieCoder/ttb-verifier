@@ -247,30 +247,19 @@ if [ "$OLLAMA_AVAILABLE" = "true" ] && [ -f "samples/label_good_003.jpg" ]; then
         OCR_BACKEND=$(cat "$RESPONSE_FILE" | jq -r '.ocr_backend // "not specified"')
         ERROR=$(cat "$RESPONSE_FILE" | jq -r '.error // empty')
         
-        echo -e "${GREEN}✓ Ollama request successful (HTTP $HTTP_CODE)${NC}"
-        
+        # Ollama test must succeed - no ERROR status allowed
         if [ "$STATUS" = "ERROR" ]; then
-            echo -e "  ${YELLOW}⚠ Ollama returned ERROR status${NC}"
+            echo -e "${RED}✗ Ollama returned ERROR status (HTTP $HTTP_CODE)${NC}"
             echo -e "  Error: $ERROR"
-            
-            # Check if it's a memory issue (common on smaller instances)
-            if echo "$ERROR" | grep -qi "memory"; then
-                echo -e "  ${CYAN}Note: Ollama requires significant memory (10GB+)${NC}"
-                echo -e "  ${CYAN}Consider upgrading EC2 instance or using Tesseract${NC}"
-            fi
-            
-            # Still pass the test - API handled the error correctly
-            PASSED_TESTS=$((PASSED_TESTS + 1))
+            echo -e "${RED}  Ollama must work properly when available. Check instance memory/resources.${NC}"
+            FAILED_TESTS=$((FAILED_TESTS + 1))
         else
+            echo -e "${GREEN}✓ Ollama verification successful (HTTP $HTTP_CODE)${NC}"
             echo -e "  OCR backend: ${CYAN}$OCR_BACKEND${NC}"
             echo -e "  Status: ${CYAN}$STATUS${NC}"
             echo -e "  Validation level: $VALIDATION_LEVEL"
             echo -e "  Processing time: ${PROCESSING_TIME}s"
-            
-            if [ "$OCR_BACKEND" = "ollama" ] || [ "$OCR_BACKEND" = "not specified" ]; then
-                echo -e "  ${GREEN}✓ Ollama backend processed successfully${NC}"
-            fi
-            
+            echo -e "  ${GREEN}✓ Ollama processed image successfully${NC}"
             PASSED_TESTS=$((PASSED_TESTS + 1))
         fi
     else
@@ -280,6 +269,7 @@ if [ "$OLLAMA_AVAILABLE" = "true" ] && [ -f "samples/label_good_003.jpg" ]; then
     fi
 elif [ "$OLLAMA_AVAILABLE" != "true" ]; then
     echo -e "${YELLOW}⚠ Skipped - Ollama backend not available${NC}"
+    echo -e "  Health endpoint reports Ollama is unavailable"
 elif [ ! -f "samples/label_good_003.jpg" ]; then
     echo -e "${YELLOW}⚠ Skipped - samples/label_good_003.jpg not found${NC}"
 fi

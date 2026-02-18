@@ -237,6 +237,22 @@ def validate_image_file(upload_file: UploadFile, correlation_id: str) -> None:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Invalid file extension. Expected .jpg, .jpeg, or .png, got {ext}"
             )
+    
+    # Verify file is actually a valid image by trying to open it
+    try:
+        from PIL import Image
+        upload_file.file.seek(0)  # Reset file pointer
+        img = Image.open(upload_file.file)
+        img.verify()  # Verify it's a valid image
+        upload_file.file.seek(0)  # Reset again for later processing
+    except Exception as e:
+        logger.warning(
+            f"[{correlation_id}] Invalid image file: {str(e)}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid or corrupted image file: {str(e)}"
+        )
 
 
 def parse_ground_truth(ground_truth_str: Optional[str], correlation_id: str) -> Optional[Dict[str, Any]]:

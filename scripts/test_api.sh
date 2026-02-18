@@ -189,10 +189,13 @@ fi
 echo ""
 
 # Test 6: Verify with metadata
-echo -e "${YELLOW}Test 6: Verify label with metadata (label_good_002)${NC}"
+echo -e "${YELLOW}Test 6: Verify label with metadata using Ollama (label_good_002)${NC}"
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 
-if [ -f "samples/label_good_002.jpg" ] && [ -f "samples/label_good_002.json" ]; then
+# Check if Ollama is available
+OLLAMA_AVAILABLE=$(curl -s "$BASE_URL/health" | jq -r '.backends.ollama.available' 2>/dev/null)
+
+if [ "$OLLAMA_AVAILABLE" = "true" ] && [ -f "samples/label_good_002.jpg" ] && [ -f "samples/label_good_002.json" ]; then
     # Extract ground truth from JSON for metadata
     PRODUCT_TYPE=$(cat samples/label_good_002.json | jq -r '.ground_truth.product_type')
     CONTAINER_SIZE=$(cat samples/label_good_002.json | jq -r '.ground_truth.container_size')
@@ -204,16 +207,16 @@ if [ -f "samples/label_good_002.jpg" ] && [ -f "samples/label_good_002.json" ]; 
         -F "product_type=$PRODUCT_TYPE" \
         -F "container_size=$CONTAINER_SIZE" \
         -F "is_import=$IS_IMPORT" \
-        -F "ocr_backend=tesseract")
+        -F "ocr_backend=ollama")
     
     if [ "$HTTP_CODE" -eq 200 ]; then
         STATUS=$(cat "$RESPONSE_FILE" | jq -r '.status')
         VALIDATION_LEVEL=$(cat "$RESPONSE_FILE" | jq -r '.validation_level')
         PROCESSING_TIME=$(cat "$RESPONSE_FILE" | jq -r '.processing_time_seconds')
         
-        # label_good_002 should be COMPLIANT
+        # label_good_002 with Ollama should be COMPLIANT
         if [ "$STATUS" = "COMPLIANT" ]; then
-            echo -e "${GREEN}✓ Good label correctly marked as COMPLIANT (HTTP $HTTP_CODE)${NC}"
+            echo -e "${GREEN}✓ Good label correctly marked as COMPLIANT with Ollama (HTTP $HTTP_CODE)${NC}"
             echo -e "  Metadata: product_type=$PRODUCT_TYPE, container_size=$CONTAINER_SIZE, is_import=$IS_IMPORT"
             echo -e "  Status: ${CYAN}$STATUS${NC}"
             echo -e "  Validation level: $VALIDATION_LEVEL"
@@ -225,7 +228,7 @@ if [ -f "samples/label_good_002.jpg" ] && [ -f "samples/label_good_002.json" ]; 
             echo -e "  Status: ${CYAN}$STATUS${NC}"
             echo -e "  Validation level: $VALIDATION_LEVEL"
             echo -e "  Processing time: ${PROCESSING_TIME}s"
-            echo -e "${RED}  Expected: COMPLIANT for label_good_002${NC}"
+            echo -e "${RED}  Expected: COMPLIANT for label_good_002 with Ollama${NC}"
             FAILED_TESTS=$((FAILED_TESTS + 1))
         fi
     else
@@ -233,6 +236,12 @@ if [ -f "samples/label_good_002.jpg" ] && [ -f "samples/label_good_002.json" ]; 
         cat "$RESPONSE_FILE"
         FAILED_TESTS=$((FAILED_TESTS + 1))
     fi
+elif [ "$OLLAMA_AVAILABLE" != "true" ]; then
+    echo -e "${YELLOW}⚠ Skipped - Ollama backend not available${NC}"
+    echo -e "  label_good_002 requires Ollama to extract text through embellishments"
+elif [ ! -f "samples/label_good_002.jpg" ] || [ ! -f "samples/label_good_002.json" ]; then
+    echo -e "${YELLOW}⚠ Skipped - samples/label_good_002.jpg or .json not found${NC}"
+fi
 else
     echo -e "${YELLOW}⚠ Skipped - samples/label_good_002.jpg or .json not found${NC}"
 fi

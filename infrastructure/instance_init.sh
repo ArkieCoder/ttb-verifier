@@ -111,17 +111,29 @@ for i in {1..30}; do
 done
 
 # Pre-warm the model by loading it into GPU memory (WAIT for completion)
-echo "Pre-warming llama3.2-vision model into GPU memory..."
-echo "This takes 60-90 seconds on first load but ensures all API requests are fast..."
-curl -X POST http://localhost:11434/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "stream": false, "keep_alive": -1}' \
-  >/dev/null 2>&1
+# First check if model exists (it may still be downloading in background)
+echo "Checking if llama3.2-vision model is available..."
+if /bin/ollama list | grep -q "llama3.2-vision"; then
+  echo "Pre-warming llama3.2-vision model into GPU memory..."
+  echo "This takes 60-90 seconds on first load but ensures all API requests are fast..."
+  curl -X POST http://localhost:11434/api/chat \
+    -H "Content-Type: application/json" \
+    -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "stream": false, "keep_alive": -1}' \
+    >/dev/null 2>&1
+  
+  if [ $? -eq 0 ]; then
+    echo "✅ Model pre-warming complete! Ollama is ready to serve requests."
+  else
+    echo "⚠️ Model pre-warming failed, but continuing. Model will load on first request."
+  fi
+else
+  echo "ℹ️ Model not yet available (still downloading). Skipping pre-warm."
+  echo "   Model will be loaded into GPU on first API request."
+fi
 
-# Create marker file indicating model is loaded and ready
+# Create marker file indicating Ollama is ready (even if model not yet downloaded)
 touch /tmp/model_ready
-
-echo "✅ Model pre-warming complete! Ollama is ready to serve requests."
+echo "✅ Ollama container is ready!"
 
 # Keep the script running and forward signals to Ollama
 trap "kill $OLLAMA_PID" SIGTERM SIGINT

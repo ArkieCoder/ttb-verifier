@@ -112,6 +112,9 @@ done
 
 # Pre-warm the model by loading it into GPU memory (WAIT for completion)
 # First check if model exists (it may still be downloading in background)
+# Temporarily disable set -e to gracefully handle pre-warming failures
+set +e
+
 echo "Checking if llama3.2-vision model is available..."
 if /bin/ollama list | grep -q "llama3.2-vision"; then
   echo "Pre-warming llama3.2-vision model into GPU memory..."
@@ -137,6 +140,9 @@ else
   echo "ℹ️ Model not yet available (still downloading). Skipping pre-warm."
   echo "   Model will be loaded into GPU on first API request."
 fi
+
+# Re-enable set -e for rest of script
+set -e
 
 # Create marker file indicating Ollama is ready (even if model not yet downloaded)
 touch /tmp/model_ready

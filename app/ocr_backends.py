@@ -151,19 +151,21 @@ class OllamaOCR(OCRBackend):
                 }
             
             # Prepare prompt for structured extraction
-            prompt = """Extract ALL text from this alcohol beverage label image.
+            prompt = """Extract ALL text from this alcohol beverage label image EXACTLY as it appears.
 
-Please extract and list every piece of text you can see, maintaining the relative position and formatting. Include:
-- Brand name
+CRITICAL: Preserve the EXACT capitalization, spacing, and formatting of all text. Do not normalize or change the case of any words.
+
+Please extract and list every piece of text you can see, line by line. Include:
+- Brand name (EXACT case)
 - Product type/class (e.g., "Bourbon Whiskey", "Pinot Noir", "IPA")
 - Alcohol content (e.g., "13.5% alc./vol.", "40% ABV", "80 Proof")
 - Net contents/volume (e.g., "750 mL", "12 fl oz")
 - Bottler/producer information (e.g., "Bottled by...", "Imported by...", "Produced by...")
 - Country of origin (e.g., "Product of France")
-- Government warning text (the complete warning statement)
+- Government warning text (preserve EXACT capitalization - if it says "GOVERNMENT WARNING:" in all caps, write it that way)
 - Any other text visible on the label
 
-Format your response as plain text, with each distinct text element on its own line."""
+Format your response as plain text, with each distinct text element on its own line. Do NOT add bullet points, asterisks, or markdown formatting."""
 
             # Call Ollama using Python library
             response = self.ollama.chat(

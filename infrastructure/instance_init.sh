@@ -116,15 +116,22 @@ echo "Checking if llama3.2-vision model is available..."
 if /bin/ollama list | grep -q "llama3.2-vision"; then
   echo "Pre-warming llama3.2-vision model into GPU memory..."
   echo "This takes 60-90 seconds on first load but ensures all API requests are fast..."
-  curl -X POST http://localhost:11434/api/chat \
+  
+  # Use timeout and increased max-time for curl to handle slow GPU model loading
+  # --max-time 120: Allow up to 120 seconds for the request (covers 60-90s load time)
+  # --connect-timeout 5: But fail fast if Ollama isn't responding
+  timeout 120 curl --max-time 120 --connect-timeout 5 \
+    -X POST http://localhost:11434/api/chat \
     -H "Content-Type: application/json" \
     -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "stream": false, "keep_alive": -1}' \
     >/dev/null 2>&1
   
-  if [ $? -eq 0 ]; then
+  CURL_EXIT=$?
+  if [ $CURL_EXIT -eq 0 ]; then
     echo "✅ Model pre-warming complete! Ollama is ready to serve requests."
   else
-    echo "⚠️ Model pre-warming failed, but continuing. Model will load on first request."
+    echo "⚠️ Model pre-warming failed (exit code: $CURL_EXIT), but continuing."
+    echo "   Model will load on first API request."
   fi
 else
   echo "ℹ️ Model not yet available (still downloading). Skipping pre-warm."

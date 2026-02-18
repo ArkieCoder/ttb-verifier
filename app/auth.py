@@ -142,7 +142,7 @@ def verify_credentials(username: str, password: str) -> bool:
         True if credentials are valid, False otherwise
     """
     try:
-        from app.aws_secrets import get_ui_credentials
+        from aws_secrets import get_ui_credentials
         
         valid_user, valid_pass = get_ui_credentials()
         is_valid = username == valid_user and password == valid_pass

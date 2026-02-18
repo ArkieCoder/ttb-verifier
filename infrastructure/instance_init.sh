@@ -89,6 +89,44 @@ mkdir -p /home/ubuntu/tmp
 chown -R ubuntu:ubuntu /app
 chown -R ubuntu:ubuntu /home/ubuntu/tmp
 
+# Create Ollama entrypoint wrapper for model pre-warming
+echo "Creating Ollama entrypoint wrapper..."
+cat > /app/ollama-entrypoint.sh <<'EOFWRAPPER'
+#!/bin/bash
+set -e
+
+echo "Starting Ollama server..."
+# Start Ollama server in background
+/bin/ollama serve &
+OLLAMA_PID=$!
+
+# Wait for Ollama to be ready
+echo "Waiting for Ollama to be ready..."
+for i in {1..30}; do
+  if curl -s http://localhost:11434/api/tags >/dev/null 2>&1; then
+    echo "Ollama is ready!"
+    break
+  fi
+  sleep 1
+done
+
+# Pre-warm the model by loading it into GPU memory
+echo "Pre-warming llama3.2-vision model into GPU memory..."
+curl -X POST http://localhost:11434/api/chat \
+  -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "keep_alive": -1}' \
+  >/dev/null 2>&1 &
+
+echo "Model pre-warming initiated in background"
+echo "Ollama is ready to serve requests"
+
+# Keep the script running and forward signals to Ollama
+trap "kill $OLLAMA_PID" SIGTERM SIGINT
+wait $OLLAMA_PID
+EOFWRAPPER
+
+chmod +x /app/ollama-entrypoint.sh
+chown ubuntu:ubuntu /app/ollama-entrypoint.sh
+
 # Create production docker-compose.yml
 echo "Creating docker-compose configuration..."
 cat > /app/docker-compose.yml <<'EOF'
@@ -102,6 +140,8 @@ services:
       - OLLAMA_KEEP_ALIVE=-1
     volumes:
       - ollama_models:/root/.ollama
+      - /app/ollama-entrypoint.sh:/usr/local/bin/ollama-entrypoint.sh:ro
+    entrypoint: ["/usr/local/bin/ollama-entrypoint.sh"]
     deploy:
       resources:
         reservations:
@@ -319,16 +359,12 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
   cd /app
   docker-compose exec -T ollama ollama list
   
-  # Pre-warm the model by loading it into GPU memory
-  echo "[Background] Pre-warming model into GPU memory..."
-  echo "[Background] This prevents 60s+ cold start on first API request..."
-  docker-compose exec -T ollama ollama run llama3.2-vision "warmup" --keepalive -1 >/dev/null 2>&1 || true
-  
   echo "[Background] ========================================="
   echo "[Background] Model Download Complete!"
   echo "[Background] ========================================="
   echo "[Background] Ollama backend is now fully operational."
-  echo "[Background] Model pre-loaded into GPU memory for fast inference."
+  echo "[Background] Model will auto-load into GPU memory on first API request."
+  echo "[Background] Subsequent requests will be fast (model stays loaded with keep_alive=-1)."
   
 ) >> /var/log/ollama-model-download.log 2>&1 &
 

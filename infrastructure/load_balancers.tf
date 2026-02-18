@@ -5,6 +5,9 @@ resource "aws_lb" "ttb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
 
+  # Increase idle timeout for Ollama vision processing (can take 60-120 seconds)
+  idle_timeout = 180
+
   # Using default VPC subnets across multiple AZs
   # Note: These are existing subnets, no VPC infrastructure code needed
   subnets = [

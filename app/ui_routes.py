@@ -36,7 +36,7 @@ logger = logging.getLogger("ttb_ui")
 settings = get_settings()
 
 # Initialize Jinja2 templates
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="templates")
 
 # Create UI router
 router = APIRouter()

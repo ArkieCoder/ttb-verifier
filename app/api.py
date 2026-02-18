@@ -754,8 +754,24 @@ async def health_check():
     ollama_error = None
     
     try:
-        ollama_ocr = OllamaOCR(model=ollama_model, host=ollama_host)
-        ollama_available, ollama_error = ollama_ocr.check_availability()
+        # Use short timeout for health check to avoid blocking
+        import requests
+        response = requests.get(f"{ollama_host}/api/tags", timeout=2)
+        
+        if response.status_code == 200:
+            models_data = response.json()
+            available_models = [m.get('name', '').split(':')[0] for m in models_data.get('models', [])]
+            model_base = ollama_model.split(':')[0]
+            
+            if model_base in available_models:
+                ollama_available = True
+            else:
+                ollama_error = f"Model '{ollama_model}' not found"
+        else:
+            ollama_error = f"Ollama not available: HTTP {response.status_code}"
+            
+    except requests.exceptions.Timeout:
+        ollama_error = "Ollama busy or slow to respond (timeout after 2s)"
     except Exception as e:
         ollama_error = str(e)
     

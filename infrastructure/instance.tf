@@ -3,15 +3,6 @@ resource "aws_instance" "ttb" {
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = "g4dn.xlarge"  # GPU-accelerated: 4 vCPU, 16GB RAM, 1x NVIDIA T4 GPU (16GB) for fast Ollama inference
 
-  # Use spot instance for cost savings (~70% cheaper than on-demand)
-  instance_market_options {
-    market_type = "spot"
-    spot_options {
-      max_price          = "0.20"  # ~2x current spot price for g4dn.xlarge
-      spot_instance_type = "persistent"  # Auto-restart if interrupted
-    }
-  }
-
   # NOTE: This instance gets a public IP from the default VPC (MapPublicIpOnLaunch=true)
   # While the security group restricts access (only ALB can reach port 8000), this is
   # not ideal for production. See infrastructure/FUTURE_ENHANCEMENTS.md for remediation

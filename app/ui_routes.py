@@ -202,7 +202,7 @@ async def ui_verify_submit(
     net_contents: Optional[str] = Form(None),
     bottler: Optional[str] = Form(None),
     product_type: Optional[str] = Form(None),
-    use_ollama: Optional[str] = Form(None),
+    ocr_backend: str = Form("tesseract"),
     ollama_timeout: Optional[int] = Form(None),
     username: str = Depends(get_current_user_ui)
 ):
@@ -238,8 +238,9 @@ async def ui_verify_submit(
     if product_type:
         ground_truth["product_type"] = product_type
     
-    # Determine OCR backend
-    ocr_backend = "ollama" if use_ollama == "on" else "tesseract"
+    # Determine OCR backend and validate
+    if ocr_backend not in ["tesseract", "ollama"]:
+        ocr_backend = "tesseract"  # Fallback to safe default
     timeout = ollama_timeout or settings.ollama_timeout_seconds
     
     # Create temporary file
@@ -324,7 +325,7 @@ async def ui_batch_page(request: Request, username: str = Depends(get_current_us
 async def ui_batch_submit(
     request: Request,
     batch_file: UploadFile = File(...),
-    use_ollama: Optional[str] = Form(None),
+    ocr_backend: str = Form("tesseract"),
     ollama_timeout: Optional[int] = Form(None),
     username: str = Depends(get_current_user_ui)
 ):
@@ -345,8 +346,9 @@ async def ui_batch_submit(
             }
         )
     
-    # Determine OCR backend
-    ocr_backend = "ollama" if use_ollama == "on" else "tesseract"
+    # Determine OCR backend and validate
+    if ocr_backend not in ["tesseract", "ollama"]:
+        ocr_backend = "tesseract"  # Fallback to safe default
     timeout = ollama_timeout or settings.ollama_timeout_seconds
     
     # Create temporary batch directory

@@ -107,27 +107,47 @@
                     
                     <!-- OCR Backend Selection -->
                     <h5 class="mb-3">
-                        <i class="bi bi-gear"></i> OCR Settings
+                        <i class="bi bi-gear"></i> OCR Backend
                     </h5>
                     
                     <div class="mb-3">
-                        <div class="form-check form-switch">
+                        <!-- Ollama Radio Button -->
+                        <div class="form-check">
                             <input 
                                 class="form-check-input" 
-                                type="checkbox" 
-                                id="use_ollama" 
-                                name="use_ollama"
+                                type="radio" 
+                                name="ocr_backend" 
+                                id="backend_ollama" 
+                                value="ollama"
                             >
-                            <label class="form-check-label" for="use_ollama">
-                                Use Ollama Vision AI 
+                            <label class="form-check-label" for="backend_ollama">
+                                Ollama Vision AI
                                 <span class="ollama-status ms-2" id="ollamaStatus">
                                     <span class="status-indicator status-checking"></span>
                                     <span class="status-text">Checking...</span>
                                 </span>
                             </label>
+                            <div class="form-text ms-4">
+                                More accurate but slower (~10s per image)
+                            </div>
                         </div>
-                        <div class="form-text">
-                            Ollama provides more accurate OCR but may be slower. Falls back to Tesseract if disabled.
+                        
+                        <!-- Tesseract Radio Button -->
+                        <div class="form-check mt-2">
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                name="ocr_backend" 
+                                id="backend_tesseract" 
+                                value="tesseract"
+                                checked
+                            >
+                            <label class="form-check-label" for="backend_tesseract">
+                                Tesseract OCR
+                            </label>
+                            <div class="form-text ms-4">
+                                Faster but less accurate (~2s per image)
+                            </div>
                         </div>
                     </div>
                     
@@ -176,17 +196,22 @@
 {% block extra_scripts %}
 <script>
     // Ollama status checking
-    const ollamaCheckbox = document.getElementById('use_ollama');
+    const ollamaRadio = document.getElementById('backend_ollama');
+    const tesseractRadio = document.getElementById('backend_tesseract');
     const timeoutField = document.getElementById('timeoutField');
     const ollamaStatusEl = document.getElementById('ollamaStatus');
     const statusIndicator = ollamaStatusEl.querySelector('.status-indicator');
     const statusText = ollamaStatusEl.querySelector('.status-text');
     
-    // Show/hide timeout field based on checkbox
-    ollamaCheckbox.addEventListener('change', function() {
+    // Show/hide timeout field based on radio selection
+    ollamaRadio.addEventListener('change', function() {
         if (this.checked) {
             timeoutField.style.display = 'block';
-        } else {
+        }
+    });
+    
+    tesseractRadio.addEventListener('change', function() {
+        if (this.checked) {
             timeoutField.style.display = 'none';
         }
     });
@@ -203,18 +228,29 @@
             if (ollamaAvailable) {
                 statusIndicator.className = 'status-indicator status-available';
                 statusText.textContent = 'Available';
-                ollamaCheckbox.disabled = false;
+                ollamaRadio.disabled = false;
+                
+                // Auto-select Ollama when available (client-side default)
+                ollamaRadio.checked = true;
+                tesseractRadio.checked = false;
+                timeoutField.style.display = 'block';
             } else {
                 statusIndicator.className = 'status-indicator status-unavailable';
                 statusText.textContent = ollamaError ? 'Unavailable' : 'Not Ready';
-                ollamaCheckbox.disabled = true;
-                ollamaCheckbox.checked = false;
+                ollamaRadio.disabled = true;
+                
+                // Auto-select Tesseract when Ollama unavailable
+                tesseractRadio.checked = true;
+                ollamaRadio.checked = false;
                 timeoutField.style.display = 'none';
             }
         } catch (error) {
             console.error('Failed to check Ollama status:', error);
             statusIndicator.className = 'status-indicator status-unavailable';
             statusText.textContent = 'Unknown';
+            ollamaRadio.disabled = true;
+            tesseractRadio.checked = true;
+            ollamaRadio.checked = false;
         }
     }
     

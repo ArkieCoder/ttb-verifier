@@ -83,7 +83,8 @@ resource "aws_iam_policy" "secrets_access" {
         ],
         Resource = [
           "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:TTB_DEFAULT_USER-*",
-          "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:TTB_DEFAULT_PASS-*"
+          "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:TTB_DEFAULT_PASS-*",
+          "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:TTB_SESSION_SECRET_KEY-*"
         ]
       }
     ]

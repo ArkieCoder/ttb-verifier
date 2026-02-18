@@ -367,8 +367,9 @@ if [ "$HTTP_CODE" -eq 400 ] || [ "$HTTP_CODE" -eq 422 ] || [ "$HTTP_CODE" -eq 50
     fi
     PASSED_TESTS=$((PASSED_TESTS + 1))
 elif [ "$HTTP_CODE" -eq 200 ]; then
-    echo -e "${YELLOW}⚠ Request succeeded, but should have failed for invalid image${NC}"
-    PASSED_TESTS=$((PASSED_TESTS + 1))
+    echo -e "${RED}✗ Request succeeded, but should have failed for invalid image (HTTP $HTTP_CODE)${NC}"
+    echo -e "${RED}  Expected: 400/422/500 error for invalid image format${NC}"
+    FAILED_TESTS=$((FAILED_TESTS + 1))
 else
     echo -e "${RED}✗ Unexpected response (HTTP $HTTP_CODE)${NC}"
     FAILED_TESTS=$((FAILED_TESTS + 1))

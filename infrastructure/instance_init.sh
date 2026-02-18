@@ -23,6 +23,28 @@ systemctl start docker
 systemctl enable docker
 usermod -a -G docker ec2-user
 
+# Install NVIDIA drivers and Docker GPU support for g4dn instances
+echo "Installing NVIDIA GPU support..."
+# Install NVIDIA driver
+dnf install -y gcc kernel-devel-$(uname -r)
+aws s3 cp --recursive s3://ec2-linux-nvidia-drivers/latest/ /tmp/nvidia-drivers/ || {
+    echo "Downloading NVIDIA drivers from official source..."
+    wget -q https://us.download.nvidia.com/tesla/470.239.06/NVIDIA-Linux-x86_64-470.239.06.run -P /tmp/nvidia-drivers/
+}
+chmod +x /tmp/nvidia-drivers/*.run
+/tmp/nvidia-drivers/*.run --silent --disable-nouveau || echo "NVIDIA driver install attempted"
+rm -rf /tmp/nvidia-drivers
+
+# Install NVIDIA Container Toolkit
+echo "Installing NVIDIA Container Toolkit..."
+dnf config-manager --add-repo https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo
+dnf install -y nvidia-container-toolkit
+nvidia-ctk runtime configure --runtime=docker
+systemctl restart docker
+
+# Verify GPU is accessible
+nvidia-smi || echo "GPU not detected yet, may need reboot"
+
 # Install Docker Compose
 echo "Installing Docker Compose..."
 DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
@@ -57,6 +79,13 @@ services:
       - "11434:11434"
     volumes:
       - ollama_models:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "ollama", "list"]

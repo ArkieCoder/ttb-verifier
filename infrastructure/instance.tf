@@ -1,7 +1,7 @@
 # EC2 instance running TTB Label Verifier in Docker containers
 resource "aws_instance" "ttb" {
   ami           = data.aws_ami.amazon_linux_2023.id
-  instance_type = "c6i.2xlarge"  # Compute-optimized: 8 vCPU, 16GB RAM for fast Ollama inference
+  instance_type = "g4dn.xlarge"  # GPU-accelerated: 4 vCPU, 16GB RAM, 1x NVIDIA T4 GPU (16GB) for fast Ollama inference
 
   # NOTE: This instance gets a public IP from the default VPC (MapPublicIpOnLaunch=true)
   # While the security group restricts access (only ALB can reach port 8000), this is

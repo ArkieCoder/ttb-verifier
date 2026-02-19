@@ -50,6 +50,22 @@ The service includes a web-based UI for easy label verification without using th
 - ⏱️ **Real-time Status** - Live monitoring of Ollama availability
 - 📊 **Results Dashboard** - Visual compliance status with detailed violations
 
+**System Status Banner:**
+
+The web UI includes an intelligent system status banner that automatically manages Ollama backend availability:
+
+- **Automatically shown** when Ollama backend is initializing or unavailable
+- **Cannot be dismissed** when system is not ready (submit buttons disabled, forms remain editable)
+- **Can be dismissed** when system becomes ready (green "System Ready" banner)
+- **Stays dismissed** until system becomes unavailable again (state persisted in browser localStorage)
+- **Smart visibility** - Only shows "System Ready" banner after experiencing an unavailability event
+- **Adaptive polling** - Checks every 10 seconds when initializing, every 30 seconds when healthy
+
+**User Experience:**
+- Form fields remain editable while waiting for Ollama to initialize
+- Submit buttons are automatically disabled until backend is available
+- Banner state is shared across browser tabs via localStorage
+
 **Testing the UI API:**
 ```bash
 # Run comprehensive API test suite (11 tests)

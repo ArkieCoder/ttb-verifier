@@ -268,11 +268,37 @@
         const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
         const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
         
-        // System banner management
+        // System banner management with intelligent state tracking
         {% if username %}
         (function() {
             let pollingInterval = null;
             let ollamaAvailable = false;
+            let hasExperiencedUnavailability = false;
+            let userDismissedReady = false;
+            
+            // localStorage keys for persistent state
+            const STORAGE_KEY_DISMISSED = 'ttb_banner_dismissed';
+            const STORAGE_KEY_EXPERIENCED_UNAVAIL = 'ttb_experienced_unavail';
+            
+            // Load state from localStorage
+            function loadState() {
+                try {
+                    userDismissedReady = localStorage.getItem(STORAGE_KEY_DISMISSED) === 'true';
+                    hasExperiencedUnavailability = localStorage.getItem(STORAGE_KEY_EXPERIENCED_UNAVAIL) === 'true';
+                } catch (e) {
+                    console.warn('localStorage not available:', e);
+                }
+            }
+            
+            // Save state to localStorage
+            function saveState() {
+                try {
+                    localStorage.setItem(STORAGE_KEY_DISMISSED, userDismissedReady.toString());
+                    localStorage.setItem(STORAGE_KEY_EXPERIENCED_UNAVAIL, hasExperiencedUnavailability.toString());
+                } catch (e) {
+                    console.warn('Failed to save state:', e);
+                }
+            }
             
             async function checkSystemStatus() {
                 try {
@@ -308,54 +334,78 @@
                 const message = document.getElementById('bannerMessage');
                 const dismiss = document.getElementById('dismissBanner');
                 
-                if (available) {
-                    // System is ready
-                    banner.className = 'system-banner ready';
-                    banner.style.display = 'flex';
-                    spinner.style.display = 'none';
-                    title.textContent = 'System Ready';
-                    message.textContent = 'Scanning backend is available';
-                    dismiss.style.display = 'block';
-                } else {
-                    // System is initializing or unavailable
+                if (!available) {
+                    // System is NOT ready - proactively show banner
+                    hasExperiencedUnavailability = true;
+                    userDismissedReady = false; // Reset dismiss state when system goes down
+                    saveState();
+                    
                     banner.className = 'system-banner initializing';
                     banner.style.display = 'flex';
                     spinner.style.display = 'inline-block';
                     title.textContent = 'System Initializing';
                     message.textContent = error || 'Scanning backend initializing - please wait';
-                    dismiss.style.display = 'none';
+                    dismiss.style.display = 'none'; // CANNOT dismiss when not ready
+                    
+                    // Disable submit buttons
+                    updateSubmitButtons(false);
+                    
+                } else {
+                    // System IS ready
+                    
+                    // Only show "System Ready" if:
+                    // 1. We've experienced unavailability before, AND
+                    // 2. User hasn't dismissed it
+                    const shouldShowReady = hasExperiencedUnavailability && !userDismissedReady;
+                    
+                    if (shouldShowReady) {
+                        banner.className = 'system-banner ready';
+                        banner.style.display = 'flex';
+                        spinner.style.display = 'none';
+                        title.textContent = 'System Ready';
+                        message.textContent = 'Scanning backend is available';
+                        dismiss.style.display = 'block'; // CAN dismiss when ready
+                    } else {
+                        banner.style.display = 'none';
+                    }
+                    
+                    // Enable submit buttons
+                    updateSubmitButtons(true);
                 }
-                
-                // Enable/disable submit buttons globally
-                updateSubmitButtons(available);
             }
             
             function updateSubmitButtons(enabled) {
+                // Find all submit buttons in forms
                 const submitButtons = document.querySelectorAll('button[type="submit"]');
                 submitButtons.forEach(btn => {
                     btn.disabled = !enabled;
                     if (!enabled && !btn.dataset.originalText) {
-                        btn.dataset.originalText = btn.textContent;
+                        // Save original HTML and show waiting state
+                        btn.dataset.originalText = btn.innerHTML;
                         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Waiting for backend...';
                     } else if (enabled && btn.dataset.originalText) {
-                        btn.textContent = btn.dataset.originalText;
+                        // Restore original HTML
+                        btn.innerHTML = btn.dataset.originalText;
                         delete btn.dataset.originalText;
                     }
                 });
             }
             
-            // Dismiss banner handler
+            // Dismiss banner handler (only works when system is ready)
             const dismissBtn = document.getElementById('dismissBanner');
             if (dismissBtn) {
                 dismissBtn.addEventListener('click', function() {
                     const banner = document.getElementById('systemBanner');
-                    if (banner) {
+                    if (banner && banner.classList.contains('ready')) {
+                        userDismissedReady = true;
+                        saveState();
                         banner.style.display = 'none';
                     }
                 });
             }
             
-            // Start polling immediately and set interval
+            // Initialize
+            loadState();
             checkSystemStatus();
             pollingInterval = setInterval(checkSystemStatus, 10000); // Start with 10s polling
         })();

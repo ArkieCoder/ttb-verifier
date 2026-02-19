@@ -176,7 +176,6 @@ services:
       - LOG_LEVEL=INFO
       - MAX_FILE_SIZE_MB=10
       - MAX_BATCH_SIZE=50
-      - DEFAULT_OCR_BACKEND=tesseract
       - TMPDIR=/app/tmp
       - CORS_ORIGINS=["*"]
       - DOMAIN_NAME=${DOMAIN_NAME}
@@ -306,13 +305,13 @@ echo ""
 echo "========================================="
 echo "Auto-deploying TTB Verifier Application"
 echo "========================================="
-echo "Deploying application in degraded mode (Tesseract-only)..."
+echo "Deploying application (Ollama backend required)..."
 echo "Ollama model will be downloaded in background."
 
 if /app/deploy.sh; then
   echo "✅ Verifier application deployed successfully!"
-  echo "   Status: DEGRADED MODE (Tesseract OCR available)"
-  echo "   Ollama backend will become available after model download completes."
+  echo "   Status: Ollama backend will be available after model download completes."
+  echo "   Verification endpoints will return 503 until Ollama is ready."
 else
   echo "⚠️  Initial deployment failed, but EC2 is ready for manual deployment"
   echo "   You can manually deploy using:"
@@ -419,12 +418,12 @@ echo "========================================="
 echo "Docker: $(docker --version)"
 echo "Docker Compose: $(docker-compose --version)"
 echo "SSM Agent: Active"
-echo "Application: ONLINE (Degraded Mode - Tesseract only)"
+echo "Application: ONLINE"
 echo "Ollama Model: Downloading in background..."
 echo "========================================="
 echo ""
-echo "✅ System is operational and serving traffic!"
-echo "   - Tesseract OCR: Available immediately"
+echo "✅ System is operational and will serve traffic once Ollama is ready!"
 echo "   - Ollama OCR: Will be available in ~2-5 minutes (auto-prewarmed by app)"
+echo "   - /verify endpoints return 503 until Ollama is available"
 echo "   - Check status: curl http://localhost:8000/health"
 echo "========================================="

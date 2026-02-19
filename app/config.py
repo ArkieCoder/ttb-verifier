@@ -43,10 +43,6 @@ class Settings(BaseSettings):
         default=50,
         description="Maximum number of images in a batch request"
     )
-    default_ocr_backend: str = Field(
-        default="tesseract",
-        description="Default OCR backend (tesseract or ollama)"
-    )
     
     # CORS Configuration
     cors_origins: str = Field(
@@ -91,24 +87,6 @@ class Settings(BaseSettings):
         if v > 500:
             raise ValueError("max_batch_size should not exceed 500 for practical use")
         return v
-    
-    @field_validator("ollama_timeout_seconds")
-    @classmethod
-    def validate_ollama_timeout(cls, v: int) -> int:
-        """Ensure Ollama timeout is reasonable."""
-        if v <= 0:
-            raise ValueError("ollama_timeout_seconds must be positive")
-        if v > 600:
-            raise ValueError("ollama_timeout_seconds should not exceed 600 (10 minutes)")
-        return v
-    
-    @field_validator("default_ocr_backend")
-    @classmethod
-    def validate_ocr_backend(cls, v: str) -> str:
-        """Ensure OCR backend is valid."""
-        if v.lower() not in ("tesseract", "ollama"):
-            raise ValueError("default_ocr_backend must be 'tesseract' or 'ollama'")
-        return v.lower()
     
     @field_validator("log_level")
     @classmethod

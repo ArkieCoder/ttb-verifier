@@ -107,6 +107,69 @@
         .batch-result-row:hover {
             background-color: #f8f9fa;
         }
+        
+        /* System Banner Styles */
+        .system-banner {
+            position: relative;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .system-banner.initializing {
+            background-color: #dc3545;
+            color: white;
+            border: 2px solid #b02a37;
+        }
+        
+        .system-banner.ready {
+            background-color: #28a745;
+            color: white;
+            border: 2px solid #1e7e34;
+        }
+        
+        .system-banner .spinner-border {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-width: 0.15rem;
+        }
+        
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .banner-icon {
+            font-size: 1.5rem;
+        }
+        
+        .banner-text strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .banner-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
@@ -165,6 +228,22 @@
     <!-- Main Content -->
     <main>
         <div class="container">
+            <!-- System Status Banner (shown only when Ollama unavailable) -->
+            {% if username %}
+            <div id="systemBanner" class="system-banner" style="display: none;">
+                <div class="banner-content">
+                    <div class="banner-icon">
+                        <span class="spinner-border" id="bannerSpinner"></span>
+                    </div>
+                    <div class="banner-text">
+                        <strong id="bannerTitle">System Status</strong>
+                        <p id="bannerMessage">Checking system status...</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" id="dismissBanner" style="display: none;" aria-label="Close"></button>
+            </div>
+            {% endif %}
+            
             {% block content %}{% endblock %}
         </div>
     </main>
@@ -188,6 +267,99 @@
         // Initialize all popovers
         const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
         const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+        
+        // System banner management
+        {% if username %}
+        (function() {
+            let pollingInterval = null;
+            let ollamaAvailable = false;
+            
+            async function checkSystemStatus() {
+                try {
+                    const response = await fetch('/health');
+                    const data = await response.json();
+                    const available = data.backends?.ollama?.available || false;
+                    const error = data.backends?.ollama?.error || null;
+                    
+                    updateSystemBanner(available, error);
+                    ollamaAvailable = available;
+                    
+                    // Adjust polling frequency based on availability
+                    if (pollingInterval) {
+                        clearInterval(pollingInterval);
+                        if (available) {
+                            pollingInterval = setInterval(checkSystemStatus, 30000); // 30s when healthy
+                        } else {
+                            pollingInterval = setInterval(checkSystemStatus, 10000); // 10s when initializing
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to check system status:', error);
+                    updateSystemBanner(false, 'Unable to connect to backend');
+                }
+            }
+            
+            function updateSystemBanner(available, error) {
+                const banner = document.getElementById('systemBanner');
+                if (!banner) return;
+                
+                const spinner = document.getElementById('bannerSpinner');
+                const title = document.getElementById('bannerTitle');
+                const message = document.getElementById('bannerMessage');
+                const dismiss = document.getElementById('dismissBanner');
+                
+                if (available) {
+                    // System is ready
+                    banner.className = 'system-banner ready';
+                    banner.style.display = 'flex';
+                    spinner.style.display = 'none';
+                    title.textContent = 'System Ready';
+                    message.textContent = 'Scanning backend is available';
+                    dismiss.style.display = 'block';
+                } else {
+                    // System is initializing or unavailable
+                    banner.className = 'system-banner initializing';
+                    banner.style.display = 'flex';
+                    spinner.style.display = 'inline-block';
+                    title.textContent = 'System Initializing';
+                    message.textContent = error || 'Scanning backend initializing - please wait';
+                    dismiss.style.display = 'none';
+                }
+                
+                // Enable/disable submit buttons globally
+                updateSubmitButtons(available);
+            }
+            
+            function updateSubmitButtons(enabled) {
+                const submitButtons = document.querySelectorAll('button[type="submit"]');
+                submitButtons.forEach(btn => {
+                    btn.disabled = !enabled;
+                    if (!enabled && !btn.dataset.originalText) {
+                        btn.dataset.originalText = btn.textContent;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Waiting for backend...';
+                    } else if (enabled && btn.dataset.originalText) {
+                        btn.textContent = btn.dataset.originalText;
+                        delete btn.dataset.originalText;
+                    }
+                });
+            }
+            
+            // Dismiss banner handler
+            const dismissBtn = document.getElementById('dismissBanner');
+            if (dismissBtn) {
+                dismissBtn.addEventListener('click', function() {
+                    const banner = document.getElementById('systemBanner');
+                    if (banner) {
+                        banner.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Start polling immediately and set interval
+            checkSystemStatus();
+            pollingInterval = setInterval(checkSystemStatus, 10000); // Start with 10s polling
+        })();
+        {% endif %}
     </script>
     
     {% block extra_scripts %}{% endblock %}

@@ -1,16 +1,14 @@
 # Stage 1: Base with system dependencies
-FROM python:3.12-slim as base
+FROM python:3.12-slim AS base
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        tesseract-ocr \
-        tesseract-ocr-eng \
         curl \
         bc \
     && rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Python dependencies builder
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /build
 COPY app/requirements.txt app/requirements-dev.txt ./
@@ -18,7 +16,7 @@ COPY app/requirements.txt app/requirements-dev.txt ./
 RUN pip install --user --no-cache-dir -r requirements.txt -r requirements-dev.txt
 
 # Stage 3: Test runner (fails build if tests fail or coverage < 50%)
-FROM builder as test
+FROM builder AS test
 
 COPY app/ /app
 WORKDIR /app
@@ -34,7 +32,7 @@ RUN pytest tests/ \
     -v
 
 # Stage 4: Production image
-FROM base as production
+FROM base AS production
 
 WORKDIR /app
 

@@ -203,12 +203,11 @@ async def ui_verify_submit(
     net_contents: Optional[str] = Form(None),
     bottler: Optional[str] = Form(None),
     product_type: Optional[str] = Form(None),
-    ocr_backend: str = Form("tesseract"),
     ollama_timeout: Optional[int] = Form(None),
     username: str = Depends(get_current_user_ui)
 ):
     """
-    Process single image verification form.
+    Process single image verification form using Ollama OCR.
     """
     # Validate image file
     if image.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
@@ -225,7 +224,6 @@ async def ui_verify_submit(
                     "abv": abv,
                     "net_contents": net_contents,
                     "bottler": bottler,
-                    "ocr_backend": ocr_backend,
                     "ollama_timeout": ollama_timeout
                 },
                 "ollama_host": settings.ollama_host,
@@ -249,9 +247,7 @@ async def ui_verify_submit(
     if product_type:
         ground_truth["product_type"] = product_type
     
-    # Determine OCR backend and validate
-    if ocr_backend not in ["tesseract", "ollama"]:
-        ocr_backend = "tesseract"  # Fallback to safe default
+    # Determine timeout
     timeout = ollama_timeout or settings.ollama_timeout_seconds
     
     # Create temporary file
@@ -262,11 +258,11 @@ async def ui_verify_submit(
             f.write(content)
         
         try:
-            # Initialize validator
-            validator = LabelValidator(ocr_backend=ocr_backend)
+            # Initialize validator with Ollama
+            validator = LabelValidator()
             
             # Set timeout for Ollama
-            if ocr_backend == "ollama" and hasattr(validator.ocr, 'timeout'):
+            if hasattr(validator.ocr, 'timeout'):
                 validator.ocr.timeout = timeout
             
             # Validate label
@@ -301,14 +297,13 @@ async def ui_verify_submit(
                     "request": request,
                     "username": username,
                     "error": error_msg,
-                    "error_field": "ocr_backend",
+                    "error_field": "image",
                     "form_data": {
                         "brand_name": brand_name,
                         "product_type": product_type,
                         "abv": abv,
                         "net_contents": net_contents,
                         "bottler": bottler,
-                        "ocr_backend": ocr_backend,
                         "ollama_timeout": ollama_timeout
                     },
                     "ollama_host": settings.ollama_host,
@@ -330,7 +325,6 @@ async def ui_verify_submit(
                         "abv": abv,
                         "net_contents": net_contents,
                         "bottler": bottler,
-                        "ocr_backend": ocr_backend,
                         "ollama_timeout": ollama_timeout
                     },
                     "ollama_host": settings.ollama_host,
@@ -360,12 +354,11 @@ async def ui_batch_page(request: Request, username: str = Depends(get_current_us
 async def ui_batch_submit(
     request: Request,
     batch_file: UploadFile = File(...),
-    ocr_backend: str = Form("tesseract"),
     ollama_timeout: Optional[int] = Form(None),
     username: str = Depends(get_current_user_ui)
 ):
     """
-    Process batch ZIP file verification.
+    Process batch ZIP file verification using Ollama OCR.
     """
     # Validate ZIP file
     if batch_file.content_type not in ["application/zip", "application/x-zip-compressed"]:
@@ -377,7 +370,6 @@ async def ui_batch_submit(
                 "error": f"Invalid file type: {batch_file.content_type}. Please upload a ZIP file.",
                 "error_field": "batch_file",
                 "form_data": {
-                    "ocr_backend": ocr_backend,
                     "ollama_timeout": ollama_timeout
                 },
                 "max_batch_size": settings.max_batch_size,
@@ -386,9 +378,7 @@ async def ui_batch_submit(
             }
         )
     
-    # Determine OCR backend and validate
-    if ocr_backend not in ["tesseract", "ollama"]:
-        ocr_backend = "tesseract"  # Fallback to safe default
+    # Determine timeout
     timeout = ollama_timeout or settings.ollama_timeout_seconds
     
     # Create temporary batch directory
@@ -422,9 +412,9 @@ async def ui_batch_submit(
         if len(image_files) > settings.max_batch_size:
             raise ValueError(f"Too many images: {len(image_files)} (max: {settings.max_batch_size})")
         
-        # Initialize validator
-        validator = LabelValidator(ocr_backend=ocr_backend)
-        if ocr_backend == "ollama" and hasattr(validator.ocr, 'timeout'):
+        # Initialize validator with Ollama
+        validator = LabelValidator()
+        if hasattr(validator.ocr, 'timeout'):
             validator.ocr.timeout = timeout
         
         # Process each image
@@ -507,9 +497,8 @@ async def ui_batch_submit(
                 "request": request,
                 "username": username,
                 "error": error_msg,
-                "error_field": "batch_file" if "No image files" in error_msg or "Too many" in error_msg else "ocr_backend",
+                "error_field": "batch_file",
                 "form_data": {
-                    "ocr_backend": ocr_backend,
                     "ollama_timeout": ollama_timeout
                 },
                 "max_batch_size": settings.max_batch_size,

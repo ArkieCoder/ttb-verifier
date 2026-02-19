@@ -50,43 +50,12 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <!-- Tesseract -->
-                    <div class="col-md-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <i class="bi bi-file-text"></i> Tesseract OCR
-                                </h6>
-                                <div class="mb-2">
-                                    {% if health.backends.tesseract.available %}
-                                    <span class="badge bg-success">
-                                        <i class="bi bi-check-circle"></i> Available
-                                    </span>
-                                    {% else %}
-                                    <span class="badge bg-danger">
-                                        <i class="bi bi-x-circle"></i> Unavailable
-                                    </span>
-                                    {% endif %}
-                                </div>
-                                {% if health.backends.tesseract.error %}
-                                <p class="text-danger small mb-0">
-                                    <strong>Error:</strong> {{ health.backends.tesseract.error }}
-                                </p>
-                                {% else %}
-                                <p class="text-muted small mb-0">
-                                    Fast, traditional OCR engine for text extraction.
-                                </p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Ollama -->
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h6 class="card-title">
-                                    <i class="bi bi-robot"></i> Ollama Vision
+                                    <i class="bi bi-robot"></i> Ollama Vision AI
                                 </h6>
                                 <div class="mb-2">
                                     {% if health.backends.ollama.available %}
@@ -94,8 +63,8 @@
                                         <i class="bi bi-check-circle"></i> Available
                                     </span>
                                     {% else %}
-                                    <span class="badge bg-warning">
-                                        <i class="bi bi-exclamation-circle"></i> Unavailable
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Initializing
                                     </span>
                                     {% endif %}
                                 </div>
@@ -103,12 +72,12 @@
                                     <strong>Model:</strong> <code>{{ health.backends.ollama.model }}</code>
                                 </p>
                                 {% if health.backends.ollama.error %}
-                                <p class="text-warning small mb-0">
+                                <p class="text-danger small mb-0">
                                     <strong>Status:</strong> {{ health.backends.ollama.error }}
                                 </p>
                                 {% else %}
                                 <p class="text-muted small mb-0">
-                                    AI-powered vision model for enhanced OCR accuracy.
+                                    AI-powered vision model for accurate label text extraction.
                                 </p>
                                 {% endif %}
                             </div>

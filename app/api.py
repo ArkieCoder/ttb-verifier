@@ -394,12 +394,11 @@ def find_ground_truth_file(image_path: Path) -> Optional[Path]:
 async def verify_label(
     image: UploadFile = File(..., description="Label image file (max 10MB)"),
     ground_truth: Optional[str] = Form(None, description="Ground truth JSON string"),
-    ocr_backend: Optional[str] = Form(None, description="OCR backend: tesseract or ollama"),
     timeout: Optional[int] = Form(None, description="Timeout in seconds for OCR processing"),
     username: str = Depends(get_current_user)
 ) -> VerifyResponse:
     """
-    Verify a single alcohol beverage label.
+    Verify a single alcohol beverage label using Ollama vision OCR.
     
     Performs structural validation (Tier 1) and optional accuracy validation
     (Tier 2) if ground truth is provided.
@@ -407,8 +406,7 @@ async def verify_label(
     **Request:**
     - `image`: Label image file (JPEG or PNG, max 10MB)
     - `ground_truth`: Optional JSON with expected values
-    - `ocr_backend`: Optional OCR engine ("tesseract" or "ollama")
-    - `timeout`: Optional timeout in seconds (default: 60s for Ollama)
+    - `timeout`: Optional timeout in seconds (default: 60s)
     
     **Response:**
     - `status`: COMPLIANT, NON_COMPLIANT, or PARTIAL_VALIDATION
@@ -434,14 +432,6 @@ async def verify_label(
     # Parse ground truth
     ground_truth_data = parse_ground_truth(ground_truth, correlation_id)
     
-    # Determine OCR backend
-    backend = ocr_backend or settings.default_ocr_backend
-    if backend.lower() not in ["tesseract", "ollama"]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid OCR backend. Must be 'tesseract' or 'ollama', got '{backend}'"
-        )
-    
     # Determine timeout
     ocr_timeout = timeout if timeout is not None else settings.ollama_timeout_seconds
     
@@ -451,16 +441,16 @@ async def verify_label(
         await save_upload_file(image, temp_path)
         
         try:
-            # Initialize validator
-            validator = LabelValidator(ocr_backend=backend.lower())
+            # Initialize validator with Ollama
+            validator = LabelValidator()
             
-            # Set timeout for Ollama if applicable
-            if backend.lower() == "ollama" and hasattr(validator.ocr, 'timeout'):
+            # Set timeout for Ollama
+            if hasattr(validator.ocr, 'timeout'):
                 validator.ocr.timeout = ocr_timeout
             
             # Validate label
             logger.info(
-                f"[{correlation_id}] Processing with {backend} OCR "
+                f"[{correlation_id}] Processing with Ollama OCR "
                 f"(timeout: {ocr_timeout}s)"
             )
             result = validator.validate_label(str(temp_path), ground_truth_data)
@@ -473,16 +463,15 @@ async def verify_label(
             return VerifyResponse(**result)
         
         except RuntimeError as e:
-            # Handle Ollama unavailability specifically
+            # Handle Ollama unavailability
             error_msg = str(e)
-            if backend.lower() == "ollama" and ("Cannot connect" in error_msg or "not found" in error_msg):
+            if "Cannot connect" in error_msg or "not found" in error_msg or "not available" in error_msg:
                 logger.warning(f"[{correlation_id}] Ollama backend unavailable: {e}")
                 raise HTTPException(
                     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                     detail={
                         "message": f"Ollama backend unavailable: {error_msg}",
-                        "suggestion": "Try using 'tesseract' backend or wait for model download to complete",
-                        "available_backends": ["tesseract"],
+                        "suggestion": "Wait for Ollama model to load or check system health at /health",
                         "retry_after": 60
                     }
                 )
@@ -500,20 +489,18 @@ async def verify_label(
 @app.post("/verify/batch", response_model=BatchResponse)
 async def verify_batch(
     batch_file: UploadFile = File(..., description="ZIP file containing label images"),
-    ocr_backend: Optional[str] = Form(None, description="OCR backend: tesseract or ollama"),
     timeout: Optional[int] = Form(None, description="Timeout in seconds for OCR processing"),
     username: str = Depends(get_current_user)
 ) -> BatchResponse:
     """
-    Verify multiple alcohol beverage labels in batch.
+    Verify multiple alcohol beverage labels in batch using Ollama vision OCR.
     
     Accepts a ZIP file containing label images and optional JSON ground truth files.
     Ground truth files should have the same name as images (e.g., label.jpg + label.json).
     
     **Request:**
     - `batch_file`: ZIP archive with images (max 50 images)
-    - `ocr_backend`: Optional OCR engine ("tesseract" or "ollama")
-    - `timeout`: Optional timeout in seconds per image (default: 60s for Ollama)
+    - `timeout`: Optional timeout in seconds per image (default: 60s)
     
     **ZIP Structure:**
     ```
@@ -531,26 +518,17 @@ async def verify_batch(
     **Example:**
     ```bash
     curl -X POST http://localhost:8000/verify/batch \\
-      -F "batch_file=@labels.zip" \\
-      -F "ocr_backend=tesseract"
+      -F "batch_file=@labels.zip"
     ```
     """
     correlation_id = get_correlation_id()
     logger.info(f"[{correlation_id}] POST /verify/batch - {batch_file.filename}")
     
-    # Validate ZIP file
-    if batch_file.content_type not in ["application/zip", "application/x-zip-compressed"]:
+    # Validate file is a ZIP
+    if not batch_file.filename.endswith('.zip'):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file type. Expected application/zip, got {batch_file.content_type}"
-        )
-    
-    # Determine OCR backend
-    backend = ocr_backend or settings.default_ocr_backend
-    if backend.lower() not in ["tesseract", "ollama"]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid OCR backend. Must be 'tesseract' or 'ollama', got '{backend}'"
+            detail="Batch file must be a ZIP archive"
         )
     
     # Determine timeout
@@ -565,24 +543,23 @@ async def verify_batch(
         logger.info(f"[{correlation_id}] Found {len(image_files)} images to process")
         
         try:
-            # Initialize validator (reuse for all images)
-            validator = LabelValidator(ocr_backend=backend.lower())
+            # Initialize validator with Ollama (reuse for all images)
+            validator = LabelValidator()
             
-            # Set timeout for Ollama if applicable
-            if backend.lower() == "ollama" and hasattr(validator.ocr, 'timeout'):
+            # Set timeout for Ollama
+            if hasattr(validator.ocr, 'timeout'):
                 validator.ocr.timeout = ocr_timeout
         
         except RuntimeError as e:
-            # Handle Ollama unavailability specifically
+            # Handle Ollama unavailability
             error_msg = str(e)
-            if backend.lower() == "ollama" and ("Cannot connect" in error_msg or "not found" in error_msg):
+            if "Cannot connect" in error_msg or "not found" in error_msg or "not available" in error_msg:
                 logger.warning(f"[{correlation_id}] Ollama backend unavailable: {e}")
                 raise HTTPException(
                     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                     detail={
                         "message": f"Ollama backend unavailable: {error_msg}",
-                        "suggestion": "Try using 'tesseract' backend or wait for model download to complete",
-                        "available_backends": ["tesseract"],
+                        "suggestion": "Wait for Ollama model to load or check system health at /health",
                         "retry_after": 60
                     }
                 )
@@ -820,17 +797,8 @@ def get_health_status() -> Dict[str, Any]:
             }
         }
     """
-    from ocr_backends import TesseractOCR, OllamaOCR
+    from ocr_backends import OllamaOCR
     import os
-    
-    # Check Tesseract availability
-    tesseract_available = True
-    tesseract_error = None
-    try:
-        tesseract_ocr = TesseractOCR()
-    except RuntimeError as e:
-        tesseract_available = False
-        tesseract_error = str(e)
     
     # Check Ollama availability (lazy check - no exception raised)
     # Ollama is considered "available" if:
@@ -892,24 +860,17 @@ def get_health_status() -> Dict[str, Any]:
     except Exception as e:
         ollama_error = f"Unreachable ({str(e)})"
     
-    # Determine available backends
+    # Determine available backends (only Ollama)
     available_backends = []
-    if tesseract_available:
-        available_backends.append("tesseract")
     if ollama_available:
         available_backends.append("ollama")
     
     # Determine overall status
-    degraded_mode = not ollama_available
-    overall_status = "degraded" if degraded_mode else "healthy"
+    overall_status = "healthy" if ollama_available else "initializing"
     
     return {
         "status": overall_status,
         "backends": {
-            "tesseract": {
-                "available": tesseract_available,
-                "error": tesseract_error
-            },
             "ollama": {
                 "available": ollama_available,
                 "error": ollama_error,
@@ -917,8 +878,7 @@ def get_health_status() -> Dict[str, Any]:
             }
         },
         "capabilities": {
-            "ocr_backends": available_backends,
-            "degraded_mode": degraded_mode
+            "ocr_backends": available_backends
         }
     }
 
@@ -926,30 +886,27 @@ def get_health_status() -> Dict[str, Any]:
 @app.get("/health")
 async def health_check():
     """
-    Health check endpoint that reports backend availability.
+    Health check endpoint that reports Ollama backend availability.
     
-    Returns service health and available OCR backends. This endpoint always
-    returns HTTP 200 as long as the API is running, even in degraded mode
-    (Tesseract-only). This allows the load balancer to route traffic to the
-    instance while Ollama model is still downloading.
+    Returns service health status. This endpoint always returns HTTP 200 as long
+    as the API is running, even when Ollama is initializing. This allows the
+    load balancer to route traffic while the Ollama model is loading.
     
     Ollama is marked as "available" only when ALL three conditions are met:
     1. Ollama server is responsive (GET /api/tags succeeds)
     2. Model is downloaded and available (appears in /api/tags response)
     3. Model is loaded in GPU RAM (appears in /api/ps response)
     
-    The model will be automatically pre-warmed during EC2 initialization.
+    The model will be automatically pre-warmed when detected as downloaded.
     
     Returns:
         {
-            "status": "healthy" | "degraded",
+            "status": "healthy" | "initializing",
             "backends": {
-                "tesseract": {"available": bool, "error": str|null},
                 "ollama": {"available": bool, "error": str|null, "model": str}
             },
             "capabilities": {
-                "ocr_backends": ["tesseract", "ollama"],  # Available backends
-                "degraded_mode": bool  # True if any backend unavailable
+                "ocr_backends": ["ollama"]  # Available backends
             }
         }
     """

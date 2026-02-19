@@ -16,9 +16,6 @@ Examples:
     # Full validation with ground truth
     verify_label.py label.jpg --ground-truth metadata.json
 
-    # Use AI OCR for better accuracy (slower)
-    verify_label.py label.jpg --ocr-backend ollama
-
     # Batch process directory
     verify_label.py --batch samples/ --ground-truth-dir samples/
 """

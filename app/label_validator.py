@@ -13,7 +13,7 @@ import time
 from typing import Dict, Any, Optional, List
 from enum import Enum
 
-from ocr_backends import OCRBackend, TesseractOCR, OllamaOCR
+from ocr_backends import OCRBackend, OllamaOCR
 from label_extractor import LabelExtractor, GOVERNMENT_WARNING_TEXT
 from field_validators import FieldValidator
 
@@ -34,20 +34,16 @@ class ValidationLevel(Enum):
 class LabelValidator:
     """Main validator orchestrating OCR, extraction, and validation."""
     
-    def __init__(self, ocr_backend: str = "tesseract", ollama_host: Optional[str] = None):
+    def __init__(self, ollama_host: Optional[str] = None):
         """
-        Initialize validator with specified OCR backend.
+        Initialize validator with Ollama OCR backend.
         
         Args:
-            ocr_backend: "tesseract" (fast) or "ollama" (accurate)
             ollama_host: Ollama API host URL (defaults to OLLAMA_HOST env var or http://localhost:11434)
         """
-        # Initialize OCR backend
-        if ocr_backend.lower() == "ollama":
-            host = ollama_host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
-            self.ocr = OllamaOCR(host=host)
-        else:
-            self.ocr = TesseractOCR()
+        # Initialize Ollama OCR backend
+        host = ollama_host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        self.ocr = OllamaOCR(host=host)
         
         # Initialize extractor and validator
         self.extractor = LabelExtractor()
@@ -406,7 +402,7 @@ if __name__ == "__main__":
         with open(sys.argv[2], 'r') as f:
             ground_truth = json.load(f)
     
-    validator = LabelValidator(ocr_backend="tesseract")
+    validator = LabelValidator()
     result = validator.validate_label(image_path, ground_truth)
     
     print(json.dumps(result, indent=2))

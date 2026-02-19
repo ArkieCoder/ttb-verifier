@@ -123,8 +123,7 @@ def test_verify_success_no_ground_truth(authenticated_client, sample_image_bytes
     """Test single label verification without ground truth (structural only)."""
     response = authenticated_client.post(
         "/verify",
-        files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
-        data={"ocr_backend": "tesseract"}
+        files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")}
     )
     
     assert response.status_code == 200
@@ -149,8 +148,7 @@ def test_verify_success_with_ground_truth(authenticated_client, sample_image_byt
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={
-            "ground_truth": sample_ground_truth_json,
-            "ocr_backend": "tesseract"
+            "ground_truth": sample_ground_truth_json
         }
     )
     
@@ -164,7 +162,7 @@ def test_verify_success_with_ground_truth(authenticated_client, sample_image_byt
 
 @patch('api.LabelValidator')
 def test_verify_with_ollama_backend(mock_validator_class, authenticated_client, sample_image_bytes):
-    """Test single label verification with Ollama backend."""
+    """Test single label verification (uses Ollama as the only backend)."""
     # Mock the validator to avoid actual Ollama call
     mock_validator = Mock()
     mock_validator.validate_label.return_value = {
@@ -187,16 +185,15 @@ def test_verify_with_ollama_backend(mock_validator_class, authenticated_client, 
     
     response = authenticated_client.post(
         "/verify",
-        files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
-        data={"ocr_backend": "ollama"}
+        files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")}
     )
     
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "COMPLIANT"
     
-    # Verify Ollama backend was requested
-    mock_validator_class.assert_called_once_with(ocr_backend="ollama")
+    # Verify validator was called (now without ocr_backend parameter)
+    mock_validator_class.assert_called_once()
 
 
 def test_verify_with_custom_timeout(authenticated_client, sample_image_bytes):
@@ -205,12 +202,11 @@ def test_verify_with_custom_timeout(authenticated_client, sample_image_bytes):
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
         data={
-            "ocr_backend": "tesseract",
             "timeout": 30
         }
     )
     
-    # Should succeed regardless of timeout for Tesseract
+    # Should succeed regardless of timeout
     assert response.status_code == 200
 
 
@@ -243,25 +239,9 @@ def test_verify_invalid_ground_truth_json(authenticated_client, sample_image_byt
 
 def test_verify_missing_image(authenticated_client):
     """Test verification without image file."""
-    response = authenticated_client.post(
-        "/verify",
-        data={"ocr_backend": "tesseract"}
-    )
+    response = authenticated_client.post("/verify")
     
     assert response.status_code == 422  # Validation error
-
-
-def test_verify_invalid_ocr_backend(authenticated_client, sample_image_bytes):
-    """Test verification with invalid OCR backend name."""
-    response = authenticated_client.post(
-        "/verify",
-        files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
-        data={"ocr_backend": "invalid_backend"}
-    )
-    
-    assert response.status_code == 400
-    data = response.json()
-    assert "Invalid OCR backend" in data["detail"]
 
 
 @patch('api.LabelValidator')
@@ -274,8 +254,7 @@ def test_verify_ocr_failure(mock_validator_class, authenticated_client, sample_i
     
     response = authenticated_client.post(
         "/verify",
-        files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
-        data={"ocr_backend": "tesseract"}
+        files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")}
     )
     
     assert response.status_code == 500
@@ -291,8 +270,7 @@ def test_batch_success(authenticated_client, sample_batch_zip):
     """Test batch verification with valid ZIP file."""
     response = authenticated_client.post(
         "/verify/batch",
-        files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")},
-        data={"ocr_backend": "tesseract"}
+        files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")}
     )
     
     assert response.status_code == 200
@@ -326,8 +304,7 @@ def test_batch_with_ground_truth(authenticated_client, sample_batch_zip):
     # The sample_batch_zip fixture includes JSON files
     response = authenticated_client.post(
         "/verify/batch",
-        files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")},
-        data={"ocr_backend": "tesseract"}
+        files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")}
     )
     
     assert response.status_code == 200
@@ -374,7 +351,7 @@ def test_batch_invalid_file_type(authenticated_client):
     
     assert response.status_code == 400
     data = response.json()
-    assert "Invalid file type" in data["detail"]
+    assert ("Invalid file type" in data["detail"] or "ZIP archive" in data["detail"])
 
 
 @pytest.mark.parametrize("num_images", [51, 100])
@@ -456,16 +433,11 @@ def test_health_endpoint(client):
     assert "backends" in data
     assert "capabilities" in data
     
-    # Check backends
-    assert "tesseract" in data["backends"]
+    # Check backends - only Ollama now
     assert "ollama" in data["backends"]
-    
-    # Tesseract should be available (always installed in container)
-    assert data["backends"]["tesseract"]["available"] is True
     
     # Check capabilities
     assert "ocr_backends" in data["capabilities"]
-    assert "degraded_mode" in data["capabilities"]
     assert isinstance(data["capabilities"]["ocr_backends"], list)
 
 
@@ -519,7 +491,6 @@ def test_batch_with_custom_timeout(authenticated_client, sample_batch_zip):
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")},
         data={
-            "ocr_backend": "tesseract",
             "timeout": 30
         }
     )

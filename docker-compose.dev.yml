@@ -47,7 +47,6 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - MAX_FILE_SIZE_MB=${MAX_FILE_SIZE_MB:-10}
       - MAX_BATCH_SIZE=${MAX_BATCH_SIZE:-50}
-      - DEFAULT_OCR_BACKEND=${DEFAULT_OCR_BACKEND:-tesseract}
       
       # UI configuration - set your domain for host checking
       # For local development, set to localhost or use .env file

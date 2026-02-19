@@ -6,14 +6,13 @@ Runs verification on the full golden dataset (40 samples) and generates
 accuracy metrics comparing verifier results against ground truth labels.
 
 Usage:
-    # Local testing (default backend: ollama)
+    # Local testing with Ollama
     python3 scripts/test_verifier.py
-    python3 scripts/test_verifier.py --ocr-backend tesseract
     python3 scripts/test_verifier.py --samples-dir ../samples/
     
     # Remote API testing
-    python3 scripts/test_verifier.py --remote-host https://ttb-verifier.unitedentropy.com \
-        --remote-user myuser --remote-pass mypass --ocr-backend ollama
+    python3 scripts/test_verifier.py --remote-host https://ttb-verifier.example.com \
+        --remote-user myuser --remote-pass mypass
 
 Outputs:
     - Detailed JSON results for each label
@@ -95,7 +94,7 @@ def authenticate_and_get_session(remote_host: str, username: str, password: str)
     Uses /ui/login endpoint to obtain session cookie for API access.
     
     Args:
-        remote_host: Base URL of remote API (e.g., https://ttb-verifier.unitedentropy.com)
+        remote_host: Base URL of remote API (e.g., https://ttb-verifier.example.com)
         username: Username for authentication
         password: Password for authentication
     
@@ -127,19 +126,18 @@ def authenticate_and_get_session(remote_host: str, username: str, password: str)
         sys.exit(1)
 
 
-def check_remote_health(remote_host: str, ocr_backend: str) -> None:
+def check_remote_health(remote_host: str) -> None:
     """
-    Check remote /health endpoint to verify OCR backend is available.
+    Check remote /health endpoint to verify Ollama backend is available.
     
-    Exits with error if health check fails or backend is unavailable.
+    Exits with error if health check fails or Ollama is unavailable.
     This prevents wasting time running tests against an unavailable backend.
     
     Args:
         remote_host: Base URL of remote API
-        ocr_backend: OCR backend that will be used (tesseract or ollama)
         
     Raises:
-        SystemExit: If health check fails or backend unavailable
+        SystemExit: If health check fails or Ollama unavailable
     """
     health_url = f"{remote_host.rstrip('/')}/health"
     print(f"Checking remote health at {health_url}...", file=sys.stderr)
@@ -153,21 +151,20 @@ def check_remote_health(remote_host: str, ocr_backend: str) -> None:
         status = health_data.get('status', 'unknown')
         print(f"  System status: {status}", file=sys.stderr)
         
-        # Check if requested backend is available
+        # Check if Ollama backend is available
         backends = health_data.get('backends', {})
-        backend_info = backends.get(ocr_backend, {})
+        ollama_info = backends.get('ollama', {})
         
-        if not backend_info.get('available', False):
-            error = backend_info.get('error', 'Unknown error')
-            print(f"✗ {ocr_backend.title()} backend unavailable: {error}", file=sys.stderr)
+        if not ollama_info.get('available', False):
+            error = ollama_info.get('error', 'Unknown error')
+            print(f"✗ Ollama backend unavailable: {error}", file=sys.stderr)
             sys.exit(1)
         
-        print(f"✓ {ocr_backend.title()} backend available", file=sys.stderr)
+        print(f"✓ Ollama backend available", file=sys.stderr)
         
-        # Show model info for Ollama
-        if ocr_backend == 'ollama':
-            model = backend_info.get('model', 'unknown')
-            print(f"  Model: {model}", file=sys.stderr)
+        # Show model info
+        model = ollama_info.get('model', 'unknown')
+        print(f"  Model: {model}", file=sys.stderr)
             
     except requests.exceptions.RequestException as e:
         print(f"✗ Health check failed: {e}", file=sys.stderr)
@@ -180,12 +177,11 @@ def check_remote_health(remote_host: str, ocr_backend: str) -> None:
         sys.exit(1)
 
 
-def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
+def run_tests(samples_dir: str = None) -> Dict[str, Any]:
     """
-    Run verifier on all samples in golden dataset.
+    Run verifier on all samples in golden dataset using Ollama OCR.
     
     Args:
-        ocr_backend: OCR backend to use (tesseract or ollama)
         samples_dir: Path to samples directory. If None, uses ../samples relative to script.
     
     Returns:
@@ -198,8 +194,8 @@ def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
     dataset = load_golden_dataset(samples_dir)
     print(f"Found {len(dataset)} samples", file=sys.stderr)
     
-    print(f"\nInitializing verifier with {ocr_backend} backend...", file=sys.stderr)
-    validator = LabelValidator(ocr_backend=ocr_backend)
+    print(f"\nInitializing verifier with Ollama backend...", file=sys.stderr)
+    validator = LabelValidator()
     
     results = []
     total_time = 0.0
@@ -250,7 +246,7 @@ def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
     metrics = calculate_metrics(results)
     
     return {
-        'ocr_backend': ocr_backend,
+        'ocr_backend': 'ollama',
         'total_samples': len(dataset),
         'total_time_seconds': round(total_time, 2),
         'average_time_per_sample': round(total_time / len(dataset), 2) if dataset else 0,
@@ -260,15 +256,14 @@ def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
 
 
 def run_tests_remote(remote_host: str, username: str, password: str, 
-                     ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
+                     samples_dir: str = None) -> Dict[str, Any]:
     """
-    Run verifier on all samples using remote API.
+    Run verifier on all samples using remote API with Ollama OCR.
     
     Args:
-        remote_host: Base URL of remote API (e.g., https://ttb-verifier.unitedentropy.com)
+        remote_host: Base URL of remote API (e.g., https://ttb-verifier.example.com)
         username: Username for authentication
         password: Password for authentication
-        ocr_backend: OCR backend to use (tesseract or ollama)
         samples_dir: Path to samples directory. If None, uses ../samples relative to script.
     
     Returns:
@@ -278,7 +273,7 @@ def run_tests_remote(remote_host: str, username: str, password: str,
         samples_dir = str(Path(__file__).parent.parent / 'samples')
     
     # Check remote health first
-    check_remote_health(remote_host, ocr_backend)
+    check_remote_health(remote_host)
     
     # Authenticate and get session
     session = authenticate_and_get_session(remote_host, username, password)
@@ -314,7 +309,7 @@ def run_tests_remote(remote_host: str, username: str, password: str,
         try:
             with open(image_path, 'rb') as img_file:
                 files = {'image': (filename, img_file, 'image/jpeg')}
-                data = {'ocr_backend': ocr_backend}
+                data = {}
                 if ground_truth_json:
                     data['ground_truth'] = ground_truth_json
                 
@@ -396,7 +391,7 @@ def run_tests_remote(remote_host: str, username: str, password: str,
     metrics = calculate_metrics(results)
     
     return {
-        'ocr_backend': ocr_backend,
+        'ocr_backend': 'ollama',
         'remote_host': remote_host,
         'total_samples': len(dataset),
         'total_time_seconds': round(total_time, 2),
@@ -524,9 +519,6 @@ def main():
         description="Test TTB Label Verifier on golden dataset"
     )
     
-    parser.add_argument('--ocr-backend', choices=['tesseract', 'ollama'],
-                       default='ollama',
-                       help='OCR backend to test (default: ollama)')
     parser.add_argument('--samples-dir', default=None,
                        help='Directory containing golden dataset (default: ../samples relative to script)')
     parser.add_argument('--output', '-o',
@@ -536,7 +528,7 @@ def main():
     
     # Remote API testing options
     parser.add_argument('--remote-host',
-                       help='Remote API host URL (e.g., https://ttb-verifier.unitedentropy.com)')
+                       help='Remote API host URL (e.g., https://ttb-verifier.example.com)')
     parser.add_argument('--remote-user',
                        help='Username for remote API authentication')
     parser.add_argument('--remote-pass',
@@ -554,12 +546,11 @@ def main():
             remote_host=args.remote_host,
             username=args.remote_user,
             password=args.remote_pass,
-            ocr_backend=args.ocr_backend,
             samples_dir=args.samples_dir
         )
     else:
         # Local testing mode
-        test_results = run_tests(args.ocr_backend, args.samples_dir)
+        test_results = run_tests(args.samples_dir)
     
     # Print summary
     print_summary(test_results)

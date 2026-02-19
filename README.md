@@ -15,8 +15,7 @@ docker compose -f docker-compose.dev.yml up -d
 ```bash
 # Verify a single label
 curl -X POST http://localhost:8000/verify \
-  -F "image=@samples/label_good_001.jpg" \
-  -F "ocr_backend=tesseract"
+  -F "image=@samples/label_good_001.jpg"
 
 # View API documentation
 open http://localhost:8000/docs
@@ -48,7 +47,6 @@ The service includes a web-based UI for easy label verification without using th
 **Features:**
 - 🖼️ **Single Label Verification** - Upload individual images with optional metadata
 - 📦 **Batch Processing** - Upload ZIP files with up to 50 labels
-- 🤖 **Ollama Toggle** - Choose between Tesseract (fast) and Ollama (accurate)
 - ⏱️ **Real-time Status** - Live monitoring of Ollama availability
 - 📊 **Results Dashboard** - Visual compliance status with detailed violations
 
@@ -87,17 +85,12 @@ python app/verify_label.py test_samples/label_good_001.jpg
 # With ground truth for accuracy check
 python app/verify_label.py test_samples/label_good_001.jpg \
   --ground-truth test_samples/label_good_001.json
-
-# Use Ollama backend (slower but more accurate)
-python app/verify_label.py test_samples/label_good_001.jpg \
-  --ocr-backend ollama
 ```
 
 ## Features
 
 - ✅ **Web UI** with Bootstrap 5, session authentication, and batch processing
-- ✅ **Fast OCR** with Tesseract (< 1 second per label)
-- ✅ **AI OCR** with Ollama llama3.2-vision (~58s, higher accuracy)
+- ✅ **AI OCR** with Ollama llama3.2-vision for accurate text extraction
 - ✅ **REST API** with FastAPI for web integration (requires authentication)
 - ✅ **Batch processing** for up to 50 labels at once
 - ✅ **Fuzzy matching** for brand names with 90% threshold
@@ -120,13 +113,11 @@ python app/verify_label.py test_samples/label_good_001.jpg \
 │      API        │
 └────────┬────────┘
          │
-    ┌────┴─────┐
-    │          │
-    ▼          ▼
-┌──────┐   ┌─────────┐
-│Tess- │   │ Ollama  │ ← Port 11434
-│eract │   │  (AI)   │
-└──────┘   └─────────┘
+         ▼
+     ┌─────────┐
+     │ Ollama  │ ← Port 11434
+     │  (AI)   │
+     └─────────┘
 ```
 
 ## API Endpoints
@@ -140,8 +131,7 @@ Verify a single label image.
 ```bash
 curl -X POST http://localhost:8000/verify \
   -F "image=@label.jpg" \
-  -F 'ground_truth={"brand_name":"Ridge & Co.","abv":7.5}' \
-  -F "ocr_backend=tesseract"
+  -F 'ground_truth={"brand_name":"Ridge & Co.","abv":7.5}'
 ```
 
 **Response:**
@@ -165,8 +155,7 @@ Verify multiple labels from a ZIP file.
 **Request:**
 ```bash
 curl -X POST http://localhost:8000/verify/batch \
-  -F "batch_file=@labels.zip" \
-  -F "ocr_backend=tesseract"
+  -F "batch_file=@labels.zip"
 ```
 
 **Response:**
@@ -211,13 +200,11 @@ See [API_README.md](docs/API_README.md) for complete API documentation.
 ### System Requirements
 - Docker 20.10+ (recommended) OR
 - Python 3.12+
-- Tesseract OCR 5.0+
 - 2GB RAM minimum
-- 10GB disk space (if using Ollama)
+- 10GB disk space (for Ollama models)
 
 ### Performance
-- **Tesseract**: ~0.7s per label, 100% recall, 50% precision
-- **Ollama**: ~58s per label, excellent accuracy, 12x slower
+- **Ollama**: ~10s per label (with llama3.2-vision model)
 - **Batch limit**: 50 labels per request (configurable)
 - **File size limit**: 10MB per image (configurable)
 
@@ -254,7 +241,6 @@ OLLAMA_TIMEOUT_SECONDS=60
 LOG_LEVEL=INFO
 MAX_FILE_SIZE_MB=10
 MAX_BATCH_SIZE=50
-DEFAULT_OCR_BACKEND=tesseract
 
 # CORS Configuration
 CORS_ORIGINS=["*"]
@@ -301,7 +287,7 @@ To use a custom Ollama model:
 │   ├── label_validator.py   # Main validation orchestrator
 │   ├── field_validators.py  # Field-level validation logic
 │   ├── label_extractor.py   # OCR text extraction
-│   ├── ocr_backends.py      # Tesseract & Ollama OCR
+│   ├── ocr_backends.py      # Ollama OCR backend
 │   ├── verify_label.py      # CLI interface
 │   ├── templates/           # Jinja2 templates for web UI
 │   ├── requirements.txt     # Python dependencies
@@ -349,11 +335,10 @@ See [infrastructure/README.md](infrastructure/README.md) and [docs/ARCHITECTURE.
 
 ## Known Limitations
 
-1. **Tesseract OCR accuracy**: 50% precision due to decorative fonts on labels
-2. **Ollama speed**: ~58s per label (12x slower than requirement)
+1. **Batch processing timeout**: CloudFront 30s timeout limits batch processing to ~2-3 images (async processing planned for future)
+2. **Ollama speed**: ~10s per label (batch processing needs async implementation)
 3. **No cloud API integration**: Government firewall restrictions
 4. **Standalone system**: Not integrated with COLA registration system
-5. **No authentication**: API is open (add API Gateway for production)
 
 ## Regulatory Compliance
 

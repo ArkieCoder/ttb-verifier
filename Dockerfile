@@ -48,6 +48,9 @@ COPY app/templates ./templates
 # Create samples directory (optional - for golden samples)
 RUN mkdir -p ./samples
 
+# Create jobs directory for async batch processing
+RUN mkdir -p /app/tmp/jobs
+
 # Set environment
 ENV PATH=/root/.local/bin:$PATH \
     PYTHONUNBUFFERED=1 \

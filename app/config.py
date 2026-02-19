@@ -44,6 +44,16 @@ class Settings(BaseSettings):
         description="Maximum number of images in a batch request"
     )
     
+    # Job Management Configuration
+    job_retention_hours: int = Field(
+        default=1,
+        description="Hours to retain completed batch jobs before cleanup"
+    )
+    job_cleanup_interval_seconds: int = Field(
+        default=3600,
+        description="Interval between job cleanup runs in seconds (default: 1 hour)"
+    )
+    
     # CORS Configuration
     cors_origins: str = Field(
         default='["*"]',
@@ -86,6 +96,26 @@ class Settings(BaseSettings):
             raise ValueError("max_batch_size must be positive")
         if v > 500:
             raise ValueError("max_batch_size should not exceed 500 for practical use")
+        return v
+    
+    @field_validator("job_retention_hours")
+    @classmethod
+    def validate_job_retention_hours(cls, v: int) -> int:
+        """Ensure job retention hours is reasonable."""
+        if v < 1:
+            raise ValueError("job_retention_hours must be at least 1 hour")
+        if v > 168:  # 1 week
+            raise ValueError("job_retention_hours should not exceed 168 (1 week)")
+        return v
+    
+    @field_validator("job_cleanup_interval_seconds")
+    @classmethod
+    def validate_job_cleanup_interval(cls, v: int) -> int:
+        """Ensure cleanup interval is reasonable."""
+        if v < 60:  # Minimum 1 minute
+            raise ValueError("job_cleanup_interval_seconds must be at least 60 seconds")
+        if v > 86400:  # Maximum 1 day
+            raise ValueError("job_cleanup_interval_seconds should not exceed 86400 (1 day)")
         return v
     
     @field_validator("log_level")

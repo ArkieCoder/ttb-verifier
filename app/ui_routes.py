@@ -358,8 +358,11 @@ async def ui_batch_submit(
     username: str = Depends(get_current_user_ui)
 ):
     """
-    Process batch ZIP file verification using Ollama OCR.
+    Submit batch ZIP file for asynchronous verification.
+    Redirects to results page that polls for status.
     """
+    import requests
+    
     # Validate ZIP file
     if batch_file.content_type not in ["application/zip", "application/x-zip-compressed"]:
         return templates.TemplateResponse(
@@ -378,118 +381,54 @@ async def ui_batch_submit(
             }
         )
     
-    # Determine timeout
-    timeout = ollama_timeout or settings.ollama_timeout_seconds
-    
-    # Create temporary batch directory
-    batch_dir = create_temp_batch_dir()
-    
     try:
-        # Save and extract ZIP
-        zip_path = batch_dir / "batch.zip"
+        # Submit batch job to API
+        # Read file content
         content = await batch_file.read()
-        with open(zip_path, "wb") as f:
-            f.write(content)
         
-        with zipfile.ZipFile(zip_path, 'r') as zf:
-            # Check file count
-            if len(zf.namelist()) > settings.max_batch_size * 2:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"ZIP contains too many files (max: {settings.max_batch_size * 2})"
-                )
-            zf.extractall(batch_dir)
-        
-        # Find all image files
-        image_extensions = {'.jpg', '.jpeg', '.png'}
-        image_files = []
-        for ext in image_extensions:
-            image_files.extend(batch_dir.glob(f"**/*{ext}"))
-        
-        if not image_files:
-            raise ValueError("No image files found in ZIP archive")
-        
-        if len(image_files) > settings.max_batch_size:
-            raise ValueError(f"Too many images: {len(image_files)} (max: {settings.max_batch_size})")
-        
-        # Initialize validator with Ollama
-        validator = LabelValidator()
-        if hasattr(validator.ocr, 'timeout'):
-            validator.ocr.timeout = timeout
-        
-        # Process each image
-        results = []
-        total_time = 0.0
-        
-        for i, image_path in enumerate(sorted(image_files), 1):
-            try:
-                logger.info(f"Processing {i}/{len(image_files)}: {image_path.name}")
-                
-                # Look for ground truth JSON
-                json_path = image_path.with_suffix('.json')
-                ground_truth = None
-                
-                if json_path.exists():
-                    try:
-                        with open(json_path, 'r') as f:
-                            ground_truth = json.load(f)
-                        if 'ground_truth' in ground_truth:
-                            ground_truth = ground_truth['ground_truth']
-                    except Exception as e:
-                        logger.warning(f"Failed to load ground truth for {image_path.name}: {e}")
-                
-                # Validate label
-                result = validator.validate_label(str(image_path), ground_truth)
-                result['image_path'] = image_path.name
-                result['thumbnail'] = create_thumbnail(image_path)
-                results.append(result)
-                total_time += result['processing_time_seconds']
-            
-            except Exception as e:
-                logger.error(f"Failed to process {image_path.name}: {e}", exc_info=True)
-                results.append({
-                    "status": "ERROR",
-                    "validation_level": "STRUCTURAL_ONLY",
-                    "extracted_fields": {},
-                    "validation_results": {"structural": [], "accuracy": []},
-                    "violations": [],
-                    "warnings": [],
-                    "processing_time_seconds": 0.0,
-                    "image_path": image_path.name,
-                    "thumbnail": "",
-                    "error": str(e)
-                })
-        
-        # Calculate summary
-        compliant = sum(1 for r in results if r.get('status') == 'COMPLIANT')
-        non_compliant = sum(1 for r in results if r.get('status') == 'NON_COMPLIANT')
-        errors = sum(1 for r in results if r.get('status') == 'ERROR')
-        
-        summary = {
-            "total": len(results),
-            "compliant": compliant,
-            "non_compliant": non_compliant,
-            "errors": errors,
-            "total_processing_time_seconds": total_time
+        # Prepare multipart form data
+        files = {
+            'batch_file': (batch_file.filename, content, batch_file.content_type)
         }
+        data = {}
+        if ollama_timeout:
+            data['timeout'] = str(ollama_timeout)
         
-        return templates.TemplateResponse(
-            "batch_results.html",
-            {
-                "request": request,
-                "username": username,
-                "results": results,
-                "summary": summary,
-                "filename": batch_file.filename
-            }
+        # Get session cookie to pass to API
+        session_cookie = request.cookies.get("ttb_session")
+        cookies = {"ttb_session": session_cookie} if session_cookie else {}
+        
+        # Submit job to API endpoint
+        # Use localhost since we're calling from within the container
+        api_url = "http://localhost:8000/verify/batch"
+        response = requests.post(
+            api_url,
+            files=files,
+            data=data,
+            cookies=cookies,
+            timeout=30
+        )
+        
+        if response.status_code != 200:
+            error_detail = response.json().get('detail', 'Unknown error')
+            raise Exception(f"API request failed: {error_detail}")
+        
+        # Get job_id from response
+        result = response.json()
+        job_id = result['job_id']
+        
+        # Redirect to results page with job_id
+        return RedirectResponse(
+            url=f"/ui/batch/results/{job_id}",
+            status_code=status.HTTP_303_SEE_OTHER
         )
     
     except Exception as e:
-        logger.error(f"Batch processing failed: {e}", exc_info=True)
+        logger.error(f"Batch submission failed: {e}", exc_info=True)
         error_msg = str(e)
         
-        if "Cannot connect" in error_msg or "not found" in error_msg:
-            error_msg = f"Ollama backend unavailable: {error_msg}. Please use Tesseract or wait for model download."
+        if "Cannot connect" in error_msg or "not found" in error_msg or "unavailable" in error_msg:
+            error_msg = f"Ollama backend unavailable. Please wait for model to load or check system health."
         
         return templates.TemplateResponse(
             "batch.html",
@@ -506,10 +445,25 @@ async def ui_batch_submit(
                 "default_timeout": settings.ollama_timeout_seconds
             }
         )
-    
-    finally:
-        # Cleanup will happen automatically via cleanup_old_temp_files()
-        pass
+
+
+@router.get("/ui/batch/results/{job_id}", response_class=HTMLResponse)
+async def ui_batch_results(
+    request: Request,
+    job_id: str,
+    username: str = Depends(get_current_user_ui)
+):
+    """
+    Display batch results page with live polling for job status.
+    """
+    return templates.TemplateResponse(
+        "batch_results.html",
+        {
+            "request": request,
+            "username": username,
+            "job_id": job_id
+        }
+    )
 
 
 @router.get("/ui/health", response_class=HTMLResponse)

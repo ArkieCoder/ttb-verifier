@@ -292,8 +292,8 @@ elif [ ! -f "samples/label_good_003.jpg" ]; then
 fi
 echo ""
 
-# Test 8: Batch verification
-echo -e "${YELLOW}Test 8: Batch verification (3 labels in ZIP)${NC}"
+# Test 8: Async batch verification
+echo -e "${YELLOW}Test 8: Async batch verification (3 labels in ZIP)${NC}"
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 
 if [ -f "samples/label_good_001.jpg" ] && [ -f "samples/label_bad_001.jpg" ] && [ -f "samples/label_good_002.jpg" ]; then
@@ -309,36 +309,85 @@ with zipfile.ZipFile('$BATCH_ZIP', 'w') as zf:
 " 2>/dev/null
     
     if [ -f "$BATCH_ZIP" ] && [ -s "$BATCH_ZIP" ]; then
+        # Step 1: Submit batch job
+        echo -e "  Submitting batch job..."
         HTTP_CODE=$(curl -s -b "$COOKIE_FILE" -o "$RESPONSE_FILE" -w "%{http_code}" \
             -X POST "$BASE_URL/verify/batch" \
             -H "Content-Type: multipart/form-data" \
-            -F "batch_file=@$BATCH_ZIP;type=application/zip" \
-            -F "ocr_backend=tesseract")
+            -F "batch_file=@$BATCH_ZIP;type=application/zip")
         
         rm -f "$BATCH_ZIP"
         
         if [ "$HTTP_CODE" -eq 200 ]; then
-            RESULTS_COUNT=$(cat "$RESPONSE_FILE" | jq '.results | length')
-            COMPLIANT_COUNT=$(cat "$RESPONSE_FILE" | jq '[.results[] | select(.status == "COMPLIANT")] | length')
-            NON_COMPLIANT_COUNT=$(cat "$RESPONSE_FILE" | jq '[.results[] | select(.status == "NON_COMPLIANT")] | length')
-            TOTAL_TIME=$(cat "$RESPONSE_FILE" | jq -r '.total_processing_time_seconds')
+            JOB_ID=$(cat "$RESPONSE_FILE" | jq -r '.job_id')
+            TOTAL_IMAGES=$(cat "$RESPONSE_FILE" | jq -r '.total_images')
             
-            echo -e "${GREEN}✓ Batch verification successful (HTTP $HTTP_CODE)${NC}"
-            echo -e "  Images processed: $RESULTS_COUNT"
-            echo -e "  Compliant labels: $COMPLIANT_COUNT"
-            echo -e "  Non-compliant labels: $NON_COMPLIANT_COUNT"
-            echo -e "  Total processing time: ${TOTAL_TIME}s"
+            echo -e "  ${GREEN}✓ Batch job submitted (job_id: $JOB_ID)${NC}"
+            echo -e "  Total images: $TOTAL_IMAGES"
             
-            # Show summary of each result
-            for i in $(seq 0 $((RESULTS_COUNT - 1))); do
-                FILENAME=$(cat "$RESPONSE_FILE" | jq -r ".results[$i].filename")
-                STATUS=$(cat "$RESPONSE_FILE" | jq -r ".results[$i].status")
-                echo -e "  [$((i+1))] $FILENAME: ${CYAN}$STATUS${NC}"
+            # Step 2: Poll for job completion
+            echo -e "  Polling for job completion..."
+            MAX_POLLS=60  # 60 polls * 2 seconds = 2 minutes max
+            POLL_COUNT=0
+            JOB_STATUS="pending"
+            
+            while [ "$POLL_COUNT" -lt "$MAX_POLLS" ] && [ "$JOB_STATUS" != "completed" ] && [ "$JOB_STATUS" != "failed" ] && [ "$JOB_STATUS" != "cancelled" ]; do
+                sleep 2
+                POLL_COUNT=$((POLL_COUNT + 1))
+                
+                HTTP_CODE=$(curl -s -b "$COOKIE_FILE" -o "$RESPONSE_FILE" -w "%{http_code}" \
+                    -X GET "$BASE_URL/verify/batch/$JOB_ID")
+                
+                if [ "$HTTP_CODE" -eq 200 ]; then
+                    JOB_STATUS=$(cat "$RESPONSE_FILE" | jq -r '.status')
+                    PROCESSED=$(cat "$RESPONSE_FILE" | jq -r '.processed_images')
+                    
+                    echo -ne "  [$POLL_COUNT] Status: $JOB_STATUS - Processed: $PROCESSED/$TOTAL_IMAGES\r"
+                else
+                    echo -e "\n  ${RED}✗ Failed to poll job status (HTTP $HTTP_CODE)${NC}"
+                    FAILED_TESTS=$((FAILED_TESTS + 1))
+                    break
+                fi
             done
             
-            PASSED_TESTS=$((PASSED_TESTS + 1))
+            echo ""  # New line after polling
+            
+            # Step 3: Check final results
+            if [ "$JOB_STATUS" = "completed" ]; then
+                RESULTS_COUNT=$(cat "$RESPONSE_FILE" | jq '.results | length')
+                COMPLIANT_COUNT=$(cat "$RESPONSE_FILE" | jq '.summary.compliant')
+                NON_COMPLIANT_COUNT=$(cat "$RESPONSE_FILE" | jq '.summary.non_compliant')
+                ERRORS_COUNT=$(cat "$RESPONSE_FILE" | jq '.summary.errors')
+                TOTAL_TIME=$(cat "$RESPONSE_FILE" | jq -r '.summary.total_processing_time_seconds')
+                
+                echo -e "  ${GREEN}✓ Batch verification completed${NC}"
+                echo -e "  Images processed: $RESULTS_COUNT"
+                echo -e "  Compliant labels: $COMPLIANT_COUNT"
+                echo -e "  Non-compliant labels: $NON_COMPLIANT_COUNT"
+                echo -e "  Errors: $ERRORS_COUNT"
+                echo -e "  Total processing time: ${TOTAL_TIME}s"
+                
+                # Show summary of each result
+                for i in $(seq 0 $((RESULTS_COUNT - 1))); do
+                    FILENAME=$(cat "$RESPONSE_FILE" | jq -r ".results[$i].image_path")
+                    STATUS=$(cat "$RESPONSE_FILE" | jq -r ".results[$i].status")
+                    echo -e "  [$((i+1))] $FILENAME: ${CYAN}$STATUS${NC}"
+                done
+                
+                PASSED_TESTS=$((PASSED_TESTS + 1))
+            elif [ "$JOB_STATUS" = "failed" ]; then
+                ERROR_MSG=$(cat "$RESPONSE_FILE" | jq -r '.error // "Unknown error"')
+                echo -e "  ${RED}✗ Batch job failed: $ERROR_MSG${NC}"
+                FAILED_TESTS=$((FAILED_TESTS + 1))
+            elif [ "$POLL_COUNT" -ge "$MAX_POLLS" ]; then
+                echo -e "  ${RED}✗ Timeout waiting for batch completion${NC}"
+                FAILED_TESTS=$((FAILED_TESTS + 1))
+            else
+                echo -e "  ${RED}✗ Batch job ended with status: $JOB_STATUS${NC}"
+                FAILED_TESTS=$((FAILED_TESTS + 1))
+            fi
         else
-            echo -e "${RED}✗ Batch verification failed (HTTP $HTTP_CODE)${NC}"
+            echo -e "  ${RED}✗ Batch submission failed (HTTP $HTTP_CODE)${NC}"
             cat "$RESPONSE_FILE" | head -20
             FAILED_TESTS=$((FAILED_TESTS + 1))
         fi

@@ -16,26 +16,36 @@
             <i class="bi bi-folder-check"></i> Batch Verification Results
         </h1>
         
-        <!-- File Info -->
-        <div class="card mb-4 shadow-sm">
+        <!-- Job Status Card -->
+        <div class="card mb-4 shadow-sm" id="job-status-card">
             <div class="card-body">
                 <h5 class="card-title">
-                    <i class="bi bi-file-zip"></i> {{ filename }}
+                    <i class="bi bi-hourglass-split" id="status-icon"></i> 
+                    <span id="status-text">Processing...</span>
                 </h5>
+                <div class="progress mb-2" style="height: 25px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         id="progress-bar"
+                         role="progressbar" 
+                         style="width: 0%"
+                         aria-valuenow="0" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                        <span id="progress-text">0 / 0 images</span>
+                    </div>
+                </div>
                 <p class="text-muted mb-0">
-                    <small>
-                        Total Processing Time: {{ "%.2f"|format(summary.total_processing_time_seconds) }}s
-                    </small>
+                    <small id="job-info">Job ID: {{ job_id }}</small>
                 </p>
             </div>
         </div>
         
-        <!-- Summary Statistics -->
-        <div class="row mb-4">
+        <!-- Summary Statistics (hidden until complete) -->
+        <div class="row mb-4" id="summary-section" style="display: none;">
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card shadow-sm text-center">
                     <div class="card-body">
-                        <h2 class="display-4 mb-0">{{ summary.total }}</h2>
+                        <h2 class="display-4 mb-0" id="summary-total">0</h2>
                         <p class="text-muted mb-0">Total Labels</p>
                     </div>
                 </div>
@@ -44,7 +54,7 @@
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card shadow-sm text-center border-success">
                     <div class="card-body">
-                        <h2 class="display-4 mb-0 text-success">{{ summary.compliant }}</h2>
+                        <h2 class="display-4 mb-0 text-success" id="summary-compliant">0</h2>
                         <p class="text-muted mb-0">Compliant</p>
                     </div>
                 </div>
@@ -53,7 +63,7 @@
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card shadow-sm text-center border-danger">
                     <div class="card-body">
-                        <h2 class="display-4 mb-0 text-danger">{{ summary.non_compliant }}</h2>
+                        <h2 class="display-4 mb-0 text-danger" id="summary-non-compliant">0</h2>
                         <p class="text-muted mb-0">Non-Compliant</p>
                     </div>
                 </div>
@@ -62,7 +72,7 @@
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card shadow-sm text-center border-secondary">
                     <div class="card-body">
-                        <h2 class="display-4 mb-0 text-secondary">{{ summary.errors }}</h2>
+                        <h2 class="display-4 mb-0 text-secondary" id="summary-errors">0</h2>
                         <p class="text-muted mb-0">Errors</p>
                     </div>
                 </div>
@@ -73,7 +83,8 @@
         <div class="card shadow-sm">
             <div class="card-header">
                 <h5 class="mb-0">
-                    <i class="bi bi-table"></i> Detailed Results
+                    <i class="bi bi-table"></i> Detailed Results 
+                    <span class="badge bg-secondary" id="results-count">0 results</span>
                 </h5>
             </div>
             <div class="card-body p-0">
@@ -81,112 +92,35 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th style="width: 100px;">Thumbnail</th>
                                 <th>Filename</th>
                                 <th style="width: 150px;">Status</th>
                                 <th style="width: 120px;">Time (s)</th>
                                 <th>Violations</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {% for result in results %}
-                            <tr class="batch-result-row">
-                                <td>
-                                    {% if result.thumbnail %}
-                                    <img src="{{ result.thumbnail }}" alt="{{ result.image_path }}" class="thumbnail-img">
-                                    {% else %}
-                                    <div class="thumbnail-img d-flex align-items-center justify-content-center bg-light">
-                                        <i class="bi bi-image text-muted"></i>
+                        <tbody id="results-tbody">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">
+                                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                                        <span class="visually-hidden">Loading...</span>
                                     </div>
-                                    {% endif %}
-                                </td>
-                                
-                                <td>
-                                    <strong>{{ result.image_path }}</strong>
-                                </td>
-                                
-                                <td>
-                                    {% if result.status == 'COMPLIANT' %}
-                                    <span class="badge bg-success">
-                                        <i class="bi bi-check-circle"></i> COMPLIANT
-                                    </span>
-                                    
-                                    {% elif result.status == 'NON_COMPLIANT' %}
-                                    <span class="badge bg-danger">
-                                        <i class="bi bi-x-circle"></i> NON-COMPLIANT
-                                    </span>
-                                    
-                                    {% elif result.status == 'PARTIAL_VALIDATION' %}
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-exclamation-triangle"></i> PARTIAL
-                                    </span>
-                                    
-                                    {% else %}
-                                    <span class="badge bg-secondary">
-                                        <i class="bi bi-question-circle"></i> ERROR
-                                    </span>
-                                    {% endif %}
-                                </td>
-                                
-                                <td>
-                                    {{ "%.2f"|format(result.processing_time_seconds) }}
-                                </td>
-                                
-                                <td>
-                                    {% if result.error %}
-                                    <span class="text-danger">
-                                        <i class="bi bi-exclamation-octagon"></i> {{ result.error }}
-                                    </span>
-                                    
-                                    {% elif result.violations %}
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-sm btn-outline-danger" 
-                                        data-bs-toggle="popover" 
-                                        data-bs-placement="left"
-                                        data-bs-html="true"
-                                        data-bs-content="{% for v in result.violations %}<strong>{{ v.field }}:</strong> {{ v.message }}<br>{% endfor %}"
-                                        title="Violations"
-                                    >
-                                        <i class="bi bi-exclamation-circle"></i> 
-                                        {{ result.violations|length }} violation(s)
-                                    </button>
-                                    
-                                    {% elif result.warnings %}
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-sm btn-outline-warning" 
-                                        data-bs-toggle="popover" 
-                                        data-bs-placement="left"
-                                        data-bs-html="true"
-                                        data-bs-content="{% for w in result.warnings %}{{ w }}<br>{% endfor %}"
-                                        title="Warnings"
-                                    >
-                                        <i class="bi bi-exclamation-triangle"></i> 
-                                        {{ result.warnings|length }} warning(s)
-                                    </button>
-                                    
-                                    {% else %}
-                                    <span class="text-muted">None</span>
-                                    {% endif %}
+                                    Waiting for results...
                                 </td>
                             </tr>
-                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
         
-        <!-- Export Options -->
-        <div class="card mt-4 shadow-sm">
+        <!-- Export Options (hidden until complete) -->
+        <div class="card mt-4 shadow-sm" id="export-section" style="display: none;">
             <div class="card-body">
                 <h6 class="card-title">
-                    <i class="bi bi-download"></i> Export Results
+                    <i class="bi bi-check-circle text-success"></i> Batch Complete!
                 </h6>
                 <p class="text-muted small mb-3">
-                    To export results as JSON or CSV, use the <a href="/docs" target="_blank">API endpoint</a> 
-                    directly with <code>/verify/batch</code>.
+                    Processing complete. You can process another batch or verify a single image.
                 </p>
                 <div class="d-grid gap-2 d-md-flex">
                     <a href="/ui/batch" class="btn btn-primary">
@@ -198,16 +132,218 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Error Alert (hidden by default) -->
+        <div class="alert alert-danger mt-4" id="error-alert" style="display: none;" role="alert">
+            <h6 class="alert-heading">
+                <i class="bi bi-exclamation-triangle"></i> Error
+            </h6>
+            <p class="mb-0" id="error-message"></p>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    // Enable all popovers (for violation details)
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, {
-        trigger: 'hover focus'
-    }));
+    const jobId = '{{ job_id }}';
+    const pollInterval = 2000; // Poll every 2 seconds
+    let pollingActive = true;
+    let lastProcessedCount = 0;
+    
+    // Request browser notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+    
+    function showNotification(title, body) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(title, {
+                body: body,
+                icon: '/static/icon.png' // Optional: add icon if you have one
+            });
+        }
+    }
+    
+    function updateProgress(processed, total) {
+        const percentage = total > 0 ? Math.round((processed / total) * 100) : 0;
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        
+        progressBar.style.width = percentage + '%';
+        progressBar.setAttribute('aria-valuenow', percentage);
+        progressText.textContent = `${processed} / ${total} images`;
+    }
+    
+    function updateStatus(status, processed, total) {
+        const statusIcon = document.getElementById('status-icon');
+        const statusText = document.getElementById('status-text');
+        const progressBar = document.getElementById('progress-bar');
+        
+        if (status === 'pending') {
+            statusIcon.className = 'bi bi-hourglass-split';
+            statusText.textContent = 'Pending...';
+            progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated';
+        } else if (status === 'processing') {
+            statusIcon.className = 'bi bi-gear-fill';
+            statusText.textContent = 'Processing...';
+            progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated bg-info';
+        } else if (status === 'completed') {
+            statusIcon.className = 'bi bi-check-circle-fill text-success';
+            statusText.textContent = 'Completed';
+            progressBar.className = 'progress-bar bg-success';
+            progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+        } else if (status === 'failed') {
+            statusIcon.className = 'bi bi-x-circle-fill text-danger';
+            statusText.textContent = 'Failed';
+            progressBar.className = 'progress-bar bg-danger';
+            progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+        } else if (status === 'cancelled') {
+            statusIcon.className = 'bi bi-dash-circle-fill text-secondary';
+            statusText.textContent = 'Cancelled';
+            progressBar.className = 'progress-bar bg-secondary';
+            progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+        }
+    }
+    
+    function updateSummary(summary) {
+        if (!summary) return;
+        
+        document.getElementById('summary-total').textContent = summary.total || 0;
+        document.getElementById('summary-compliant').textContent = summary.compliant || 0;
+        document.getElementById('summary-non-compliant').textContent = summary.non_compliant || 0;
+        document.getElementById('summary-errors').textContent = summary.errors || 0;
+        
+        document.getElementById('summary-section').style.display = 'flex';
+    }
+    
+    function renderResult(result) {
+        const row = document.createElement('tr');
+        row.className = 'batch-result-row';
+        
+        // Status badge
+        let statusBadge = '';
+        if (result.status === 'COMPLIANT') {
+            statusBadge = '<span class="badge bg-success"><i class="bi bi-check-circle"></i> COMPLIANT</span>';
+        } else if (result.status === 'NON_COMPLIANT') {
+            statusBadge = '<span class="badge bg-danger"><i class="bi bi-x-circle"></i> NON-COMPLIANT</span>';
+        } else if (result.status === 'PARTIAL_VALIDATION') {
+            statusBadge = '<span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle"></i> PARTIAL</span>';
+        } else {
+            statusBadge = '<span class="badge bg-secondary"><i class="bi bi-question-circle"></i> ERROR</span>';
+        }
+        
+        // Violations column
+        let violationsContent = '<span class="text-muted">None</span>';
+        if (result.error) {
+            violationsContent = `<span class="text-danger"><i class="bi bi-exclamation-octagon"></i> ${result.error}</span>`;
+        } else if (result.violations && result.violations.length > 0) {
+            const violationsList = result.violations.map(v => `<strong>${v.field}:</strong> ${v.message}`).join('<br>');
+            violationsContent = `<button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="popover" data-bs-placement="left" data-bs-html="true" data-bs-content="${violationsList}" title="Violations"><i class="bi bi-exclamation-circle"></i> ${result.violations.length} violation(s)</button>`;
+        } else if (result.warnings && result.warnings.length > 0) {
+            const warningsList = result.warnings.join('<br>');
+            violationsContent = `<button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="popover" data-bs-placement="left" data-bs-html="true" data-bs-content="${warningsList}" title="Warnings"><i class="bi bi-exclamation-triangle"></i> ${result.warnings.length} warning(s)</button>`;
+        }
+        
+        row.innerHTML = `
+            <td><strong>${result.image_path || 'Unknown'}</strong></td>
+            <td>${statusBadge}</td>
+            <td>${result.processing_time_seconds ? result.processing_time_seconds.toFixed(2) : '0.00'}</td>
+            <td>${violationsContent}</td>
+        `;
+        
+        return row;
+    }
+    
+    function updateResults(results) {
+        const tbody = document.getElementById('results-tbody');
+        const resultsCount = document.getElementById('results-count');
+        
+        // Only add new results (incremental update)
+        if (results.length > lastProcessedCount) {
+            // Clear loading message on first result
+            if (lastProcessedCount === 0) {
+                tbody.innerHTML = '';
+            }
+            
+            // Add new results
+            for (let i = lastProcessedCount; i < results.length; i++) {
+                tbody.appendChild(renderResult(results[i]));
+            }
+            
+            lastProcessedCount = results.length;
+        }
+        
+        resultsCount.textContent = `${results.length} result${results.length !== 1 ? 's' : ''}`;
+        
+        // Re-initialize popovers for new elements
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+        [...popoverTriggerList].forEach(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, {
+            trigger: 'hover focus'
+        }));
+    }
+    
+    async function pollJobStatus() {
+        if (!pollingActive) return;
+        
+        try {
+            const response = await fetch(`/verify/batch/${jobId}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            // Update UI
+            updateStatus(data.status, data.processed_images, data.total_images);
+            updateProgress(data.processed_images, data.total_images);
+            updateResults(data.results || []);
+            
+            // Handle completion
+            if (data.status === 'completed') {
+                pollingActive = false;
+                updateSummary(data.summary);
+                document.getElementById('export-section').style.display = 'block';
+                showNotification('Batch Complete!', `Processed ${data.total_images} images successfully.`);
+            } else if (data.status === 'failed') {
+                pollingActive = false;
+                document.getElementById('error-alert').style.display = 'block';
+                document.getElementById('error-message').textContent = data.error || 'Job failed with unknown error';
+                showNotification('Batch Failed', data.error || 'Job failed with unknown error');
+            } else if (data.status === 'cancelled') {
+                pollingActive = false;
+                document.getElementById('error-alert').style.display = 'block';
+                document.getElementById('error-message').textContent = 'Job was cancelled';
+            }
+            
+            // Continue polling if still processing
+            if (pollingActive) {
+                setTimeout(pollJobStatus, pollInterval);
+            }
+            
+        } catch (error) {
+            console.error('Error polling job status:', error);
+            document.getElementById('error-alert').style.display = 'block';
+            document.getElementById('error-message').textContent = `Failed to poll job status: ${error.message}`;
+            pollingActive = false;
+        }
+    }
+    
+    // Start polling when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        pollJobStatus();
+    });
+    
+    // Stop polling when page is hidden/closed
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            pollingActive = false;
+        } else if (!pollingActive) {
+            // Resume polling if page becomes visible again
+            pollingActive = true;
+            pollJobStatus();
+        }
+    });
 </script>
 {% endblock %}

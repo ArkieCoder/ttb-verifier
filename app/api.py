@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, status, Depends
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, status, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ValidationError
@@ -29,6 +29,7 @@ from config import get_settings
 from label_validator import LabelValidator
 from auth import get_current_user
 from middleware import HostCheckMiddleware
+from job_manager import JobManager, JobStatus
 
 
 # ============================================================================
@@ -43,6 +44,9 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger("ttb_api")
+
+# Initialize job manager for async batch processing
+job_manager = JobManager()
 
 # Track Ollama pre-warming state (per-process)
 _ollama_prewarmed = False
@@ -125,6 +129,28 @@ class BatchResponse(BaseModel):
     summary: BatchSummary
 
 
+class BatchJobSubmitResponse(BaseModel):
+    """Response from async batch job submission."""
+    job_id: str
+    status: str
+    total_images: int
+    message: str
+
+
+class BatchJobStatusResponse(BaseModel):
+    """Response from async batch job status query."""
+    job_id: str
+    status: str
+    total_images: int
+    processed_images: int
+    results: List[VerifyResponse]
+    summary: Optional[BatchSummary] = None
+    error: Optional[str] = None
+    created_at: str
+    updated_at: str
+    completed_at: Optional[str] = None
+
+
 class ErrorResponse(BaseModel):
     """Standard error response."""
     detail: str
@@ -139,13 +165,33 @@ class ErrorResponse(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup/shutdown events."""
+    import asyncio
+    
     logger.info("Starting TTB Label Verifier API")
     logger.info(f"Log level: {settings.log_level}")
     logger.info(f"Max file size: {settings.max_file_size_mb}MB")
     logger.info(f"Max batch size: {settings.max_batch_size} images")
     logger.info(f"Ollama host: {settings.ollama_host}")
     logger.info(f"Ollama timeout: {settings.ollama_timeout_seconds}s")
+    
+    # Start background cleanup task
+    cleanup_task = None
+    try:
+        cleanup_task = asyncio.create_task(_cleanup_jobs_loop())
+        logger.info("Started job cleanup background task")
+    except Exception as e:
+        logger.error(f"Failed to start cleanup task: {e}")
+    
     yield
+    
+    # Shutdown cleanup task
+    if cleanup_task:
+        cleanup_task.cancel()
+        try:
+            await cleanup_task
+        except asyncio.CancelledError:
+            pass
+    
     logger.info("Shutting down TTB Label Verifier API")
 
 
@@ -385,6 +431,177 @@ def find_ground_truth_file(image_path: Path) -> Optional[Path]:
     return json_path if json_path.exists() else None
 
 
+async def _cleanup_jobs_loop():
+    """Background task that periodically cleans up old jobs."""
+    import asyncio
+    
+    cleanup_interval_seconds = settings.job_cleanup_interval_seconds
+    retention_hours = settings.job_retention_hours
+    
+    while True:
+        try:
+            await asyncio.sleep(cleanup_interval_seconds)
+            logger.debug("Running job cleanup task")
+            deleted_count = job_manager.cleanup_old_jobs(retention_hours=retention_hours)
+            if deleted_count > 0:
+                logger.info(f"Cleaned up {deleted_count} old jobs")
+        except asyncio.CancelledError:
+            logger.info("Job cleanup task cancelled")
+            break
+        except Exception as e:
+            logger.error(f"Error in cleanup task: {e}", exc_info=True)
+
+
+def process_batch_job(
+    job_id: str,
+    image_files: List[Path],
+    ocr_timeout: int,
+    correlation_id: str
+):
+    """
+    Background task to process a batch job.
+    
+    Processes images sequentially, updating job state after each image.
+    Continues on error to return partial results.
+    
+    Args:
+        job_id: Job identifier
+        image_files: List of image file paths
+        ocr_timeout: Timeout for OCR processing
+        correlation_id: Request correlation ID
+    """
+    logger.info(f"[{correlation_id}] Starting batch job {job_id} with {len(image_files)} images")
+    
+    try:
+        # Update job status to PROCESSING
+        job_manager.update_job(job_id, status=JobStatus.PROCESSING)
+        
+        # Initialize validator with Ollama (reuse for all images)
+        try:
+            validator = LabelValidator()
+            
+            # Set timeout for Ollama
+            if hasattr(validator.ocr, 'timeout'):
+                validator.ocr.timeout = ocr_timeout
+        
+        except RuntimeError as e:
+            # Handle Ollama unavailability
+            error_msg = f"Ollama backend unavailable: {str(e)}"
+            logger.error(f"[{correlation_id}] {error_msg}")
+            job_manager.update_job(
+                job_id,
+                status=JobStatus.FAILED,
+                error=error_msg
+            )
+            return
+        
+        # Process each image sequentially
+        total_time = 0.0
+        
+        for i, image_path in enumerate(image_files, 1):
+            try:
+                logger.info(
+                    f"[{correlation_id}] [{i}/{len(image_files)}] "
+                    f"Processing {image_path.name}"
+                )
+                
+                # Look for ground truth JSON
+                ground_truth_path = find_ground_truth_file(image_path)
+                ground_truth_data = None
+                
+                if ground_truth_path:
+                    try:
+                        with open(ground_truth_path, 'r') as f:
+                            ground_truth_data = json.load(f)
+                        
+                        # Handle nested ground_truth key
+                        if 'ground_truth' in ground_truth_data:
+                            ground_truth_data = ground_truth_data['ground_truth']
+                    
+                    except Exception as e:
+                        logger.warning(
+                            f"[{correlation_id}] Failed to load ground truth for "
+                            f"{image_path.name}: {e}"
+                        )
+                
+                # Validate label
+                result = validator.validate_label(str(image_path), ground_truth_data)
+                result['image_path'] = image_path.name
+                
+                # Append result to job (atomic operation)
+                job_manager.append_result(job_id, result)
+                total_time += result['processing_time_seconds']
+                
+                logger.debug(
+                    f"[{correlation_id}] [{i}/{len(image_files)}] "
+                    f"Completed {image_path.name} - Status: {result['status']}"
+                )
+            
+            except Exception as e:
+                logger.error(
+                    f"[{correlation_id}] Failed to process {image_path.name}: {e}",
+                    exc_info=True
+                )
+                # Add error result and continue processing
+                error_result = {
+                    "status": "ERROR",
+                    "validation_level": "STRUCTURAL_ONLY",
+                    "extracted_fields": {},
+                    "validation_results": {"structural": [], "accuracy": []},
+                    "violations": [],
+                    "warnings": [],
+                    "processing_time_seconds": 0.0,
+                    "image_path": image_path.name,
+                    "error": str(e)
+                }
+                job_manager.append_result(job_id, error_result)
+        
+        # Get final job state to calculate summary
+        job = job_manager.get_job(job_id)
+        if not job:
+            logger.error(f"[{correlation_id}] Job {job_id} not found after processing")
+            return
+        
+        # Calculate summary statistics
+        results = job.results
+        compliant = sum(1 for r in results if r.get('status') == 'COMPLIANT')
+        non_compliant = sum(1 for r in results if r.get('status') == 'NON_COMPLIANT')
+        errors = sum(1 for r in results if r.get('status') == 'ERROR')
+        
+        summary = {
+            "total": len(results),
+            "compliant": compliant,
+            "non_compliant": non_compliant,
+            "errors": errors,
+            "total_processing_time_seconds": total_time
+        }
+        
+        # Mark job as completed with summary
+        job_manager.update_job(
+            job_id,
+            status=JobStatus.COMPLETED,
+            summary=summary
+        )
+        
+        logger.info(
+            f"[{correlation_id}] Batch job {job_id} complete - "
+            f"Total: {summary['total']}, Compliant: {summary['compliant']}, "
+            f"Non-compliant: {summary['non_compliant']}, Errors: {summary['errors']}, "
+            f"Time: {summary['total_processing_time_seconds']:.2f}s"
+        )
+    
+    except Exception as e:
+        logger.error(
+            f"[{correlation_id}] Batch job {job_id} failed: {e}",
+            exc_info=True
+        )
+        job_manager.update_job(
+            job_id,
+            status=JobStatus.FAILED,
+            error=str(e)
+        )
+
+
 # ============================================================================
 # API Endpoints
 # ============================================================================
@@ -485,17 +702,18 @@ async def verify_label(
             )
 
 
-@app.post("/verify/batch", response_model=BatchResponse)
-async def verify_batch(
+@app.post("/verify/batch", response_model=BatchJobSubmitResponse)
+async def submit_batch_job(
     batch_file: UploadFile = File(..., description="ZIP file containing label images"),
     timeout: Optional[int] = Form(None, description="Timeout in seconds for OCR processing"),
+    background_tasks: BackgroundTasks = None,
     username: str = Depends(get_current_user)
-) -> BatchResponse:
+) -> BatchJobSubmitResponse:
     """
-    Verify multiple alcohol beverage labels in batch using Ollama vision OCR.
+    Submit a batch verification job for asynchronous processing.
     
     Accepts a ZIP file containing label images and optional JSON ground truth files.
-    Ground truth files should have the same name as images (e.g., label.jpg + label.json).
+    Returns immediately with a job_id that can be used to poll for status and results.
     
     **Request:**
     - `batch_file`: ZIP archive with images (max 50 images)
@@ -511,13 +729,19 @@ async def verify_batch(
     ```
     
     **Response:**
-    - `results`: Array of verification results (one per image)
-    - `summary`: Statistics (total, compliant, non_compliant, errors)
+    - `job_id`: Job identifier (use to poll GET /verify/batch/{job_id})
+    - `status`: Job status (pending)
+    - `total_images`: Number of images to process
+    - `message`: Instructions for polling
     
     **Example:**
     ```bash
+    # Submit job
     curl -X POST http://localhost:8000/verify/batch \\
       -F "batch_file=@labels.zip"
+    
+    # Poll for status (use job_id from response)
+    curl http://localhost:8000/verify/batch/{job_id}
     ```
     """
     correlation_id = get_correlation_id()
@@ -533,113 +757,161 @@ async def verify_batch(
     # Determine timeout
     ocr_timeout = timeout if timeout is not None else settings.ollama_timeout_seconds
     
-    # Process batch
-    with tempfile.TemporaryDirectory() as temp_dir:
-        temp_path = Path(temp_dir)
-        
+    # Extract ZIP to permanent location for background processing
+    # We need to keep files accessible for the background task
+    persistent_dir = Path("/app/tmp/jobs") / str(uuid.uuid4())
+    persistent_dir.mkdir(parents=True, exist_ok=True)
+    
+    try:
         # Extract ZIP
-        image_files = await extract_zip_file(batch_file, temp_path, correlation_id)
+        image_files = await extract_zip_file(batch_file, persistent_dir, correlation_id)
         logger.info(f"[{correlation_id}] Found {len(image_files)} images to process")
         
-        try:
-            # Initialize validator with Ollama (reuse for all images)
-            validator = LabelValidator()
-            
-            # Set timeout for Ollama
-            if hasattr(validator.ocr, 'timeout'):
-                validator.ocr.timeout = ocr_timeout
+        # Create job
+        job_id = job_manager.create_job(total_images=len(image_files))
         
-        except RuntimeError as e:
-            # Handle Ollama unavailability
-            error_msg = str(e)
-            if "Cannot connect" in error_msg or "not found" in error_msg or "not available" in error_msg:
-                logger.warning(f"[{correlation_id}] Ollama backend unavailable: {e}")
-                raise HTTPException(
-                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    detail={
-                        "message": f"Ollama backend unavailable: {error_msg}",
-                        "suggestion": "Wait for Ollama model to load or check system health at /health",
-                        "retry_after": 60
-                    }
-                )
-            # Re-raise if not Ollama-related
-            raise
-        
-        # Process each image
-        results = []
-        total_time = 0.0
-        
-        for i, image_path in enumerate(image_files, 1):
-            try:
-                logger.info(
-                    f"[{correlation_id}] [{i}/{len(image_files)}] "
-                    f"Processing {image_path.name}"
-                )
-                
-                # Look for ground truth JSON
-                ground_truth_path = find_ground_truth_file(image_path)
-                ground_truth_data = None
-                
-                if ground_truth_path:
-                    try:
-                        with open(ground_truth_path, 'r') as f:
-                            ground_truth_data = json.load(f)
-                        
-                        # Handle nested ground_truth key
-                        if 'ground_truth' in ground_truth_data:
-                            ground_truth_data = ground_truth_data['ground_truth']
-                    
-                    except Exception as e:
-                        logger.warning(
-                            f"[{correlation_id}] Failed to load ground truth for "
-                            f"{image_path.name}: {e}"
-                        )
-                
-                # Validate label
-                result = validator.validate_label(str(image_path), ground_truth_data)
-                result['image_path'] = image_path.name
-                results.append(result)
-                total_time += result['processing_time_seconds']
-            
-            except Exception as e:
-                logger.error(
-                    f"[{correlation_id}] Failed to process {image_path.name}: {e}",
-                    exc_info=True
-                )
-                # Add error result
-                results.append({
-                    "status": "ERROR",
-                    "validation_level": "STRUCTURAL_ONLY",
-                    "extracted_fields": {},
-                    "validation_results": {"structural": [], "accuracy": []},
-                    "violations": [],
-                    "warnings": [],
-                    "processing_time_seconds": 0.0,
-                    "image_path": image_path.name,
-                    "error": str(e)
-                })
-        
-        # Calculate summary statistics
-        compliant = sum(1 for r in results if r.get('status') == 'COMPLIANT')
-        non_compliant = sum(1 for r in results if r.get('status') == 'NON_COMPLIANT')
-        errors = sum(1 for r in results if r.get('status') == 'ERROR')
-        
-        summary = BatchSummary(
-            total=len(results),
-            compliant=compliant,
-            non_compliant=non_compliant,
-            errors=errors,
-            total_processing_time_seconds=total_time
+        # Start background processing
+        background_tasks.add_task(
+            process_batch_job,
+            job_id=job_id,
+            image_files=image_files,
+            ocr_timeout=ocr_timeout,
+            correlation_id=correlation_id
         )
         
         logger.info(
-            f"[{correlation_id}] Batch complete - "
-            f"Total: {summary.total}, Compliant: {summary.compliant}, "
-            f"Non-compliant: {summary.non_compliant}, Errors: {summary.errors}, "
-            f"Time: {summary.total_processing_time_seconds:.2f}s"
+            f"[{correlation_id}] Batch job {job_id} submitted with "
+            f"{len(image_files)} images"
         )
         
-        return BatchResponse(results=results, summary=summary)
+        return BatchJobSubmitResponse(
+            job_id=job_id,
+            status="pending",
+            total_images=len(image_files),
+            message=f"Job submitted. Poll GET /verify/batch/{job_id} for status and results."
+        )
+    
+    except Exception as e:
+        # Cleanup persistent dir on error
+        import shutil
+        if persistent_dir.exists():
+            shutil.rmtree(persistent_dir, ignore_errors=True)
+        
+        logger.error(f"[{correlation_id}] Failed to submit batch job: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to submit batch job: {str(e)}"
+        )
+
+
+@app.get("/verify/batch/{job_id}", response_model=BatchJobStatusResponse)
+async def get_batch_job_status(
+    job_id: str,
+    username: str = Depends(get_current_user)
+) -> BatchJobStatusResponse:
+    """
+    Get status and results of a batch verification job.
+    
+    Poll this endpoint to check job progress and retrieve results as they
+    become available. Results are returned incrementally as each image completes.
+    
+    **Job Status Values:**
+    - `pending`: Job queued, not yet started
+    - `processing`: Job in progress
+    - `completed`: Job finished successfully
+    - `failed`: Job failed due to error
+    - `cancelled`: Job was cancelled
+    
+    **Response:**
+    - `job_id`: Job identifier
+    - `status`: Current job status
+    - `total_images`: Total number of images to process
+    - `processed_images`: Number of images processed so far
+    - `results`: Array of verification results (grows as images complete)
+    - `summary`: Summary statistics (only when status is completed)
+    - `error`: Error message (only when status is failed)
+    
+    **Example:**
+    ```bash
+    curl http://localhost:8000/verify/batch/abc123-def456
+    ```
+    """
+    correlation_id = get_correlation_id()
+    logger.debug(f"[{correlation_id}] GET /verify/batch/{job_id}")
+    
+    job = job_manager.get_job(job_id)
+    
+    if not job:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Job {job_id} not found"
+        )
+    
+    # Convert results to VerifyResponse objects
+    results = [VerifyResponse(**r) for r in job.results]
+    
+    # Convert summary if present
+    summary = None
+    if job.summary:
+        summary = BatchSummary(**job.summary)
+    
+    return BatchJobStatusResponse(
+        job_id=job.job_id,
+        status=job.status.value,
+        total_images=job.total_images,
+        processed_images=job.processed_images,
+        results=results,
+        summary=summary,
+        error=job.error,
+        created_at=job.created_at.isoformat(),
+        updated_at=job.updated_at.isoformat(),
+        completed_at=job.completed_at.isoformat() if job.completed_at else None
+    )
+
+
+@app.delete("/verify/batch/{job_id}")
+async def delete_batch_job(
+    job_id: str,
+    username: str = Depends(get_current_user)
+):
+    """
+    Cancel or delete a batch verification job.
+    
+    If the job is still processing, it will be marked as cancelled (processing
+    may continue for the current image but will stop after that). Completed jobs
+    will simply be deleted.
+    
+    **Example:**
+    ```bash
+    curl -X DELETE http://localhost:8000/verify/batch/abc123-def456
+    ```
+    """
+    correlation_id = get_correlation_id()
+    logger.info(f"[{correlation_id}] DELETE /verify/batch/{job_id}")
+    
+    job = job_manager.get_job(job_id)
+    
+    if not job:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Job {job_id} not found"
+        )
+    
+    # If job is still processing, mark as cancelled
+    if job.status in (JobStatus.PENDING, JobStatus.PROCESSING):
+        job_manager.update_job(job_id, status=JobStatus.CANCELLED)
+        logger.info(f"[{correlation_id}] Job {job_id} marked as cancelled")
+    
+    # Delete job
+    success = job_manager.delete_job(job_id)
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete job {job_id}"
+        )
+    
+    return {"message": f"Job {job_id} deleted successfully"}
 
 
 # ============================================================================

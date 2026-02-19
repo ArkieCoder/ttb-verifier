@@ -25,6 +25,7 @@ import argparse
 import json
 import sys
 import time
+import signal
 import requests
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
@@ -210,21 +211,40 @@ def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
         
         print(f"[{i}/{len(dataset)}] {filename}...", end=" ", file=sys.stderr)
         
-        start_time = time.time()
-        result = validator.validate_label(image_path, ground_truth)
-        processing_time = time.time() - start_time
-        
-        total_time += processing_time
-        
-        # Add metadata
-        result['expected_label_type'] = expected_label_type
-        result['image_file'] = filename
-        
-        results.append(result)
-        
-        # Show quick status
-        status = result.get('status', 'UNKNOWN')
-        print(f"{status} ({processing_time:.2f}s)", file=sys.stderr)
+        try:
+            start_time = time.time()
+            result = validator.validate_label(image_path, ground_truth)
+            processing_time = time.time() - start_time
+            
+            total_time += processing_time
+            
+            # Add metadata
+            result['expected_label_type'] = expected_label_type
+            result['image_file'] = filename
+            
+            results.append(result)
+            
+            # Show quick status
+            status = result.get('status', 'UNKNOWN')
+            print(f"{status} ({processing_time:.2f}s)", file=sys.stderr)
+            
+        except KeyboardInterrupt:
+            processing_time = time.time() - start_time
+            print(f"SKIPPED (Ctrl+C)", file=sys.stderr)
+            # Add skipped result
+            results.append({
+                'status': 'SKIPPED',
+                'error': 'Skipped by user (Ctrl+C)',
+                'expected_label_type': expected_label_type,
+                'image_file': filename,
+                'processing_time_seconds': processing_time,
+                'violations': [],
+                'warnings': [],
+                'validation_level': 'NONE',
+                'extracted_fields': {}
+            })
+            total_time += processing_time
+            continue
     
     # Calculate metrics
     metrics = calculate_metrics(results)
@@ -337,6 +357,24 @@ def run_tests_remote(remote_host: str, username: str, password: str,
                     })
                     total_time += processing_time
                     
+        except KeyboardInterrupt:
+            processing_time = time.time() - start_time
+            print(f"SKIPPED (Ctrl+C)", file=sys.stderr)
+            # Add skipped result
+            results.append({
+                'status': 'SKIPPED',
+                'error': 'Skipped by user (Ctrl+C)',
+                'expected_label_type': expected_label_type,
+                'image_file': filename,
+                'processing_time_seconds': processing_time,
+                'violations': [],
+                'warnings': [],
+                'validation_level': 'NONE',
+                'extracted_fields': {}
+            })
+            total_time += processing_time
+            continue
+            
         except Exception as e:
             processing_time = time.time() - start_time
             print(f"ERROR ({processing_time:.2f}s)", file=sys.stderr)

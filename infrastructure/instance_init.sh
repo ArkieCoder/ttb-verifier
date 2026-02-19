@@ -89,7 +89,7 @@ mkdir -p /home/ubuntu/tmp
 chown -R ubuntu:ubuntu /app
 chown -R ubuntu:ubuntu /home/ubuntu/tmp
 
-# Create Ollama entrypoint wrapper for model pre-warming
+# Create Ollama entrypoint wrapper
 echo "Creating Ollama entrypoint wrapper..."
 cat > /app/ollama-entrypoint.sh <<'EOFWRAPPER'
 #!/bin/bash
@@ -110,41 +110,8 @@ for i in {1..30}; do
   sleep 1
 done
 
-# Pre-warm the model by loading it into GPU memory (WAIT for completion)
-# First check if model exists (it may still be downloading in background)
-# Temporarily disable set -e to gracefully handle pre-warming failures
-set +e
-
-echo "Checking if llama3.2-vision model is available..."
-if /bin/ollama list | grep -q "llama3.2-vision"; then
-  echo "Pre-warming llama3.2-vision model into GPU memory..."
-  echo "This takes 60-90 seconds on first load but ensures all API requests are fast..."
-  
-  # Use timeout and increased max-time for curl to handle slow GPU model loading
-  # --max-time 120: Allow up to 120 seconds for the request (covers 60-90s load time)
-  # --connect-timeout 5: But fail fast if Ollama isn't responding
-  timeout 120 curl --max-time 120 --connect-timeout 5 \
-    -X POST http://localhost:11434/api/chat \
-    -H "Content-Type: application/json" \
-    -d '{"model": "llama3.2-vision", "messages": [{"role": "user", "content": "warmup"}], "stream": false, "keep_alive": -1}' \
-    >/dev/null 2>&1
-  
-  CURL_EXIT=$?
-  if [ $CURL_EXIT -eq 0 ]; then
-    echo "✅ Model pre-warming complete! Ollama is ready to serve requests."
-  else
-    echo "⚠️ Model pre-warming failed (exit code: $CURL_EXIT), but continuing."
-    echo "   Model will load on first API request."
-  fi
-else
-  echo "ℹ️ Model not yet available (still downloading). Skipping pre-warm."
-  echo "   Model will be loaded into GPU on first API request."
-fi
-
-# Re-enable set -e for rest of script
-set -e
-
 echo "✅ Ollama container is ready!"
+echo "   Model will be auto-prewarmed by the app when detected"
 
 # Keep the script running and forward signals to Ollama
 trap "kill $OLLAMA_PID" SIGTERM SIGINT
@@ -367,15 +334,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     sleep 10
     
     echo "[Background] ✅ Model restored from S3 successfully"
-    
-    # Pre-warm the model into GPU memory
-    echo "[Background] Pre-warming model into GPU memory..."
-    if docker-compose exec -T ollama sh -c 'echo "test" | ollama run llama3.2-vision --keepalive 999h' 2>&1 | tee -a /var/log/ollama-prewarm.log; then
-      echo "[Background] ✅ Model pre-warmed successfully and loaded into GPU!"
-    else
-      echo "[Background] ⚠️  Pre-warm failed, model will load on first API request"
-    fi
-    
+    echo "[Background] Model will be auto-prewarmed by the app when health check detects it"
     echo "[Background] Ollama backend is now available for API requests."
   else
     echo "[Background] Model not found in S3, falling back to ollama pull..."
@@ -384,14 +343,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     docker-compose exec -T ollama ollama pull llama3.2-vision
     
     echo "[Background] ✅ Model downloaded successfully from Ollama servers."
-    
-    # Pre-warm the model into GPU memory
-    echo "[Background] Pre-warming model into GPU memory..."
-    if docker-compose exec -T ollama sh -c 'echo "test" | ollama run llama3.2-vision --keepalive 999h' 2>&1 | tee -a /var/log/ollama-prewarm.log; then
-      echo "[Background] ✅ Model pre-warmed successfully and loaded into GPU!"
-    else
-      echo "[Background] ⚠️  Pre-warm failed, model will load on first API request"
-    fi
+    echo "[Background] Model will be auto-prewarmed by the app when health check detects it"
     
     echo "[Background] 📦 Exporting model to S3 to speed up future deployments..."
     
@@ -421,8 +373,8 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
   echo "[Background] ========================================="
   echo "[Background] Model Download Complete!"
   echo "[Background] ========================================="
-  echo "[Background] Ollama backend is now fully operational."
-  echo "[Background] Model is pre-warmed and loaded in GPU memory."
+  echo "[Background] Ollama backend is now operational."
+  echo "[Background] Model will be auto-prewarmed by app on first health check."
   echo "[Background] Subsequent requests will be fast (model stays loaded with keep_alive=-1)."
   
 ) >> /var/log/ollama-model-download.log 2>&1 &
@@ -444,6 +396,6 @@ echo "========================================="
 echo ""
 echo "✅ System is operational and serving traffic!"
 echo "   - Tesseract OCR: Available immediately"
-echo "   - Ollama OCR: Will be available in ~2-5 minutes"
+echo "   - Ollama OCR: Will be available in ~2-5 minutes (auto-prewarmed by app)"
 echo "   - Check status: curl http://localhost:8000/health"
 echo "========================================="

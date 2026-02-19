@@ -44,6 +44,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ttb_api")
 
+# Track Ollama pre-warming state (per-process)
+_ollama_prewarmed = False
+_ollama_prewarm_lock = False
+
 
 # ============================================================================
 # Pydantic Models
@@ -728,6 +732,69 @@ async def root():
     return RedirectResponse(url="/ui/verify", status_code=status.HTTP_302_FOUND)
 
 
+def prewarm_ollama_model(ollama_host: str, model: str) -> None:
+    """
+    Pre-warm Ollama model by loading it into GPU memory.
+    
+    This function runs in the background when the health check detects
+    that a model has been loaded. Pre-warming ensures the first API
+    request doesn't experience the 60-90s GPU load delay.
+    
+    Args:
+        ollama_host: Ollama server URL
+        model: Model name to pre-warm
+    """
+    global _ollama_prewarmed, _ollama_prewarm_lock
+    
+    # Avoid concurrent pre-warm attempts
+    if _ollama_prewarm_lock:
+        return
+    
+    _ollama_prewarm_lock = True
+    
+    try:
+        import requests
+        import threading
+        
+        def _prewarm():
+            global _ollama_prewarmed
+            try:
+                logger.info(f"Pre-warming Ollama model '{model}' into GPU memory...")
+                
+                # Simple chat request to force model load into GPU
+                # Use keep_alive=-1 to keep model loaded indefinitely
+                response = requests.post(
+                    f"{ollama_host}/api/chat",
+                    json={
+                        "model": model,
+                        "messages": [{"role": "user", "content": "warmup"}],
+                        "stream": False,
+                        "keep_alive": -1
+                    },
+                    timeout=120  # Allow up to 120s for GPU model loading
+                )
+                
+                if response.status_code == 200:
+                    logger.info(f"✓ Model '{model}' pre-warmed successfully and loaded in GPU")
+                    _ollama_prewarmed = True
+                else:
+                    logger.warning(f"Model pre-warm returned HTTP {response.status_code}")
+                    
+            except Exception as e:
+                logger.warning(f"Model pre-warm failed: {e}")
+            finally:
+                # Reset lock to allow future attempts if needed
+                pass
+        
+        # Run pre-warming in background thread to avoid blocking health check
+        thread = threading.Thread(target=_prewarm, daemon=True)
+        thread.start()
+        
+    except Exception as e:
+        logger.error(f"Failed to start pre-warm thread: {e}")
+        _ollama_prewarm_lock = False
+
+
 def get_health_status() -> Dict[str, Any]:
     """
     Check health of OCR backends and return status.
@@ -799,6 +866,14 @@ def get_health_status() -> Dict[str, Any]:
                     
                     if model_base in loaded_model_names:
                         ollama_available = True
+                        
+                        # Auto pre-warm model if not already done
+                        # This ensures model is fully loaded and cached in GPU
+                        # for fast subsequent requests
+                        global _ollama_prewarmed, _ollama_prewarm_lock
+                        if not _ollama_prewarmed and not _ollama_prewarm_lock:
+                            logger.info(f"Model '{ollama_model}' detected as loaded, triggering auto pre-warm")
+                            prewarm_ollama_model(ollama_host, ollama_model)
                     else:
                         ollama_error = f"Model not loaded in GPU (will load on first request)"
                 else:

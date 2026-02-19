@@ -757,7 +757,7 @@ def prewarm_ollama_model(ollama_host: str, model: str) -> None:
         import threading
         
         def _prewarm():
-            global _ollama_prewarmed
+            global _ollama_prewarmed, _ollama_prewarm_lock
             try:
                 logger.info(f"Pre-warming Ollama model '{model}' into GPU memory...")
                 
@@ -783,8 +783,8 @@ def prewarm_ollama_model(ollama_host: str, model: str) -> None:
             except Exception as e:
                 logger.warning(f"Model pre-warm failed: {e}")
             finally:
-                # Reset lock to allow future attempts if needed
-                pass
+                # Reset lock to allow retrying if this attempt failed
+                _ollama_prewarm_lock = False
         
         # Run pre-warming in background thread to avoid blocking health check
         thread = threading.Thread(target=_prewarm, daemon=True)
@@ -857,13 +857,6 @@ def get_health_status() -> Dict[str, Any]:
             if model_base not in available_models:
                 ollama_error = f"Model '{ollama_model}' not downloaded"
             else:
-                # Model is downloaded - trigger auto pre-warm to load into GPU
-                # This ensures model is loaded and cached in GPU for fast requests
-                global _ollama_prewarmed, _ollama_prewarm_lock
-                if not _ollama_prewarmed and not _ollama_prewarm_lock:
-                    logger.info(f"Model '{ollama_model}' detected, triggering auto pre-warm to load into GPU")
-                    prewarm_ollama_model(ollama_host, ollama_model)
-                
                 # Check 2: Is model loaded in GPU RAM?
                 ps_response = requests.get(f"{ollama_host}/api/ps", timeout=2)
                 
@@ -872,9 +865,20 @@ def get_health_status() -> Dict[str, Any]:
                     loaded_model_names = [m.get('name', '').split(':')[0] for m in loaded_models]
                     
                     if model_base in loaded_model_names:
+                        # Model is loaded and ready!
                         ollama_available = True
+                        # Mark as pre-warmed since model is loaded
+                        global _ollama_prewarmed
+                        _ollama_prewarmed = True
                     else:
-                        # Model exists but not yet loaded - pre-warming may still be in progress
+                        # Model exists but not yet loaded - trigger auto pre-warm to load into GPU
+                        # This ensures model is loaded and cached in GPU for fast requests
+                        global _ollama_prewarm_lock
+                        if not _ollama_prewarmed and not _ollama_prewarm_lock:
+                            logger.info(f"Model '{ollama_model}' downloaded but not loaded, triggering auto pre-warm")
+                            prewarm_ollama_model(ollama_host, ollama_model)
+                        
+                        # Model exists but not yet loaded - pre-warming may be in progress
                         ollama_error = f"Model loading into GPU (pre-warming in progress)"
                 else:
                     ollama_error = f"Cannot check GPU status: HTTP {ps_response.status_code}"

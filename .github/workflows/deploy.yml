@@ -103,11 +103,38 @@ jobs:
         run: |
           echo "🚀 Deploying to EC2 instance: ${{ secrets.EC2_INSTANCE_ID }}"
           
+          # Detect what changed to determine deployment strategy
+          echo "🔍 Analyzing changed files..."
+          git fetch origin ${{ github.event.before }}
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || echo "")
+          
+          # Check if only app code changed (verifier-only deployment)
+          VERIFIER_ONLY=false
+          if echo "$CHANGED_FILES" | grep -qE '^(app/|Dockerfile|scripts/deploy\.sh|\.github/workflows/deploy\.yml)'; then
+            # App-related files changed - check if ONLY app files changed
+            if ! echo "$CHANGED_FILES" | grep -qE '^(docker-compose|infrastructure/)'; then
+              VERIFIER_ONLY=true
+              echo "✅ Only app code changed - verifier-only deployment"
+              echo "   Ollama will NOT be restarted (model stays in GPU)"
+            else
+              echo "🔄 Infrastructure files changed - full deployment"
+            fi
+          fi
+          
+          # Set deployment command
+          if [ "$VERIFIER_ONLY" = "true" ]; then
+            DEPLOY_CMD='VERIFIER_ONLY=true /app/deploy.sh'
+          else
+            DEPLOY_CMD='/app/deploy.sh'
+          fi
+          
+          echo "📋 Deployment command: $DEPLOY_CMD"
+          
           # Send deployment command via SSM
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=["/app/deploy.sh"]' \
+            --parameters "commands=[\"$DEPLOY_CMD\"]" \
             --comment "GitHub Actions deployment - commit ${{ github.sha }}" \
             --output text \
             --query "Command.CommandId")

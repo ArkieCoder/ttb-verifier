@@ -227,31 +227,60 @@ echo "========================================="
 
 cd /app
 
-# Login to GitHub Container Registry (using public access for public repo)
-echo "Pulling latest images from GHCR..."
-docker-compose pull
+# Check if this is a verifier-only deployment (default: update both)
+# Set VERIFIER_ONLY=true to only restart verifier container
+VERIFIER_ONLY=${VERIFIER_ONLY:-false}
 
-# Stop existing containers
-echo "Stopping existing containers..."
-docker-compose down || true
+if [ "$VERIFIER_ONLY" = "true" ]; then
+  echo "📦 Verifier-only deployment detected"
+  echo "   - Pulling verifier image only"
+  echo "   - Ollama will NOT be restarted (keeps model in GPU)"
+  
+  # Pull only verifier image
+  docker-compose pull verifier
+  
+  # Stop and remove only verifier container
+  echo "Stopping verifier container..."
+  docker-compose stop verifier
+  docker-compose rm -f verifier
+  
+  # Start verifier with new image (ollama stays running)
+  echo "Starting verifier with new image..."
+  docker-compose up -d verifier
+  
+  # Wait for verifier to be ready
+  echo "Waiting for verifier to start..."
+  sleep 10
+  
+else
+  echo "🔄 Full deployment - updating all containers"
+  
+  # Pull all images
+  echo "Pulling latest images from GHCR..."
+  docker-compose pull
+  
+  # Stop existing containers
+  echo "Stopping existing containers..."
+  docker-compose down || true
+  
+  # Start containers with new images
+  echo "Starting containers..."
+  docker-compose up -d
+  
+  # Wait for services to be ready
+  echo "Waiting for services to start..."
+  sleep 15
+  
+  # Check Ollama health
+  echo "Checking Ollama service..."
+  docker-compose exec -T ollama ollama list
+fi
 
-# Start containers with new images
-echo "Starting containers..."
-docker-compose up -d
-
-# Wait for services to be ready
-echo "Waiting for services to start..."
-sleep 15
-
-# Check Ollama health
-echo "Checking Ollama service..."
-docker-compose exec -T ollama ollama list
-
-# Check verifier health
+# Check verifier health (always needed)
 echo "Checking verifier service..."
 curl -f http://localhost:8000/ || {
   echo "Health check failed!"
-  docker-compose logs --tail=50
+  docker-compose logs --tail=50 verifier
   exit 1
 }
 

@@ -143,7 +143,6 @@ async def lifespan(app: FastAPI):
     logger.info(f"Log level: {settings.log_level}")
     logger.info(f"Max file size: {settings.max_file_size_mb}MB")
     logger.info(f"Max batch size: {settings.max_batch_size} images")
-    logger.info(f"Default OCR backend: {settings.default_ocr_backend}")
     logger.info(f"Ollama host: {settings.ollama_host}")
     logger.info(f"Ollama timeout: {settings.ollama_timeout_seconds}s")
     yield

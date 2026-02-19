@@ -857,6 +857,13 @@ def get_health_status() -> Dict[str, Any]:
             if model_base not in available_models:
                 ollama_error = f"Model '{ollama_model}' not downloaded"
             else:
+                # Model is downloaded - trigger auto pre-warm to load into GPU
+                # This ensures model is loaded and cached in GPU for fast requests
+                global _ollama_prewarmed, _ollama_prewarm_lock
+                if not _ollama_prewarmed and not _ollama_prewarm_lock:
+                    logger.info(f"Model '{ollama_model}' detected, triggering auto pre-warm to load into GPU")
+                    prewarm_ollama_model(ollama_host, ollama_model)
+                
                 # Check 2: Is model loaded in GPU RAM?
                 ps_response = requests.get(f"{ollama_host}/api/ps", timeout=2)
                 
@@ -866,16 +873,9 @@ def get_health_status() -> Dict[str, Any]:
                     
                     if model_base in loaded_model_names:
                         ollama_available = True
-                        
-                        # Auto pre-warm model if not already done
-                        # This ensures model is fully loaded and cached in GPU
-                        # for fast subsequent requests
-                        global _ollama_prewarmed, _ollama_prewarm_lock
-                        if not _ollama_prewarmed and not _ollama_prewarm_lock:
-                            logger.info(f"Model '{ollama_model}' detected as loaded, triggering auto pre-warm")
-                            prewarm_ollama_model(ollama_host, ollama_model)
                     else:
-                        ollama_error = f"Model not loaded in GPU (will load on first request)"
+                        # Model exists but not yet loaded - pre-warming may still be in progress
+                        ollama_error = f"Model loading into GPU (pre-warming in progress)"
                 else:
                     ollama_error = f"Cannot check GPU status: HTTP {ps_response.status_code}"
         else:

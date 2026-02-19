@@ -8,7 +8,7 @@ AI-powered alcohol beverage label verification system for the U.S. Treasury Depa
 
 **Start the API:**
 ```bash
-docker compose up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 **Test the API:**
@@ -277,7 +277,7 @@ The domain restriction is enforced by `HostCheckMiddleware` to prevent unauthori
 
 To use a custom Ollama model:
 
-1. **Set the model name** in `.env` or `docker-compose.yml`:
+1. **Set the model name** in `.env` or `docker-compose.dev.yml`:
    ```bash
    OLLAMA_MODEL=my-custom-model
    ```
@@ -311,6 +311,8 @@ To use a custom Ollama model:
 │       ├── test_unit/       # Unit tests
 │       └── test_integration/ # Integration tests
 ├── infrastructure/           # Terraform/Terragrunt IaC
+├── docker-compose.dev.yml   # Local development (CPU mode, builds from source)
+├── Dockerfile               # Multi-stage build (test, production)
 ├── scripts/                  # Utility scripts
 │   ├── deploy.sh            # Deployment automation
 │   ├── gen_samples.py       # Generate test label images
@@ -335,7 +337,7 @@ To use a custom Ollama model:
 
 ### Local Development
 ```bash
-docker compose up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 ### Production (EC2)

@@ -7,8 +7,6 @@ on:
     paths:
       - 'app/**'
       - 'Dockerfile'
-      - 'docker-compose.yml'
-      - 'docker-compose.prod.yml'
       - 'scripts/deploy.sh'
       - '.github/workflows/deploy.yml'
 

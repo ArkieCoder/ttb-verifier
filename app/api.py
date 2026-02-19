@@ -791,6 +791,13 @@ async def submit_batch_job(
             message=f"Job submitted. Poll GET /verify/batch/{job_id} for status and results."
         )
     
+    except HTTPException:
+        # Re-raise HTTP exceptions (e.g. 400 for invalid ZIP) without wrapping
+        import shutil
+        if persistent_dir.exists():
+            shutil.rmtree(persistent_dir, ignore_errors=True)
+        raise
+    
     except Exception as e:
         # Cleanup persistent dir on error
         import shutil

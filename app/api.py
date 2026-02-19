@@ -728,24 +728,19 @@ async def root():
     return RedirectResponse(url="/ui/verify", status_code=status.HTTP_302_FOUND)
 
 
-@app.get("/health")
-async def health_check():
+def get_health_status() -> Dict[str, Any]:
     """
-    Health check endpoint that reports backend availability.
+    Check health of OCR backends and return status.
     
-    Returns service health and available OCR backends. This endpoint always
-    returns HTTP 200 as long as the API is running, even in degraded mode
-    (Tesseract-only). This allows the load balancer to route traffic to the
-    instance while Ollama model is still downloading.
+    Shared function used by both /health (JSON) and /ui/health (HTML) endpoints.
     
     Ollama is marked as "available" only when ALL three conditions are met:
     1. Ollama server is responsive (GET /api/tags succeeds)
     2. Model is downloaded and available (appears in /api/tags response)
     3. Model is loaded in GPU RAM (appears in /api/ps response)
     
-    The model will be automatically pre-warmed during EC2 initialization.
-    
     Returns:
+        Dictionary with health status:
         {
             "status": "healthy" | "degraded",
             "backends": {
@@ -753,8 +748,8 @@ async def health_check():
                 "ollama": {"available": bool, "error": str|null, "model": str}
             },
             "capabilities": {
-                "ocr_backends": ["tesseract", "ollama"],  # Available backends
-                "degraded_mode": bool  # True if any backend unavailable
+                "ocr_backends": ["tesseract", "ollama"],
+                "degraded_mode": bool
             }
         }
     """
@@ -847,3 +842,36 @@ async def health_check():
             "degraded_mode": degraded_mode
         }
     }
+
+
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint that reports backend availability.
+    
+    Returns service health and available OCR backends. This endpoint always
+    returns HTTP 200 as long as the API is running, even in degraded mode
+    (Tesseract-only). This allows the load balancer to route traffic to the
+    instance while Ollama model is still downloading.
+    
+    Ollama is marked as "available" only when ALL three conditions are met:
+    1. Ollama server is responsive (GET /api/tags succeeds)
+    2. Model is downloaded and available (appears in /api/tags response)
+    3. Model is loaded in GPU RAM (appears in /api/ps response)
+    
+    The model will be automatically pre-warmed during EC2 initialization.
+    
+    Returns:
+        {
+            "status": "healthy" | "degraded",
+            "backends": {
+                "tesseract": {"available": bool, "error": str|null},
+                "ollama": {"available": bool, "error": str|null, "model": str}
+            },
+            "capabilities": {
+                "ocr_backends": ["tesseract", "ollama"],  # Available backends
+                "degraded_mode": bool  # True if any backend unavailable
+            }
+        }
+    """
+    return get_health_status()

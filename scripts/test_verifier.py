@@ -6,8 +6,14 @@ Runs verification on the full golden dataset (40 samples) and generates
 accuracy metrics comparing verifier results against ground truth labels.
 
 Usage:
-    python3 scripts/test_verifier.py [--ocr-backend tesseract|ollama]
+    # Local testing (default backend: ollama)
+    python3 scripts/test_verifier.py
+    python3 scripts/test_verifier.py --ocr-backend tesseract
     python3 scripts/test_verifier.py --samples-dir ../samples/
+    
+    # Remote API testing
+    python3 scripts/test_verifier.py --remote-host https://ttb-verifier.unitedentropy.com \
+        --remote-user myuser --remote-pass mypass --ocr-backend ollama
 
 Outputs:
     - Detailed JSON results for each label
@@ -19,6 +25,7 @@ import argparse
 import json
 import sys
 import time
+import requests
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
@@ -80,6 +87,98 @@ def load_golden_dataset(samples_dir: str = None) -> List[Tuple[str, str, Dict[st
     return dataset
 
 
+def authenticate_and_get_session(remote_host: str, username: str, password: str) -> requests.Session:
+    """
+    Authenticate with remote API and return session with cookie.
+    
+    Uses /ui/login endpoint to obtain session cookie for API access.
+    
+    Args:
+        remote_host: Base URL of remote API (e.g., https://ttb-verifier.unitedentropy.com)
+        username: Username for authentication
+        password: Password for authentication
+    
+    Returns:
+        requests.Session object with authentication cookie
+        
+    Raises:
+        SystemExit: If authentication fails
+    """
+    session = requests.Session()
+    
+    # Login to get session cookie
+    login_url = f"{remote_host.rstrip('/')}/ui/login"
+    print(f"Authenticating with {login_url}...", file=sys.stderr)
+    
+    response = session.post(
+        login_url,
+        data={"username": username, "password": password},
+        allow_redirects=False  # Expect 302 redirect on success
+    )
+    
+    if response.status_code == 302 and 'session_id' in session.cookies:
+        print(f"✓ Authentication successful", file=sys.stderr)
+        return session
+    else:
+        print(f"✗ Authentication failed (HTTP {response.status_code})", file=sys.stderr)
+        if response.text:
+            print(f"  Response: {response.text[:200]}", file=sys.stderr)
+        sys.exit(1)
+
+
+def check_remote_health(remote_host: str, ocr_backend: str) -> None:
+    """
+    Check remote /health endpoint to verify OCR backend is available.
+    
+    Exits with error if health check fails or backend is unavailable.
+    This prevents wasting time running tests against an unavailable backend.
+    
+    Args:
+        remote_host: Base URL of remote API
+        ocr_backend: OCR backend that will be used (tesseract or ollama)
+        
+    Raises:
+        SystemExit: If health check fails or backend unavailable
+    """
+    health_url = f"{remote_host.rstrip('/')}/health"
+    print(f"Checking remote health at {health_url}...", file=sys.stderr)
+    
+    try:
+        response = requests.get(health_url, timeout=5.0)
+        response.raise_for_status()
+        health_data = response.json()
+        
+        # Check overall status
+        status = health_data.get('status', 'unknown')
+        print(f"  System status: {status}", file=sys.stderr)
+        
+        # Check if requested backend is available
+        backends = health_data.get('backends', {})
+        backend_info = backends.get(ocr_backend, {})
+        
+        if not backend_info.get('available', False):
+            error = backend_info.get('error', 'Unknown error')
+            print(f"✗ {ocr_backend.title()} backend unavailable: {error}", file=sys.stderr)
+            sys.exit(1)
+        
+        print(f"✓ {ocr_backend.title()} backend available", file=sys.stderr)
+        
+        # Show model info for Ollama
+        if ocr_backend == 'ollama':
+            model = backend_info.get('model', 'unknown')
+            print(f"  Model: {model}", file=sys.stderr)
+            
+    except requests.exceptions.RequestException as e:
+        print(f"✗ Health check failed: {e}", file=sys.stderr)
+        sys.exit(1)
+    except ValueError as e:
+        print(f"✗ Invalid JSON response from health endpoint: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"✗ Error checking health: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
 def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
     """
     Run verifier on all samples in golden dataset.
@@ -132,6 +231,135 @@ def run_tests(ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
     
     return {
         'ocr_backend': ocr_backend,
+        'total_samples': len(dataset),
+        'total_time_seconds': round(total_time, 2),
+        'average_time_per_sample': round(total_time / len(dataset), 2) if dataset else 0,
+        'metrics': metrics,
+        'results': results
+    }
+
+
+def run_tests_remote(remote_host: str, username: str, password: str, 
+                     ocr_backend: str, samples_dir: str = None) -> Dict[str, Any]:
+    """
+    Run verifier on all samples using remote API.
+    
+    Args:
+        remote_host: Base URL of remote API (e.g., https://ttb-verifier.unitedentropy.com)
+        username: Username for authentication
+        password: Password for authentication
+        ocr_backend: OCR backend to use (tesseract or ollama)
+        samples_dir: Path to samples directory. If None, uses ../samples relative to script.
+    
+    Returns:
+        Dictionary with test results and metrics (same format as run_tests)
+    """
+    if samples_dir is None:
+        samples_dir = str(Path(__file__).parent.parent / 'samples')
+    
+    # Check remote health first
+    check_remote_health(remote_host, ocr_backend)
+    
+    # Authenticate and get session
+    session = authenticate_and_get_session(remote_host, username, password)
+    
+    # Load dataset
+    print(f"\nLoading golden dataset from {samples_dir}/...", file=sys.stderr)
+    dataset = load_golden_dataset(samples_dir)
+    print(f"Found {len(dataset)} samples", file=sys.stderr)
+    
+    verify_url = f"{remote_host.rstrip('/')}/verify"
+    
+    results = []
+    total_time = 0.0
+    
+    print(f"\nProcessing samples via remote API ({verify_url})...\n", file=sys.stderr)
+    
+    for i, (image_path, expected_label_type, ground_truth) in enumerate(dataset, 1):
+        filename = Path(image_path).name
+        
+        print(f"[{i}/{len(dataset)}] {filename}...", end=" ", file=sys.stderr)
+        
+        # Prepare ground truth JSON string for API
+        ground_truth_json = None
+        if ground_truth:
+            # Filter out None values
+            api_ground_truth = {k: v for k, v in ground_truth.items() if v is not None}
+            if api_ground_truth:
+                ground_truth_json = json.dumps(api_ground_truth)
+        
+        # Make API request
+        start_time = time.time()
+        
+        try:
+            with open(image_path, 'rb') as img_file:
+                files = {'image': (filename, img_file, 'image/jpeg')}
+                data = {'ocr_backend': ocr_backend}
+                if ground_truth_json:
+                    data['ground_truth'] = ground_truth_json
+                
+                response = session.post(verify_url, files=files, data=data)
+                processing_time = time.time() - start_time
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    total_time += processing_time
+                    
+                    # Add metadata to match local results format
+                    result['expected_label_type'] = expected_label_type
+                    result['image_file'] = filename
+                    
+                    results.append(result)
+                    
+                    # Show quick status
+                    status = result.get('status', 'UNKNOWN')
+                    print(f"{status} ({processing_time:.2f}s)", file=sys.stderr)
+                else:
+                    print(f"HTTP {response.status_code} ({processing_time:.2f}s)", file=sys.stderr)
+                    error_detail = "Unknown error"
+                    try:
+                        error_data = response.json()
+                        error_detail = error_data.get('detail', error_data.get('message', str(error_data)))
+                    except:
+                        error_detail = response.text[:100]
+                    
+                    # Treat as error - add error result
+                    results.append({
+                        'status': 'ERROR',
+                        'error': f"HTTP {response.status_code}: {error_detail}",
+                        'expected_label_type': expected_label_type,
+                        'image_file': filename,
+                        'processing_time_seconds': processing_time,
+                        'violations': [],
+                        'warnings': [],
+                        'validation_level': 'NONE',
+                        'extracted_fields': {}
+                    })
+                    total_time += processing_time
+                    
+        except Exception as e:
+            processing_time = time.time() - start_time
+            print(f"ERROR ({processing_time:.2f}s)", file=sys.stderr)
+            print(f"  {str(e)}", file=sys.stderr)
+            results.append({
+                'status': 'ERROR',
+                'error': str(e),
+                'expected_label_type': expected_label_type,
+                'image_file': filename,
+                'processing_time_seconds': processing_time,
+                'violations': [],
+                'warnings': [],
+                'validation_level': 'NONE',
+                'extracted_fields': {}
+            })
+            total_time += processing_time
+    
+    # Calculate metrics (same as local)
+    metrics = calculate_metrics(results)
+    
+    return {
+        'ocr_backend': ocr_backend,
+        'remote_host': remote_host,
         'total_samples': len(dataset),
         'total_time_seconds': round(total_time, 2),
         'average_time_per_sample': round(total_time / len(dataset), 2) if dataset else 0,
@@ -218,6 +446,8 @@ def print_summary(test_results: Dict[str, Any]) -> None:
     print("="*70, file=sys.stderr)
     
     print(f"\nOCR Backend: {test_results['ocr_backend']}", file=sys.stderr)
+    if 'remote_host' in test_results:
+        print(f"Remote Host: {test_results['remote_host']}", file=sys.stderr)
     print(f"Total samples: {test_results['total_samples']}", file=sys.stderr)
     print(f"Total processing time: {test_results['total_time_seconds']}s", file=sys.stderr)
     print(f"Average time per sample: {test_results['average_time_per_sample']}s", file=sys.stderr)
@@ -257,8 +487,8 @@ def main():
     )
     
     parser.add_argument('--ocr-backend', choices=['tesseract', 'ollama'],
-                       default='tesseract',
-                       help='OCR backend to test (default: tesseract)')
+                       default='ollama',
+                       help='OCR backend to test (default: ollama)')
     parser.add_argument('--samples-dir', default=None,
                        help='Directory containing golden dataset (default: ../samples relative to script)')
     parser.add_argument('--output', '-o',
@@ -266,10 +496,32 @@ def main():
     parser.add_argument('--summary-only', action='store_true',
                        help='Only print summary, no detailed JSON output')
     
+    # Remote API testing options
+    parser.add_argument('--remote-host',
+                       help='Remote API host URL (e.g., https://ttb-verifier.unitedentropy.com)')
+    parser.add_argument('--remote-user',
+                       help='Username for remote API authentication')
+    parser.add_argument('--remote-pass',
+                       help='Password for remote API authentication')
+    
     args = parser.parse_args()
     
-    # Run tests
-    test_results = run_tests(args.ocr_backend, args.samples_dir)
+    # Validate and run tests (local or remote)
+    if args.remote_host:
+        # Remote API testing mode
+        if not args.remote_user or not args.remote_pass:
+            parser.error("--remote-user and --remote-pass are required when using --remote-host")
+        
+        test_results = run_tests_remote(
+            remote_host=args.remote_host,
+            username=args.remote_user,
+            password=args.remote_pass,
+            ocr_backend=args.ocr_backend,
+            samples_dir=args.samples_dir
+        )
+    else:
+        # Local testing mode
+        test_results = run_tests(args.ocr_backend, args.samples_dir)
     
     # Print summary
     print_summary(test_results)

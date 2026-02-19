@@ -529,28 +529,10 @@ async def ui_health(request: Request):
     System health page - displays OCR backend status in a user-friendly HTML format.
     Accessible without authentication.
     """
-    import httpx
+    from api import get_health_status
     
-    # Fetch health data from /health endpoint
-    try:
-        async with httpx.AsyncClient() as client:
-            # Use localhost since we're calling our own endpoint
-            base_url = str(request.base_url).rstrip('/')
-            response = await client.get(f"{base_url}/health", timeout=5.0)
-            health_data = response.json()
-    except Exception as e:
-        logger.error(f"Failed to fetch health data: {e}")
-        health_data = {
-            "status": "error",
-            "backends": {
-                "tesseract": {"available": False, "error": "Unable to check"},
-                "ollama": {"available": False, "error": "Unable to check", "model": "unknown"}
-            },
-            "capabilities": {
-                "ocr_backends": [],
-                "degraded_mode": True
-            }
-        }
+    # Get health status directly (no HTTP call needed)
+    health_data = get_health_status()
     
     # Pretty print JSON for display
     health_json = json.dumps(health_data, indent=2)

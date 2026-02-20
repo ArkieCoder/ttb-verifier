@@ -29,11 +29,11 @@
                             class="form-control {% if error_field == 'image' %}is-invalid{% endif %}" 
                             id="image" 
                             name="image" 
-                            accept="image/jpeg,image/png" 
+                            accept="image/jpeg,image/tiff,.tif,.tiff" 
                             required
                         >
                         <div class="form-text">
-                            Upload a clear image of the alcohol label (JPEG or PNG, max 10MB)
+                            Upload a clear image of the alcohol label (JPEG or TIFF, max 10MB)
                         </div>
                         {% if error_field == 'image' %}
                         <div class="invalid-feedback d-block">

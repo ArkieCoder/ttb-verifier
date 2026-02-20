@@ -467,22 +467,36 @@ def test_error_response_structure(authenticated_client):
 # Edge Cases
 # ============================================================================
 
-def test_verify_with_png_image(authenticated_client, samples_dir):
-    """Test verification with PNG image (if available)."""
-    # Try to find a PNG sample or skip
-    png_files = list(samples_dir.glob("*.png"))
-    if not png_files:
-        pytest.skip("No PNG samples available")
-    
-    with open(png_files[0], 'rb') as f:
-        png_bytes = f.read()
-    
+def test_verify_with_tiff_image(authenticated_client):
+    """Test that TIFF images are accepted."""
+    # Minimal valid TIFF bytes (little-endian, no actual image data needed for format check)
+    import struct
+    # TIFF magic: II (little-endian) + 42 + offset 8
+    tiff_bytes = b'II' + struct.pack('<HI', 42, 8) + b'\x00' * 32
+
     response = authenticated_client.post(
-        "/verify",
-        files={"image": ("label.png", png_bytes, "image/png")}
+        "/verify/async",
+        files={"image": ("label.tiff", tiff_bytes, "image/tiff")}
     )
-    
-    assert response.status_code == 200
+
+    # Should be accepted (200/202), not rejected as invalid type
+    assert response.status_code in (200, 202, 400), \
+        f"Unexpected status {response.status_code} — TIFF should not be rejected as invalid type"
+    if response.status_code == 400:
+        data = response.json()
+        assert "Invalid file type" not in data.get("detail", ""), \
+            "TIFF was incorrectly rejected as an invalid file type"
+
+
+def test_verify_png_rejected(authenticated_client, sample_image_bytes):
+    """Test that PNG images are no longer accepted."""
+    response = authenticated_client.post(
+        "/verify/async",
+        files={"image": ("label.png", sample_image_bytes, "image/png")}
+    )
+    assert response.status_code == 400
+    data = response.json()
+    assert "Invalid file type" in data["detail"]
 
 
 def test_batch_with_custom_timeout(authenticated_client, sample_batch_zip):

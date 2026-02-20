@@ -287,25 +287,25 @@ def validate_image_file(upload_file: UploadFile, correlation_id: str) -> None:
         HTTPException: If validation fails
     """
     # Check content type
-    if upload_file.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
+    if upload_file.content_type not in ["image/jpeg", "image/jpg", "image/tiff"]:
         logger.warning(
             f"[{correlation_id}] Invalid file type: {upload_file.content_type}"
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file type. Expected image/jpeg or image/png, got {upload_file.content_type}"
+            detail=f"Invalid file type. Expected image/jpeg or image/tiff, got {upload_file.content_type}"
         )
     
     # Check file extension
     if upload_file.filename:
         ext = Path(upload_file.filename).suffix.lower()
-        if ext not in [".jpg", ".jpeg", ".png"]:
+        if ext not in [".jpg", ".jpeg", ".tif", ".tiff"]:
             logger.warning(
                 f"[{correlation_id}] Invalid file extension: {ext}"
             )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid file extension. Expected .jpg, .jpeg, or .png, got {ext}"
+                detail=f"Invalid file extension. Expected .jpg, .jpeg, .tif, or .tiff, got {ext}"
             )
     
     # Verify file is actually a valid image by trying to open it
@@ -417,7 +417,7 @@ async def extract_zip_file(
         )
     
     # Find all image files
-    image_extensions = {'.jpg', '.jpeg', '.png'}
+    image_extensions = {'.jpg', '.jpeg', '.tif', '.tiff'}
     image_files = []
     
     for ext in image_extensions:
@@ -637,7 +637,7 @@ async def verify_label(
     (Tier 2) if ground truth is provided.
     
     **Request:**
-    - `image`: Label image file (JPEG or PNG, max 10MB)
+    - `image`: Label image file (JPEG or TIFF, max 10MB)
     - `ground_truth`: Optional JSON with expected values
     - `timeout`: Optional timeout in seconds (default: 60s)
     
@@ -956,7 +956,7 @@ async def submit_async_verify(
     (~10s) happens in the separate worker container.
 
     **Request:**
-    - ``image``: Label image (JPEG or PNG, max 10MB)
+    - ``image``: Label image (JPEG or TIFF, max 10MB)
     - ``ground_truth``: Optional JSON with expected values
 
     **Response:**

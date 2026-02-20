@@ -215,13 +215,13 @@ async def ui_verify_submit(
     from api import verify_queue
 
     # Validate image file
-    if image.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
+    if image.content_type not in ["image/jpeg", "image/jpg", "image/tiff"]:
         return templates.TemplateResponse(
             "index.html",
             {
                 "request": request,
                 "username": username,
-                "error": f"Invalid file type: {image.content_type}. Please upload JPEG or PNG.",
+                "error": f"Invalid file type: {image.content_type}. Please upload JPEG or TIFF.",
                 "error_field": "image",
                 "form_data": {
                     "brand_name": brand_name,
@@ -493,12 +493,21 @@ async def ui_verify_result(
     image_path = Path(job["image_path"])
     filename = image_path.name
 
-    # Re-encode the saved image as a base64 data URL for display in the template
+    # Re-encode the saved image as a base64 data URL for display in the template.
+    # TIFFs are not renderable in most browsers, so convert them to JPEG first.
     image_data = None
     try:
-        raw = image_path.read_bytes()
+        from io import BytesIO
         suffix = image_path.suffix.lower()
-        mime = "image/png" if suffix == ".png" else "image/jpeg"
+        if suffix in (".tif", ".tiff"):
+            with Image.open(image_path) as img:
+                buf = BytesIO()
+                img.convert("RGB").save(buf, format="JPEG", quality=90)
+                raw = buf.getvalue()
+            mime = "image/jpeg"
+        else:
+            raw = image_path.read_bytes()
+            mime = "image/jpeg"
         image_data = f"data:{mime};base64,{base64.b64encode(raw).decode()}"
     except Exception as e:
         logger.warning(f"Could not encode image for results page: {e}")
@@ -587,7 +596,10 @@ async def ui_verify_image(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
 
     suffix = image_path.suffix.lower()
-    media_type = "image/png" if suffix == ".png" else "image/jpeg"
+    if suffix in (".tif", ".tiff"):
+        media_type = "image/tiff"
+    else:
+        media_type = "image/jpeg"
     return Response(content=image_path.read_bytes(), media_type=media_type)
 
 

@@ -1,12 +1,6 @@
-"""
-OCR Backend using Ollama vision models.
-
-Provides OCR extraction using Ollama vision models (llama3.2-vision, llava)
-for accurate text extraction from alcohol beverage labels.
-"""
-
+import fcntl
 import logging
-import threading
+import os
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -44,19 +38,19 @@ class OCRBackend(ABC):
 
 
 # ---------------------------------------------------------------------------
-# Module-level semaphore: Ollama is single-threaded and processes one vision
-# inference at a time.  Without a limit here, concurrent requests pile up
-# inside Ollama's queue; each waits for all previous ones to finish, so the
-# N-th request waits N×inference_time seconds — quickly blowing past the
-# CloudFront 60-second origin timeout and causing a cascade of 504 errors.
+# Cross-process Ollama concurrency gate
 #
-# The semaphore allows exactly one in-flight Ollama call at a time.  Any
-# request that cannot acquire it immediately gets a fast 503 + Retry-After
-# rather than a guaranteed timeout.  Adjust _OLLAMA_MAX_CONCURRENCY if you
-# deploy a multi-GPU setup where Ollama can run parallel inferences.
+# uvicorn runs with --workers 4, so each worker is a separate OS process with
+# its own memory space.  A threading.Semaphore is per-process and invisible to
+# the other three workers — all four can call Ollama simultaneously, which
+# saturates the single T4 GPU and causes every request to time out.
+#
+# We use a non-blocking exclusive flock on a shared file so that exactly one
+# worker process holds the lock at any time.  Workers that cannot acquire it
+# immediately return a fast 503 + Retry-After to the caller rather than
+# queuing and guaranteeing a timeout.
 # ---------------------------------------------------------------------------
-_OLLAMA_MAX_CONCURRENCY = 1
-_ollama_semaphore = threading.Semaphore(_OLLAMA_MAX_CONCURRENCY)
+_OLLAMA_LOCK_PATH = "/tmp/ollama_inference.lock"
 
 
 class OllamaOCR(OCRBackend):
@@ -188,11 +182,14 @@ class OllamaOCR(OCRBackend):
                 }
             }
 
-        # --- concurrency gate ---
-        acquired = _ollama_semaphore.acquire(blocking=False)
-        if not acquired:
+        # --- cross-process concurrency gate (flock) ---
+        lock_fd = open(_OLLAMA_LOCK_PATH, 'w')
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            lock_fd.close()
             logger.warning(
-                "Ollama semaphore busy — rejecting request to prevent queue buildup"
+                "Ollama lock busy (another worker is running inference) — rejecting request"
             )
             return {
                 'success': False,
@@ -208,7 +205,8 @@ class OllamaOCR(OCRBackend):
         try:
             return self._do_extract(image_path, start_time)
         finally:
-            _ollama_semaphore.release()
+            fcntl.flock(lock_fd, fcntl.LOCK_UN)
+            lock_fd.close()
 
     def _do_extract(self, image_path: str, start_time: float) -> Dict[str, Any]:
         """Inner extraction with timeout classification."""

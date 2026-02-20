@@ -12,7 +12,7 @@ REST API for validating alcohol beverage labels against 27 CFR regulations. Supp
 
 ## Quick Start
 
-### Start the API
+### Start the app
 
 ```bash
 # Using Docker Compose (recommended)
@@ -26,8 +26,7 @@ curl http://localhost:8000/docs
 
 ```bash
 curl -X POST http://localhost:8000/verify \
-  -F "image=@samples/label_good_001.jpg" \
-  -F "ocr_backend=tesseract"
+  -F "image=@samples/label_good_001.jpg"
 ```
 
 ---
@@ -50,7 +49,7 @@ curl -X POST http://localhost:8000/verify \
 |-----------|------|----------|-------------|
 | `image` | File | Yes | Label image (max 10MB, .jpg/.jpeg/.png) |
 | `ground_truth` | String (JSON) | No | Expected values for Tier 2 validation |
-| `ocr_backend` | String | No | OCR engine: `tesseract` (fast, default) or `ollama` (accurate) |
+| `ocr_backend` | String | No | OCR engine: `ollama` (default) |
 
 **Ground Truth JSON Format:**
 ```json
@@ -139,7 +138,7 @@ curl -X POST http://localhost:8000/verify \
 
 #### Example Requests
 
-**Basic Verification (Tesseract):**
+**Basic Verification:**
 ```bash
 curl -X POST http://localhost:8000/verify \
   -F "image=@label.jpg"
@@ -152,7 +151,7 @@ curl -X POST http://localhost:8000/verify \
   -F 'ground_truth={"brand_name":"Ridge & Co.","abv":7.5,"net_contents":"64 fl oz","bottler":"Imported by Black Brewing, San Francisco, CA","product_type":"Hefeweizen"}'
 ```
 
-**Using Ollama AI (Slower, More Accurate):**
+**Using Ollama AI:**
 ```bash
 curl -X POST http://localhost:8000/verify \
   -F "image=@label.jpg" \
@@ -166,8 +165,7 @@ import requests
 url = "http://localhost:8000/verify"
 files = {"image": open("label.jpg", "rb")}
 data = {
-    "ground_truth": '{"brand_name":"Ridge & Co.","abv":7.5}',
-    "ocr_backend": "tesseract"
+    "ground_truth": '{"brand_name":"Ridge & Co.","abv":7.5}'
 }
 
 response = requests.post(url, files=files, data=data)
@@ -194,7 +192,7 @@ print(f"Violations: {len(result['violations'])}")
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `batch_file` | File (ZIP) | Yes | ZIP file containing images and optional JSON files (max 50 images) |
-| `ocr_backend` | String | No | OCR engine: `tesseract` (default) or `ollama` |
+| `ocr_backend` | String | No | OCR engine: `ollama` (default) |
 
 **ZIP File Structure:**
 ```
@@ -278,8 +276,7 @@ zip batch.zip label_good_001.jpg label_good_001.json \
 **Upload Batch:**
 ```bash
 curl -X POST http://localhost:8000/verify/batch \
-  -F "batch_file=@batch.zip" \
-  -F "ocr_backend=tesseract"
+  -F "batch_file=@batch.zip"
 ```
 
 **Python Client Example:**

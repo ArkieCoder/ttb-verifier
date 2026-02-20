@@ -111,7 +111,7 @@ for i in {1..30}; do
 done
 
 echo "✅ Ollama container is ready!"
-echo "   Model will be auto-prewarmed by the app when detected"
+echo "   Model will be loaded by the health cron job"
 
 # Keep the script running and forward signals to Ollama
 trap "kill $OLLAMA_PID" SIGTERM SIGINT
@@ -284,6 +284,44 @@ curl -f http://localhost:8000/ || {
   exit 1
 }
 
+# Install/refresh Ollama health cron script on every deploy.
+# Writes /etc/OLLAMA_HEALTHY when model is in GPU; removes it otherwise.
+# The FastAPI /health endpoint reads only this file — no blocking network calls.
+cat > /usr/local/bin/ollama-health-cron.sh <<'EOFCRON'
+#!/bin/bash
+set -euo pipefail
+HEALTHY_FILE="/etc/OLLAMA_HEALTHY"
+MODEL="${OLLAMA_MODEL:-llama3.2-vision}"
+CONTAINER="${OLLAMA_CONTAINER:-ttb-ollama}"
+log() { logger -t "ollama-health-cron" "$*"; }
+mark_healthy()   { touch "$HEALTHY_FILE";  log "OK model in GPU"; }
+mark_unhealthy() { rm -f "$HEALTHY_FILE";  log "WARN $1"; }
+if ! docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null | grep -q true; then
+  mark_unhealthy "container not running"; exit 0
+fi
+if ! docker exec "$CONTAINER" ollama list 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
+  mark_unhealthy "model not in ollama list"; exit 0
+fi
+if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
+  mark_healthy; exit 0
+fi
+log "Model not in GPU, pre-warming..."
+if docker exec "$CONTAINER" ollama run "$MODEL" "" 2>/dev/null; then
+  log "Pre-warm complete"
+else
+  mark_unhealthy "pre-warm failed"; exit 0
+fi
+if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
+  mark_healthy
+else
+  mark_unhealthy "still not in GPU after pre-warm"
+fi
+EOFCRON
+chmod +x /usr/local/bin/ollama-health-cron.sh
+(crontab -l 2>/dev/null | grep -v ollama-health-cron || true
+ echo "*/5 * * * * /usr/local/bin/ollama-health-cron.sh >> /var/log/ollama-health-cron.log 2>&1") | crontab -
+echo "Ollama health cron installed"
+
 echo "========================================="
 echo "Deployment successful!"
 echo "========================================="
@@ -291,70 +329,6 @@ EOFSCRIPT
 
 chmod +x /app/deploy.sh
 chown ubuntu:ubuntu /app/deploy.sh
-
-# Install Ollama health cron job
-# Runs every 5 minutes as root (needs docker access).
-# Writes /etc/OLLAMA_HEALTHY when model is in GPU; removes it otherwise.
-# The FastAPI /health endpoint reads only this file.
-echo "Installing Ollama health cron job..."
-cat > /usr/local/bin/ollama-health-cron.sh <<'EOFCRON'
-#!/bin/bash
-set -euo pipefail
-
-HEALTHY_FILE="/etc/OLLAMA_HEALTHY"
-MODEL="${OLLAMA_MODEL:-llama3.2-vision}"
-CONTAINER="${OLLAMA_CONTAINER:-ttb-ollama}"
-LOG_TAG="ollama-health-cron"
-
-log() { logger -t "$LOG_TAG" "$*"; }
-
-mark_healthy() {
-    touch "$HEALTHY_FILE"
-    log "OK — model '$MODEL' is in GPU RAM, marked healthy"
-}
-
-mark_unhealthy() {
-    rm -f "$HEALTHY_FILE"
-    log "WARN — $1, marked unhealthy"
-}
-
-if ! docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null | grep -q true; then
-    mark_unhealthy "container '$CONTAINER' is not running"
-    exit 0
-fi
-
-if ! docker exec "$CONTAINER" ollama list 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
-    mark_unhealthy "model '$MODEL' not found in 'ollama list'"
-    exit 0
-fi
-
-if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
-    mark_healthy
-    exit 0
-fi
-
-log "Model '$MODEL' not in GPU, starting pre-warm..."
-if docker exec "$CONTAINER" ollama run "$MODEL" "" 2>/dev/null; then
-    log "Pre-warm complete"
-else
-    mark_unhealthy "pre-warm command failed"
-    exit 0
-fi
-
-if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
-    mark_healthy
-else
-    mark_unhealthy "model still not in GPU after pre-warm"
-fi
-EOFCRON
-
-chmod +x /usr/local/bin/ollama-health-cron.sh
-
-# Install crontab entry for root (every 5 minutes)
-(crontab -l 2>/dev/null | grep -v ollama-health-cron || true
- echo "*/5 * * * * /usr/local/bin/ollama-health-cron.sh >> /var/log/ollama-health-cron.log 2>&1") | crontab -
-
-echo "Ollama health cron job installed (runs every 5 minutes)"
 
 # Pull and start Ollama service
 echo "Starting Ollama service..."
@@ -427,8 +401,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     sleep 10
     
     echo "[Background] ✅ Model restored from S3 successfully"
-    echo "[Background] Model will be auto-prewarmed by the app when health check detects it"
-    echo "[Background] Ollama backend is now available for API requests."
+    echo "[Background] Model will be loaded into GPU by the health cron job"
   else
     echo "[Background] Model not found in S3, falling back to ollama pull..."
     echo "[Background] This will take 5-15 minutes depending on connection speed..."
@@ -436,9 +409,8 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     docker-compose exec -T ollama ollama pull llama3.2-vision
     
     echo "[Background] ✅ Model downloaded successfully from Ollama servers."
-    echo "[Background] Model will be auto-prewarmed by the app when health check detects it"
-    
-    echo "[Background] 📦 Exporting model to S3 to speed up future deployments..."
+    echo "[Background] Model will be loaded into GPU by the health cron job"
+
     
     # Self-healing: Export model to S3 for future instances
     # Use /home directory to avoid tmpfs space issues
@@ -467,7 +439,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
   echo "[Background] Model Download Complete!"
   echo "[Background] ========================================="
   echo "[Background] Ollama backend is now operational."
-  echo "[Background] Model will be auto-prewarmed by app on first health check."
+    echo "[Background] Model will be loaded into GPU by the health cron job (runs every 5 min)"
   echo "[Background] Subsequent requests will be fast (model stays loaded with keep_alive=-1)."
   
 ) >> /var/log/ollama-model-download.log 2>&1 &
@@ -488,7 +460,7 @@ echo "Ollama Model: Downloading in background..."
 echo "========================================="
 echo ""
 echo "✅ System is operational and will serve traffic once Ollama is ready!"
-echo "   - Ollama OCR: Will be available in ~2-5 minutes (auto-prewarmed by app)"
+  echo "   - Ollama OCR: Available after cron pre-warms model (~2-5 minutes)"
 echo "   - /verify endpoints return 503 until Ollama is available"
 echo "   - Check status: curl http://localhost:8000/health"
 echo "========================================="

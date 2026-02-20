@@ -472,7 +472,7 @@ For production:
 ## Support
 
 For issues or questions:
-- Check [docs/OPERATIONS.md](../infrastructure/OPERATIONS.md) for troubleshooting
+- Check [docs/OPERATIONS_RUNBOOK.md](../docs/OPERATIONS_RUNBOOK.md) for troubleshooting
 - Review [docs/ARCHITECTURE.md](ARCHITECTURE.md) for system design
 - See [infrastructure/README.md](../infrastructure/README.md) for deployment
 

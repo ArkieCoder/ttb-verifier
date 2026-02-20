@@ -177,7 +177,7 @@ See [API_README.md](docs/API_README.md) for complete API documentation.
 
 ### Architecture & Operations
 - **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and fail-open design
-- **[docs/OPERATIONS.md](docs/OPERATIONS.md)** - Operational runbook and troubleshooting
+- **[docs/OPERATIONS_RUNBOOK.md](docs/OPERATIONS_RUNBOOK.md)** - Operational runbook and troubleshooting
 - **[infrastructure/README.md](infrastructure/README.md)** - Infrastructure deployment guide
 - **[infrastructure/FUTURE_ENHANCEMENTS.md](infrastructure/FUTURE_ENHANCEMENTS.md)** - Planned improvements
 

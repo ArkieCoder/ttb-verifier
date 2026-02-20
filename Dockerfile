@@ -19,6 +19,7 @@ RUN pip install --user --no-cache-dir -r requirements.txt -r requirements-dev.tx
 FROM builder AS test
 
 COPY app/ /app
+COPY samples/ /app/samples
 WORKDIR /app
 
 ENV PATH=/root/.local/bin:$PATH

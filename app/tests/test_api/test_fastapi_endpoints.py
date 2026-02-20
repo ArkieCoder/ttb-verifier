@@ -119,8 +119,37 @@ def large_image_bytes():
 # Single Verify Endpoint Tests
 # ============================================================================
 
-def test_verify_success_no_ground_truth(authenticated_client, sample_image_bytes):
+MOCK_COMPLIANT_RESULT = {
+    "status": "COMPLIANT",
+    "validation_level": "STRUCTURAL_ONLY",
+    "extracted_fields": {
+        "brand_name": "Ridge & Co.",
+        "abv_numeric": 7.5,
+        "government_warning": {"present": True},
+    },
+    "validation_results": {"structural": [], "accuracy": []},
+    "violations": [],
+    "warnings": [],
+    "processing_time_seconds": 0.1,
+}
+
+MOCK_FULL_VALIDATION_RESULT = {
+    **MOCK_COMPLIANT_RESULT,
+    "validation_level": "FULL_VALIDATION",
+    "validation_results": {
+        "structural": [],
+        "accuracy": [{"field": "brand_name", "valid": True}],
+    },
+}
+
+
+@patch('api.LabelValidator')
+def test_verify_success_no_ground_truth(mock_validator_class, authenticated_client, sample_image_bytes):
     """Test single label verification without ground truth (structural only)."""
+    mock_validator = Mock()
+    mock_validator.validate_label.return_value = MOCK_COMPLIANT_RESULT
+    mock_validator_class.return_value = mock_validator
+
     response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")}
@@ -129,7 +158,6 @@ def test_verify_success_no_ground_truth(authenticated_client, sample_image_bytes
     assert response.status_code == 200
     data = response.json()
     
-    # Check response structure
     assert "status" in data
     assert data["status"] in ["COMPLIANT", "NON_COMPLIANT", "PARTIAL_VALIDATION"]
     assert "validation_level" in data
@@ -137,25 +165,24 @@ def test_verify_success_no_ground_truth(authenticated_client, sample_image_bytes
     assert "validation_results" in data
     assert "violations" in data
     assert "processing_time_seconds" in data
-    
-    # Should be structural only without ground truth
     assert data["validation_level"] == "STRUCTURAL_ONLY"
 
 
-def test_verify_success_with_ground_truth(authenticated_client, sample_image_bytes, sample_ground_truth_json):
+@patch('api.LabelValidator')
+def test_verify_success_with_ground_truth(mock_validator_class, authenticated_client, sample_image_bytes, sample_ground_truth_json):
     """Test single label verification with ground truth (full validation)."""
+    mock_validator = Mock()
+    mock_validator.validate_label.return_value = MOCK_FULL_VALIDATION_RESULT
+    mock_validator_class.return_value = mock_validator
+
     response = authenticated_client.post(
         "/verify",
         files={"image": ("label.jpg", sample_image_bytes, "image/jpeg")},
-        data={
-            "ground_truth": sample_ground_truth_json
-        }
+        data={"ground_truth": sample_ground_truth_json}
     )
     
     assert response.status_code == 200
     data = response.json()
-    
-    # Should perform full validation with ground truth
     assert data["validation_level"] == "FULL_VALIDATION"
     assert "accuracy" in data["validation_results"]
 
@@ -266,51 +293,73 @@ def test_verify_ocr_failure(mock_validator_class, authenticated_client, sample_i
 # Batch Verify Endpoint Tests
 # ============================================================================
 
-def test_batch_success(authenticated_client, sample_batch_zip):
+def _poll_batch_job(client, job_id: str, max_polls: int = 10):
+    """Poll GET /verify/batch/{job_id} until the job reaches a terminal state."""
+    for _ in range(max_polls):
+        r = client.get(f"/verify/batch/{job_id}")
+        assert r.status_code == 200, f"Status poll failed: {r.text}"
+        data = r.json()
+        if data["status"] in ("completed", "failed", "cancelled"):
+            return data
+    pytest.fail(f"Batch job {job_id} did not reach terminal state after {max_polls} polls")
+
+
+@patch('api.LabelValidator')
+def test_batch_success(mock_validator_class, authenticated_client, sample_batch_zip):
     """Test batch verification with valid ZIP file."""
+    mock_validator = Mock()
+    mock_validator.validate_label.return_value = MOCK_COMPLIANT_RESULT
+    mock_validator_class.return_value = mock_validator
+
     response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")}
     )
-    
+
     assert response.status_code == 200
-    data = response.json()
-    
-    # Check response structure
+    submit = response.json()
+    assert "job_id" in submit
+    assert submit["total_images"] == 3
+
+    data = _poll_batch_job(authenticated_client, submit["job_id"])
+
     assert "results" in data
     assert "summary" in data
-    
-    # Check summary
+
     summary = data["summary"]
     assert "total" in summary
     assert "compliant" in summary
     assert "non_compliant" in summary
     assert "errors" in summary
     assert "total_processing_time_seconds" in summary
-    
-    # Should have processed 3 images
+
     assert summary["total"] == 3
     assert len(data["results"]) == 3
-    
-    # Each result should have required fields
+
     for result in data["results"]:
         assert "status" in result
         assert "validation_level" in result
         assert "image_path" in result
 
 
-def test_batch_with_ground_truth(authenticated_client, sample_batch_zip):
+@patch('api.LabelValidator')
+def test_batch_with_ground_truth(mock_validator_class, authenticated_client, sample_batch_zip):
     """Test batch verification with ground truth JSON files in ZIP."""
-    # The sample_batch_zip fixture includes JSON files
+    mock_validator = Mock()
+    mock_validator.validate_label.return_value = MOCK_FULL_VALIDATION_RESULT
+    mock_validator_class.return_value = mock_validator
+
     response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")}
     )
-    
+
     assert response.status_code == 200
-    data = response.json()
-    
-    # At least some results should have full validation
+    submit = response.json()
+    assert "job_id" in submit
+
+    data = _poll_batch_job(authenticated_client, submit["job_id"])
+
     full_validations = [
         r for r in data["results"]
         if r.get("validation_level") == "FULL_VALIDATION"
@@ -499,18 +548,24 @@ def test_verify_png_rejected(authenticated_client, sample_image_bytes):
     assert "Invalid file type" in data["detail"]
 
 
-def test_batch_with_custom_timeout(authenticated_client, sample_batch_zip):
+@patch('api.LabelValidator')
+def test_batch_with_custom_timeout(mock_validator_class, authenticated_client, sample_batch_zip):
     """Test batch verification with custom timeout."""
+    mock_validator = Mock()
+    mock_validator.validate_label.return_value = MOCK_COMPLIANT_RESULT
+    mock_validator_class.return_value = mock_validator
+
     response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")},
-        data={
-            "timeout": 30
-        }
+        data={"timeout": 30}
     )
-    
+
     assert response.status_code == 200
-    data = response.json()
+    submit = response.json()
+    assert "job_id" in submit
+
+    data = _poll_batch_job(authenticated_client, submit["job_id"])
     assert data["summary"]["total"] == 3
 
 
@@ -520,7 +575,7 @@ def test_batch_partial_failure(mock_validator_class, authenticated_client, sampl
     # Mock validator to fail on second image
     mock_validator = Mock()
     call_count = [0]
-    
+
     def side_effect(*args, **kwargs):
         call_count[0] += 1
         if call_count[0] == 2:
@@ -534,22 +589,25 @@ def test_batch_partial_failure(mock_validator_class, authenticated_client, sampl
             "warnings": [],
             "processing_time_seconds": 1.0
         }
-    
+
     mock_validator.validate_label.side_effect = side_effect
     mock_validator_class.return_value = mock_validator
-    
+
     response = authenticated_client.post(
         "/verify/batch",
         files={"batch_file": ("batch.zip", sample_batch_zip, "application/zip")}
     )
-    
+
     assert response.status_code == 200
-    data = response.json()
-    
+    submit = response.json()
+    assert "job_id" in submit
+
+    data = _poll_batch_job(authenticated_client, submit["job_id"])
+
     # Should have 3 results (2 success + 1 error)
     assert data["summary"]["total"] == 3
     assert data["summary"]["errors"] == 1
-    
+
     # Check that error result has error field
     error_results = [r for r in data["results"] if r.get("status") == "ERROR"]
     assert len(error_results) == 1

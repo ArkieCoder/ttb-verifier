@@ -91,7 +91,6 @@ def load_ground_truth(ground_truth_path: Optional[str]) -> Optional[Dict[str, An
 
 def validate_single_label(image_path: str,
                          ground_truth_path: Optional[str],
-                         ocr_backend: str,
                          verbose: bool = False) -> Dict[str, Any]:
     """Validate a single label image."""
     # Check if image exists
@@ -114,9 +113,9 @@ def validate_single_label(image_path: str,
     
     # Initialize validator
     if verbose:
-        print(f"Initializing {ocr_backend} OCR backend...", file=sys.stderr)
+        print(f"Initializing Ollama OCR backend...", file=sys.stderr)
     
-    validator = LabelValidator(ocr_backend=ocr_backend)
+    validator = LabelValidator()
     
     # Validate
     if verbose:
@@ -132,13 +131,12 @@ def validate_single_label(image_path: str,
 
 def validate_batch(directory: str,
                   ground_truth_dir: Optional[str],
-                  ocr_backend: str,
                   verbose: bool = False) -> List[Dict[str, Any]]:
     """Validate all images in a directory."""
     results = []
     
-    # Find all image files
-    image_extensions = {'.jpg', '.jpeg', '.png', '.tif', '.tiff'}
+    # Find all image files (JPEG and TIFF only)
+    image_extensions = {'.jpg', '.jpeg', '.tif', '.tiff'}
     image_files = []
     
     dir_path = Path(directory)
@@ -170,7 +168,6 @@ def validate_batch(directory: str,
         result = validate_single_label(
             str(image_path),
             ground_truth_path,
-            ocr_backend,
             verbose=False  # Don't duplicate verbose output
         )
         
@@ -241,11 +238,6 @@ Examples:
     parser.add_argument('--ground-truth-dir', metavar='DIR',
                        help='Directory containing ground truth JSON files for batch processing')
     
-    # OCR options
-    parser.add_argument('--ocr-backend', choices=['tesseract', 'ollama'],
-                       default='tesseract',
-                       help='OCR backend: tesseract (fast, ~1s) or ollama (accurate, ~60s). Default: tesseract')
-    
     # Output options
     parser.add_argument('--verbose', '-v', action='store_true',
                        help='Print verbose progress information to stderr')
@@ -263,7 +255,6 @@ Examples:
         results = validate_batch(
             args.batch,
             args.ground_truth_dir,
-            args.ocr_backend,
             args.verbose
         )
         
@@ -278,7 +269,6 @@ Examples:
         result = validate_single_label(
             args.image_path,
             args.ground_truth,
-            args.ocr_backend,
             args.verbose
         )
         

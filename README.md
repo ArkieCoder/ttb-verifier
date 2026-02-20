@@ -6,7 +6,7 @@ AI-powered alcohol beverage label verification system for the U.S. Treasury Depa
 
 ### Using Docker (Recommended)
 
-**Start the API:**
+**Start the app:**
 ```bash
 docker compose -f docker-compose.dev.yml up -d
 ```
@@ -113,28 +113,7 @@ python app/verify_label.py test_samples/label_good_001.jpg \
 - ✅ **Government warning validation** with exact format checking
 - ✅ **Product-specific tolerances** for ABV (wine: ±1.0%, spirits: ±0.3%)
 - ✅ **Docker support** with multi-stage builds and testing
-- ✅ **Comprehensive testing** with 76.9% code coverage
 - ✅ **CloudFront + S3** custom error pages for graceful degradation
-
-## Architecture
-
-```
-┌─────────────────┐
-│   Web Client    │
-└────────┬────────┘
-         │ HTTP
-         ▼
-┌─────────────────┐
-│  FastAPI REST   │ ← Port 8000
-│      API        │
-└────────┬────────┘
-         │
-         ▼
-     ┌─────────┐
-     │ Ollama  │ ← Port 11434
-     │  (AI)   │
-     └─────────┘
-```
 
 ## API Endpoints
 
@@ -234,12 +213,6 @@ docker build --target test -t ttb-verifier:test .
 # Using Python directly (from app directory)
 cd app && pytest tests/ --cov=. --cov-fail-under=50 -v
 ```
-
-**Test suite:**
-- 55 tests (53 passed, 1 skipped)
-- 76.9% code coverage
-- API tests: 95% coverage
-- Unit tests for validators, extractors, CLI
 
 See [docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md) for details.
 
@@ -379,6 +352,6 @@ This is a prototype system developed for the U.S. Treasury Department TTB.
 ## Support
 
 For questions or issues:
-1. Check documentation in `/docs` directory
+1. Check documentation in [`docs/`](docs/) directory
 2. Review [docs/DECISION_LOG.md](docs/DECISION_LOG.md) for architectural decisions
 3. See [docs/DEVELOPMENT_HISTORY.md](docs/DEVELOPMENT_HISTORY.md) for implementation details

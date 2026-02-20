@@ -6,7 +6,7 @@ A GitHub Actions workflow is available for manually deploying infrastructure cha
 
 ## Access the Workflow
 
-**URL**: https://github.com/ArkieCoder/ttb-verifier/actions/workflows/infrastructure-deploy.yml
+**URL**: https://github.com/<github_owner>/<github_repo_name>/actions/workflows/infrastructure-deploy.yml
 
 **Or via GitHub UI**:
 1. Navigate to your repository
@@ -146,10 +146,10 @@ Deployment Summary
 
 ```bash
 # Via CLI
-gh run list --repo ArkieCoder/ttb-verifier --workflow=infrastructure-deploy.yml --limit 5
+gh run list --repo <github_owner>/<github_repo_name> --workflow=infrastructure-deploy.yml --limit 5
 
 # View specific run
-gh run view <run-id> --repo ArkieCoder/ttb-verifier
+gh run view <run-id> --repo <github_owner>/<github_repo_name>
 ```
 
 ## Safety Features
@@ -191,7 +191,7 @@ gh run view <run-id> --repo ArkieCoder/ttb-verifier
 
 **Check what's running**:
 ```bash
-gh run list --repo ArkieCoder/ttb-verifier --limit 10
+gh run list --repo <github_owner>/<github_repo_name> --limit 10
 ```
 
 ---
@@ -265,7 +265,7 @@ gh run list --repo ArkieCoder/ttb-verifier --limit 10
 
 **Temporary disable**:
 ```bash
-gh workflow disable infrastructure-deploy.yml --repo ArkieCoder/ttb-verifier
+gh workflow disable infrastructure-deploy.yml --repo <github_owner>/<github_repo_name>
 ```
 
 **Permanent disable**:

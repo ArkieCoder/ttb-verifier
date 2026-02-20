@@ -183,27 +183,29 @@ class OllamaOCR(OCRBackend):
             }
 
         # --- cross-process concurrency gate (flock) ---
-        # Block until the lock is available, waiting up to self.timeout seconds.
-        # This queues requests naturally — each waits its turn rather than being
-        # shed immediately with a 503. Only reject if we've already been waiting
-        # so long that there's no time left for actual inference.
+        # Block waiting for the lock, but only up to _LOCK_WAIT_SECONDS.
+        # Under normal conditions inference takes ~10s, so a request that
+        # arrives mid-inference needs to wait at most that long.  Capping the
+        # wait prevents worker threads from being held indefinitely if Ollama
+        # is genuinely stuck — that still returns a clean 503.
+        _LOCK_WAIT_SECONDS = 30
         lock_fd = open(_OLLAMA_LOCK_PATH, 'w')
         lock_acquired = False
-        lock_deadline = time.time() + self.timeout
+        lock_deadline = time.time() + _LOCK_WAIT_SECONDS
         while time.time() < lock_deadline:
             try:
                 fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 lock_acquired = True
                 break
             except BlockingIOError:
-                time.sleep(0.5)
+                time.sleep(0.2)
 
         if not lock_acquired:
             lock_fd.close()
-            logger.warning("Ollama lock wait timed out — request waited %ds with no slot", self.timeout)
+            logger.warning("Ollama lock wait timed out after %ds", _LOCK_WAIT_SECONDS)
             return {
                 'success': False,
-                'error': "Ollama is busy. Your request waited too long in queue.",
+                'error': "Ollama is busy. Please retry shortly.",
                 'error_type': 'busy',
                 'metadata': {
                     'backend': 'ollama',

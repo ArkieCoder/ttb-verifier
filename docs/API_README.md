@@ -296,9 +296,7 @@ with zipfile.ZipFile('batch.zip', 'w') as zf:
 # Upload batch
 url = "http://localhost:8000/verify/batch"
 files = {"batch_file": open("batch.zip", "rb")}
-data = {"ocr_backend": "tesseract"}
-
-response = requests.post(url, files=files, data=data)
+response = requests.post(url, files=files)
 result = response.json()
 
 print(f"Total: {result['summary']['total']}")
@@ -339,21 +337,6 @@ print(f"Non-compliant: {result['summary']['non_compliant']}")
 {
   "error": "File too large",
   "detail": "Maximum file size is 10MB",
-  "timestamp": "2026-02-16T12:00:00Z"
-}
-```
-
-### 422 Unprocessable Entity
-
-**Causes:**
-- Validation error (Pydantic model validation)
-- Invalid enum value (e.g., ocr_backend not 'tesseract' or 'ollama')
-
-**Example:**
-```json
-{
-  "error": "Validation error",
-  "detail": "ocr_backend must be 'tesseract' or 'ollama'",
   "timestamp": "2026-02-16T12:00:00Z"
 }
 ```
@@ -399,37 +382,6 @@ Features:
 
 ---
 
-## Performance
-
-### Processing Times (Tesseract Backend)
-
-| Scenario | Average Time | Notes |
-|----------|--------------|-------|
-| Single label (Tesseract) | 0.7s | Meets 5-second requirement |
-| Single label (Ollama) | 58s | High accuracy, slow |
-| Batch 10 labels | 7s | ~0.7s per label |
-| Batch 50 labels | 36s | ~0.72s per label |
-
-### Recommendations
-
-**For Fast Results:**
-- Use Tesseract backend (default)
-- Average 0.7s per label
-- Suitable for real-time validation
-
-**For High Accuracy:**
-- Use Ollama backend
-- Average 58s per label
-- Better for decorative fonts
-- Recommended for critical validation
-
-**For Large Batches:**
-- Use batch endpoint
-- Process up to 50 labels at once
-- Consider splitting batches >20 labels if using Ollama
-
----
-
 ## Configuration
 
 ### Environment Variables
@@ -445,7 +397,6 @@ OLLAMA_MODEL=llama3.2-vision
 LOG_LEVEL=INFO
 MAX_FILE_SIZE_MB=10
 MAX_BATCH_SIZE=50
-DEFAULT_OCR_BACKEND=tesseract
 
 # CORS Configuration
 CORS_ORIGINS=["*"]
@@ -568,30 +519,6 @@ docker-compose restart
 - Valid format (.jpg, .jpeg, .png)
 - Not corrupted: `file label.jpg`
 
-### Slow Processing
-
-**Symptom:** Requests timeout or take >60s
-
-**Cause:** Using Ollama backend
-
-**Solution:**
-- Use Tesseract for fast results (0.7s)
-- Increase client timeout to 120s for Ollama
-- Consider batch processing for multiple labels
-
-### CORS Errors
-
-**Symptom:** Browser blocks requests from frontend
-
-**Solution:**
-```bash
-# Update CORS_ORIGINS in .env
-CORS_ORIGINS=["http://localhost:3000","http://localhost:8080"]
-
-# Restart services
-docker-compose restart verifier
-```
-
 ---
 
 ## Code Examples
@@ -609,7 +536,7 @@ class TTBVerifierClient:
     def __init__(self, base_url="http://localhost:8000"):
         self.base_url = base_url
     
-    def verify_single(self, image_path, ground_truth=None, ocr_backend="tesseract"):
+    def verify_single(self, image_path, ground_truth=None):
         """Verify a single label."""
         url = f"{self.base_url}/verify"
         
@@ -623,7 +550,7 @@ class TTBVerifierClient:
         response.raise_for_status()
         return response.json()
     
-    def verify_batch(self, zip_path, ocr_backend="tesseract"):
+    def verify_batch(self, zip_path):
         """Verify a batch of labels."""
         url = f"{self.base_url}/verify/batch"
         
@@ -696,10 +623,6 @@ fi
 - Max file size: 10MB per image
 - Max batch size: 50 images
 - Allowed formats: .jpg, .jpeg, .png
-
-**OCR Backends:**
-- `tesseract` (default): Fast (~0.7s), moderate accuracy
-- `ollama`: Slow (~58s), high accuracy
 
 **Validation Tiers:**
 - Tier 1 (Structural): Checks presence of required fields

@@ -355,13 +355,16 @@ async def ui_batch_submit(
     request: Request,
     batch_file: UploadFile = File(...),
     ollama_timeout: Optional[int] = Form(None),
+    background_tasks = None,
     username: str = Depends(get_current_user_ui)
 ):
     """
     Submit batch ZIP file for asynchronous verification.
     Redirects to results page that polls for status.
     """
-    import requests
+    from fastapi import BackgroundTasks
+    from job_manager import JobManager
+    from api import extract_zip_file, process_batch_job, job_manager
     
     # Validate ZIP file
     if batch_file.content_type not in ["application/zip", "application/x-zip-compressed"]:
@@ -381,55 +384,67 @@ async def ui_batch_submit(
             }
         )
     
+    ocr_timeout = ollama_timeout or settings.ollama_timeout_seconds
+    correlation_id = str(uuid.uuid4())
+    
+    # Extract ZIP to persistent directory for background processing
+    persistent_dir = Path("/app/tmp/jobs") / str(uuid.uuid4())
+    persistent_dir.mkdir(parents=True, exist_ok=True)
+    
     try:
-        # Submit batch job to API
-        # Read file content
-        content = await batch_file.read()
+        image_files = await extract_zip_file(batch_file, persistent_dir, correlation_id)
         
-        # Prepare multipart form data
-        files = {
-            'batch_file': (batch_file.filename, content, batch_file.content_type)
-        }
-        data = {}
-        if ollama_timeout:
-            data['timeout'] = str(ollama_timeout)
+        job_id = job_manager.create_job(total_images=len(image_files))
         
-        # Get session cookie to pass to API
-        session_cookie = request.cookies.get("ttb_session")
-        cookies = {"ttb_session": session_cookie} if session_cookie else {}
-        
-        # Submit job to API endpoint
-        # Use localhost since we're calling from within the container
-        api_url = "http://localhost:8000/verify/batch"
-        response = requests.post(
-            api_url,
-            files=files,
-            data=data,
-            cookies=cookies,
-            timeout=30
+        request.state.background_tasks = BackgroundTasks()
+        request.state.background_tasks.add_task(
+            process_batch_job,
+            job_id=job_id,
+            image_files=image_files,
+            ocr_timeout=ocr_timeout,
+            correlation_id=correlation_id
         )
         
-        if response.status_code != 200:
-            error_detail = response.json().get('detail', 'Unknown error')
-            raise Exception(f"API request failed: {error_detail}")
+        # Schedule via starlette background (attached to response)
+        from starlette.background import BackgroundTask
+        bg = BackgroundTask(
+            process_batch_job,
+            job_id=job_id,
+            image_files=image_files,
+            ocr_timeout=ocr_timeout,
+            correlation_id=correlation_id
+        )
         
-        # Get job_id from response
-        result = response.json()
-        job_id = result['job_id']
-        
-        # Redirect to results page with job_id
         return RedirectResponse(
             url=f"/ui/batch/results/{job_id}",
-            status_code=status.HTTP_303_SEE_OTHER
+            status_code=status.HTTP_303_SEE_OTHER,
+            background=bg
+        )
+    
+    except HTTPException as e:
+        import shutil
+        shutil.rmtree(persistent_dir, ignore_errors=True)
+        return templates.TemplateResponse(
+            "batch.html",
+            {
+                "request": request,
+                "username": username,
+                "error": e.detail if isinstance(e.detail, str) else str(e.detail),
+                "error_field": "batch_file",
+                "form_data": {"ollama_timeout": ollama_timeout},
+                "max_batch_size": settings.max_batch_size,
+                "ollama_host": settings.ollama_host,
+                "default_timeout": settings.ollama_timeout_seconds
+            }
         )
     
     except Exception as e:
+        import shutil
+        shutil.rmtree(persistent_dir, ignore_errors=True)
         logger.error(f"Batch submission failed: {e}", exc_info=True)
         error_msg = str(e)
-        
-        if "Cannot connect" in error_msg or "not found" in error_msg or "unavailable" in error_msg:
-            error_msg = f"Ollama backend unavailable. Please wait for model to load or check system health."
-        
+        if "Cannot connect" in error_msg or "unavailable" in error_msg:
+            error_msg = "Ollama backend unavailable. Please wait for model to load."
         return templates.TemplateResponse(
             "batch.html",
             {
@@ -437,9 +452,7 @@ async def ui_batch_submit(
                 "username": username,
                 "error": error_msg,
                 "error_field": "batch_file",
-                "form_data": {
-                    "ollama_timeout": ollama_timeout
-                },
+                "form_data": {"ollama_timeout": ollama_timeout},
                 "max_batch_size": settings.max_batch_size,
                 "ollama_host": settings.ollama_host,
                 "default_timeout": settings.ollama_timeout_seconds

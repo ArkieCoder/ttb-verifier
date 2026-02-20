@@ -1,28 +1,37 @@
+locals {
+  # Read tfstate_bucket from terraform.tfvars so the S3 backend name is
+  # configured in one place (terraform.tfvars) and never hardcoded here.
+  # terraform.tfvars is gitignored, keeping deployment identifiers out of git.
+  # find_in_parent_folders walks up from the calling module's directory, so
+  # it works whether called from infrastructure/ or infrastructure/foundation/.
+  tfstate_bucket = regex("tfstate_bucket\\s*=\\s*\"([^\"]+)\"",
+    file(find_in_parent_folders("terraform.tfvars"))
+  )[0]
+}
+
 remote_state {
   backend = "s3"
-  
+
   generate = {
     path      = "backend.tf"
     if_exists = "overwrite"
   }
-  
+
   config = {
-    bucket         = "unitedentropy-ttb-tfstate"
+    bucket         = local.tfstate_bucket
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
-    dynamodb_table = "unitedentropy-ttb-tfstate"
-    
+    dynamodb_table = local.tfstate_bucket
+
     # Terragrunt will auto-create these resources if they don't exist
-    skip_bucket_versioning         = false
-    skip_bucket_ssencryption       = false
-    skip_bucket_root_access        = false
-    skip_bucket_enforced_tls       = false
+    skip_bucket_versioning             = false
+    skip_bucket_ssencryption           = false
+    skip_bucket_root_access            = false
+    skip_bucket_enforced_tls           = false
     skip_bucket_public_access_blocking = false
-    
-    # DynamoDB table configuration for state locking
+
     dynamodb_table_tags = {
-      Name      = "unitedentropy-ttb-tfstate-lock"
       Project   = "ttb-verifier"
       ManagedBy = "terragrunt"
     }
@@ -39,7 +48,7 @@ generate "provider" {
   contents  = <<EOF
 terraform {
   required_version = "~> 1.11.5"
-  
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -63,18 +72,14 @@ provider "github" {
 EOF
 }
 
-# Shared inputs for all child configurations
-# These values are inherited by both foundation and application layers
+# Shared inputs for all child configurations.
+# Deployment-specific values live in terraform.tfvars (gitignored).
 inputs = {
-  github_owner     = "ArkieCoder"
-  github_repo_name = "ttb-verifier"
   project_name     = "ttb-verifier"
-  domain_name      = "ttb-verifier.unitedentropy.com"
   aws_region       = "us-east-1"
-  aws_account_id   = "253490750467"
-
-  # Application-specific defaults (can be overridden in terraform.tfvars)
-  instance_type    = "g4dn.2xlarge"
-  root_volume_size = 50
   environment      = "production"
+  root_volume_size = 50
+
+  # Pass state bucket to Terraform so remote_foundation.tf can reference it.
+  tfstate_bucket = local.tfstate_bucket
 }

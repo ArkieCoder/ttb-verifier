@@ -33,9 +33,9 @@ This directory contains **protected, long-lived resources** that should persist 
 
 ## State Management
 
-- **State File:** `s3://unitedentropy-ttb-tfstate/foundation/terraform.tfstate`
+- **State File:** `s3://<tfstate_bucket>/foundation/terraform.tfstate`
 - **Backend:** Configured via parent `terragrunt.hcl` with `path_relative_to_include()`
-- **Locking:** DynamoDB table `unitedentropy-ttb-tfstate`
+- **Locking:** DynamoDB table matching the `tfstate_bucket` value in `terraform.tfvars`
 
 ## Deployment
 
@@ -114,7 +114,7 @@ Foundation layer inherits these variables from parent `terragrunt.hcl`:
 - `github_owner` - GitHub organization/user
 - `github_repo_name` - Repository name
 - `project_name` - Project identifier
-- `domain_name` - Full domain (e.g., ttb-verifier.unitedentropy.com)
+- `domain_name` - Full domain (e.g., ttb-verifier.yourdomain.com)
 - `aws_region` - AWS region
 - `aws_account_id` - AWS account ID
 
@@ -127,7 +127,7 @@ The **application layer** (`infrastructure/`) references foundation resources vi
 data "terraform_remote_state" "foundation" {
   backend = "s3"
   config = {
-    bucket = "unitedentropy-ttb-tfstate"
+    bucket = var.tfstate_bucket
     key    = "foundation/terraform.tfstate"
     region = "us-east-1"
   }
@@ -162,7 +162,7 @@ If state is locked:
 
 ```bash
 # List locks
-aws dynamodb scan --table-name unitedentropy-ttb-tfstate
+aws dynamodb scan --table-name <tfstate_bucket>
 
 # Force unlock (use with caution)
 terragrunt force-unlock <lock-id>

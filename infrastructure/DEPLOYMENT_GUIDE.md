@@ -488,9 +488,9 @@ This will:
 If you want to remove the S3 bucket and DynamoDB table:
 
 ```bash
-aws s3 rm s3://unitedentropy-ttb-tfstate --recursive
-aws s3 rb s3://unitedentropy-ttb-tfstate
-aws dynamodb delete-table --table-name unitedentropy-ttb-tfstate
+aws s3 rm s3://$(grep tfstate_bucket terraform.tfvars | grep -o '"[^"]*"' | tr -d '"') --recursive
+aws s3 rb s3://$(grep tfstate_bucket terraform.tfvars | grep -o '"[^"]*"' | tr -d '"')
+aws dynamodb delete-table --table-name $(grep tfstate_bucket terraform.tfvars | grep -o '"[^"]*"' | tr -d '"')
 ```
 
 ## Cost Estimate

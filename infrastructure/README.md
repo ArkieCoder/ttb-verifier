@@ -26,7 +26,7 @@ The infrastructure is separated into **two independent layers** with separate Te
 - ACM Certificate (HTTPS/TLS)
 - GitHub Repository (code + settings)
 - S3 Bucket for Ollama models (performance optimization)
-- State: `s3://unitedentropy-ttb-tfstate/foundation/terraform.tfstate`
+- State: `s3://<tfstate_bucket>/foundation/terraform.tfstate`
 
 **Key Features:**
 - All resources have `prevent_destroy = true` lifecycle protection
@@ -41,7 +41,7 @@ The infrastructure is separated into **two independent layers** with separate Te
 - IAM roles and policies
 - Security groups
 - GitHub Actions secrets
-- State: `s3://unitedentropy-ttb-tfstate/infrastructure/terraform.tfstate`
+- State: `s3://<tfstate_bucket>/infrastructure/terraform.tfstate`
 
 **Key Features:**
 - References foundation via Terraform remote state
@@ -54,7 +54,7 @@ Application layer accesses foundation resources via remote state data source:
 data "terraform_remote_state" "foundation" {
   backend = "s3"
   config = {
-    bucket = "unitedentropy-ttb-tfstate"
+    bucket = var.tfstate_bucket
     key    = "foundation/terraform.tfstate"
     region = "us-east-1"
   }
@@ -311,8 +311,8 @@ terragrunt output github_actions_role_arn
 - **ACM Certificate:** Your configured domain (auto-renewing, DNS validated)
 
 ### State Management
-- **S3 Bucket:** `unitedentropy-ttb-tfstate` (auto-created by Terragrunt)
-- **DynamoDB Table:** `unitedentropy-ttb-tfstate` (state locking)
+- **S3 Bucket:** value of `tfstate_bucket` in `terraform.tfvars` (auto-created by Terragrunt)
+- **DynamoDB Table:** same name as the S3 bucket (state locking)
 
 ## Configuration Details
 

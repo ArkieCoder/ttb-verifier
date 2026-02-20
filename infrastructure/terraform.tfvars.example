@@ -1,21 +1,25 @@
 # ====================================
 # TTB Verifier Infrastructure Configuration
 # ====================================
-# Copy this file to terraform.tfvars and customize for your deployment
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — it never gets committed.
 
-github_owner    = "YourGitHubOrg"
+github_owner     = "YourGitHubOrg"
 github_repo_name = "ttb-verifier"
-domain_name     = "ttb-verifier.example.com"
-aws_account_id  = "123456789012"
-aws_region      = "us-east-1"
+domain_name      = "ttb-verifier.yourdomain.com"
+aws_account_id   = "123456789012"
+aws_region       = "us-east-1"
+instance_type    = "g4dn.2xlarge"
 
-# Optional: Override defaults
-# instance_type     = "t3.medium"
-# root_volume_size  = 30
-# environment       = "production"
+# S3 bucket name for Terraform remote state.
+# Must be globally unique. Terragrunt will create it on first run.
+tfstate_bucket = "your-org-ttb-tfstate"
 
-# Optional: Add custom tags
-# tags = {
-#   Owner = "Your Name"
-#   CostCenter = "Engineering"
-# }
+# Subnets for the Application Load Balancer (must span at least 2 AZs).
+# List your default VPC subnets:
+#   aws ec2 describe-subnets --filters "Name=default-for-az,Values=true" \
+#     --query "Subnets[*].{ID:SubnetId,AZ:AvailabilityZone}" --output table
+alb_subnet_ids = [
+  # "subnet-xxxxxxxxxxxxxxxxx",  # us-east-1a
+  # "subnet-xxxxxxxxxxxxxxxxx",  # us-east-1b
+]

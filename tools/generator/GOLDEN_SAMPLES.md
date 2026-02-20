@@ -5,22 +5,13 @@
 The golden sample dataset consists of 40 alcohol beverage label images (20 GOOD, 20 BAD) with corresponding JSON metadata files. These samples serve as ground truth for testing, validation, and demonstration.
 
 **Location:** `samples/` directory  
-**Total Size:** 4.9MB  
 **Purpose:** Testing, validation, CI/CD, demonstrations
 
 ---
 
 ## Dataset Composition
 
-### Statistics
 
-| Category | Count | Purpose |
-|----------|-------|---------|
-| GOOD labels | 20 | Compliant labels (pass all checks) |
-| BAD labels | 20 | Non-compliant labels (various violations) |
-| Total images | 40 | .jpg format, <750KB each |
-| Total metadata | 40 | .json format with ground truth |
-| Total size | 4.9MB | Included in Docker image |
 
 ### File Naming Convention
 
@@ -414,266 +405,30 @@ def test_with_multiple_datasets(samples_dir):
 
 ---
 
-## Future: S3 Integration for Scalability
 
-### Current Limitation
-
-Golden samples are included in Docker image (4.9MB). This works well for:
-- ✅ Small datasets (<10MB)
-- ✅ Demo/testing purposes
-- ✅ Offline operation
-
-But doesn't scale for:
-- ❌ Large datasets (>100MB)
-- ❌ Frequently updated samples
-- ❌ Multiple users with different sample sets
-
-### Proposed S3 Solution
-
-**Architecture:**
-```
-Docker Container
-├── Small demo samples (10 images, 1MB) - included in image
-└── Load additional samples from S3 on demand
-
-S3 Bucket: ttb-label-samples
-├── golden/
-│   ├── label_good_001.jpg
-│   ├── label_good_001.json
-│   └── ...
-├── customer_a/
-│   └── ...
-└── customer_b/
-    └── ...
-```
-
-**Benefits:**
-- ✅ Keep Docker image small
-- ✅ Update samples without rebuilding image
-- ✅ Multiple datasets for different customers
-- ✅ Version control via S3 versioning
-- ✅ Faster deployment (no large image pulls)
-
-### Implementation Concept
-
-**Configuration:**
-```bash
-# .env
-S3_BUCKET=ttb-label-samples
-S3_REGION=us-east-1
-S3_SAMPLES_PREFIX=golden/
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
-```
-
-**Code Structure:**
-```python
-# sample_loader.py
-import boto3
-from pathlib import Path
-
-class SampleLoader:
-    def __init__(self):
-        self.s3 = boto3.client('s3')
-        self.bucket = os.getenv('S3_BUCKET')
-        self.local_cache = Path('~/.cache/ttb_samples').expanduser()
-    
-    def load_sample(self, sample_name):
-        """Load sample from S3 or local cache."""
-        local_path = self.local_cache / sample_name
-        
-        # Check local cache first
-        if local_path.exists():
-            return local_path
-        
-        # Download from S3
-        s3_key = f"{os.getenv('S3_SAMPLES_PREFIX')}/{sample_name}"
-        self.s3.download_file(self.bucket, s3_key, str(local_path))
-        return local_path
-    
-    def list_samples(self):
-        """List available samples in S3."""
-        prefix = os.getenv('S3_SAMPLES_PREFIX')
-        response = self.s3.list_objects_v2(
-            Bucket=self.bucket,
-            Prefix=prefix
-        )
-        return [obj['Key'] for obj in response.get('Contents', [])]
-```
-
-**Usage in Tests:**
-```python
-@pytest.fixture
-def sample_loader():
-    """Load samples from S3 or local."""
-    if os.getenv('S3_BUCKET'):
-        return SampleLoader()  # Use S3
-    else:
-        return LocalSampleLoader()  # Use local samples/
-
-def test_with_s3_samples(sample_loader):
-    """Test with samples from S3."""
-    sample_path = sample_loader.load_sample('label_good_001.jpg')
-    # Test logic
-```
-
-**Docker Compose Integration:**
-```yaml
-services:
-  verifier:
-    environment:
-      - S3_BUCKET=ttb-label-samples
-      - S3_REGION=us-east-1
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    volumes:
-      - samples_cache:/root/.cache/ttb_samples
-
-volumes:
-  samples_cache:
-```
-
-### When to Implement S3
-
-Consider implementing when:
-- Dataset grows >50MB
-- Need to update samples frequently
-- Multiple users/customers with different datasets
-- Want to version control samples separately from code
-
-**Not needed if:**
-- Current 4.9MB dataset is sufficient
-- Samples rarely change
-- Single-user deployment
-- Prefer simplicity over scalability
 
 ---
 
-## Sample Quality Guidelines
 
-If generating or using custom samples, follow these guidelines:
-
-### Image Requirements
-
-**Format:**
-- ✅ JPEG (.jpg) format
-- ✅ RGB color space
-- ✅ Resolution: 1200x1600px or higher
-- ✅ File size: <750KB (compress if needed)
-
-**Content:**
-- ✅ Clear, high-contrast text
-- ✅ No rotation or skew
-- ✅ Proper lighting (no shadows/glare)
-- ✅ Full label visible (no cropping)
-
-**Avoid:**
-- ❌ Low resolution (<800px)
-- ❌ Heavy JPEG compression artifacts
-- ❌ Extreme decorative fonts
-- ❌ Watermarks or overlays
-
-### Metadata Requirements
-
-**Accuracy:**
-- ✅ Brand name matches exactly what's visible
-- ✅ ABV matches what's printed on label
-- ✅ Net contents includes proper units
-- ✅ Government warning text is complete and correct
-
-**Completeness:**
-- ✅ All required fields populated
-- ✅ Violations documented (for BAD labels)
-- ✅ Product type accurate (wine/spirits/beer)
-
-### Testing Your Samples
-
-**Validation Script:**
-```bash
-#!/bin/bash
-# validate_samples.sh - Check sample quality
-
-for img in custom_samples/*.jpg; do
-    # Check file size
-    size=$(stat -f%z "$img" 2>/dev/null || stat -c%s "$img")
-    if [ $size -gt 786432 ]; then
-        echo "⚠️  $img too large: ${size} bytes"
-    fi
-    
-    # Check resolution
-    dims=$(identify -format "%wx%h" "$img")
-    echo "✓ $img: $dims"
-    
-    # Check for corresponding JSON
-    json="${img%.jpg}.json"
-    if [ ! -f "$json" ]; then
-        echo "❌ Missing metadata: $json"
-    else
-        # Validate JSON
-        if jq empty "$json" 2>/dev/null; then
-            echo "✓ Valid JSON: $json"
-        else
-            echo "❌ Invalid JSON: $json"
-        fi
-    fi
-done
-```
 
 ---
 
-## Sample Statistics
 
-### Current Golden Dataset
-
-**Image Statistics:**
-- Total images: 40
-- Average file size: 125KB
-- Average resolution: 1200x1600px
-- Format: JPEG (quality 85)
-
-**Label Characteristics:**
-- Fonts used: 25+ Google Fonts
-- Embellishment levels: 4 (minimal, moderate, prominent, maximum)
-- Product types: 12 different varieties
-- Container sizes: 15 different sizes
-
-**Violation Distribution:**
-```
-Missing ABV:               8 (20%)
-Missing gov warning:       5 (12.5%)
-ABV tolerance violation:   4 (10%)
-Gov warning format:        3 (7.5%)
-Other violations:          20 (50%)
-```
-
-**OCR Success Rate (Tesseract):**
-- Brand name extraction: ~40%
-- ABV extraction: ~90%
-- Net contents extraction: ~85%
-- Bottler extraction: ~80%
-- Government warning: ~50% (text match)
 
 ---
 
 ## Resources
 
-- **Sample Generator:** `gen_samples.py`
-- **Generator Docs:** `SAMPLE_GENERATOR.md`, `GENERATOR_README.md`
-- **Test Fixtures:** `tests/conftest.py`
-- **AWS S3 Documentation:** https://docs.aws.amazon.com/s3/
+- **Sample Generator:** [`gen_samples.py`](gen_samples.py)
+- **Generator Docs:** [`SAMPLE_GENERATOR.md`](SAMPLE_GENERATOR.md), [`GENERATOR_README.md`](GENERATOR_README.md)
+- **Test Fixtures:** [`tests/conftest.py`](../tests/conftest.py)
+- **AWS S3 Documentation:** [https://docs.aws.amazon.com/s3/](https://docs.aws.amazon.com/s3/)
 
 ---
 
-## Support
 
-For questions about golden samples:
-- Check sample metadata JSON for ground truth values
-- Review `gen_samples.py` to understand how samples are created
-- See `tests/conftest.py` for how tests use samples
-- Open GitHub issue for sample quality concerns
 
 ---
 
 **Last Updated:** 2026-02-16  
-**Golden Dataset Version:** 1.0  
-**Total Size:** 4.9MB (40 images + 40 JSON files)
+**Golden Dataset Version:** 1.0

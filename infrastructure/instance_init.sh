@@ -5,9 +5,7 @@
 
 set -e
 
-echo "========================================="
 echo "TTB Verifier EC2 Instance Initialization"
-echo "========================================="
 echo "S3 Bucket: ${S3_BUCKET:-not set}"
 echo "Domain Name: ${DOMAIN_NAME:-not set}"
 echo ""
@@ -110,7 +108,7 @@ for i in {1..30}; do
   sleep 1
 done
 
-echo "✅ Ollama container is ready!"
+echo "Ollama container is ready!"
 echo "   Model will be loaded by the health cron job"
 
 # Keep the script running and forward signals to Ollama
@@ -221,9 +219,7 @@ cat > /app/deploy.sh <<'EOFSCRIPT'
 #!/bin/bash
 set -e
 
-echo "========================================="
 echo "Deploying TTB Verifier"
-echo "========================================="
 
 cd /app
 
@@ -232,7 +228,7 @@ cd /app
 VERIFIER_ONLY=${VERIFIER_ONLY:-false}
 
 if [ "$VERIFIER_ONLY" = "true" ]; then
-  echo "📦 Verifier-only deployment detected"
+  echo "Verifier-only deployment detected"
   echo "   - Pulling verifier image only"
   echo "   - Ollama will NOT be restarted (keeps model in GPU)"
   
@@ -308,7 +304,9 @@ if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep 
   mark_healthy; exit 0
 fi
 log "Model not in GPU, pre-warming..."
-if docker exec "$CONTAINER" ollama run "$MODEL" "" 2>/dev/null; then
+if curl -s -X POST http://localhost:11434/api/generate \
+     -d "{\"model\":\"$MODEL\",\"prompt\":\"\",\"keep_alive\":-1,\"stream\":false}" \
+     >/dev/null; then
   log "Pre-warm complete"
 else
   mark_unhealthy "pre-warm failed"; exit 0
@@ -323,10 +321,7 @@ chmod +x /usr/local/bin/ollama-health-cron.sh
 (crontab -l 2>/dev/null | grep -v ollama-health-cron || true
  echo "*/5 * * * * /usr/local/bin/ollama-health-cron.sh >> /var/log/ollama-health-cron.log 2>&1") | crontab -
 echo "Ollama health cron installed"
-
-echo "========================================="
 echo "Deployment successful!"
-echo "========================================="
 EOFSCRIPT
 
 chmod +x /app/deploy.sh
@@ -342,19 +337,16 @@ echo "Waiting for Ollama to start (10 seconds)..."
 sleep 10
 
 # Auto-deploy verifier application immediately (fail-open - degraded mode OK)
-echo ""
-echo "========================================="
 echo "Auto-deploying TTB Verifier Application"
-echo "========================================="
 echo "Deploying application (Ollama backend required)..."
 echo "Ollama model will be downloaded in background."
 
 if /app/deploy.sh; then
-  echo "✅ Verifier application deployed successfully!"
+  echo "Verifier application deployed successfully!"
   echo "   Status: Ollama backend will be available after model download completes."
   echo "   Verification endpoints will return 503 until Ollama is ready."
 else
-  echo "⚠️  Initial deployment failed, but EC2 is ready for manual deployment"
+  echo "Initial deployment failed, but EC2 is ready for manual deployment"
   echo "   You can manually deploy using:"
   echo "   - GitHub Actions Deploy workflow"
   echo "   - AWS SSM: /app/deploy.sh"
@@ -362,10 +354,7 @@ else
 fi
 
 # Download llama3.2-vision model from S3 in BACKGROUND (non-blocking)
-echo ""
-echo "========================================="
 echo "Background: Downloading llama3.2-vision model"
-echo "========================================="
 
 # Get the S3 bucket name from Terraform/user data (passed as environment variable)
 S3_BUCKET="${S3_BUCKET:-ttb-verifier-ollama-models-${AWS_ACCOUNT_ID}}"
@@ -402,7 +391,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     docker-compose start ollama
     sleep 10
     
-    echo "[Background] ✅ Model restored from S3 successfully"
+    echo "[Background] Model restored from S3 successfully"
     echo "[Background] Model will be loaded into GPU by the health cron job"
   else
     echo "[Background] Model not found in S3, falling back to ollama pull..."
@@ -410,7 +399,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     cd /app
     docker-compose exec -T ollama ollama pull llama3.2-vision
     
-    echo "[Background] ✅ Model downloaded successfully from Ollama servers."
+    echo "[Background] Model downloaded successfully from Ollama servers."
     echo "[Background] Model will be loaded into GPU by the health cron job"
 
     
@@ -428,7 +417,7 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
     # Clean up local copy
     rm -f /home/model.tar.gz
     
-    echo "[Background] ✅ Model exported to S3 successfully!"
+    echo "[Background] Model exported to S3 successfully!"
     echo "[Background] Future EC2 instances will download from S3 (1-2 min) instead of Ollama (5-15 min)."
   fi
   
@@ -437,11 +426,9 @@ MODEL_NAME="${OLLAMA_MODEL:-llama3.2-vision}"
   cd /app
   docker-compose exec -T ollama ollama list
   
-  echo "[Background] ========================================="
   echo "[Background] Model Download Complete!"
-  echo "[Background] ========================================="
   echo "[Background] Ollama backend is now operational."
-    echo "[Background] Model will be loaded into GPU by the health cron job (runs every 5 min)"
+  echo "[Background] Model will be loaded into GPU by the health cron job (runs every 5 min)"
   echo "[Background] Subsequent requests will be fast (model stays loaded with keep_alive=-1)."
   
 ) >> /var/log/ollama-model-download.log 2>&1 &
@@ -451,18 +438,14 @@ BACKGROUND_PID=$!
 echo "Model download running in background (PID: $BACKGROUND_PID)"
 echo "Progress can be monitored: tail -f /var/log/ollama-model-download.log"
 
-echo "========================================="
 echo "EC2 Instance Initialization Complete!"
-echo "========================================="
 echo "Docker: $(docker --version)"
 echo "Docker Compose: $(docker-compose --version)"
 echo "SSM Agent: Active"
 echo "Application: ONLINE"
 echo "Ollama Model: Downloading in background..."
-echo "========================================="
 echo ""
-echo "✅ System is operational and will serve traffic once Ollama is ready!"
-  echo "   - Ollama OCR: Available after cron pre-warms model (~2-5 minutes)"
+echo "System is operational and will serve traffic once Ollama is ready!"
+echo "   - Ollama OCR: Available after cron pre-warms model (~2-5 minutes)"
 echo "   - /verify endpoints return 503 until Ollama is available"
 echo "   - Check status: curl http://localhost:8000/health"
-echo "========================================="

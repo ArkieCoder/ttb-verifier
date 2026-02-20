@@ -40,7 +40,9 @@ if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep 
 fi
 
 log "Model not in GPU, pre-warming..."
-if docker exec "$CONTAINER" ollama run "$MODEL" "" 2>/dev/null; then
+if curl -s -X POST http://localhost:11434/api/generate \
+     -d "{\"model\":\"$MODEL\",\"prompt\":\"\",\"keep_alive\":-1,\"stream\":false}" \
+     >/dev/null; then
   log "Pre-warm complete"
 else
   mark_unhealthy "pre-warm failed"; exit 0

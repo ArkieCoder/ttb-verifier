@@ -8,7 +8,6 @@ Endpoints:
     POST /verify - Single label verification
     POST /verify/batch - Batch label verification
     GET /docs - Swagger UI documentation
-    GET /redoc - ReDoc documentation
 """
 
 import json
@@ -220,7 +219,8 @@ app = FastAPI(
     title="TTB Label Verifier API",
     description="REST API for validating alcohol beverage labels against 27 CFR regulations",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redoc_url=None
 )
 
 # Add CORS middleware

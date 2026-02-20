@@ -407,10 +407,10 @@ def test_docs_endpoint(client):
     assert "swagger" in response.text.lower() or "openapi" in response.text.lower()
 
 
-def test_redoc_endpoint(client):
-    """Test that ReDoc documentation endpoint is accessible."""
+def test_redoc_endpoint_removed(client):
+    """Test that the ReDoc endpoint is disabled."""
     response = client.get("/redoc")
-    assert response.status_code == 200
+    assert response.status_code == 404
 
 
 def test_root_endpoint(client):

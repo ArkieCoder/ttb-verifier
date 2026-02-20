@@ -6,8 +6,6 @@ The TTB Label Verifier uses a dual testing strategy:
 1. **CLI Tests** (`scripts/run_cli_tests.sh`) - Quick smoke tests for local development
 2. **Pytest Suite** (`app/tests/`) - Comprehensive unit, integration, and API tests
 
-**Coverage Target:** 50% minimum (enforced in Docker build)
-
 ---
 
 ## Quick Reference
@@ -88,12 +86,12 @@ docker-compose exec verifier pytest tests/ -v
    - Output to file
 
 4. **OCR Backend** (3 tests)
-   - Tesseract backend
+   - Ollama backend
    - Invalid backend name
    - Ollama backend (slow, skipped in --quick mode)
 
 5. **Comprehensive Test Suite** (2 tests)
-   - scripts/test_verifier.py with summary
+   - test_verifier.py with summary
    - JSON output with metrics
 
 6. **Performance** (2 tests)
@@ -102,7 +100,7 @@ docker-compose exec verifier pytest tests/ -v
 
 7. **Help & Documentation** (2 tests)
    - verify_label.py --help
-   - scripts/test_verifier.py --help
+   - test_verifier.py --help
 
 8. **Field Extraction** (3 tests)
    - Extract required fields
@@ -331,6 +329,7 @@ def test_extract_brand_name(good_label_path, good_ground_truth):
 | `ocr_backends.py` | 70% | TBD | 🔄 |
 | `label_validator.py` | 90% | TBD | 🔄 |
 | `verify_label.py` | 60% | TBD | 🔄 |
+| `test_verifier.py` | 80% | TBD | 🔄 |
 | `api.py` | 95% | TBD | 🔄 |
 | **Overall** | **80%** | **TBD** | **🔄** |
 
@@ -445,7 +444,7 @@ Each sample consists of:
 ```python
 def test_good_label_passes_structural(good_label_path):
     """Test that GOOD label passes structural validation."""
-    validator = LabelValidator(ocr_backend="tesseract")
+    validator = LabelValidator(ocr_backend="ollama")
     result = validator.validate_label(str(good_label_path))
     
     # Check all required fields present
@@ -578,7 +577,7 @@ def test_verify_endpoint_success(good_label_path):
         response = client.post(
             "/verify",
             files={"image": ("label.jpg", f, "image/jpeg")},
-            data={"ocr_backend": "tesseract"}
+            data={"ocr_backend": "ollama"}
         )
     
     assert response.status_code == 200
@@ -657,6 +656,56 @@ Tests run automatically during Docker build:
 ```bash
 # Build fails if tests fail or coverage <80%
 docker build --target test -t ttb-verifier:test .
+```
+
+**Test Stage Output:**
+```
+Step 10/15 : RUN pytest tests/ --cov=. --cov-fail-under=80 -v
+-> Running in abc123def456
+
+============================= test session starts ==============================
+collected 87 items
+
+tests/test_unit/test_field_validators.py::test_fuzzy_match PASSED      [  1%]
+tests/test_unit/test_field_validators.py::test_abv_tolerance PASSED    [  2%]
+...
+tests/test_api/test_fastapi_endpoints.py::test_batch PASSED            [100%]
+
+---------- coverage: platform linux, python 3.12.3 -----------
+Name                       Stmts   Miss  Cover
+----------------------------------------------
+field_validators.py          150     12    92%
+label_extractor.py           200     25    88%
+...
+----------------------------------------------
+TOTAL                        900    120    87%
+
+Required test coverage of 80% reached. Total coverage: 87.00%
+============================== 87 passed in 45.23s =============================
+```
+
+### GitHub Actions (Future)
+
+**Workflow:** `.github/workflows/test.yml`
+
+```yaml
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build and test
+        run: docker build --target test .
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
 ```
 
 **Test Stage Output:**
@@ -784,69 +833,7 @@ pytest tests/  # Not from tests/ directory
 
 ---
 
-## Best Practices
 
-### Test Naming
-
-```python
-# Good: Descriptive, explains what's tested
-def test_fuzzy_match_returns_one_for_exact_match():
-    pass
-
-# Good: Test specific behavior
-def test_validate_abv_rejects_value_outside_tolerance():
-    pass
-
-# Bad: Vague
-def test_validator():
-    pass
-```
-
-### Test Organization
-
-```python
-class TestABVValidation:
-    """Group related tests."""
-    
-    def test_wine_tolerance(self):
-        """Wine has ±1.0% tolerance."""
-        pass
-    
-    def test_spirits_tolerance(self):
-        """Spirits have ±0.3% tolerance."""
-        pass
-```
-
-### Assertions
-
-```python
-# Good: Specific assertion messages
-assert result == expected, f"Expected {expected}, got {result}"
-
-# Good: Multiple assertions for clarity
-assert 'status' in result
-assert result['status'] in ['COMPLIANT', 'NON_COMPLIANT']
-assert isinstance(result['violations'], list)
-
-# Bad: Generic assertion
-assert result
-```
-
-### Mocking
-
-```python
-from unittest.mock import patch, MagicMock
-
-def test_ocr_backend_failure():
-    """Test graceful handling of OCR failure."""
-    with patch('ocr_backends.TesseractOCR') as mock_ocr:
-        mock_ocr.return_value.extract_text.side_effect = Exception("OCR failed")
-        
-        validator = LabelValidator()
-        result = validator.validate_label("test.jpg")
-        
-        assert result['status'] == 'ERROR'
-```
 
 ---
 

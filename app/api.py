@@ -985,9 +985,10 @@ async def submit_async_verify(
     job_dir = Path(settings.queue_db_path).parent / "async" / str(uuid.uuid4())
     job_dir.mkdir(parents=True, exist_ok=True)
 
-    # Sanitise filename (keep extension only)
-    suffix = Path(image.filename).suffix.lower() if image.filename else ".jpg"
-    image_dest = job_dir / f"image{suffix}"
+    # Preserve the original filename (basename only) so the results page
+    # can display it correctly.
+    original_name = Path(image.filename).name if image.filename else "image.jpg"
+    image_dest = job_dir / original_name
     await save_upload_file(image, image_dest)
 
     job_id = verify_queue.enqueue(

@@ -256,8 +256,10 @@ async def ui_verify_submit(
         # Persist image to shared volume
         job_dir = Path(settings.queue_db_path).parent / "async" / str(uuid.uuid4())
         job_dir.mkdir(parents=True, exist_ok=True)
-        suffix = Path(image.filename).suffix.lower() if image.filename else ".jpg"
-        image_dest = job_dir / f"image{suffix}"
+        # Preserve the original filename (basename only, to strip any path the
+        # browser may include) so the results page can display it correctly.
+        original_name = Path(image.filename).name if image.filename else "image.jpg"
+        image_dest = job_dir / original_name
         content = await image.read()
         with open(image_dest, "wb") as f:
             f.write(content)

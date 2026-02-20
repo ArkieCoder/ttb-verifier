@@ -376,7 +376,6 @@ Use the included test script to verify API functionality:
 ### API Documentation
 
 - **Swagger UI:** `https://<your-domain>/docs`
-- **ReDoc:** `https://<your-domain>/redoc`
 
 ---
 

@@ -171,7 +171,6 @@ Format your response as plain text, with each distinct text element on its own l
                 }],
                 options={
                     'temperature': 0.1,  # Low temperature for consistent extraction
-                    'num_predict': 500,  # Cap output tokens to ensure <60s response time
                 },
                 keep_alive=-1  # Keep model loaded indefinitely to avoid 60s+ reload times
             )

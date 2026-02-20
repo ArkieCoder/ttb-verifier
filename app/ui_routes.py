@@ -488,7 +488,18 @@ async def ui_verify_result(
         )
 
     result = job["result"]
-    filename = Path(job["image_path"]).name
+    image_path = Path(job["image_path"])
+    filename = image_path.name
+
+    # Re-encode the saved image as a base64 data URL for display in the template
+    image_data = None
+    try:
+        raw = image_path.read_bytes()
+        suffix = image_path.suffix.lower()
+        mime = "image/png" if suffix == ".png" else "image/jpeg"
+        image_data = f"data:{mime};base64,{base64.b64encode(raw).decode()}"
+    except Exception as e:
+        logger.warning(f"Could not encode image for results page: {e}")
 
     return templates.TemplateResponse(
         "results.html",
@@ -497,7 +508,7 @@ async def ui_verify_result(
             "username": username,
             "result": result,
             "filename": filename,
-            "image_data": None,  # Image file is on disk; we don't re-encode it here
+            "image_data": image_data,
         }
     )
 
@@ -550,6 +561,32 @@ async def ui_verify_retry(
         url=f"/ui/verify/pending/{new_job_id}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
+
+
+@router.get("/ui/verify/image/{job_id}")
+async def ui_verify_image(
+    request: Request,
+    job_id: str,
+    username: str = Depends(get_current_user_ui)
+):
+    """
+    Serve the uploaded image for a verify job directly from the shared volume.
+    Used by both the pending/error page and the results page.
+    """
+    from api import verify_queue
+    from fastapi.responses import Response
+
+    job = verify_queue.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+
+    image_path = Path(job["image_path"])
+    if not image_path.exists():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
+
+    suffix = image_path.suffix.lower()
+    media_type = "image/png" if suffix == ".png" else "image/jpeg"
+    return Response(content=image_path.read_bytes(), media_type=media_type)
 
 
 @router.get("/ui/health", response_class=HTMLResponse)

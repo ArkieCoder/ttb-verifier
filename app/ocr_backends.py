@@ -83,13 +83,26 @@ class OllamaOCR(OCRBackend):
         self._is_available = False
         self._availability_error = None
         
-        # Import ollama library and create a client with the configured timeout.
-        # The module-level ollama.chat() has no timeout parameter; the Client
-        # constructor forwards **kwargs to httpx.Client, which does.
+        # Build an httpx.Timeout that separates concerns:
+        #
+        #   connect=10  — fail fast if Ollama isn't reachable at all
+        #   read=timeout — how long to wait for the *first* streaming token.
+        #
+        # llama3.2-vision does substantial image-encoding work before it emits
+        # any tokens, so first-token latency on a T4 can be 30-90s depending on
+        # VRAM pressure. Using a plain integer timeout applies the same value to
+        # every chunk read, which fires prematurely on that initial encoding
+        # phase even though the model is working fine. By setting read= to the
+        # full configured timeout we preserve the ability to catch a genuinely
+        # hung Ollama while not cutting off a legitimately slow first token.
         try:
+            import httpx
             import ollama
             self.ollama = ollama
-            self._client = ollama.Client(host=host, timeout=timeout)
+            self._client = ollama.Client(
+                host=host,
+                timeout=httpx.Timeout(timeout=float(timeout), connect=10.0),
+            )
         except ImportError:
             self._is_available = False
             self._availability_error = "ollama Python library not installed. Install with: pip install ollama"

@@ -179,8 +179,10 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
+      - QUEUE_DB_PATH=/app/tmp/queue.db
+      - QUEUE_MAX_ATTEMPTS=3
     volumes:
-      - /home/ubuntu/tmp:/app/tmp
+      - ttb-tmp:/app/tmp
       - /etc/ollama_health:/etc/ollama_health:ro
     depends_on:
       - ollama
@@ -192,8 +194,27 @@ services:
       retries: 3
       start_period: 10s
 
+  worker:
+    image: ghcr.io/arkiecoder/ttb-verifier-worker:latest
+    container_name: ttb-worker
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2-vision
+      - OLLAMA_TIMEOUT_SECONDS=12
+      - WORKER_POLL_INTERVAL=2
+      - QUEUE_DB_PATH=/app/tmp/queue.db
+      - LOG_LEVEL=INFO
+    volumes:
+      - ttb-tmp:/app/tmp
+      - /etc/ollama_health:/etc/ollama_health:ro
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
 volumes:
   ollama_models:
+    driver: local
+  ttb-tmp:
     driver: local
 EOF
 
@@ -229,20 +250,20 @@ VERIFIER_ONLY=${VERIFIER_ONLY:-false}
 
 if [ "$VERIFIER_ONLY" = "true" ]; then
   echo "Verifier-only deployment detected"
-  echo "   - Pulling verifier image only"
+  echo "   - Pulling verifier and worker images only"
   echo "   - Ollama will NOT be restarted (keeps model in GPU)"
   
-  # Pull only verifier image
-  docker-compose pull verifier
+  # Pull only verifier and worker images
+  docker-compose pull verifier worker
   
-  # Stop and remove only verifier container
-  echo "Stopping verifier container..."
-  docker-compose stop verifier
-  docker-compose rm -f verifier
+  # Stop and remove verifier and worker containers
+  echo "Stopping verifier and worker containers..."
+  docker-compose stop verifier worker
+  docker-compose rm -f verifier worker
   
-  # Start verifier with new image (ollama stays running)
-  echo "Starting verifier with new image..."
-  docker-compose up -d verifier
+  # Start verifier and worker with new images (ollama stays running)
+  echo "Starting verifier and worker with new images..."
+  docker-compose up -d verifier worker
   
   # Wait for verifier to be ready
   echo "Waiting for verifier to start..."

@@ -67,6 +67,15 @@ while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
   sleep 2
 done
 
+# Check worker is running
+echo "🔍 Checking worker service..."
+if docker-compose ps worker | grep -q "Up"; then
+  echo "✅ Worker is running"
+else
+  echo "⚠️  Worker container is not running — check logs:"
+  docker-compose logs --tail=20 worker || true
+fi
+
 # Display running containers
 echo ""
 echo "📦 Running containers:"

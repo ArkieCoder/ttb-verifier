@@ -7,7 +7,6 @@ Provides single image and batch verification through Bootstrap 5 UI.
 
 import json
 import logging
-import tempfile
 import zipfile
 import uuid
 import shutil
@@ -207,8 +206,14 @@ async def ui_verify_submit(
     username: str = Depends(get_current_user_ui)
 ):
     """
-    Process single image verification form using Ollama OCR.
+    Process single image verification form using the async worker queue.
+
+    Instead of blocking on Ollama directly (which can exceed CloudFront's 60s
+    timeout under load), we enqueue the job and immediately redirect to a
+    polling page that shows a spinner until the worker completes it.
     """
+    from api import verify_queue
+
     # Validate image file
     if image.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
         return templates.TemplateResponse(
@@ -230,9 +235,9 @@ async def ui_verify_submit(
                 "default_timeout": settings.ollama_timeout_seconds
             }
         )
-    
-    # Build ground truth if metadata provided
-    ground_truth = {}
+
+    # Build ground truth dict if metadata was provided
+    ground_truth: Dict[str, Any] = {}
     if brand_name:
         ground_truth["brand_name"] = brand_name
     if abv:
@@ -246,91 +251,48 @@ async def ui_verify_submit(
         ground_truth["bottler"] = bottler
     if product_type:
         ground_truth["product_type"] = product_type
-    
-    # Determine timeout
-    timeout = ollama_timeout or settings.ollama_timeout_seconds
-    
-    # Create temporary file
-    with tempfile.TemporaryDirectory() as temp_dir:
-        temp_path = Path(temp_dir) / image.filename
+
+    try:
+        # Persist image to shared volume
+        job_dir = Path(settings.queue_db_path).parent / "async" / str(uuid.uuid4())
+        job_dir.mkdir(parents=True, exist_ok=True)
+        suffix = Path(image.filename).suffix.lower() if image.filename else ".jpg"
+        image_dest = job_dir / f"image{suffix}"
         content = await image.read()
-        with open(temp_path, "wb") as f:
+        with open(image_dest, "wb") as f:
             f.write(content)
-        
-        try:
-            # Initialize validator with Ollama
-            validator = LabelValidator()
-            
-            # Set timeout for Ollama
-            if hasattr(validator.ocr, 'timeout'):
-                validator.ocr.timeout = timeout
-            
-            # Validate label
-            result = validator.validate_label(
-                str(temp_path),
-                ground_truth if ground_truth else None
-            )
-            
-            # Encode image as base64 for display in results
-            image_base64 = base64.b64encode(content).decode('utf-8')
-            image_mime = image.content_type or 'image/jpeg'
-            
-            return templates.TemplateResponse(
-                "results.html",
-                {
-                    "request": request,
-                    "username": username,
-                    "result": result,
-                    "filename": image.filename,
-                    "image_data": f"data:{image_mime};base64,{image_base64}"
-                }
-            )
-        
-        except RuntimeError as e:
-            error_msg = str(e)
-            if "Cannot connect" in error_msg or "not found" in error_msg:
-                error_msg = f"Ollama backend unavailable: {error_msg}. Please use Tesseract or wait for model download."
-            
-            return templates.TemplateResponse(
-                "index.html",
-                {
-                    "request": request,
-                    "username": username,
-                    "error": error_msg,
-                    "error_field": "image",
-                    "form_data": {
-                        "brand_name": brand_name,
-                        "product_type": product_type,
-                        "abv": abv,
-                        "net_contents": net_contents,
-                        "bottler": bottler,
-                        "ollama_timeout": ollama_timeout
-                    },
-                    "ollama_host": settings.ollama_host,
-                    "default_timeout": settings.ollama_timeout_seconds
-                }
-            )
-        
-        except Exception as e:
-            logger.error(f"Verification failed: {e}", exc_info=True)
-            return templates.TemplateResponse(
-                "index.html",
-                {
-                    "request": request,
-                    "username": username,
-                    "error": f"Verification failed: {str(e)}",
-                    "form_data": {
-                        "brand_name": brand_name,
-                        "product_type": product_type,
-                        "abv": abv,
-                        "net_contents": net_contents,
-                        "bottler": bottler,
-                        "ollama_timeout": ollama_timeout
-                    },
-                    "ollama_host": settings.ollama_host,
-                    "default_timeout": settings.ollama_timeout_seconds
-                }
-            )
+
+        job_id = verify_queue.enqueue(
+            image_path=str(image_dest),
+            ground_truth=ground_truth if ground_truth else None,
+        )
+        logger.info(f"[ui] Enqueued verify job {job_id} for {image.filename}")
+
+        return RedirectResponse(
+            url=f"/ui/verify/pending/{job_id}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    except Exception as e:
+        logger.error(f"Verification submission failed: {e}", exc_info=True)
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "username": username,
+                "error": f"Failed to submit verification: {str(e)}",
+                "form_data": {
+                    "brand_name": brand_name,
+                    "product_type": product_type,
+                    "abv": abv,
+                    "net_contents": net_contents,
+                    "bottler": bottler,
+                    "ollama_timeout": ollama_timeout
+                },
+                "ollama_host": settings.ollama_host,
+                "default_timeout": settings.ollama_timeout_seconds
+            }
+        )
 
 
 @router.get("/ui/batch", response_class=HTMLResponse)
@@ -475,6 +437,67 @@ async def ui_batch_results(
             "request": request,
             "username": username,
             "job_id": job_id
+        }
+    )
+
+
+@router.get("/ui/verify/pending/{job_id}", response_class=HTMLResponse)
+async def ui_verify_pending(
+    request: Request,
+    job_id: str,
+    username: str = Depends(get_current_user_ui)
+):
+    """
+    Polling/spinner page for a single-image async verify job.
+
+    The page polls GET /verify/status/{job_id} every 2 seconds.
+    When the job reaches 'completed' it renders results.html inline via JS.
+    When the job reaches 'failed' it shows an error message.
+    """
+    return templates.TemplateResponse(
+        "verify_pending.html",
+        {
+            "request": request,
+            "username": username,
+            "job_id": job_id,
+        }
+    )
+
+
+@router.get("/ui/verify/result/{job_id}", response_class=HTMLResponse)
+async def ui_verify_result(
+    request: Request,
+    job_id: str,
+    username: str = Depends(get_current_user_ui)
+):
+    """
+    Render final results for a completed async verify job.
+
+    The verify_pending.html page redirects here once the job is complete.
+    Fetches the result from the queue and renders results.html.
+    """
+    from api import verify_queue
+
+    job = verify_queue.get(job_id)
+
+    if job is None or job["status"] != "completed" or not job.get("result"):
+        # Job not found or not complete — send back to pending page to handle it
+        return RedirectResponse(
+            url=f"/ui/verify/pending/{job_id}",
+            status_code=status.HTTP_302_FOUND,
+        )
+
+    result = job["result"]
+    filename = Path(job["image_path"]).name
+
+    return templates.TemplateResponse(
+        "results.html",
+        {
+            "request": request,
+            "username": username,
+            "result": result,
+            "filename": filename,
+            "image_data": None,  # Image file is on disk; we don't re-encode it here
         }
     )
 

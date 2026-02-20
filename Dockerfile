@@ -31,7 +31,7 @@ RUN pytest tests/ \
     --cov-fail-under=50 \
     -v
 
-# Stage 4: Production image
+# Stage 4: Production image (FastAPI app — uvicorn 4 workers)
 FROM base AS production
 
 WORKDIR /app
@@ -48,8 +48,8 @@ COPY app/templates ./templates
 # Create samples directory (optional - for golden samples)
 RUN mkdir -p ./samples
 
-# Create jobs directory for async batch processing
-RUN mkdir -p /app/tmp/jobs
+# Create jobs directory for async batch processing and queue DB
+RUN mkdir -p /app/tmp/jobs /app/tmp/async
 
 # Set environment
 ENV PATH=/root/.local/bin:$PATH \
@@ -65,3 +65,29 @@ EXPOSE 8000
 
 # Run FastAPI with uvicorn (4 workers for concurrent request handling)
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+
+# Stage 5: Worker image (single-process queue consumer)
+FROM base AS worker
+
+WORKDIR /app
+
+# Copy Python packages from builder
+COPY --from=builder /root/.local /root/.local
+
+# Copy application code (worker only needs queue_manager, worker, label_validator, ocr_backends)
+COPY app/*.py ./
+
+# Create shared volume directories
+RUN mkdir -p /app/tmp/jobs /app/tmp/async
+
+# Set environment
+ENV PATH=/root/.local/bin:$PATH \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+# No health check port — worker has no HTTP server.
+# Docker will mark it healthy if the process is running.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD python -c "from queue_manager import QueueManager; QueueManager().queue_depth()" || exit 1
+
+CMD ["python", "worker.py"]

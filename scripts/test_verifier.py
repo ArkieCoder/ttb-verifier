@@ -255,107 +255,187 @@ def run_tests(samples_dir: str = None) -> Dict[str, Any]:
     }
 
 
-def run_tests_remote(remote_host: str, username: str, password: str, 
+def poll_for_result(session: requests.Session, status_url: str,
+                    poll_interval: float = 2.0, timeout: float = 300.0) -> Dict[str, Any]:
+    """
+    Poll GET /verify/status/{job_id} until the job reaches a terminal state.
+
+    Args:
+        session: Authenticated requests.Session
+        status_url: Full URL to the status endpoint for this job
+        poll_interval: Seconds between polls (default 2)
+        timeout: Maximum seconds to wait before giving up (default 300)
+
+    Returns:
+        The job status dict from the API
+
+    Raises:
+        TimeoutError: If the job does not complete within `timeout` seconds
+        RuntimeError: If a non-200 response is received while polling
+    """
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            resp = session.get(status_url, timeout=10.0)
+        except requests.exceptions.RequestException as e:
+            # Transient network error — keep trying
+            print(f" [network error: {e}, retrying]", end="", file=sys.stderr)
+            time.sleep(poll_interval)
+            continue
+
+        if resp.status_code != 200:
+            raise RuntimeError(f"Status poll returned HTTP {resp.status_code}: {resp.text[:200]}")
+
+        data = resp.json()
+        status = data.get("status")
+
+        if status in ("completed", "failed", "cancelled"):
+            return data
+
+        time.sleep(poll_interval)
+
+    raise TimeoutError(f"Job did not complete within {timeout}s")
+
+
+def run_tests_remote(remote_host: str, username: str, password: str,
                      samples_dir: str = None) -> Dict[str, Any]:
     """
     Run verifier on all samples using remote API with Ollama OCR.
-    
+
+    Uses the async queue endpoint (POST /verify/async) so that each request
+    returns immediately with a job_id, then polls GET /verify/status/{job_id}
+    until the worker completes the job.  This avoids CloudFront's 60-second
+    origin read timeout, which caused sequential runs to fail when using the
+    old synchronous POST /verify endpoint.
+
     Args:
         remote_host: Base URL of remote API (e.g., https://ttb-verifier.example.com)
         username: Username for authentication
         password: Password for authentication
         samples_dir: Path to samples directory. If None, uses ../samples relative to script.
-    
+
     Returns:
         Dictionary with test results and metrics (same format as run_tests)
     """
     if samples_dir is None:
         samples_dir = str(Path(__file__).parent.parent / 'samples')
-    
+
     # Check remote health first
     check_remote_health(remote_host)
-    
+
     # Authenticate and get session
     session = authenticate_and_get_session(remote_host, username, password)
-    
+
     # Load dataset
     print(f"\nLoading golden dataset from {samples_dir}/...", file=sys.stderr)
     dataset = load_golden_dataset(samples_dir)
     print(f"Found {len(dataset)} samples", file=sys.stderr)
-    
-    verify_url = f"{remote_host.rstrip('/')}/verify"
-    
+
+    submit_url = f"{remote_host.rstrip('/')}/verify/async"
+    status_base_url = f"{remote_host.rstrip('/')}/verify/status"
+
     results = []
     total_time = 0.0
-    
-    print(f"\nProcessing samples via remote API ({verify_url})...\n", file=sys.stderr)
-    
+
+    print(f"\nProcessing samples via async remote API ({submit_url})...\n", file=sys.stderr)
+
     for i, (image_path, expected_label_type, ground_truth) in enumerate(dataset, 1):
         filename = Path(image_path).name
-        
+
         print(f"[{i}/{len(dataset)}] {filename}...", end=" ", file=sys.stderr)
-        
+
         # Prepare ground truth JSON string for API
         ground_truth_json = None
         if ground_truth:
-            # Filter out None values
             api_ground_truth = {k: v for k, v in ground_truth.items() if v is not None}
             if api_ground_truth:
                 ground_truth_json = json.dumps(api_ground_truth)
-        
-        # Make API request
+
         start_time = time.time()
-        
+
         try:
+            # Step 1: Submit job — returns instantly with job_id
             with open(image_path, 'rb') as img_file:
                 files = {'image': (filename, img_file, 'image/jpeg')}
                 data = {}
                 if ground_truth_json:
                     data['ground_truth'] = ground_truth_json
-                
-                response = session.post(verify_url, files=files, data=data)
+
+                submit_resp = session.post(submit_url, files=files, data=data, timeout=30.0)
+
+            if submit_resp.status_code != 200:
                 processing_time = time.time() - start_time
-                
-                if response.status_code == 200:
-                    result = response.json()
-                    total_time += processing_time
-                    
-                    # Add metadata to match local results format
-                    result['expected_label_type'] = expected_label_type
-                    result['image_file'] = filename
-                    
-                    results.append(result)
-                    
-                    # Show quick status
-                    status = result.get('status', 'UNKNOWN')
-                    print(f"{status} ({processing_time:.2f}s)", file=sys.stderr)
-                else:
-                    print(f"HTTP {response.status_code} ({processing_time:.2f}s)", file=sys.stderr)
-                    error_detail = "Unknown error"
-                    try:
-                        error_data = response.json()
-                        error_detail = error_data.get('detail', error_data.get('message', str(error_data)))
-                    except:
-                        error_detail = response.text[:100]
-                    
-                    # Treat as error - add error result
-                    results.append({
-                        'status': 'ERROR',
-                        'error': f"HTTP {response.status_code}: {error_detail}",
-                        'expected_label_type': expected_label_type,
-                        'image_file': filename,
-                        'processing_time_seconds': processing_time,
-                        'violations': [],
-                        'warnings': [],
-                        'validation_level': 'NONE',
-                        'extracted_fields': {}
-                    })
-                    total_time += processing_time
-                    
+                print(f"SUBMIT ERROR HTTP {submit_resp.status_code} ({processing_time:.2f}s)", file=sys.stderr)
+                error_detail = "Unknown error"
+                try:
+                    error_detail = submit_resp.json().get('detail', submit_resp.text[:100])
+                except Exception:
+                    error_detail = submit_resp.text[:100]
+                results.append({
+                    'status': 'ERROR',
+                    'error': f"Submit HTTP {submit_resp.status_code}: {error_detail}",
+                    'expected_label_type': expected_label_type,
+                    'image_file': filename,
+                    'processing_time_seconds': processing_time,
+                    'violations': [],
+                    'warnings': [],
+                    'validation_level': 'NONE',
+                    'extracted_fields': {}
+                })
+                total_time += processing_time
+                continue
+
+            job_id = submit_resp.json()['job_id']
+
+            # Step 2: Poll until complete
+            status_url = f"{status_base_url}/{job_id}"
+            job = poll_for_result(session, status_url, poll_interval=2.0, timeout=300.0)
+            processing_time = time.time() - start_time
+
+            if job['status'] == 'completed' and job.get('result'):
+                result = job['result']
+                result['expected_label_type'] = expected_label_type
+                result['image_file'] = filename
+                results.append(result)
+                status_str = result.get('status', 'UNKNOWN')
+                print(f"{status_str} ({processing_time:.2f}s)", file=sys.stderr)
+
+            elif job['status'] == 'failed':
+                error_msg = job.get('error', 'Unknown error')
+                print(f"FAILED after {job['attempts']} attempt(s) ({processing_time:.2f}s)", file=sys.stderr)
+                print(f"  {error_msg}", file=sys.stderr)
+                results.append({
+                    'status': 'ERROR',
+                    'error': error_msg,
+                    'expected_label_type': expected_label_type,
+                    'image_file': filename,
+                    'processing_time_seconds': processing_time,
+                    'violations': [],
+                    'warnings': [],
+                    'validation_level': 'NONE',
+                    'extracted_fields': {}
+                })
+
+            else:
+                # cancelled or unexpected state
+                print(f"{job['status'].upper()} ({processing_time:.2f}s)", file=sys.stderr)
+                results.append({
+                    'status': 'ERROR',
+                    'error': f"Unexpected job state: {job['status']}",
+                    'expected_label_type': expected_label_type,
+                    'image_file': filename,
+                    'processing_time_seconds': processing_time,
+                    'violations': [],
+                    'warnings': [],
+                    'validation_level': 'NONE',
+                    'extracted_fields': {}
+                })
+
+            total_time += processing_time
+
         except KeyboardInterrupt:
             processing_time = time.time() - start_time
             print(f"SKIPPED (Ctrl+C)", file=sys.stderr)
-            # Add skipped result
             results.append({
                 'status': 'SKIPPED',
                 'error': 'Skipped by user (Ctrl+C)',
@@ -369,7 +449,23 @@ def run_tests_remote(remote_host: str, username: str, password: str,
             })
             total_time += processing_time
             continue
-            
+
+        except TimeoutError as e:
+            processing_time = time.time() - start_time
+            print(f"TIMEOUT ({processing_time:.2f}s)", file=sys.stderr)
+            results.append({
+                'status': 'ERROR',
+                'error': str(e),
+                'expected_label_type': expected_label_type,
+                'image_file': filename,
+                'processing_time_seconds': processing_time,
+                'violations': [],
+                'warnings': [],
+                'validation_level': 'NONE',
+                'extracted_fields': {}
+            })
+            total_time += processing_time
+
         except Exception as e:
             processing_time = time.time() - start_time
             print(f"ERROR ({processing_time:.2f}s)", file=sys.stderr)
@@ -386,10 +482,10 @@ def run_tests_remote(remote_host: str, username: str, password: str,
                 'extracted_fields': {}
             })
             total_time += processing_time
-    
+
     # Calculate metrics (same as local)
     metrics = calculate_metrics(results)
-    
+
     return {
         'ocr_backend': 'ollama',
         'remote_host': remote_host,

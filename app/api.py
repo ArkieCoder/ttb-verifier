@@ -30,6 +30,7 @@ from label_validator import LabelValidator
 from auth import get_current_user
 from middleware import HostCheckMiddleware
 from job_manager import JobManager, JobStatus
+from queue_manager import QueueManager
 
 
 # ============================================================================
@@ -47,6 +48,12 @@ logger = logging.getLogger("ttb_api")
 
 # Initialize job manager for async batch processing
 job_manager = JobManager()
+
+# Initialize queue manager for async single-image processing
+verify_queue = QueueManager(
+    db_path=Path(settings.queue_db_path),
+    max_attempts=settings.queue_max_attempts,
+)
 
 
 # ============================================================================
@@ -152,6 +159,24 @@ class ErrorResponse(BaseModel):
     detail: str
     error_code: str
     correlation_id: str
+
+
+class AsyncVerifySubmitResponse(BaseModel):
+    """Response from async single-image verify submission."""
+    job_id: str
+    status: str   # always 'pending' on submit
+    message: str
+
+
+class AsyncVerifyStatusResponse(BaseModel):
+    """Response from async single-image verify status poll."""
+    job_id: str
+    status: str   # pending | processing | completed | failed | cancelled
+    attempts: int
+    max_attempts: int
+    result: Optional[VerifyResponse] = None
+    error: Optional[str] = None
+    queue_depth: Optional[int] = None  # jobs ahead in queue (only when pending)
 
 
 # ============================================================================
@@ -908,6 +933,131 @@ async def delete_batch_job(
         )
     
     return {"message": f"Job {job_id} deleted successfully"}
+
+
+# ============================================================================
+# Async Single-Image Verify Endpoints (queue-based, CloudFront-safe)
+# ============================================================================
+
+@app.post("/verify/async", response_model=AsyncVerifySubmitResponse)
+async def submit_async_verify(
+    image: UploadFile = File(..., description="Label image file (max 10MB)"),
+    ground_truth: Optional[str] = Form(None, description="Ground truth JSON string"),
+    username: str = Depends(get_current_user)
+) -> AsyncVerifySubmitResponse:
+    """
+    Submit a single label image for asynchronous verification via the worker queue.
+
+    Returns immediately with a ``job_id``.  Poll ``GET /verify/status/{job_id}``
+    every 2–3 seconds until ``status`` is ``completed`` or ``failed``.
+
+    This endpoint is designed to work within CloudFront's 60-second origin
+    read timeout: the HTTP response is sent instantly, and Ollama processing
+    (~10s) happens in the separate worker container.
+
+    **Request:**
+    - ``image``: Label image (JPEG or PNG, max 10MB)
+    - ``ground_truth``: Optional JSON with expected values
+
+    **Response:**
+    - ``job_id``: Use to poll ``GET /verify/status/{job_id}``
+    - ``status``: ``pending``
+
+    **Example:**
+    ```bash
+    JOB=$(curl -s -X POST https://example.com/verify/async \\
+      -F "image=@label.jpg" | jq -r .job_id)
+    # Poll until done:
+    curl https://example.com/verify/status/$JOB
+    ```
+    """
+    correlation_id = get_correlation_id()
+    logger.info(f"[{correlation_id}] POST /verify/async - {image.filename}")
+
+    # Validate image
+    validate_image_file(image, correlation_id)
+
+    # Parse optional ground truth
+    ground_truth_data = parse_ground_truth(ground_truth, correlation_id)
+
+    # Persist image to shared volume so the worker container can read it.
+    # Each job gets its own subdirectory to avoid filename collisions.
+    job_dir = Path(settings.queue_db_path).parent / "async" / str(uuid.uuid4())
+    job_dir.mkdir(parents=True, exist_ok=True)
+
+    # Sanitise filename (keep extension only)
+    suffix = Path(image.filename).suffix.lower() if image.filename else ".jpg"
+    image_dest = job_dir / f"image{suffix}"
+    await save_upload_file(image, image_dest)
+
+    job_id = verify_queue.enqueue(
+        image_path=str(image_dest),
+        ground_truth=ground_truth_data,
+    )
+
+    logger.info(f"[{correlation_id}] Enqueued async verify job {job_id}")
+
+    return AsyncVerifySubmitResponse(
+        job_id=job_id,
+        status="pending",
+        message=f"Job submitted. Poll GET /verify/status/{job_id} for results.",
+    )
+
+
+@app.get("/verify/status/{job_id}", response_model=AsyncVerifyStatusResponse)
+async def get_async_verify_status(
+    job_id: str,
+    username: str = Depends(get_current_user)
+) -> AsyncVerifyStatusResponse:
+    """
+    Poll the status of a queued single-image verify job.
+
+    Call this endpoint every 2–3 seconds after submitting via
+    ``POST /verify/async``.
+
+    **Status values:**
+    - ``pending``    — job is waiting in the queue
+    - ``processing`` — worker is currently running Ollama inference
+    - ``completed``  — result is ready (see ``result`` field)
+    - ``failed``     — all retry attempts exhausted (see ``error`` field)
+    - ``cancelled``  — job was cancelled
+
+    **Example:**
+    ```bash
+    curl https://example.com/verify/status/abc123
+    ```
+    """
+    correlation_id = get_correlation_id()
+    job = verify_queue.get(job_id)
+
+    if job is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Verify job {job_id} not found",
+        )
+
+    result_obj: Optional[VerifyResponse] = None
+    if job["status"] == "completed" and job.get("result"):
+        try:
+            result_obj = VerifyResponse(**job["result"])
+        except Exception as exc:
+            logger.error(
+                f"[{correlation_id}] Failed to deserialise result for job {job_id}: {exc}"
+            )
+
+    queue_depth = None
+    if job["status"] == "pending":
+        queue_depth = verify_queue.queue_depth()
+
+    return AsyncVerifyStatusResponse(
+        job_id=job_id,
+        status=job["status"],
+        attempts=job["attempts"],
+        max_attempts=job["max_attempts"],
+        result=result_obj,
+        error=job.get("error"),
+        queue_depth=queue_depth,
+    )
 
 
 # ============================================================================

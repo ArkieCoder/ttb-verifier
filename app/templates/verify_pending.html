@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Verifying Label... - TTB Label Verifier{% endblock %}
+
+{% block extra_head %}
+<style>
+    .pending-card {
+        max-width: 520px;
+        margin: 4rem auto 0;
+    }
+    .spinner-ring {
+        width: 72px;
+        height: 72px;
+    }
+    #statusMessage {
+        min-height: 1.5em;
+    }
+    #queueInfo {
+        min-height: 1.25em;
+    }
+    .attempt-dots span {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #dee2e6;
+        margin: 0 3px;
+        transition: background 0.3s;
+    }
+    .attempt-dots span.active {
+        background: #0d6efd;
+    }
+    .attempt-dots span.failed-dot {
+        background: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pending-card card shadow-sm text-center p-4" id="pendingCard">
+
+    <!-- Spinner (shown while pending/processing) -->
+    <div id="spinnerArea" class="my-3">
+        <div class="spinner-border text-primary spinner-ring" role="status">
+            <span class="visually-hidden">Processing...</span>
+        </div>
+    </div>
+
+    <!-- Icon (shown after terminal state) -->
+    <div id="iconArea" style="display:none;" class="my-3">
+        <i id="resultIcon" class="bi" style="font-size:4rem;"></i>
+    </div>
+
+    <h4 class="mb-2" id="statusHeading">Verifying Label</h4>
+    <p class="text-muted mb-1" id="statusMessage">Your label is queued for verification.</p>
+    <p class="small text-muted" id="queueInfo"></p>
+
+    <!-- Attempt indicator dots -->
+    <div class="attempt-dots my-3" id="attemptDots">
+        <span id="dot1" class="active"></span>
+        <span id="dot2"></span>
+        <span id="dot3"></span>
+    </div>
+
+    <!-- Error detail (hidden until failed) -->
+    <div id="errorDetail" class="alert alert-danger text-start mt-3" style="display:none;">
+        <strong>Error:</strong> <span id="errorText"></span>
+    </div>
+
+    <!-- Action buttons (hidden until terminal state) -->
+    <div id="actions" style="display:none;" class="mt-3 d-grid gap-2">
+        <a href="/ui/verify" class="btn btn-primary">
+            <i class="bi bi-arrow-repeat"></i> Verify Another Label
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+    const JOB_ID = {{ job_id | tojson }};
+    const POLL_MS = 2000;  // poll every 2 seconds
+    const STATUS_URL = `/verify/status/${JOB_ID}`;
+
+    const elHeading  = document.getElementById('statusHeading');
+    const elMessage  = document.getElementById('statusMessage');
+    const elQueue    = document.getElementById('queueInfo');
+    const elSpinner  = document.getElementById('spinnerArea');
+    const elIcon     = document.getElementById('iconArea');
+    const elResultIcon = document.getElementById('resultIcon');
+    const elDots     = [document.getElementById('dot1'),
+                        document.getElementById('dot2'),
+                        document.getElementById('dot3')];
+    const elError    = document.getElementById('errorDetail');
+    const elErrorTxt = document.getElementById('errorText');
+    const elActions  = document.getElementById('actions');
+
+    let pollTimer = null;
+
+    function updateDots(attempts, maxAttempts, failed) {
+        elDots.forEach((dot, i) => {
+            dot.className = '';
+            if (failed && i < attempts) {
+                dot.classList.add('failed-dot');
+            } else if (i < attempts) {
+                dot.classList.add('active');
+            }
+        });
+    }
+
+    function stopPolling() {
+        if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+        }
+    }
+
+    function onCompleted(data) {
+        stopPolling();
+        elSpinner.style.display = 'none';
+        elIcon.style.display = 'block';
+
+        const result = data.result;
+        const st = result ? result.status : 'ERROR';
+
+        if (st === 'COMPLIANT') {
+            elResultIcon.className = 'bi bi-check-circle-fill text-success';
+            elHeading.textContent = 'Compliant';
+            elMessage.textContent = 'This label meets all validation requirements.';
+        } else if (st === 'NON_COMPLIANT') {
+            elResultIcon.className = 'bi bi-x-circle-fill text-danger';
+            elHeading.textContent = 'Non-Compliant';
+            const n = result.violations ? result.violations.length : '?';
+            elMessage.textContent = `This label has ${n} violation(s).`;
+        } else if (st === 'PARTIAL_VALIDATION') {
+            elResultIcon.className = 'bi bi-exclamation-triangle-fill text-warning';
+            elHeading.textContent = 'Partial Validation';
+            elMessage.textContent = 'Validation completed with warnings.';
+        } else {
+            elResultIcon.className = 'bi bi-question-circle-fill text-secondary';
+            elHeading.textContent = 'Error';
+            elMessage.textContent = result && result.error ? result.error : 'An error occurred.';
+        }
+
+        elQueue.textContent = `Processed in ${result && result.processing_time_seconds
+            ? result.processing_time_seconds.toFixed(2) + 's' : '—'}`;
+
+        updateDots(data.attempts, data.max_attempts, false);
+
+        // Store result in sessionStorage so the results page can read it
+        try {
+            sessionStorage.setItem('verifyResult_' + JOB_ID, JSON.stringify(result));
+        } catch (e) {}
+
+        // Navigate to the results display page after a short pause
+        setTimeout(() => {
+            window.location.href = `/ui/verify/result/${JOB_ID}`;
+        }, 600);
+    }
+
+    function onFailed(data) {
+        stopPolling();
+        elSpinner.style.display = 'none';
+        elIcon.style.display = 'block';
+        elResultIcon.className = 'bi bi-exclamation-octagon-fill text-danger';
+        elHeading.textContent = 'Verification Failed';
+        elMessage.textContent = `All ${data.max_attempts} attempt(s) exhausted.`;
+        elQueue.textContent = '';
+        updateDots(data.attempts, data.max_attempts, true);
+        elErrorTxt.textContent = data.error || 'Unknown error';
+        elError.style.display = 'block';
+        elActions.style.display = 'block';
+    }
+
+    function onCancelled() {
+        stopPolling();
+        elSpinner.style.display = 'none';
+        elIcon.style.display = 'block';
+        elResultIcon.className = 'bi bi-slash-circle-fill text-secondary';
+        elHeading.textContent = 'Cancelled';
+        elMessage.textContent = 'This verification job was cancelled.';
+        elQueue.textContent = '';
+        elActions.style.display = 'block';
+    }
+
+    async function poll() {
+        let data;
+        try {
+            const resp = await fetch(STATUS_URL);
+            if (resp.status === 404) {
+                stopPolling();
+                elHeading.textContent = 'Job Not Found';
+                elMessage.textContent = 'This job may have expired.';
+                elSpinner.style.display = 'none';
+                elActions.style.display = 'block';
+                return;
+            }
+            data = await resp.json();
+        } catch (e) {
+            // Network error — keep polling, show transient message
+            elQueue.textContent = 'Network error — retrying...';
+            return;
+        }
+
+        const { status, attempts, max_attempts, queue_depth } = data;
+
+        updateDots(attempts, max_attempts, status === 'failed');
+
+        if (status === 'pending') {
+            elHeading.textContent = 'Waiting in Queue';
+            elMessage.textContent = 'Your image will be processed shortly.';
+            elQueue.textContent = queue_depth != null
+                ? `${queue_depth} job(s) ahead in queue`
+                : '';
+        } else if (status === 'processing') {
+            elHeading.textContent = 'Processing';
+            elMessage.textContent = `Running OCR inference… (attempt ${attempts}/${max_attempts})`;
+            elQueue.textContent = 'This typically takes 10–15 seconds.';
+        } else if (status === 'completed') {
+            onCompleted(data);
+        } else if (status === 'failed') {
+            onFailed(data);
+        } else if (status === 'cancelled') {
+            onCancelled();
+        }
+    }
+
+    // Start polling immediately, then repeat
+    poll();
+    pollTimer = setInterval(poll, POLL_MS);
+})();
+</script>
+{% endblock %}

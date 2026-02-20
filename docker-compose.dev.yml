@@ -62,9 +62,13 @@ services:
       
       # CORS (allow all for prototype)
       - CORS_ORIGINS=${CORS_ORIGINS:-["*"]}
+
+      # Queue configuration (shared with worker via volume)
+      - QUEUE_DB_PATH=/app/tmp/queue.db
+      - QUEUE_MAX_ATTEMPTS=${QUEUE_MAX_ATTEMPTS:-3}
     volumes:
-      # Mount host directory for temp file storage during uploads
-      - ./tmp:/app/tmp
+      # Shared volume: API writes images + queue.db; worker reads them
+      - ttb-tmp:/app/tmp
     depends_on:
       - ollama
     healthcheck:
@@ -77,8 +81,34 @@ services:
     networks:
       - ttb-network
 
+  # Queue worker — processes one Ollama inference at a time
+  worker:
+    build:
+      context: .
+      target: worker
+    container_name: ttb-worker
+    environment:
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://ollama:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2-vision}
+      # Short per-attempt timeout: retried up to QUEUE_MAX_ATTEMPTS times
+      - OLLAMA_TIMEOUT_SECONDS=${WORKER_OLLAMA_TIMEOUT_SECONDS:-12}
+      - WORKER_POLL_INTERVAL=${WORKER_POLL_INTERVAL:-2}
+      - QUEUE_DB_PATH=/app/tmp/queue.db
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      # Same shared volume as verifier so worker can read uploaded images
+      - ttb-tmp:/app/tmp
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    networks:
+      - ttb-network
+
 volumes:
   ollama_models:
+    driver: local
+  # Named volume shared between verifier and worker containers
+  ttb-tmp:
     driver: local
 
 networks:

@@ -7,6 +7,7 @@ on:
     paths:
       - 'app/**'
       - 'Dockerfile'
+      - 'docker-compose.dev.yml'
       - 'scripts/deploy.sh'
       - '.github/workflows/deploy.yml'
 
@@ -76,6 +77,18 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:latest
             ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ github.ref_name }}-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push worker Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: worker
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}-worker:latest
+            ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}-worker:${{ github.ref_name }}-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

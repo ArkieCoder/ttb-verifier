@@ -53,6 +53,20 @@ class Settings(BaseSettings):
         default=3600,
         description="Interval between job cleanup runs in seconds (default: 1 hour)"
     )
+
+    # Async single-image queue configuration
+    queue_db_path: str = Field(
+        default="/app/tmp/queue.db",
+        description="Path to the SQLite queue database (shared volume)"
+    )
+    queue_max_attempts: int = Field(
+        default=3,
+        description="Maximum processing attempts per queued verify job before permanent failure"
+    )
+    worker_ollama_timeout_seconds: int = Field(
+        default=12,
+        description="Per-attempt Ollama timeout used by the worker process (seconds)"
+    )
     
     # CORS Configuration
     cors_origins: str = Field(

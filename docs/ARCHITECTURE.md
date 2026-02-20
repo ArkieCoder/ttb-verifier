@@ -16,19 +16,18 @@ The TTB Label Verifier is designed with a **fail-open architecture** that priori
 
 **Our approach (fail-open):**
 - Application starts immediately with available backends
-- Fast RTO: 2-3 minutes to operational (Tesseract-only)
+- Fast RTO: 2-3 minutes to operational
 - Graceful degradation when Ollama unavailable
 - Progressive enhancement as capabilities come online
 
 ### Operational Modes
 
-#### 1. Degraded Mode (Tesseract-Only)
+#### 1. Degraded Mode
 **When:** Ollama model not yet downloaded or unavailable  
 **Capabilities:**
-- ✅ Tesseract OCR available (~2-3 seconds per image)
+- ✅ Ollama OCR available (~10 seconds per image)
 - ✅ All validation endpoints functional
 - ✅ Batch processing works
-- ❌ Ollama OCR unavailable
 - ❌ Higher accuracy AI analysis not available
 
 **Health Status:**
@@ -36,11 +35,10 @@ The TTB Label Verifier is designed with a **fail-open architecture** that priori
 {
   "status": "degraded",
   "backends": {
-    "tesseract": {"available": true, "error": null},
     "ollama": {"available": false, "error": "Model 'llama3.2-vision' not found"}
   },
   "capabilities": {
-    "ocr_backends": ["tesseract"],
+    "ocr_backends": [],
     "degraded_mode": true
   }
 }
@@ -49,7 +47,6 @@ The TTB Label Verifier is designed with a **fail-open architecture** that priori
 #### 2. Full Capability Mode
 **When:** All backends available  
 **Capabilities:**
-- ✅ Tesseract OCR (fast)
 - ✅ Ollama OCR (high accuracy)
 - ✅ Users can choose backend per request
 - ✅ All features operational
@@ -59,11 +56,10 @@ The TTB Label Verifier is designed with a **fail-open architecture** that priori
 {
   "status": "healthy",
   "backends": {
-    "tesseract": {"available": true, "error": null},
     "ollama": {"available": true, "error": null}
   },
   "capabilities": {
-    "ocr_backends": ["tesseract", "ollama"],
+    "ocr_backends": ["ollama"],
     "degraded_mode": false
   }
 }
@@ -79,9 +75,7 @@ The TTB Label Verifier is designed with a **fail-open architecture** that priori
 - **Error handling** - Returns 503 with Retry-After when Ollama requested but unavailable
 
 ### OCR Backends (`app/ocr_backends.py`)
-- **Tesseract Backend** - Always available, fast (~2-3s), good accuracy
-- **Ollama Backend** - Lazy initialization, high accuracy (~58s), requires model download
-- **Caching** - Ollama availability cached for 60 seconds to avoid repeated checks
+- **Ollama Backend** - Lazy initialization, high accuracy (~10s), requires model download
 
 ### Validation Engine (`app/validators.py`)
 - Brand name validation (fuzzy matching, 90% threshold)
@@ -134,8 +128,7 @@ T+10:30  Ollama backend available (FULL CAPABILITY) ✅
 
 | Backend | Speed | Accuracy | Use Case |
 |---------|-------|----------|----------|
-| Tesseract | 2-3s | Good | Production workloads, degraded mode |
-| Ollama | ~58s | Excellent | High-accuracy requirements, edge cases |
+| Ollama | ~10s | Excellent | High-accuracy requirements, edge cases |
 
 ## Monitoring & Observability
 
@@ -162,10 +155,9 @@ T+10:30  Ollama backend available (FULL CAPABILITY) ✅
 - Health endpoint status (should be 200, may show `degraded`)
 - Response time percentiles (p50, p95, p99)
 - Error rates by endpoint
-- Backend availability (Tesseract should always be 100%)
+- Backend availability (Ollama should always be 100%)
 
 **Alerts:**
-- Tesseract unavailable (critical - no OCR possible)
 - Ollama unavailable >1 hour (warning - prolonged degradation)
 - Error rate >5% (warning)
 - Response time p95 >10s (warning)
@@ -188,27 +180,7 @@ T+10:30  Ollama backend available (FULL CAPABILITY) ✅
 - **No PII**: Label images contain product info, not personal data
 - **Audit Trail**: CloudTrail logs all API calls, ALB logs all requests
 
-## Disaster Recovery
 
-### Recovery Scenarios
-
-**1. EC2 Instance Failure**
-- **Detection:** ALB health check fails
-- **Recovery:** Terminate instance, Terragrunt recreates automatically
-- **RTO:** 2-3 minutes (degraded mode), 10-12 minutes (full capability)
-- **RPO:** No data loss (stateless application)
-
-**2. Region Failure**
-- **Detection:** Manual
-- **Recovery:** Deploy infrastructure to new region via Terragrunt
-- **RTO:** 15-20 minutes (includes Terragrunt apply)
-- **RPO:** No data loss
-
-**3. Model Corruption**
-- **Detection:** Ollama backend unavailable with error
-- **Recovery:** Delete model from S3, instance will re-download and re-export
-- **RTO:** 15-20 minutes for full capability
-- **Impact:** Degraded mode still operational
 
 ## Testing Strategy
 
@@ -217,11 +189,6 @@ T+10:30  Ollama backend available (FULL CAPABILITY) ✅
 2. **Integration Tests** - API endpoints with mocked backends
 3. **E2E Tests** - Full stack with real OCR backends
 4. **Load Tests** - Performance and concurrency validation
-
-### Test Coverage
-- **Current:** 55% code coverage (above 50% threshold)
-- **Critical paths:** 100% coverage for validation logic
-- **Future:** Add chaos engineering tests for resilience
 
 ## Future Enhancements
 
@@ -271,7 +238,7 @@ EKS Cluster
 
 ## References
 
-- API Documentation: `docs/API_README.md`
-- Deployment Guide: `infrastructure/DEPLOYMENT_GUIDE.md`
-- Testing Guide: `docs/TESTING_GUIDE.md`
-- Requirements: `docs/REQUIREMENTS.md`
+- [API Documentation](docs/API_README.md)
+- [Deployment Guide](infrastructure/DEPLOYMENT_GUIDE.md)
+- [Testing Guide](docs/TESTING_GUIDE.md)
+- [Requirements](docs/REQUIREMENTS.md)

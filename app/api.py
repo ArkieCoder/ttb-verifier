@@ -48,10 +48,6 @@ logger = logging.getLogger("ttb_api")
 # Initialize job manager for async batch processing
 job_manager = JobManager()
 
-# Track Ollama pre-warming state (per-process)
-_ollama_prewarmed = False
-_ollama_prewarm_lock = False
-
 
 # ============================================================================
 # Pydantic Models
@@ -979,227 +975,44 @@ async def root():
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url="/ui/verify", status_code=status.HTTP_302_FOUND)
 
-# File-based lock path for cross-worker pre-warm coordination
-_PREWARM_LOCK_FILE = Path("/app/tmp/prewarm.lock")
-_PREWARM_DONE_FILE = Path("/app/tmp/prewarm.done")
-
-
-def prewarm_ollama_model(ollama_host: str, model: str) -> None:
-    """
-    Pre-warm Ollama model by loading it into GPU memory.
-
-    Uses a file-based lock so only one of the 4 uvicorn workers triggers
-    the pre-warm. Also checks /api/ps first — if the model is already in
-    GPU RAM (e.g. from a previous worker), skips entirely.
-
-    Args:
-        ollama_host: Ollama server URL
-        model: Model name to pre-warm
-    """
-    global _ollama_prewarmed, _ollama_prewarm_lock
-
-    # In-process guard — already done or in progress in this worker
-    if _ollama_prewarmed or _ollama_prewarm_lock:
-        return
-
-    _ollama_prewarm_lock = True
-
-    try:
-        import requests
-        import threading
-        import fcntl
-
-        def _prewarm():
-            global _ollama_prewarmed, _ollama_prewarm_lock
-            lock_fd = None
-            acquired = False
-            try:
-                # --- Step 1: Check if model is already in GPU via /api/ps ---
-                try:
-                    ps_resp = requests.get(f"{ollama_host}/api/ps", timeout=2)
-                    if ps_resp.status_code == 200:
-                        loaded = [m.get('name', '').split(':')[0]
-                                  for m in ps_resp.json().get('models', [])]
-                        model_base = model.split(':')[0]
-                        if model_base in loaded:
-                            logger.info(f"Model '{model}' already in GPU, skipping pre-warm")
-                            _ollama_prewarmed = True
-                            _PREWARM_DONE_FILE.touch()
-                            return
-                except Exception:
-                    pass  # If /api/ps fails, proceed to try pre-warming anyway
-
-                # --- Step 2: Check done-file (another worker already succeeded) ---
-                if _PREWARM_DONE_FILE.exists():
-                    logger.info(f"Pre-warm done-file found, skipping pre-warm in this worker")
-                    _ollama_prewarmed = True
-                    return
-
-                # --- Step 3: Acquire file lock — only one worker does the pre-warm ---
-                _PREWARM_LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
-                lock_fd = open(_PREWARM_LOCK_FILE, 'w')
-                try:
-                    fcntl.flock(lock_fd.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-                    acquired = True
-                except BlockingIOError:
-                    logger.info("Another worker is already pre-warming, skipping")
-                    _ollama_prewarmed = True  # Will be done soon, treat as in progress
-                    return
-
-                # Re-check done-file now that we hold the lock
-                if _PREWARM_DONE_FILE.exists():
-                    logger.info("Pre-warm done-file found after acquiring lock, skipping")
-                    _ollama_prewarmed = True
-                    return
-
-                # --- Step 4: Fire the pre-warm request ---
-                # Use /api/generate with an empty prompt and keep_alive=-1.
-                # This loads the model weights into GPU RAM without running
-                # real inference, so Ollama stays free to serve /verify
-                # requests immediately after.  Using /api/chat with a real
-                # message runs full inference (20-60s) and blocks Ollama's
-                # single inference thread, causing /api/tags health-check
-                # calls to hang and cascading 503s from CloudFront.
-                logger.info(f"Pre-warming Ollama model '{model}' into GPU memory...")
-                response = requests.post(
-                    f"{ollama_host}/api/generate",
-                    json={
-                        "model": model,
-                        "prompt": "",
-                        "keep_alive": -1,
-                        "stream": False
-                    },
-                    timeout=120
-                )
-
-                if response.status_code == 200:
-                    logger.info(f"Model '{model}' pre-warmed and loaded in GPU")
-                    _ollama_prewarmed = True
-                    _PREWARM_DONE_FILE.touch()
-                else:
-                    logger.warning(f"Model pre-warm returned HTTP {response.status_code}")
-
-            except Exception as e:
-                logger.warning(f"Model pre-warm failed: {e}")
-            finally:
-                if lock_fd:
-                    if acquired:
-                        fcntl.flock(lock_fd.fileno(), fcntl.LOCK_UN)
-                    lock_fd.close()
-                _ollama_prewarm_lock = False
-
-        thread = threading.Thread(target=_prewarm, daemon=True)
-        thread.start()
-
-    except Exception as e:
-        logger.error(f"Failed to start pre-warm thread: {e}")
-        _ollama_prewarm_lock = False
+# Path to the Ollama health sentinel file written by the host cron job
+# scripts/ollama-health-cron.sh runs every 5 minutes and writes this file
+# when the model is in GPU RAM. The app never touches Ollama directly from
+# the health check — all the blocking network calls are gone.
+_OLLAMA_HEALTHY_FILE = Path("/etc/OLLAMA_HEALTHY")
 
 
 def get_health_status() -> Dict[str, Any]:
     """
-    Check health of OCR backends and return status.
-    
+    Check health of the Ollama backend and return status.
+
     Shared function used by both /health (JSON) and /ui/health (HTML) endpoints.
-    
-    Ollama is marked as "available" only when ALL three conditions are met:
-    1. Ollama server is responsive (GET /api/tags succeeds)
-    2. Model is downloaded and available (appears in /api/tags response)
-    3. Model is loaded in GPU RAM (appears in /api/ps response)
-    
+
+    Ollama health is determined solely by the presence of /etc/OLLAMA_HEALTHY,
+    which is written by the host cron job (scripts/ollama-health-cron.sh) when
+    the model is confirmed to be in GPU RAM.  This avoids any synchronous network
+    calls to Ollama inside the FastAPI event loop, which was the root cause of
+    the /health endpoint blocking and cascading 503s from CloudFront.
+
     Returns:
-        Dictionary with health status:
         {
-            "status": "healthy" | "degraded",
+            "status": "healthy" | "initializing",
             "backends": {
-                "tesseract": {"available": bool, "error": str|null},
                 "ollama": {"available": bool, "error": str|null, "model": str}
             },
             "capabilities": {
-                "ocr_backends": ["tesseract", "ollama"],
-                "degraded_mode": bool
+                "ocr_backends": ["ollama"]
             }
         }
     """
-    from ocr_backends import OllamaOCR
     import os
-    
-    # Check Ollama availability (lazy check - no exception raised)
-    # Ollama is considered "available" if:
-    # 1. Server is responsive
-    # 2. Model is downloaded (exists in /api/tags)
-    # 3. Model is loaded in GPU RAM (appears in /api/ps)
-    ollama_host = settings.ollama_host
     ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2-vision")
-    ollama_available = False
-    ollama_error = None
-    
-    try:
-        # Use short timeout for health check to avoid blocking
-        import requests
-        
-        # Check 1: Is server responsive and model downloaded?
-        response = requests.get(f"{ollama_host}/api/tags", timeout=2)
-        
-        if response.status_code == 200:
-            models_data = response.json()
-            available_models = [m.get('name', '').split(':')[0] for m in models_data.get('models', [])]
-            model_base = ollama_model.split(':')[0]
-            
-            if model_base not in available_models:
-                ollama_error = f"Model '{ollama_model}' not downloaded"
-            else:
-                # Check 2: Is model loaded in GPU RAM?
-                ps_response = requests.get(f"{ollama_host}/api/ps", timeout=2)
-                
-                if ps_response.status_code == 200:
-                    loaded_models = ps_response.json().get('models', [])
-                    loaded_model_names = [m.get('name', '').split(':')[0] for m in loaded_models]
-                    
-                    if model_base in loaded_model_names:
-                        # Model is loaded and ready!
-                        ollama_available = True
-                        # Mark as pre-warmed since model is loaded
-                        global _ollama_prewarmed
-                        _ollama_prewarmed = True
-                        # Ensure done-file exists so other workers skip pre-warm
-                        _PREWARM_DONE_FILE.touch()
-                    else:
-                        # Model not in GPU — reset flags so pre-warm fires again
-                        _ollama_prewarmed = False
-                        if _PREWARM_DONE_FILE.exists():
-                            _PREWARM_DONE_FILE.unlink(missing_ok=True)
-                            logger.info("Model evicted from GPU, cleared pre-warm done-file")
-                        # Trigger pre-warm (file lock ensures only one worker does it)
-                        global _ollama_prewarm_lock
-                        if not _ollama_prewarm_lock:
-                            logger.info(f"Model '{ollama_model}' not in GPU, triggering pre-warm")
-                            prewarm_ollama_model(ollama_host, ollama_model)
-                        
-                        # Model exists but not yet loaded - pre-warming may be in progress
-                        ollama_error = f"Model loading into GPU (pre-warming in progress)"
-                else:
-                    ollama_error = f"Cannot check GPU status: HTTP {ps_response.status_code}"
-        else:
-            ollama_error = f"Ollama not available: HTTP {response.status_code}"
-            
-    except requests.exceptions.Timeout:
-        ollama_error = "Unreachable (timeout after 2s)"
-    except requests.exceptions.ConnectionError:
-        ollama_error = "Unreachable (connection failed)"
-    except Exception as e:
-        ollama_error = f"Unreachable ({str(e)})"
-    
-    # Determine available backends (only Ollama)
-    available_backends = []
-    if ollama_available:
-        available_backends.append("ollama")
-    
-    # Determine overall status
-    overall_status = "healthy" if ollama_available else "initializing"
-    
+
+    ollama_available = _OLLAMA_HEALTHY_FILE.exists()
+    ollama_error = None if ollama_available else "Model not in GPU (cron pre-warm pending)"
+
     return {
-        "status": overall_status,
+        "status": "healthy" if ollama_available else "initializing",
         "backends": {
             "ollama": {
                 "available": ollama_available,
@@ -1208,7 +1021,7 @@ def get_health_status() -> Dict[str, Any]:
             }
         },
         "capabilities": {
-            "ocr_backends": available_backends
+            "ocr_backends": ["ollama"] if ollama_available else []
         }
     }
 
@@ -1217,18 +1030,12 @@ def get_health_status() -> Dict[str, Any]:
 async def health_check():
     """
     Health check endpoint that reports Ollama backend availability.
-    
-    Returns service health status. This endpoint always returns HTTP 200 as long
-    as the API is running, even when Ollama is initializing. This allows the
-    load balancer to route traffic while the Ollama model is loading.
-    
-    Ollama is marked as "available" only when ALL three conditions are met:
-    1. Ollama server is responsive (GET /api/tags succeeds)
-    2. Model is downloaded and available (appears in /api/tags response)
-    3. Model is loaded in GPU RAM (appears in /api/ps response)
-    
-    The model will be automatically pre-warmed when detected as downloaded.
-    
+
+    Returns HTTP 200 as long as the API process is running, even when Ollama
+    is initializing.  Ollama is reported as available only when the sentinel
+    file /etc/OLLAMA_HEALTHY is present on the host; that file is maintained
+    by the scripts/ollama-health-cron.sh cron job running every 5 minutes.
+
     Returns:
         {
             "status": "healthy" | "initializing",
@@ -1236,7 +1043,7 @@ async def health_check():
                 "ollama": {"available": bool, "error": str|null, "model": str}
             },
             "capabilities": {
-                "ocr_backends": ["ollama"]  # Available backends
+                "ocr_backends": ["ollama"]
             }
         }
     """

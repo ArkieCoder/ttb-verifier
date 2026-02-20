@@ -183,6 +183,7 @@ services:
       - SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
     volumes:
       - /home/ubuntu/tmp:/app/tmp
+      - /etc/OLLAMA_HEALTHY:/etc/OLLAMA_HEALTHY:ro
     depends_on:
       - ollama
     restart: unless-stopped
@@ -290,6 +291,70 @@ EOFSCRIPT
 
 chmod +x /app/deploy.sh
 chown ubuntu:ubuntu /app/deploy.sh
+
+# Install Ollama health cron job
+# Runs every 5 minutes as root (needs docker access).
+# Writes /etc/OLLAMA_HEALTHY when model is in GPU; removes it otherwise.
+# The FastAPI /health endpoint reads only this file.
+echo "Installing Ollama health cron job..."
+cat > /usr/local/bin/ollama-health-cron.sh <<'EOFCRON'
+#!/bin/bash
+set -euo pipefail
+
+HEALTHY_FILE="/etc/OLLAMA_HEALTHY"
+MODEL="${OLLAMA_MODEL:-llama3.2-vision}"
+CONTAINER="${OLLAMA_CONTAINER:-ttb-ollama}"
+LOG_TAG="ollama-health-cron"
+
+log() { logger -t "$LOG_TAG" "$*"; }
+
+mark_healthy() {
+    touch "$HEALTHY_FILE"
+    log "OK — model '$MODEL' is in GPU RAM, marked healthy"
+}
+
+mark_unhealthy() {
+    rm -f "$HEALTHY_FILE"
+    log "WARN — $1, marked unhealthy"
+}
+
+if ! docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null | grep -q true; then
+    mark_unhealthy "container '$CONTAINER' is not running"
+    exit 0
+fi
+
+if ! docker exec "$CONTAINER" ollama list 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
+    mark_unhealthy "model '$MODEL' not found in 'ollama list'"
+    exit 0
+fi
+
+if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
+    mark_healthy
+    exit 0
+fi
+
+log "Model '$MODEL' not in GPU, starting pre-warm..."
+if docker exec "$CONTAINER" ollama run "$MODEL" "" 2>/dev/null; then
+    log "Pre-warm complete"
+else
+    mark_unhealthy "pre-warm command failed"
+    exit 0
+fi
+
+if docker exec "$CONTAINER" ollama ps 2>/dev/null | awk 'NR>1{print $1}' | grep -q "^${MODEL}"; then
+    mark_healthy
+else
+    mark_unhealthy "model still not in GPU after pre-warm"
+fi
+EOFCRON
+
+chmod +x /usr/local/bin/ollama-health-cron.sh
+
+# Install crontab entry for root (every 5 minutes)
+(crontab -l 2>/dev/null | grep -v ollama-health-cron || true
+ echo "*/5 * * * * /usr/local/bin/ollama-health-cron.sh >> /var/log/ollama-health-cron.log 2>&1") | crontab -
+
+echo "Ollama health cron job installed (runs every 5 minutes)"
 
 # Pull and start Ollama service
 echo "Starting Ollama service..."

@@ -75,12 +75,3 @@ variable "alb_subnet_ids" {
   description = "List of subnet IDs to attach to the Application Load Balancer. Must span at least two AZs. Can be subnets from the default VPC or any existing VPC."
   type        = list(string)
 }
-
-# ====================================
-# State Backend
-# ====================================
-
-variable "tfstate_bucket" {
-  description = "Name of the S3 bucket used for Terraform remote state. Passed in from root.hcl so remote_foundation.tf can reference it without hardcoding."
-  type        = string
-}

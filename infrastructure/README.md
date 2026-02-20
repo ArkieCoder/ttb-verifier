@@ -15,7 +15,7 @@ The deployment guide includes:
 
 ## Quick Overview
 
-This infrastructure is fully configurable and can be deployed to any AWS account and GitHub organization by editing `terraform.tfvars` and setting the `TFSTATE_PREFIX` environment variable.
+This infrastructure is fully configurable and can be deployed to any AWS account and GitHub organization by editing `terraform.tfvars` and `root.hcl`.
 
 ## Two-Layer Architecture
 
@@ -26,7 +26,7 @@ The infrastructure is separated into **two independent layers** with separate Te
 - ACM Certificate (HTTPS/TLS)
 - GitHub Repository (code + settings)
 - S3 Bucket for Ollama models (performance optimization)
-- State: `s3://<tfstate-prefix>-tfstate/foundation/terraform.tfstate`
+- State: `s3://unitedentropy-ttb-tfstate/foundation/terraform.tfstate`
 
 **Key Features:**
 - All resources have `prevent_destroy = true` lifecycle protection
@@ -41,7 +41,7 @@ The infrastructure is separated into **two independent layers** with separate Te
 - IAM roles and policies
 - Security groups
 - GitHub Actions secrets
-- State: `s3://<tfstate-prefix>-tfstate/infrastructure/terraform.tfstate`
+- State: `s3://unitedentropy-ttb-tfstate/infrastructure/terraform.tfstate`
 
 **Key Features:**
 - References foundation via Terraform remote state
@@ -54,9 +54,9 @@ Application layer accesses foundation resources via remote state data source:
 data "terraform_remote_state" "foundation" {
   backend = "s3"
   config = {
-    bucket = var.tfstate_bucket
+    bucket = "unitedentropy-ttb-tfstate"
     key    = "foundation/terraform.tfstate"
-    region = var.aws_region
+    region = "us-east-1"
   }
 }
 
@@ -124,11 +124,7 @@ You'll need access to your **DNS provider** to add:
 **1. Configure your deployment:**
 
 Edit `terraform.tfvars` with your values (GitHub owner, domain name, AWS account ID, subnet IDs).
-
-Set the state bucket prefix:
-```bash
-export TFSTATE_PREFIX="myorg-ttb"
-```
+Also update the bucket name in `root.hcl` if deploying to a new account.
 
 **2. Deploy Foundation Layer:**
 ```bash
@@ -174,7 +170,6 @@ If the infrastructure already exists and you just need to make changes:
 ### Step 1: Initialize Terragrunt (Application Layer)
 
 ```bash
-export TFSTATE_PREFIX="myorg-ttb"  # must match original deployment
 cd infrastructure  # application layer
 terragrunt init
 ```
@@ -242,7 +237,7 @@ terragrunt output cloudfront_domain_name
 ```
 
 **Add CNAME to your DNS provider:**
-- **Hostname:** Your application domain (e.g., `ttb-verifier.example.com`)
+- **Hostname:** Your application domain (e.g., `ttb-verifier.yourdomain.com`)
 - **Type:** CNAME
 - **Value:** `<cloudfront-domain from output>` (e.g., `d1bmuzubpqmnvs.cloudfront.net`)
 - **TTL:** 300 (or default)
@@ -258,10 +253,10 @@ terragrunt output cloudfront_domain_name
 
 ```bash
 # Test DNS resolution (should show CloudFront domain)
-nslookup ttb-verifier.example.com
+nslookup <your-domain>
 
 # Test application (will show error until application deployed)
-curl https://ttb-verifier.example.com/health
+curl https://<your-domain>/health
 
 # Check EC2 via SSM
 aws ssm start-session --target $(terragrunt output -raw ec2_instance_id)
@@ -316,8 +311,8 @@ terragrunt output github_actions_role_arn
 - **ACM Certificate:** Your configured domain (auto-renewing, DNS validated)
 
 ### State Management
-- **S3 Bucket:** `<tfstate-prefix>-tfstate` (auto-created by Terragrunt)
-- **DynamoDB Table:** `<tfstate-prefix>-tfstate` (state locking)
+- **S3 Bucket:** `unitedentropy-ttb-tfstate` (auto-created by Terragrunt)
+- **DynamoDB Table:** `unitedentropy-ttb-tfstate` (state locking)
 
 ## Configuration Details
 

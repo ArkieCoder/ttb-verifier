@@ -1,13 +1,3 @@
-# ---------------------------------------------------------------------------
-# Configurable locals — edit these to match your deployment
-# ---------------------------------------------------------------------------
-locals {
-  # Prefix used for the Terraform state S3 bucket and DynamoDB lock table.
-  # Must be globally unique (S3 bucket names are global).
-  # Example: "myorg-ttb"  →  bucket "myorg-ttb-tfstate"
-  tfstate_prefix = get_env("TFSTATE_PREFIX", "my-org-ttb")
-}
-
 remote_state {
   backend = "s3"
   
@@ -17,11 +7,11 @@ remote_state {
   }
   
   config = {
-    bucket         = "${local.tfstate_prefix}-tfstate"
+    bucket         = "unitedentropy-ttb-tfstate"
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
-    dynamodb_table = "${local.tfstate_prefix}-tfstate"
+    dynamodb_table = "unitedentropy-ttb-tfstate"
     
     # Terragrunt will auto-create these resources if they don't exist
     skip_bucket_versioning         = false
@@ -32,7 +22,7 @@ remote_state {
     
     # DynamoDB table configuration for state locking
     dynamodb_table_tags = {
-      Name      = "${local.tfstate_prefix}-tfstate-lock"
+      Name      = "unitedentropy-ttb-tfstate-lock"
       Project   = "ttb-verifier"
       ManagedBy = "terragrunt"
     }
@@ -74,17 +64,17 @@ EOF
 }
 
 # Shared inputs for all child configurations
-# These values are inherited by both foundation and application layers.
-# All deployment-specific values (github_owner, domain_name, aws_account_id,
-# instance_type, etc.) should be set in terraform.tfvars, not here.
+# These values are inherited by both foundation and application layers
 inputs = {
-  project_name = "ttb-verifier"
-  aws_region   = "us-east-1"
-
-  # Pass the state bucket name as a Terraform variable so remote_foundation.tf
-  # can reference it without hardcoding.
-  tfstate_bucket = "${local.tfstate_prefix}-tfstate"
+  github_owner     = "ArkieCoder"
+  github_repo_name = "ttb-verifier"
+  project_name     = "ttb-verifier"
+  domain_name      = "ttb-verifier.unitedentropy.com"
+  aws_region       = "us-east-1"
+  aws_account_id   = "253490750467"
 
   # Application-specific defaults (can be overridden in terraform.tfvars)
-  environment = "production"
+  instance_type    = "g4dn.2xlarge"
+  root_volume_size = 50
+  environment      = "production"
 }

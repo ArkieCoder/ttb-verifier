@@ -26,7 +26,7 @@ class Settings(BaseSettings):
         description="Ollama vision model for label OCR"
     )
     ollama_timeout_seconds: int = Field(
-        default=60,
+        default=120,
         description="Timeout for Ollama OCR requests in seconds"
     )
     

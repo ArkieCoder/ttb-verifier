@@ -18,6 +18,14 @@ from label_extractor import LabelExtractor, GOVERNMENT_WARNING_TEXT
 from field_validators import FieldValidator
 
 
+class OllamaBusyError(RuntimeError):
+    """Raised when the Ollama semaphore is held and the request was shed."""
+
+
+class OllamaTimeoutError(RuntimeError):
+    """Raised when the Ollama request timed out (after any automatic retries)."""
+
+
 class ValidationStatus(Enum):
     """Overall validation status."""
     COMPLIANT = "COMPLIANT"
@@ -89,9 +97,19 @@ class LabelValidator:
         
         # Check if OCR was successful
         if not ocr_result.get('success', False):
+            error_type = ocr_result.get('error_type', 'error')
+            error_msg = ocr_result.get('error', 'OCR extraction failed')
+
+            # Raise a typed exception so callers (API layer) can return the
+            # correct HTTP status code instead of a generic 500.
+            if error_type == 'busy':
+                raise OllamaBusyError(error_msg)
+            if error_type == 'timeout':
+                raise OllamaTimeoutError(error_msg)
+
             return {
                 "status": "ERROR",
-                "error": ocr_result.get('error', 'OCR extraction failed'),
+                "error": error_msg,
                 "validation_level": "STRUCTURAL_ONLY",
                 "extracted_fields": {},
                 "validation_results": {

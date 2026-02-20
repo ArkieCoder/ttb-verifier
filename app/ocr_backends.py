@@ -5,10 +5,14 @@ Provides OCR extraction using Ollama vision models (llama3.2-vision, llava)
 for accurate text extraction from alcohol beverage labels.
 """
 
+import logging
+import threading
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, Any, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class OCRBackend(ABC):
@@ -36,6 +40,23 @@ class OCRBackend(ABC):
             }
         """
         pass
+
+
+
+# ---------------------------------------------------------------------------
+# Module-level semaphore: Ollama is single-threaded and processes one vision
+# inference at a time.  Without a limit here, concurrent requests pile up
+# inside Ollama's queue; each waits for all previous ones to finish, so the
+# N-th request waits N×inference_time seconds — quickly blowing past the
+# CloudFront 60-second origin timeout and causing a cascade of 504 errors.
+#
+# The semaphore allows exactly one in-flight Ollama call at a time.  Any
+# request that cannot acquire it immediately gets a fast 503 + Retry-After
+# rather than a guaranteed timeout.  Adjust _OLLAMA_MAX_CONCURRENCY if you
+# deploy a multi-GPU setup where Ollama can run parallel inferences.
+# ---------------------------------------------------------------------------
+_OLLAMA_MAX_CONCURRENCY = 1
+_ollama_semaphore = threading.Semaphore(_OLLAMA_MAX_CONCURRENCY)
 
 
 class OllamaOCR(OCRBackend):
@@ -126,10 +147,21 @@ class OllamaOCR(OCRBackend):
             )
     
     def extract_text(self, image_path: str) -> Dict[str, Any]:
-        """Extract text using Ollama vision model."""
+        """Extract text using Ollama vision model.
+
+        Acquires the module-level semaphore before calling Ollama so that only
+        one inference runs at a time.  If the semaphore is already held (another
+        request is in progress) this call returns immediately with a transient
+        error that callers can surface as HTTP 503 + Retry-After rather than
+        letting the request queue up and eventually hit the CloudFront timeout.
+
+        A single automatic retry is attempted on httpx timeout errors because
+        Ollama occasionally takes a few extra seconds when the model is in the
+        middle of a memory operation; one retry absorbs that without user impact.
+        """
         start_time = time.time()
-        
-        # Lazy availability check - only verify when actually used
+
+        # --- availability check (sentinel file) ---
         try:
             self._ensure_available()
         except RuntimeError as e:
@@ -142,7 +174,32 @@ class OllamaOCR(OCRBackend):
                     'processing_time_seconds': time.time() - start_time
                 }
             }
-        
+
+        # --- concurrency gate ---
+        acquired = _ollama_semaphore.acquire(blocking=False)
+        if not acquired:
+            logger.warning(
+                "Ollama semaphore busy — rejecting request to prevent queue buildup"
+            )
+            return {
+                'success': False,
+                'error': "Ollama is busy processing another request. Please retry shortly.",
+                'error_type': 'busy',
+                'metadata': {
+                    'backend': 'ollama',
+                    'model': self.model,
+                    'processing_time_seconds': time.time() - start_time
+                }
+            }
+
+        try:
+            return self._do_extract(image_path, start_time)
+        finally:
+            _ollama_semaphore.release()
+
+    def _do_extract(self, image_path: str, start_time: float,
+                    _retry: bool = True) -> Dict[str, Any]:
+        """Inner extraction with timeout classification and one automatic retry."""
         try:
             # Verify image exists
             img_path = Path(image_path)
@@ -151,7 +208,7 @@ class OllamaOCR(OCRBackend):
                     'success': False,
                     'error': f"Image not found: {image_path}"
                 }
-            
+
             # Prepare prompt for structured extraction
             prompt = """Extract ALL text from this alcohol beverage label image EXACTLY as it appears.
 
@@ -184,10 +241,10 @@ Format your response as plain text, with each distinct text element on its own l
                 },
                 keep_alive=-1  # Keep model loaded indefinitely to avoid 60s+ reload times
             )
-            
+
             extracted_text = response['message']['content'].strip()
             processing_time = time.time() - start_time
-            
+
             return {
                 'success': True,
                 'raw_text': extracted_text,
@@ -198,11 +255,65 @@ Format your response as plain text, with each distinct text element on its own l
                     'confidence': 0.85  # Ollama doesn't provide confidence, use estimate
                 }
             }
-            
+
         except Exception as e:
+            # Distinguish timeout/connection errors from logic errors so callers
+            # can return the right HTTP status and decide whether to retry.
+            err_str = str(e)
+            err_type_name = type(e).__name__
+
+            is_timeout = (
+                "ReadTimeout" in err_type_name
+                or "ConnectTimeout" in err_type_name
+                or "TimeoutException" in err_type_name
+                or "timeout" in err_str.lower()
+            )
+            is_connection = (
+                "ConnectError" in err_type_name
+                or "RemoteProtocolError" in err_type_name
+                or "Cannot connect" in err_str
+            )
+
+            if is_timeout:
+                logger.warning(
+                    "Ollama request timed out after %.1fs (limit: %ds) — %s",
+                    time.time() - start_time, self.timeout, err_str
+                )
+                # One automatic retry on timeout; Ollama occasionally needs a
+                # few extra seconds during memory operations.
+                if _retry:
+                    logger.info("Retrying Ollama request once after timeout")
+                    return self._do_extract(image_path, start_time, _retry=False)
+
+                return {
+                    'success': False,
+                    'error': f"Ollama request timed out after {self.timeout}s. Please retry.",
+                    'error_type': 'timeout',
+                    'metadata': {
+                        'backend': 'ollama',
+                        'model': self.model,
+                        'processing_time_seconds': time.time() - start_time
+                    }
+                }
+
+            if is_connection:
+                logger.error("Ollama connection error: %s", err_str)
+                return {
+                    'success': False,
+                    'error': f"Cannot connect to Ollama at {self.host}: {err_str}",
+                    'error_type': 'connection',
+                    'metadata': {
+                        'backend': 'ollama',
+                        'model': self.model,
+                        'processing_time_seconds': time.time() - start_time
+                    }
+                }
+
+            logger.error("Ollama extraction error: %s", err_str, exc_info=True)
             return {
                 'success': False,
-                'error': f"Ollama extraction error: {str(e)}",
+                'error': f"Ollama extraction error: {err_str}",
+                'error_type': 'error',
                 'metadata': {
                     'backend': 'ollama',
                     'model': self.model,

@@ -1060,6 +1060,61 @@ async def get_async_verify_status(
     )
 
 
+@app.post("/verify/retry/{job_id}", response_model=AsyncVerifySubmitResponse)
+async def retry_async_verify(
+    job_id: str,
+    username: str = Depends(get_current_user)
+) -> AsyncVerifySubmitResponse:
+    """
+    Re-enqueue a failed (or completed) single-image verify job using the
+    same image and ground truth as the original submission.
+
+    Intended for use after a job reaches ``failed`` status so the user can
+    retry without re-uploading the image.
+
+    **Response:**
+    - ``job_id``: New job identifier — poll ``GET /verify/status/{job_id}``
+    - ``status``: ``pending``
+
+    **Example:**
+    ```bash
+    curl -X POST https://example.com/verify/retry/abc123
+    ```
+    """
+    correlation_id = get_correlation_id()
+    logger.info(f"[{correlation_id}] POST /verify/retry/{job_id}")
+
+    original = verify_queue.get(job_id)
+    if original is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Verify job {job_id} not found",
+        )
+
+    # Make sure the image file still exists on the shared volume
+    image_path = original.get("image_path")
+    if not image_path or not Path(image_path).exists():
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="Original image file no longer available; please re-upload.",
+        )
+
+    new_job_id = verify_queue.enqueue(
+        image_path=image_path,
+        ground_truth=original.get("ground_truth"),
+    )
+
+    logger.info(
+        f"[{correlation_id}] Retried job {job_id} as new job {new_job_id}"
+    )
+
+    return AsyncVerifySubmitResponse(
+        job_id=new_job_id,
+        status="pending",
+        message=f"Job re-submitted. Poll GET /verify/status/{new_job_id} for results.",
+    )
+
+
 # ============================================================================
 # Exception Handlers
 # ============================================================================

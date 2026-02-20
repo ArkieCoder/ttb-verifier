@@ -90,6 +90,14 @@ def process_job(job: dict, validator: LabelValidator) -> dict:
 
     result = validator.validate_label(image_path, ground_truth)
     result["image_path"] = Path(image_path).name
+
+    # If the validator returned an ERROR status (e.g. Ollama sentinel absent,
+    # OCR extraction failed), treat it as a retriable failure rather than a
+    # completed job.  Raising here causes the worker loop to call queue.fail(),
+    # which requeues the job if attempts remain.
+    if result.get("status") == "ERROR":
+        raise RuntimeError(result.get("error") or "OCR returned ERROR status")
+
     return result
 
 

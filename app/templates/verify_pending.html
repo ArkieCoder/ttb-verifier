@@ -69,6 +69,12 @@
 
     <!-- Action buttons (hidden until terminal state) -->
     <div id="actions" style="display:none;" class="mt-3 d-grid gap-2">
+        <!-- Retry button: only shown on failure; submits a form POST to re-enqueue -->
+        <form id="retryForm" method="post" style="display:none;">
+            <button type="submit" class="btn btn-warning w-100">
+                <i class="bi bi-arrow-clockwise"></i> Retry
+            </button>
+        </form>
         <a href="/ui/verify" class="btn btn-primary">
             <i class="bi bi-arrow-repeat"></i> Verify Another Label
         </a>
@@ -96,6 +102,7 @@
     const elError    = document.getElementById('errorDetail');
     const elErrorTxt = document.getElementById('errorText');
     const elActions  = document.getElementById('actions');
+    const elRetryForm = document.getElementById('retryForm');
 
     let pollTimer = null;
 
@@ -171,6 +178,11 @@
         updateDots(data.attempts, data.max_attempts, true);
         elErrorTxt.textContent = data.error || 'Unknown error';
         elError.style.display = 'block';
+
+        // Wire up the retry form to POST to the UI retry endpoint
+        elRetryForm.action = `/ui/verify/retry/${JOB_ID}`;
+        elRetryForm.style.display = 'block';
+
         elActions.style.display = 'block';
     }
 

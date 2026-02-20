@@ -502,6 +502,56 @@ async def ui_verify_result(
     )
 
 
+@router.post("/ui/verify/retry/{job_id}")
+async def ui_verify_retry(
+    request: Request,
+    job_id: str,
+    username: str = Depends(get_current_user_ui)
+):
+    """
+    Re-enqueue a failed verify job from the UI and redirect to the new pending page.
+    Called by the Retry button on the verify_pending page.
+    """
+    from api import verify_queue
+
+    original = verify_queue.get(job_id)
+    if original is None:
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "username": username,
+                "error": "Job not found or expired. Please re-upload your image.",
+                "ollama_host": settings.ollama_host,
+                "default_timeout": settings.ollama_timeout_seconds,
+            },
+        )
+
+    image_path = original.get("image_path")
+    if not image_path or not Path(image_path).exists():
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "username": username,
+                "error": "Original image file is no longer available. Please re-upload.",
+                "ollama_host": settings.ollama_host,
+                "default_timeout": settings.ollama_timeout_seconds,
+            },
+        )
+
+    new_job_id = verify_queue.enqueue(
+        image_path=image_path,
+        ground_truth=original.get("ground_truth"),
+    )
+    logger.info(f"[ui] Retried job {job_id} as new job {new_job_id}")
+
+    return RedirectResponse(
+        url=f"/ui/verify/pending/{new_job_id}",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
 @router.get("/ui/health", response_class=HTMLResponse)
 async def ui_health(request: Request):
     """

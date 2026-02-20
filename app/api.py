@@ -26,7 +26,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ValidationError
 
 from config import get_settings
-from label_validator import LabelValidator, OllamaBusyError, OllamaTimeoutError
+from label_validator import LabelValidator
 from auth import get_current_user
 from middleware import HostCheckMiddleware
 from job_manager import JobManager, JobStatus
@@ -529,24 +529,6 @@ def process_batch_job(
                     f"Completed {image_path.name} - Status: {result['status']}"
                 )
             
-            except (OllamaBusyError, OllamaTimeoutError) as e:
-                logger.warning(
-                    f"[{correlation_id}] [{i}/{len(image_files)}] "
-                    f"Ollama transient error for {image_path.name}: {e}"
-                )
-                error_result = {
-                    "status": "ERROR",
-                    "validation_level": "STRUCTURAL_ONLY",
-                    "extracted_fields": {},
-                    "validation_results": {"structural": [], "accuracy": []},
-                    "violations": [],
-                    "warnings": [],
-                    "processing_time_seconds": 0.0,
-                    "image_path": image_path.name,
-                    "error": str(e)
-                }
-                job_manager.append_result(job_id, error_result)
-            
             except Exception as e:
                 logger.error(
                     f"[{correlation_id}] Failed to process {image_path.name}: {e}",
@@ -684,28 +666,6 @@ async def verify_label(
             )
             
             return VerifyResponse(**result)
-        
-        except OllamaBusyError as e:
-            logger.warning(f"[{correlation_id}] Ollama busy — shedding request: {e}")
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail={
-                    "message": str(e),
-                    "suggestion": "Ollama is processing another request. Retry in a few seconds.",
-                    "retry_after": 5
-                }
-            )
-        
-        except OllamaTimeoutError as e:
-            logger.warning(f"[{correlation_id}] Ollama timed out: {e}")
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail={
-                    "message": str(e),
-                    "suggestion": "Ollama inference took too long. Retry shortly.",
-                    "retry_after": 10
-                }
-            )
         
         except RuntimeError as e:
             # Handle Ollama unavailability

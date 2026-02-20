@@ -30,7 +30,7 @@ from auth import (
     SESSION_COOKIE_NAME
 )
 from config import get_settings
-from label_validator import LabelValidator, OllamaBusyError, OllamaTimeoutError
+from label_validator import LabelValidator
 from ocr_backends import OllamaOCR
 
 logger = logging.getLogger("ttb_ui")
@@ -258,11 +258,12 @@ async def ui_verify_submit(
             f.write(content)
         
         try:
-            # Initialize validator with the resolved timeout so the httpx client
-            # inside OllamaOCR is constructed with the correct value.  Mutating
-            # validator.ocr.timeout after construction does NOT propagate to the
-            # already-built httpx.Client, so timeout must be passed here.
-            validator = LabelValidator(timeout=timeout)
+            # Initialize validator with Ollama
+            validator = LabelValidator()
+            
+            # Set timeout for Ollama
+            if hasattr(validator.ocr, 'timeout'):
+                validator.ocr.timeout = timeout
             
             # Validate label
             result = validator.validate_label(
@@ -282,27 +283,6 @@ async def ui_verify_submit(
                     "result": result,
                     "filename": image.filename,
                     "image_data": f"data:{image_mime};base64,{image_base64}"
-                }
-            )
-        
-        except (OllamaBusyError, OllamaTimeoutError) as e:
-            return templates.TemplateResponse(
-                "index.html",
-                {
-                    "request": request,
-                    "username": username,
-                    "error": f"Ollama is temporarily unavailable: {str(e)} Please retry in a few seconds.",
-                    "error_field": "image",
-                    "form_data": {
-                        "brand_name": brand_name,
-                        "product_type": product_type,
-                        "abv": abv,
-                        "net_contents": net_contents,
-                        "bottler": bottler,
-                        "ollama_timeout": ollama_timeout
-                    },
-                    "ollama_host": settings.ollama_host,
-                    "default_timeout": settings.ollama_timeout_seconds
                 }
             )
         

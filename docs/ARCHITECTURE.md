@@ -242,6 +242,33 @@ T+10:30  Ollama backend available (FULL CAPABILITY) ✅
 
 See `infrastructure/FUTURE_ENHANCEMENTS.md` for detailed enhancement proposals.
 
+## Recommended Production Architecture
+
+```
+Internet
+   ↓
+CloudFront (WAF)
+   ↓
+AWS API Gateway
+   ├── Authentication (API keys)
+   ├── Rate limiting
+   ├── Request throttling
+   ├── CloudWatch metrics
+   ↓
+EKS Cluster
+   ├── UI Node Pool
+   ├── API Node Pool  
+   ├── Ollama Node Pool
+```
+
+**Why API Gateway?**
+- ✅ Handles authentication/authorization
+- ✅ Built-in rate limiting
+- ✅ Request validation
+- ✅ CloudWatch integration
+- ✅ Usage plans and quotas
+- ✅ No code changes needed
+
 ## References
 
 - API Documentation: `docs/API_README.md`

@@ -433,30 +433,6 @@ Current API is designed for demonstration and development:
 - Metrics (Prometheus)
 - API versioning
 
-### Recommended Production Architecture
-
-```
-Internet
-   ↓
-AWS API Gateway
-   ├── Authentication (API keys)
-   ├── Rate limiting
-   ├── Request throttling
-   ├── CloudWatch metrics
-   ↓
-EC2 / ECS / Lambda
-   ↓
-Docker Container (TTB Verifier)
-```
-
-**Why API Gateway?**
-- ✅ Handles authentication/authorization
-- ✅ Built-in rate limiting
-- ✅ Request validation
-- ✅ CloudWatch integration
-- ✅ Usage plans and quotas
-- ✅ No code changes needed
-
 ### Adding Features Later
 
 **Authentication (Commented in Code):**

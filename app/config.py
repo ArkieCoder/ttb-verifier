@@ -64,7 +64,7 @@ class Settings(BaseSettings):
         description="Maximum processing attempts per queued verify job before permanent failure"
     )
     worker_ollama_timeout_seconds: int = Field(
-        default=12,
+        default=15,
         description="Per-attempt Ollama timeout used by the worker process (seconds)"
     )
     

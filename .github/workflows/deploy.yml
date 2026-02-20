@@ -8,7 +8,7 @@ on:
       - 'app/**'
       - 'Dockerfile'
       - 'docker-compose.dev.yml'
-      - 'scripts/deploy.sh'
+      - 'scripts/workflow_deploy.sh'
       - '.github/workflows/deploy.yml'
 
 # Prevent concurrent workflows - if infrastructure deploy is running, wait
@@ -121,7 +121,7 @@ jobs:
           
           # Check if only app code changed (verifier-only deployment)
           VERIFIER_ONLY=false
-          if echo "$CHANGED_FILES" | grep -qE '^(app/|Dockerfile|scripts/deploy\.sh|\.github/workflows/deploy\.yml)'; then
+          if echo "$CHANGED_FILES" | grep -qE '^(app/|Dockerfile|scripts/workflow_deploy\.sh|\.github/workflows/deploy\.yml)'; then
             # App-related files changed - check if ONLY app files changed
             if ! echo "$CHANGED_FILES" | grep -qE '^(docker-compose|infrastructure/)'; then
               VERIFIER_ONLY=true
@@ -134,9 +134,9 @@ jobs:
           
           # Set deployment command
           if [ "$VERIFIER_ONLY" = "true" ]; then
-            DEPLOY_CMD='VERIFIER_ONLY=true /app/deploy.sh'
+            DEPLOY_CMD='VERIFIER_ONLY=true /app/workflow_deploy.sh'
           else
-            DEPLOY_CMD='/app/deploy.sh'
+            DEPLOY_CMD='/app/workflow_deploy.sh'
           fi
           
           echo "📋 Deployment command: $DEPLOY_CMD"

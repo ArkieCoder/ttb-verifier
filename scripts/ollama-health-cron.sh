@@ -11,8 +11,8 @@
 # The FastAPI /health endpoint reads only this file — no blocking network
 # calls inside the app event loop.
 #
-# Installed by deploy.sh on every deployment. The canonical copy lives in
-# scripts/ollama-health-cron.sh; deploy.sh embeds an identical copy.
+# Installed by workflow_deploy.sh on every deployment. The canonical copy lives in
+# scripts/ollama-health-cron.sh; workflow_deploy.sh embeds an identical copy.
 
 set -euo pipefail
 

@@ -7,11 +7,11 @@ accuracy metrics comparing verifier results against ground truth labels.
 
 Usage:
     # Local testing with Ollama
-    python3 scripts/test_verifier.py
-    python3 scripts/test_verifier.py --samples-dir ../samples/
+    python3 scripts/verify_samples.py
+    python3 scripts/verify_samples.py --samples-dir ../samples/
     
     # Remote API testing
-    python3 scripts/test_verifier.py --remote-host https://ttb-verifier.example.com \
+    python3 scripts/verify_samples.py --remote-host https://ttb-verifier.example.com \
         --remote-user myuser --remote-pass mypass
 
 Outputs:

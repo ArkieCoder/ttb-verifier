@@ -3,10 +3,10 @@
 # Test script for TTB Label Verifier API with authentication
 #
 # Usage:
-#   ./scripts/test_api.sh <base_url> <username> <password>
+#   ./scripts/api_smoketests.sh <base_url> <username> <password>
 #
 # Example:
-#   ./scripts/test_api.sh https://ttb-verifier.example.com myuser mypass
+#   ./scripts/api_smoketests.sh https://ttb-verifier.example.com myuser mypass
 #
 
 set -e  # Exit on error
@@ -210,7 +210,7 @@ if [ -f "samples/label_good_001.jpg" ]; then
     fi
 else
     echo -e "${YELLOW}⚠ Skipped - samples/label_good_001.jpg not found${NC}"
-    echo -e "  Run from project root directory: ./scripts/test_api.sh ..."
+    echo -e "  Run from project root directory: ./scripts/api_smoketests.sh ..."
 fi
 echo ""
 

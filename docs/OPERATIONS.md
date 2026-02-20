@@ -263,7 +263,7 @@ aws ssm send-command \
 aws ssm send-command \
   --instance-ids "$INSTANCE_ID" \
   --document-name "AWS-RunShellScript" \
-  --parameters 'commands=["/app/deploy.sh"]'
+  --parameters 'commands=["/app/workflow_deploy.sh"]'
 ```
 
 ### Issue: High Response Times

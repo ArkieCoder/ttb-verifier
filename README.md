@@ -69,10 +69,10 @@ The web UI includes an intelligent system status banner that automatically manag
 **Testing the UI API:**
 ```bash
 # Run comprehensive API test suite (11 tests)
-./scripts/test_api.sh https://<your-domain> <username> <password>
+./scripts/api_smoketests.sh https://<your-domain> <username> <password>
 
 # Example:
-./scripts/test_api.sh https://ttb-verifier.unitedentropy.com hireme please
+./scripts/api_smoketests.sh https://ttb-verifier.example.com hireme please
 ```
 
 **Test Coverage:**
@@ -138,7 +138,7 @@ python app/verify_label.py test_samples/label_good_001.jpg \
 
 ## API Endpoints
 
-**Note:** API endpoints require authentication. Login via `/ui/login` to obtain a session cookie, or use the test script at `scripts/test_api.sh`.
+**Note:** API endpoints require authentication. Login via `/ui/login` to obtain a session cookie, or use the test script at `scripts/api_smoketests.sh`.
 
 ### POST /verify
 Verify a single label image.
@@ -316,12 +316,12 @@ To use a custom Ollama model:
 ├── docker-compose.dev.yml   # Local development (CPU mode, builds from source)
 ├── Dockerfile               # Multi-stage build (test, production)
 ├── scripts/                  # Utility scripts
-│   ├── deploy.sh            # Deployment automation
+│   ├── workflow_deploy.sh   # Deployment automation
 │   ├── gen_samples.py       # Generate test label images
-│   ├── run_cli_tests.sh     # CLI test suite
+│   ├── cli_smoketests.sh    # CLI smoke tests
 │   ├── setup_secrets.sh     # AWS secrets configuration
-│   ├── test_api.sh          # API integration tests
-│   └── test_verifier.py     # Golden dataset validation
+│   ├── api_smoketests.sh    # API smoke tests
+│   └── verify_samples.py    # Golden dataset validation
 ├── samples/                  # Golden dataset (40 test labels)
 ├── tools/                    # Additional tooling
 └── docs/                     # Documentation

@@ -335,7 +335,7 @@ terragrunt output github_actions_role_arn
 ```
 /app/
 ├── docker-compose.yml    # Production compose config
-└── deploy.sh             # Deployment script called by GitHub Actions
+└── workflow_deploy.sh    # Deployment script called by GitHub Actions
 ```
 
 ### Security Groups

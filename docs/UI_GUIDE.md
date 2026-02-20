@@ -61,9 +61,10 @@ Click your username in the top-right corner → **Logout**
 
 1. Navigate to **Single Verification** (default home page)
 2. Click **Choose File** and select a label image
-   - Supported: JPEG, PNG
+   - Supported: JPEG, TIFF (`.jpg`, `.jpeg`, `.tif`, `.tiff`)
    - Max size: 10MB
    - Recommended: Clear, well-lit photos
+   - **Note:** PNG is not accepted — TTB COLA submissions require JPEG or TIFF
 
 ### Step 2: Add Metadata (Optional)
 
@@ -81,20 +82,22 @@ For **Tier 2 accuracy validation**, provide expected values:
 
 ### Step 3: Choose OCR Backend
 
-- **Tesseract** (default): Fast (~1s), good recall, moderate precision
-- **Ollama Vision AI**: Accurate (~10-30s), better for complex labels
+- **Ollama Vision AI** (only available backend): Uses llama3.2-vision for high-accuracy text extraction
+  - Processing time: ~58 seconds per label
   - Automatically disabled if model is downloading
-  - Adjust timeout for large images (default: 60s)
+  - Submitted jobs are queued; the page polls for results automatically
 
 ### Step 4: Submit & Review Results
 
-Click **Verify Label** and wait for processing.
+Click **Verify Label** — the job is submitted to the async queue and the page polls for results.
 
 **Results show:**
 - ✅ **COMPLIANT** / ❌ **NON-COMPLIANT** / ⚠️ **PARTIAL**
 - Extracted fields (brand, ABV, warning, etc.)
 - Violations with expected vs. actual values
 - Processing time
+
+**If a job fails:** A **Retry** button appears. Click it to re-enqueue without re-uploading the image.
 
 ---
 
@@ -106,16 +109,16 @@ Create a ZIP archive with:
 
 ```
 batch.zip
-├── label_001.jpg           # Required: Image file
+├── label_001.jpg           # Required: Image file (JPEG or TIFF)
 ├── label_001.json          # Optional: Ground truth
-├── label_002.png
+├── label_002.tif
 ├── label_002.json
 └── ...
 ```
 
 **Limits:**
 - Max 50 images per batch
-- Supported: JPEG, PNG
+- Supported: JPEG, TIFF (`.jpg`, `.jpeg`, `.tif`, `.tiff`) — PNG not accepted
 - Ground truth format: `{"brand_name": "...", "abv": 7.5, ...}`
 
 **Ground Truth JSON Example:**
@@ -136,11 +139,10 @@ batch.zip
 3. Choose OCR backend (Tesseract or Ollama)
 4. Click **Upload & Process Batch**
 
-**Important:** Batch processing is **synchronous**. Expect:
-- Tesseract: 2-5 seconds per image
-- Ollama: 10-30 seconds per image
+**Important:** Batch processing is **asynchronous** — the job is queued and processed in the background. The page polls for status automatically. Expect:
+- ~58 seconds per image (Ollama)
 
-For 50 images with Ollama, processing may take **15-25 minutes**.
+For 50 images, total processing may take **40-50 minutes**.
 
 ### Step 3: Review Results
 
@@ -164,31 +166,19 @@ For 50 images with Ollama, processing may take **15-25 minutes**.
 
 ## OCR Backend Selection
 
-### Tesseract OCR
+### Ollama Vision AI (llama3.2-vision) — Only Available Backend
 
 **Best for:**
-- Fast processing (< 1 second)
-- Batch operations with many images
-- Simple, well-structured labels
-
-**Characteristics:**
-- 100% recall (finds all fields)
-- ~50% precision (may have false positives)
-- No GPU required
-- Always available
-
-### Ollama Vision AI (llama3.2-vision)
-
-**Best for:**
-- Complex layouts
-- Handwritten or stylized text
+- All label verification tasks
+- Complex layouts and stylized/decorative fonts
 - Maximum accuracy requirements
 
 **Characteristics:**
 - ~58 seconds per label
-- Excellent accuracy
-- Requires model download (first-time: 5-10 minutes)
+- ~95% field accuracy
+- Requires model download on first run (5-10 minutes)
 - Shows "Not Ready" while downloading
+- GPU-accelerated on g4dn.2xlarge instance
 
 **Status Indicator:**
 - 🟢 **Available** - Model loaded, ready to use
@@ -196,6 +186,8 @@ For 50 images with Ollama, processing may take **15-25 minutes**.
 - 🟡 **Checking...** - Querying health endpoint
 
 The UI automatically **polls `/health`** every 30 seconds to update status.
+
+**Note:** Tesseract OCR was evaluated but rejected due to ~60-70% field accuracy — insufficient for regulatory compliance checking. Ollama is the only OCR backend in this system.
 
 ---
 
@@ -303,32 +295,31 @@ Actual: 8.2%
 
 **Solution:**
 - Wait 5-10 minutes for model download
-- Use Tesseract backend as fallback
-- Check `/health` endpoint: `curl https://ttb-verifier.unitedentropy.com/health`
+- Check `/health` endpoint: `curl https://<your-domain>/health`
+- If Ollama is down, all verification jobs will return 503 until it recovers — there is no fallback backend
 
 ### Batch Processing Hangs
 
 **Causes:**
 - Too many images (> 50)
 - Very large images
-- Ollama timeout too short
+- Worker queue backed up
 
 **Solution:**
 - Reduce batch size to ≤ 50 images
 - Resize images to < 2MB each
-- Increase Ollama timeout (default: 60s)
-- Use Tesseract for large batches
+- Check `/health` for queue depth and worker status
 
 ### Images Won't Upload
 
 **Causes:**
 - File size > 10MB
-- Invalid file type (not JPEG/PNG)
+- Invalid file type (not JPEG or TIFF — PNG is not accepted)
 - Corrupted image file
 
 **Solution:**
 - Compress images to < 10MB
-- Convert to JPEG or PNG
+- Convert to JPEG (`.jpg`) or TIFF (`.tif`)
 - Verify file integrity
 
 ---
@@ -363,7 +354,7 @@ curl -b cookies.txt -X POST https://<your-domain>/verify/batch \
 Use the included test script to verify API functionality:
 
 ```bash
-./scripts/test_api.sh https://<your-domain> <username> <password>
+./scripts/api_smoketests.sh https://<your-domain> <username> <password>
 ```
 
 **Tests performed:**
@@ -434,19 +425,21 @@ For production:
              │
              ▼
 ┌──────────────────────────────────────┐
-│       EC2 Instance (t3.xlarge)       │
+│       EC2 Instance (g4dn.2xlarge)    │
 │  ┌────────────────────────────────┐  │
 │  │    FastAPI Application         │  │
 │  │  - Host Check Middleware       │  │
 │  │  - Session Auth (4h duration)  │  │
+│  │  - Async Queue (verify+batch)  │  │
 │  │  - Jinja2 Templates            │  │
-│  └────────┬───────────────┬────────┘  │
-│           │               │           │
-│           ▼               ▼           │
-│    ┌──────────┐    ┌──────────┐      │
-│    │Tesseract │    │  Ollama  │      │
-│    │   OCR    │    │ llama3.2 │      │
-│    └──────────┘    └──────────┘      │
+│  └────────────────┬───────────────┘  │
+│                   │                  │
+│                   ▼                  │
+│          ┌──────────────┐            │
+│          │    Ollama    │            │
+│          │ llama3.2-    │            │
+│          │    vision    │            │
+│          └──────────────┘            │
 └──────────────────────────────────────┘
              │
              ▼
@@ -463,8 +456,10 @@ For production:
 3. **ALB** routes to healthy EC2 instance
 4. **Middleware** checks Host header
 5. **Auth** validates session cookie
-6. **Application** processes label with OCR backend
-7. **Response** rendered via Jinja2 template
+6. **Application** enqueues verification job and returns a job ID
+7. **Worker** picks up job, calls Ollama (llama3.2-vision)
+8. **Client** polls `GET /verify/async/{job_id}` for result
+9. **Response** rendered via Jinja2 template when job completes
 
 ---
 

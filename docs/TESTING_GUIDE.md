@@ -3,7 +3,7 @@
 ## Overview
 
 The TTB Label Verifier uses a dual testing strategy:
-1. **CLI Tests** (`scripts/run_cli_tests.sh`) - Quick smoke tests for local development
+1. **CLI Tests** (`scripts/cli_smoketests.sh`) - Quick smoke tests for local development
 2. **Pytest Suite** (`app/tests/`) - Comprehensive unit, integration, and API tests
 
 **Coverage Target:** 50% minimum (enforced in Docker build)
@@ -14,7 +14,7 @@ The TTB Label Verifier uses a dual testing strategy:
 
 ```bash
 # CLI smoke tests (30 seconds)
-./scripts/run_cli_tests.sh --quick
+./scripts/cli_smoketests.sh --quick
 
 # Pytest all tests (from app directory - matches Docker/CI)
 cd app && pytest tests/ -v
@@ -35,7 +35,7 @@ docker-compose exec verifier pytest tests/ -v
 
 ### Overview
 
-**File:** `scripts/run_cli_tests.sh`  
+**File:** `scripts/cli_smoketests.sh`  
 **Tests:** 24 tests across 8 categories  
 **Runtime:** ~30 seconds (--quick mode)
 
@@ -49,22 +49,22 @@ docker-compose exec verifier pytest tests/ -v
 
 ```bash
 # All tests including slow Ollama tests
-./scripts/run_cli_tests.sh
+./scripts/cli_smoketests.sh
 
 # Quick mode (skip Ollama tests) - recommended
-./scripts/run_cli_tests.sh --quick
+./scripts/cli_smoketests.sh --quick
 
 # Verbose mode (show command output)
-./scripts/run_cli_tests.sh --quick --verbose
+./scripts/cli_smoketests.sh --quick --verbose
 
 # Stop at first failure
-./scripts/run_cli_tests.sh --quick --stop-on-error
+./scripts/cli_smoketests.sh --quick --stop-on-error
 
 # Clean up test artifacts after run
-./scripts/run_cli_tests.sh --quick --cleanup
+./scripts/cli_smoketests.sh --quick --cleanup
 
 # Show help
-./scripts/run_cli_tests.sh --help
+./scripts/cli_smoketests.sh --help
 ```
 
 ### Test Categories
@@ -93,7 +93,7 @@ docker-compose exec verifier pytest tests/ -v
    - Ollama backend (slow, skipped in --quick mode)
 
 5. **Comprehensive Test Suite** (2 tests)
-   - scripts/test_verifier.py with summary
+   - scripts/verify_samples.py with summary
    - JSON output with metrics
 
 6. **Performance** (2 tests)
@@ -102,7 +102,7 @@ docker-compose exec verifier pytest tests/ -v
 
 7. **Help & Documentation** (2 tests)
    - verify_label.py --help
-   - scripts/test_verifier.py --help
+   - scripts/verify_samples.py --help
 
 8. **Field Extraction** (3 tests)
    - Extract required fields

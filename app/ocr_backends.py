@@ -41,7 +41,8 @@ class OCRBackend(ABC):
 class OllamaOCR(OCRBackend):
     """OCR backend using Ollama vision models with lazy initialization."""
     
-    def __init__(self, model: str = "llama3.2-vision", host: str = "http://localhost:11434"):
+    def __init__(self, model: str = "llama3.2-vision", host: str = "http://localhost:11434",
+                 timeout: int = 60):
         """
         Initialize Ollama OCR backend.
         
@@ -52,17 +53,22 @@ class OllamaOCR(OCRBackend):
         Args:
             model: Ollama model name (llama3.2-vision, llava, moondream)
             host: Ollama API host URL
+            timeout: Request timeout in seconds passed to the ollama httpx client
         """
         self.model = model
         self.host = host
+        self.timeout = timeout
         self._availability_checked = False
         self._is_available = False
         self._availability_error = None
         
-        # Import ollama library
+        # Import ollama library and create a client with the configured timeout.
+        # The module-level ollama.chat() has no timeout parameter; the Client
+        # constructor forwards **kwargs to httpx.Client, which does.
         try:
             import ollama
             self.ollama = ollama
+            self._client = ollama.Client(host=host, timeout=timeout)
         except ImportError:
             self._is_available = False
             self._availability_error = "ollama Python library not installed. Install with: pip install ollama"
@@ -161,8 +167,10 @@ Please extract and list every piece of text you can see, line by line. Include:
 
 Format your response as plain text, with each distinct text element on its own line. Do NOT add bullet points, asterisks, or markdown formatting."""
 
-            # Call Ollama using Python library
-            response = self.ollama.chat(
+            # Call Ollama using the client instance (which has the configured timeout).
+            # Do NOT use self.ollama.chat() — the module-level function uses a default
+            # httpx client with no timeout, causing requests to hang for 20+ minutes.
+            response = self._client.chat(
                 model=self.model,
                 messages=[{
                     'role': 'user',

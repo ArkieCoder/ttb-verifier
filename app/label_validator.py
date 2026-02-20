@@ -34,16 +34,17 @@ class ValidationLevel(Enum):
 class LabelValidator:
     """Main validator orchestrating OCR, extraction, and validation."""
     
-    def __init__(self, ollama_host: Optional[str] = None):
+    def __init__(self, ollama_host: Optional[str] = None, timeout: int = 60):
         """
         Initialize validator with Ollama OCR backend.
         
         Args:
             ollama_host: Ollama API host URL (defaults to OLLAMA_HOST env var or http://localhost:11434)
+            timeout: Request timeout in seconds for Ollama calls
         """
         # Initialize Ollama OCR backend
         host = ollama_host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
-        self.ocr = OllamaOCR(host=host)
+        self.ocr = OllamaOCR(host=host, timeout=timeout)
         
         # Initialize extractor and validator
         self.extractor = LabelExtractor()

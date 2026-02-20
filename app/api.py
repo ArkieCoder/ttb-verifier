@@ -478,11 +478,7 @@ def process_batch_job(
         
         # Initialize validator with Ollama (reuse for all images)
         try:
-            validator = LabelValidator()
-            
-            # Set timeout for Ollama
-            if hasattr(validator.ocr, 'timeout'):
-                validator.ocr.timeout = ocr_timeout
+            validator = LabelValidator(timeout=ocr_timeout)
         
         except RuntimeError as e:
             # Handle Ollama unavailability
@@ -657,12 +653,9 @@ async def verify_label(
         await save_upload_file(image, temp_path)
         
         try:
-            # Initialize validator with Ollama
-            validator = LabelValidator()
-            
-            # Set timeout for Ollama
-            if hasattr(validator.ocr, 'timeout'):
-                validator.ocr.timeout = ocr_timeout
+            # Initialize validator with Ollama, passing timeout at construction
+            # so the httpx client inside OllamaOCR enforces it on every request.
+            validator = LabelValidator(timeout=ocr_timeout)
             
             # Validate label
             logger.info(

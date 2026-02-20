@@ -8,7 +8,6 @@ Endpoints:
     POST /verify - Single label verification
     POST /verify/batch - Batch label verification
     GET /docs - Swagger UI documentation
-    GET /redoc - ReDoc documentation
 """
 
 import json
@@ -220,7 +219,8 @@ app = FastAPI(
     title="TTB Label Verifier API",
     description="REST API for validating alcohol beverage labels against 27 CFR regulations",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redoc_url=None
 )
 
 # Add CORS middleware
@@ -287,25 +287,25 @@ def validate_image_file(upload_file: UploadFile, correlation_id: str) -> None:
         HTTPException: If validation fails
     """
     # Check content type
-    if upload_file.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
+    if upload_file.content_type not in ["image/jpeg", "image/jpg", "image/tiff"]:
         logger.warning(
             f"[{correlation_id}] Invalid file type: {upload_file.content_type}"
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file type. Expected image/jpeg or image/png, got {upload_file.content_type}"
+            detail=f"Invalid file type. Expected image/jpeg or image/tiff, got {upload_file.content_type}"
         )
     
     # Check file extension
     if upload_file.filename:
         ext = Path(upload_file.filename).suffix.lower()
-        if ext not in [".jpg", ".jpeg", ".png"]:
+        if ext not in [".jpg", ".jpeg", ".tif", ".tiff"]:
             logger.warning(
                 f"[{correlation_id}] Invalid file extension: {ext}"
             )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid file extension. Expected .jpg, .jpeg, or .png, got {ext}"
+                detail=f"Invalid file extension. Expected .jpg, .jpeg, .tif, or .tiff, got {ext}"
             )
     
     # Verify file is actually a valid image by trying to open it
@@ -417,7 +417,7 @@ async def extract_zip_file(
         )
     
     # Find all image files
-    image_extensions = {'.jpg', '.jpeg', '.png'}
+    image_extensions = {'.jpg', '.jpeg', '.tif', '.tiff'}
     image_files = []
     
     for ext in image_extensions:
@@ -637,7 +637,7 @@ async def verify_label(
     (Tier 2) if ground truth is provided.
     
     **Request:**
-    - `image`: Label image file (JPEG or PNG, max 10MB)
+    - `image`: Label image file (JPEG or TIFF, max 10MB)
     - `ground_truth`: Optional JSON with expected values
     - `timeout`: Optional timeout in seconds (default: 60s)
     
@@ -956,7 +956,7 @@ async def submit_async_verify(
     (~10s) happens in the separate worker container.
 
     **Request:**
-    - ``image``: Label image (JPEG or PNG, max 10MB)
+    - ``image``: Label image (JPEG or TIFF, max 10MB)
     - ``ground_truth``: Optional JSON with expected values
 
     **Response:**
@@ -985,9 +985,10 @@ async def submit_async_verify(
     job_dir = Path(settings.queue_db_path).parent / "async" / str(uuid.uuid4())
     job_dir.mkdir(parents=True, exist_ok=True)
 
-    # Sanitise filename (keep extension only)
-    suffix = Path(image.filename).suffix.lower() if image.filename else ".jpg"
-    image_dest = job_dir / f"image{suffix}"
+    # Preserve the original filename (basename only) so the results page
+    # can display it correctly.
+    original_name = Path(image.filename).name if image.filename else "image.jpg"
+    image_dest = job_dir / original_name
     await save_upload_file(image, image_dest)
 
     job_id = verify_queue.enqueue(
@@ -1057,6 +1058,61 @@ async def get_async_verify_status(
         result=result_obj,
         error=job.get("error"),
         queue_depth=queue_depth,
+    )
+
+
+@app.post("/verify/retry/{job_id}", response_model=AsyncVerifySubmitResponse)
+async def retry_async_verify(
+    job_id: str,
+    username: str = Depends(get_current_user)
+) -> AsyncVerifySubmitResponse:
+    """
+    Re-enqueue a failed (or completed) single-image verify job using the
+    same image and ground truth as the original submission.
+
+    Intended for use after a job reaches ``failed`` status so the user can
+    retry without re-uploading the image.
+
+    **Response:**
+    - ``job_id``: New job identifier — poll ``GET /verify/status/{job_id}``
+    - ``status``: ``pending``
+
+    **Example:**
+    ```bash
+    curl -X POST https://example.com/verify/retry/abc123
+    ```
+    """
+    correlation_id = get_correlation_id()
+    logger.info(f"[{correlation_id}] POST /verify/retry/{job_id}")
+
+    original = verify_queue.get(job_id)
+    if original is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Verify job {job_id} not found",
+        )
+
+    # Make sure the image file still exists on the shared volume
+    image_path = original.get("image_path")
+    if not image_path or not Path(image_path).exists():
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="Original image file no longer available; please re-upload.",
+        )
+
+    new_job_id = verify_queue.enqueue(
+        image_path=image_path,
+        ground_truth=original.get("ground_truth"),
+    )
+
+    logger.info(
+        f"[{correlation_id}] Retried job {job_id} as new job {new_job_id}"
+    )
+
+    return AsyncVerifySubmitResponse(
+        job_id=new_job_id,
+        status="pending",
+        message=f"Job re-submitted. Poll GET /verify/status/{new_job_id} for results.",
     )
 
 

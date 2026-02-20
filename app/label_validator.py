@@ -346,7 +346,7 @@ class LabelValidator:
         if missing_count >= 2:
             warnings.append(
                 f"OCR extracted {missing_count} missing fields. "
-                "Consider using --ocr-backend=ollama for better accuracy (slower)."
+                "Image quality or label layout may have affected extraction accuracy."
             )
         
         return warnings

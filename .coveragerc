@@ -10,7 +10,7 @@ omit =
     # Exclude sample generator (not part of production code)
     generate_samples.py
     gen_samples.py
-    test_verifier.py
+    verify_samples.py
 
 [report]
 precision = 2

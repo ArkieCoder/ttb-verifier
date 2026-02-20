@@ -12,7 +12,7 @@ Usage (inside container):
 Environment variables (same as the main app):
     OLLAMA_HOST              default: http://ollama:11434
     OLLAMA_MODEL             default: llama3.2-vision
-    OLLAMA_TIMEOUT_SECONDS   default: 12   (short — we retry on timeout)
+    OLLAMA_TIMEOUT_SECONDS   default: 15   (short — we retry on timeout)
     WORKER_POLL_INTERVAL     default: 2    (seconds between empty-queue polls)
     LOG_LEVEL                default: INFO
 """
@@ -43,10 +43,9 @@ logger = logging.getLogger("ttb_worker")
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://ollama:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2-vision")
-# Short per-attempt timeout: inference normally takes ~10s, so 12s gives a
-# small cushion while still failing fast enough to retry within the overall
-# CloudFront window (60s) if the job is retried on the NEXT request.
-OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT_SECONDS", "12"))
+# Per-attempt timeout: inference normally takes ~10s, so 15s gives a
+# reasonable cushion while still failing fast enough to retry.
+OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT_SECONDS", "15"))
 POLL_INTERVAL = float(os.getenv("WORKER_POLL_INTERVAL", "2"))
 
 # Shared volume path — must match the API container.
@@ -91,6 +90,14 @@ def process_job(job: dict, validator: LabelValidator) -> dict:
 
     result = validator.validate_label(image_path, ground_truth)
     result["image_path"] = Path(image_path).name
+
+    # If the validator returned an ERROR status (e.g. Ollama sentinel absent,
+    # OCR extraction failed), treat it as a retriable failure rather than a
+    # completed job.  Raising here causes the worker loop to call queue.fail(),
+    # which requeues the job if attempts remain.
+    if result.get("status") == "ERROR":
+        raise RuntimeError(result.get("error") or "OCR returned ERROR status")
+
     return result
 
 

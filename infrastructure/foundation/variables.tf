@@ -19,7 +19,7 @@ variable "project_name" {
 }
 
 variable "domain_name" {
-  description = "Full domain name for the application (e.g., 'ttb-verifier.unitedentropy.com')"
+  description = "Full domain name for the application (e.g., 'ttb-verifier.example.com')"
   type        = string
 }
 

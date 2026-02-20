@@ -215,13 +215,13 @@ async def ui_verify_submit(
     from api import verify_queue
 
     # Validate image file
-    if image.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
+    if image.content_type not in ["image/jpeg", "image/jpg", "image/tiff"]:
         return templates.TemplateResponse(
             "index.html",
             {
                 "request": request,
                 "username": username,
-                "error": f"Invalid file type: {image.content_type}. Please upload JPEG or PNG.",
+                "error": f"Invalid file type: {image.content_type}. Please upload JPEG or TIFF.",
                 "error_field": "image",
                 "form_data": {
                     "brand_name": brand_name,
@@ -256,8 +256,10 @@ async def ui_verify_submit(
         # Persist image to shared volume
         job_dir = Path(settings.queue_db_path).parent / "async" / str(uuid.uuid4())
         job_dir.mkdir(parents=True, exist_ok=True)
-        suffix = Path(image.filename).suffix.lower() if image.filename else ".jpg"
-        image_dest = job_dir / f"image{suffix}"
+        # Preserve the original filename (basename only, to strip any path the
+        # browser may include) so the results page can display it correctly.
+        original_name = Path(image.filename).name if image.filename else "image.jpg"
+        image_dest = job_dir / original_name
         content = await image.read()
         with open(image_dest, "wb") as f:
             f.write(content)
@@ -488,7 +490,27 @@ async def ui_verify_result(
         )
 
     result = job["result"]
-    filename = Path(job["image_path"]).name
+    image_path = Path(job["image_path"])
+    filename = image_path.name
+
+    # Re-encode the saved image as a base64 data URL for display in the template.
+    # TIFFs are not renderable in most browsers, so convert them to JPEG first.
+    image_data = None
+    try:
+        from io import BytesIO
+        suffix = image_path.suffix.lower()
+        if suffix in (".tif", ".tiff"):
+            with Image.open(image_path) as img:
+                buf = BytesIO()
+                img.convert("RGB").save(buf, format="JPEG", quality=90)
+                raw = buf.getvalue()
+            mime = "image/jpeg"
+        else:
+            raw = image_path.read_bytes()
+            mime = "image/jpeg"
+        image_data = f"data:{mime};base64,{base64.b64encode(raw).decode()}"
+    except Exception as e:
+        logger.warning(f"Could not encode image for results page: {e}")
 
     return templates.TemplateResponse(
         "results.html",
@@ -497,9 +519,88 @@ async def ui_verify_result(
             "username": username,
             "result": result,
             "filename": filename,
-            "image_data": None,  # Image file is on disk; we don't re-encode it here
+            "image_data": image_data,
         }
     )
+
+
+@router.post("/ui/verify/retry/{job_id}")
+async def ui_verify_retry(
+    request: Request,
+    job_id: str,
+    username: str = Depends(get_current_user_ui)
+):
+    """
+    Re-enqueue a failed verify job from the UI and redirect to the new pending page.
+    Called by the Retry button on the verify_pending page.
+    """
+    from api import verify_queue
+
+    original = verify_queue.get(job_id)
+    if original is None:
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "username": username,
+                "error": "Job not found or expired. Please re-upload your image.",
+                "ollama_host": settings.ollama_host,
+                "default_timeout": settings.ollama_timeout_seconds,
+            },
+        )
+
+    image_path = original.get("image_path")
+    if not image_path or not Path(image_path).exists():
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "username": username,
+                "error": "Original image file is no longer available. Please re-upload.",
+                "ollama_host": settings.ollama_host,
+                "default_timeout": settings.ollama_timeout_seconds,
+            },
+        )
+
+    new_job_id = verify_queue.enqueue(
+        image_path=image_path,
+        ground_truth=original.get("ground_truth"),
+    )
+    logger.info(f"[ui] Retried job {job_id} as new job {new_job_id}")
+
+    return RedirectResponse(
+        url=f"/ui/verify/pending/{new_job_id}",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.get("/ui/verify/image/{job_id}")
+async def ui_verify_image(
+    request: Request,
+    job_id: str,
+    username: str = Depends(get_current_user_ui)
+):
+    """
+    Serve the uploaded image for a verify job directly from the shared volume.
+    Used by both the pending/error page and the results page.
+    """
+    from api import verify_queue
+    from fastapi.responses import Response
+
+    job = verify_queue.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+
+    image_path = Path(job["image_path"])
+    if not image_path.exists():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
+
+    suffix = image_path.suffix.lower()
+    if suffix in (".tif", ".tiff"):
+        media_type = "image/tiff"
+    else:
+        media_type = "image/jpeg"
+    return Response(content=image_path.read_bytes(), media_type=media_type)
 
 
 @router.get("/ui/health", response_class=HTMLResponse)

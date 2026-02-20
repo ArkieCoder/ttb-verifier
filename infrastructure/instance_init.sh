@@ -236,7 +236,7 @@ EOF
 chown ubuntu:ubuntu /app/.env
 
 # Create deployment script for GitHub Actions to call
-cat > /app/deploy.sh <<'EOFSCRIPT'
+cat > /app/workflow_deploy.sh <<'EOFSCRIPT'
 #!/bin/bash
 set -e
 
@@ -345,8 +345,8 @@ echo "Ollama health cron installed"
 echo "Deployment successful!"
 EOFSCRIPT
 
-chmod +x /app/deploy.sh
-chown ubuntu:ubuntu /app/deploy.sh
+chmod +x /app/workflow_deploy.sh
+chown ubuntu:ubuntu /app/workflow_deploy.sh
 
 # Pull and start Ollama service
 echo "Starting Ollama service..."
@@ -362,7 +362,7 @@ echo "Auto-deploying TTB Verifier Application"
 echo "Deploying application (Ollama backend required)..."
 echo "Ollama model will be downloaded in background."
 
-if /app/deploy.sh; then
+if /app/workflow_deploy.sh; then
   echo "Verifier application deployed successfully!"
   echo "   Status: Ollama backend will be available after model download completes."
   echo "   Verification endpoints will return 503 until Ollama is ready."
@@ -370,7 +370,7 @@ else
   echo "Initial deployment failed, but EC2 is ready for manual deployment"
   echo "   You can manually deploy using:"
   echo "   - GitHub Actions Deploy workflow"
-  echo "   - AWS SSM: /app/deploy.sh"
+  echo "   - AWS SSM: /app/workflow_deploy.sh"
   exit 0  # Don't fail EC2 initialization
 fi
 

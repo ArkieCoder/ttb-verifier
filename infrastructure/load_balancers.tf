@@ -8,16 +8,9 @@ resource "aws_lb" "ttb" {
   # Increase idle timeout for Ollama vision processing (can take 60-120 seconds)
   idle_timeout = 180
 
-  # Using default VPC subnets across multiple AZs
-  # Note: These are existing subnets, no VPC infrastructure code needed
-  subnets = [
-    "subnet-087c34ce6b854b207", # us-east-1a
-    "subnet-067659fddc18e6d08", # us-east-1b
-    "subnet-0964715de1feee340", # us-east-1c
-    "subnet-0e47260fdbba6e0f6", # us-east-1d
-    "subnet-08925a7ee9f27c57b", # us-east-1e
-    "subnet-0b98b5770d8be8909"  # us-east-1f
-  ]
+  # Subnet IDs are supplied via tfvars (alb_subnet_ids).
+  # Must span at least two Availability Zones.
+  subnets = var.alb_subnet_ids
 
   tags = {
     Name      = "ttb-verifier-alb"

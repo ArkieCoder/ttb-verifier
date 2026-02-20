@@ -821,135 +821,48 @@ python scripts/gen_samples.py --seed 42  # optional reproducibility
 
 ---
 
-## Decision 007: JPEG-Only Output Format
+## Decision 007: Sample Label Output Format — JPEG + TIFF
 
-**Date:** 2026-02-16  
-**Status:** ✅ Decided  
-**Decision:** Generate only JPEG files (not TIFF) for sample labels
+**Date:** 2026-02-16 (revised 2026-02-20)
+**Status:** ✅ Revised  
+**Decision:** Generate both JPEG and TIFF files for sample labels; accept both JPEG and TIFF for label uploads
 
 ### Context
-- Initial implementation generated both JPEG and TIFF files per label
 - TTB COLA submission requirements specify "JPEG or TIFF, < 750 KB"
-- Need to simplify output and reduce unnecessary file generation
-- Verification software should handle standard image formats interchangeably
+- Initial implementation generated both JPEG and TIFF per label
+- An intermediate revision briefly considered JPEG-only to simplify file management
+- However, the verification API must accept both formats to match real TTB workflow (applicants may submit either)
 
-### Options Considered
+### Final Decision
 
-#### Option 1: JPEG + TIFF (Original Implementation)
-**Pros:**
-- Covers both accepted formats
-- TIFF provides lossless quality
-- Shows format flexibility
+**Accept both JPEG and TIFF** for label uploads throughout the system:
+- `POST /verify`, `POST /verify/async`: accept `.jpg`, `.jpeg`, `.tif`, `.tiff`
+- Sample generator: produces both `.jpg` and `.tif` per label for comprehensive testing
+- Batch ZIP files: may contain either format
 
-**Cons:**
-- Doubles file count (unnecessary)
-- TIFF files often larger (compression varies)
-- More complex file management
-- Longer generation time
+### Rationale
 
-#### Option 2: JPEG Only ✅ SELECTED
-**Pros:**
-- Simpler implementation and file management
-- Smaller file sizes with quality=90
-- All modern OCR/vision software reads JPEG
-- Trivial to convert JPEG→TIFF if needed
-- Faster generation (one file per label vs. two)
-- Standard format universally supported
+1. **TTB Compliance:** Real COLA submissions are JPEG or TIFF — the verifier must handle both
+2. **Test Coverage:** Generating both formats from `gen_samples.py` exercises both upload paths
+3. **No PNG:** PNG is not an accepted TTB COLA format and is explicitly rejected by the API
 
-**Cons:**
-- Lossy compression (but quality=90 is excellent)
-- No lossless option provided
+### Implementation
 
-#### Option 3: TIFF Only
-**Pros:**
-- Lossless quality
-- Professional archival format
-
-**Cons:**
-- Larger file sizes (harder to stay under 750KB)
-- Less common in web contexts
-- Slower to generate
-
-### Decision Rationale
-
-**Selected JPEG-only output (Option 2) because:**
-
-1. **Format Interchangeability:** It is trivial for regulatory validation software to:
-   - Read either JPEG or TIFF with no problems
-   - Convert between formats as needed (ImageMagick, Pillow, etc.)
-   - Modern OCR/vision APIs accept both interchangeably
-
-2. **Simplicity Principle:** Generating both formats adds complexity without meaningful benefit
-   - Doubles file count: 40 labels × 2 formats = 80 image files instead of 40
-   - Adds file size management for second format
-   - More disk space, longer generation time
-
-3. **File Size Optimization:** JPEG compression allows:
-   - Quality=90 provides excellent visual fidelity
-   - Easier to stay under 750 KB limit
-   - TIFF files often larger even with LZW compression
-
-4. **Standard Practice:** JPEG is the de facto standard for:
-   - Web applications
-   - Image processing pipelines
-   - OCR/vision APIs (OpenAI, Google Cloud Vision, Azure CV)
-   - Cross-platform compatibility
-
-5. **Realistic Use Case:** In production:
-   - Users likely upload photos from phones (JPEG)
-   - Scanners default to JPEG or PDF
-   - Conversion between formats is one-line command: `convert label.jpg label.tif`
-
-### Implementation Changes
-
-**Before:**
 ```python
-# Save JPEG
-image.save(f"{filename}.jpg", 'JPEG', quality=90)
-
-# Save TIFF
-image.save(f"{filename}.tif", 'TIFF', compression='tiff_lzw')
+# api.py — accepted MIME types and extensions
+ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/jpg", "image/tiff"}
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".tif", ".tiff"}
 ```
-
-**After:**
-```python
-# Save JPEG only
-image.save(f"{filename}.jpg", 'JPEG', quality=90)
-```
-
-**Metadata Update:**
-- Remove `file_sizes_kb.tiff` field
-- Simplify to single file size tracking
-
-### Implications
-
-**For Development:**
-- Simpler code in `save_label()` method
-- Faster generation (no second file write)
-- Less disk I/O
-
-**For Testing:**
-- Fewer files to manage in `samples/` directory
-- 40 labels = 80 files total (40 JPG + 40 JSON) instead of 120
-
-**For Documentation:**
-- Update SAMPLE_GENERATOR.md to reflect JPEG-only
-- Update README instructions
-
-**For Verification System:**
-- No change needed - system should accept JPEG input
-- Standard image loading: `Image.open()` works the same
 
 ### Success Metrics
 
-- [✅] Only JPEG files generated (no TIFF)
-- [✅] All JPEGs < 750 KB
-- [✅] Quality sufficient for OCR/text extraction
-- [✅] Reduced generation time per label
+- [✅] API accepts JPEG and TIFF uploads; rejects PNG and other formats
+- [✅] Sample generator produces both `.jpg` and `.tif` per label
+- [✅] All files < 750 KB
 
 ### References
 - TTB COLA Requirements: JPEG or TIFF, < 750 KB
-- PIL/Pillow Image.save() documentation: https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save
+- `app/api.py` — `validate_upload_file()` function
 
 ---
 
@@ -1331,40 +1244,13 @@ python verify_label.py label.jpg --brand "X" --abv "13.5%"
 
 ---
 
-## Decision 010: [To Be Determined]
+## Decision 010: OCR Backend Strategy — Ollama-Only
 
-**Date:** TBD  
-**Status:** 🔄 Pending  
-**Decision:** [Next decision to be documented]
+**Date:** 2026-02-16 (revised 2026-02-20)
+**Status:** ✅ Revised  
+**Decision:** Use Ollama (llama3.2-vision) as the sole OCR backend; Tesseract was evaluated and rejected due to unacceptable accuracy
 
----
-
-## Template for Future Decisions
-
-**Date:** YYYY-MM-DD  
-**Status:** 🔄 Pending | ✅ Decided | ❌ Rejected | 🔄 Revised  
-**Decision:** [Clear statement of the decision]
-
-### Context
-[Why is this decision needed? What problem does it solve?]
-
-### Options Considered
-[List alternatives with pros/cons]
-
-### Decision Rationale
-[Why was this option chosen?]
-
-### Implications
-[What does this mean for the project?]
-
-### Success Metrics
-[How will we know this was the right choice?]
-
-## Decision 010: Hybrid OCR Backend Strategy
-
-**Date:** 2026-02-16  
-**Status:** ✅ Decided  
-**Decision:** Implement hybrid OCR approach with Tesseract (default) and Ollama (optional accuracy mode)
+**Revision note:** An earlier draft of this decision proposed a hybrid approach (Tesseract default, Ollama optional). After further implementation and evaluation the hybrid was abandoned: Tesseract accuracy (~60-70%) was judged insufficient for regulatory compliance checking, and the async queue architecture (see deployment) makes the Ollama latency acceptable. The system now uses Ollama exclusively.
 
 ### Context
 
@@ -1977,22 +1863,26 @@ tests/
 ### API Design
 
 **Endpoints:**
-- `POST /verify` - Single label verification (image + optional ground truth)
-- `POST /verify/batch` - Batch verification (ZIP file with images + JSON metadata)
-- `GET /health` - Health check (removed per user - not needed at this stage)
-- `GET /docs` - Auto-generated Swagger UI
+- `POST /verify` - Single label verification (synchronous, image + optional ground truth)
+- `POST /verify/async` - Single label verification (async, queue-based, CloudFront-safe)
+- `GET /verify/async/{job_id}` - Poll async verify job status
+- `POST /verify/retry/{job_id}` - Re-enqueue a failed async verify job
+- `POST /verify/batch` - Batch verification (ZIP file, async)
+- `GET /verify/batch/{job_id}` - Poll batch job status
+- `GET /health` - Health check
+- `GET /docs` - Auto-generated Swagger UI (`/redoc` is disabled)
 
 **Request Limits:**
 - Max file size: 10MB per image
 - Max batch size: 50 images
-- Allowed formats: .jpg, .jpeg, .png
+- Allowed formats: .jpg, .jpeg, .tif, .tiff (PNG is **not** accepted — not a TTB COLA format)
 
 **Batch ZIP Format:**
 ```
 batch.zip
 ├── label_001.jpg
 ├── label_001.json (ground truth, optional)
-├── label_002.jpg
+├── label_002.tif
 ├── label_002.json
 └── ...
 ```
@@ -2001,20 +1891,14 @@ JSON files must match image filenames (e.g., `label_001.jpg` → `label_001.json
 
 ### Security & Access Control
 
-#### Authentication: None (Open Access) ✅ SELECTED
+#### Authentication: Session-Based Auth ✅ IMPLEMENTED
 **Rationale:**
-- Prototype stage - focus on functionality
-- Production will use AWS API Gateway for auth
-- Simplifies development and testing
-- Can add API key middleware later if needed (comment in code)
+- Session cookie authentication added (4-hour sessions, httponly cookies)
+- Credentials stored in AWS Secrets Manager
+- Host-header middleware enforces domain-only access (rejects direct ALB/IP access)
+- Login endpoint: `POST /ui/login`
 
-**Future Production Path:**
-- AWS API Gateway handles:
-  - API key authentication
-  - Rate limiting
-  - Request throttling
-  - Usage plans
-  - CloudWatch metrics
+**Note:** The original design called for open access with authentication deferred to API Gateway. This was revised — a lightweight built-in auth layer was implemented to prevent unauthorized access to the prototype.
 
 #### CORS: Allow All Origins
 **Configuration:** `CORS_ORIGINS=["*"]`

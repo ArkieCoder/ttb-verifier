@@ -3,11 +3,11 @@
 # Comprehensive Test Script for TTB Label Verifier CLI
 #
 # Usage:
-#   ./scripts/run_cli_tests.sh                    # Run all tests
-#   ./scripts/run_cli_tests.sh --quick            # Run quick tests only (skip slow Ollama)
-#   ./scripts/run_cli_tests.sh --stop-on-error    # Stop at first failure
-#   ./scripts/run_cli_tests.sh --verbose          # Show detailed output
-#   ./scripts/run_cli_tests.sh --cleanup          # Clean up test artifacts after run
+#   ./scripts/cli_smoketests.sh                    # Run all tests
+#   ./scripts/cli_smoketests.sh --quick            # Run quick tests only (skip slow Ollama)
+#   ./scripts/cli_smoketests.sh --stop-on-error    # Stop at first failure
+#   ./scripts/cli_smoketests.sh --verbose          # Show detailed output
+#   ./scripts/cli_smoketests.sh --cleanup          # Clean up test artifacts after run
 
 set -euo pipefail
 
@@ -371,7 +371,7 @@ fi
 print_header "CATEGORY 5: Comprehensive Test Suite"
 
 print_test "Test suite with summary"
-exit_code=$(run_command "python3 test_verifier.py --ocr-backend tesseract --summary-only 2>&1" 1)
+exit_code=$(run_command "python3 verify_samples.py --ocr-backend tesseract --summary-only 2>&1" 1)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 if echo "$output" | grep -q "TEST SUMMARY" && echo "$output" | grep -q "Overall accuracy"; then
     print_pass "Test suite ran successfully with metrics"
@@ -380,7 +380,7 @@ else
 fi
 
 print_test "Test suite with JSON output"
-exit_code=$(run_command "python3 test_verifier.py --ocr-backend tesseract -o $TEST_OUTPUT_DIR/test_suite_results.json 2>&1" 1)
+exit_code=$(run_command "python3 verify_samples.py --ocr-backend tesseract -o $TEST_OUTPUT_DIR/test_suite_results.json 2>&1" 1)
 if [ -f "$TEST_OUTPUT_DIR/test_suite_results.json" ] && validate_json "$TEST_OUTPUT_DIR/test_suite_results.json"; then
     output=$(cat "$TEST_OUTPUT_DIR/test_suite_results.json")
     if echo "$output" | python3 -c "import sys, json; d=json.load(sys.stdin); exit(0 if 'metrics' in d and 'results' in d else 1)" 2>/dev/null; then
@@ -434,8 +434,8 @@ else
     print_fail "Help command failed"
 fi
 
-print_test "test_verifier.py --help"
-exit_code=$(run_command "python3 test_verifier.py --help" 0)
+print_test "verify_samples.py --help"
+exit_code=$(run_command "python3 verify_samples.py --help" 0)
 output=$(cat "$TEST_OUTPUT_DIR/test_${TOTAL_TESTS}_output.txt")
 if [ "$exit_code" -eq 0 ] && echo "$output" | grep -q "usage:"; then
     print_pass "Help command works"

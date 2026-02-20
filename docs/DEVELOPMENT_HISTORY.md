@@ -8,20 +8,23 @@
 
 **Key Deliverables:**
 - REST API for label verification (FastAPI)
-- Dual OCR backends (Tesseract + Ollama)
-- Batch processing capability (up to 50 labels)
+- Async queue-based verification (single image and batch)
+- Retry endpoint for failed jobs
+- Ollama (llama3.2-vision) as sole OCR backend
+- Batch processing capability (up to 50 labels, async)
 - Production-ready AWS infrastructure
 - Fail-open architecture for high availability
 
 ## Requirements Summary
 
 ### Functional Requirements
-1. **OCR Extraction:** Extract text from label images
+1. **OCR Extraction:** Extract text from label images using Ollama (llama3.2-vision)
 2. **Field Validation:** Verify required fields (brand name, ABV, net contents, bottler, government warning)
 3. **Fuzzy Matching:** Handle OCR errors with 90% similarity threshold
 4. **Product-Specific Rules:** Different ABV tolerances by product type
-5. **Batch Processing:** Handle multiple labels efficiently
-6. **Multiple Backends:** Support both fast (Tesseract) and accurate (Ollama) OCR
+5. **Batch Processing:** Handle multiple labels via async queue
+6. **Async Verify:** Single-image verification via queue (CloudFront-safe, pollable)
+7. **Retry Endpoint:** Re-enqueue failed jobs without re-uploading
 
 ### Non-Functional Requirements
 1. **Performance:** < 3s per label (Tesseract), acceptable degradation for Ollama
@@ -31,7 +34,9 @@
 5. **Security:** HTTPS, no SSH access, IAM-based auth
 
 ### Success Criteria
-- ✅ Both OCR backends functional
+- ✅ Ollama OCR backend functional
+- ✅ Async queue (single-image and batch) operational
+- ✅ Retry endpoint implemented
 - ✅ API documented and tested
 - ✅ Infrastructure automated (Terraform/Terragrunt)
 - ✅ Test coverage > 50% (achieved 55%)
@@ -57,18 +62,18 @@
 
 **Result:** RTO improved from 15-20 minutes to 2-3 minutes (87% improvement)
 
-### 2. Dual OCR Backends
+### 2. Ollama-Only OCR
 
-**Decision:** Support both Tesseract and Ollama with user-selectable backend
+**Decision:** Use Ollama (llama3.2-vision) as the sole OCR backend
 
 **Rationale:**
-- Tesseract: Fast (2-3s), good accuracy, always available
-- Ollama: Slow (58s), excellent accuracy, optional for high-stakes validations
+- Tesseract was evaluated but rejected: ~60-70% field accuracy with OCR errors on decorative fonts (e.g., "Black Brewing" → "Black ibealtl se")
+- Ollama achieves ~95%+ accuracy
+- The async queue architecture makes the ~58s Ollama latency acceptable — clients poll for results rather than waiting synchronously
 
 **Tradeoffs:**
-- More complexity in backend management
-- Better user experience (choose speed vs accuracy)
-- System remains operational even if Ollama unavailable
+- Higher per-job latency (58s) vs Tesseract (~1s)
+- Offset by queue-based async model and GPU acceleration on g4dn.2xlarge
 
 ### 3. Infrastructure: Default VPC with Public IP
 
@@ -228,8 +233,8 @@ aws s3 cp "s3://.../model.tar.gz" /home/model.tar.gz
 ### OCR Performance
 | Backend | Speed | Accuracy | Use Case |
 |---------|-------|----------|----------|
-| Tesseract | 2-3s | Good | Production default |
-| Ollama | ~58s | Excellent | High-stakes validation |
+| Ollama (llama3.2-vision) | ~58s | ~95% | All verification (only backend) |
+| Tesseract (evaluated, rejected) | ~1s | ~60-70% | Not used — accuracy insufficient |
 
 ### Infrastructure Performance
 | Metric | Old Design | New Design | Improvement |
@@ -239,10 +244,11 @@ aws s3 cp "s3://.../model.tar.gz" /home/model.tar.gz
 | Full Capability | 15-20 min | 10-12 min | 40% faster |
 
 ### API Performance
-- Response time (Tesseract): 2-3 seconds
-- Response time (Ollama): 30-60 seconds
-- Batch throughput: 50 labels in ~150 seconds (Tesseract)
-- Concurrent requests: Supports multiple simultaneous requests
+- Response time (`POST /verify` sync): ~58 seconds (Ollama)
+- Response time (`POST /verify/async` submit): < 1 second (enqueue only)
+- Async job completion: ~58 seconds per label
+- Batch throughput: 50 labels in ~50 minutes (Ollama, sequential in worker)
+- Concurrent requests: Multiple jobs queued and processed by worker
 
 ## Testing Summary
 
@@ -257,17 +263,17 @@ aws s3 cp "s3://.../model.tar.gz" /home/model.tar.gz
 - Valid labels (all fields present and correct)
 - Invalid labels (missing fields, wrong values)
 - OCR error handling (fuzzy matching)
-- Batch processing (multiple labels)
-- Backend selection (Tesseract vs Ollama)
+- Batch processing (multiple labels, async)
+- Async queue (submit, poll, retry)
 - Health endpoint (degraded and healthy modes)
 
 ## Production Deployment
 
 **Infrastructure:**
 - AWS Region: us-east-1
-- Instance Type: t3.medium (2 vCPU, 4 GB RAM, 50 GB disk)
+- Instance Type: g4dn.2xlarge (8 vCPU, 32 GB RAM, GPU, 50 GB disk)
 - Load Balancer: Application Load Balancer with HTTPS
-- Domain: ttb-verifier.unitedentropy.com
+- Domain: <configured via domain_name variable>
 - Certificate: ACM auto-renewing TLS certificate
 
 **Deployment Method:**

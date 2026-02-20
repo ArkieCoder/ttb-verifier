@@ -255,17 +255,3 @@ curl -X POST "https://ttb-verifier.yourdomain.com/verify" \
   -H "Content-Type: multipart/form-data" \
   -F "file=@path/to/label.jpg"
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-

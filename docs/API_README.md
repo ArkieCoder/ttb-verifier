@@ -372,14 +372,6 @@ Features:
 - Download OpenAPI spec
 - Test file uploads
 
-### ReDoc
-**URL:** http://localhost:8000/redoc
-
-Features:
-- Alternative documentation view
-- Clean, readable format
-- Search functionality
-
 ---
 
 ## Configuration
@@ -593,7 +585,6 @@ fi
 | `/verify` | POST | Single label verification | No |
 | `/verify/batch` | POST | Batch label verification | No |
 | `/docs` | GET | Swagger UI documentation | No |
-| `/redoc` | GET | ReDoc documentation | No |
 
 **Request Limits:**
 - Max file size: 10MB per image

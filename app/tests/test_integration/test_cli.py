@@ -25,23 +25,33 @@ def test_cli_missing_file():
     assert result.returncode != 0
 
 
-@pytest.mark.slow
 def test_cli_with_sample(good_label_path):
-    """Test CLI with actual sample image."""
+    """Test CLI produces valid JSON output for a real sample image.
+
+    Ollama is not available in the test environment, so the result may have
+    status='ERROR' and exit code 1, but the CLI must always emit well-formed
+    JSON containing the required top-level fields.
+    """
     if not good_label_path.exists():
         pytest.skip("Golden sample not available")
-    
+
     result = subprocess.run(
         ["python3", "verify_label.py", str(good_label_path)],
         capture_output=True,
         text=True,
-        timeout=10
+        timeout=15,
     )
-    
-    # Should produce valid JSON
+
+    # CLI must produce output regardless of Ollama availability
+    assert result.stdout.strip(), (
+        f"CLI produced no stdout:\nstderr: {result.stderr}"
+    )
+
     try:
         data = json.loads(result.stdout)
-        assert 'status' in data
-        assert 'extracted_fields' in data
     except json.JSONDecodeError:
-        pytest.fail("CLI did not output valid JSON")
+        pytest.fail(f"CLI did not output valid JSON:\n{result.stdout}")
+
+    assert "status" in data, "Result missing 'status' field"
+    assert "extracted_fields" in data, "Result missing 'extracted_fields' field"
+    assert "validation_results" in data, "Result missing 'validation_results' field"

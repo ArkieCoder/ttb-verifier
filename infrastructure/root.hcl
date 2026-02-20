@@ -1,9 +1,15 @@
 locals {
   # get_repo_root() finds the .git directory, giving a stable absolute path
   # that works even when Terragrunt evaluates this file from inside the cache.
-  tfstate_bucket = regex("tfstate_bucket\\s*=\\s*\"([^\"]+)\"",
-    file("${get_repo_root()}/infrastructure/terraform.tfvars")
-  )[0]
+  _tfvars = file("${get_repo_root()}/infrastructure/terraform.tfvars")
+
+  tfstate_bucket   = regex("tfstate_bucket\\s*=\\s*\"([^\"]+)\"",   local._tfvars)[0]
+  github_owner     = regex("github_owner\\s*=\\s*\"([^\"]+)\"",     local._tfvars)[0]
+  github_repo_name = regex("github_repo_name\\s*=\\s*\"([^\"]+)\"", local._tfvars)[0]
+  domain_name      = regex("domain_name\\s*=\\s*\"([^\"]+)\"",      local._tfvars)[0]
+  aws_account_id   = regex("aws_account_id\\s*=\\s*\"([^\"]+)\"",   local._tfvars)[0]
+  aws_region       = regex("aws_region\\s*=\\s*\"([^\"]+)\"",       local._tfvars)[0]
+  instance_type    = regex("instance_type\\s*=\\s*\"([^\"]+)\"",    local._tfvars)[0]
 }
 
 remote_state {
@@ -70,13 +76,19 @@ EOF
 }
 
 # Shared inputs for all child configurations.
-# Deployment-specific values live in terraform.tfvars (gitignored).
+# All deployment-specific values are read from terraform.tfvars (gitignored)
+# via the locals block above — nothing is hardcoded here.
 inputs = {
   project_name     = "ttb-verifier"
-  aws_region       = "us-east-1"
   environment      = "production"
   root_volume_size = 50
 
-  # Pass state bucket to Terraform so remote_foundation.tf can reference it.
-  tfstate_bucket = local.tfstate_bucket
+  # From terraform.tfvars
+  github_owner     = local.github_owner
+  github_repo_name = local.github_repo_name
+  domain_name      = local.domain_name
+  aws_account_id   = local.aws_account_id
+  aws_region       = local.aws_region
+  instance_type    = local.instance_type
+  tfstate_bucket   = local.tfstate_bucket
 }

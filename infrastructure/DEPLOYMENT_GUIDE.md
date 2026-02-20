@@ -8,82 +8,10 @@ This infrastructure deploys the TTB Verifier application to AWS with full CI/CD 
 
 ### Required Tools
 
-1. **Terragrunt** (v0.45+)
-   ```bash
-   # macOS
-   brew install terragrunt
-   
-   # Linux
-   wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.67.0/terragrunt_linux_amd64
-   sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
-   sudo chmod +x /usr/local/bin/terragrunt
-   ```
-
-2. **OpenTofu** (v1.11.5+)
-   ```bash
-   # macOS
-   brew install opentofu
-   
-   # Linux
-   snap install opentofu --classic
-   ```
-
-3. **AWS CLI** (v2+)
-   ```bash
-   # macOS
-   brew install awscli
-   
-   # Linux
-   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-   unzip awscliv2.zip
-   sudo ./aws/install
-   ```
-
-4. **GitHub CLI** (`gh`)
-   ```bash
-   # macOS
-   brew install gh
-   
-   # Linux
-   type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-   curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-   sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-   sudo apt update
-   sudo apt install gh -y
-   ```
-
-### AWS Configuration
-
-1. **Configure AWS credentials:**
-   ```bash
-   aws configure
-   # Enter your AWS Access Key ID, Secret Access Key, and default region (us-east-1)
-   ```
-
-2. **Verify AWS access:**
-   ```bash
-   aws sts get-caller-identity
-   # Should show your AWS account ID
-   ```
-
-### GitHub Configuration
-
-1. **Authenticate with GitHub CLI:**
-   ```bash
-   gh auth login
-   # Follow prompts:
-   # - Select GitHub.com
-   # - HTTPS protocol
-   # - Authenticate via browser or token
-   # - Required scopes: repo, admin:public_key, read:org
-   ```
-
-2. **Verify authentication:**
-   ```bash
-   gh auth status
-   # Should show "Logged in to github.com"
-   ```
+- Terragrunt (v0.45+)
+- OpenTofu (v1.11.5+)
+- AWS CLI (v2+)
+- GitHub CLI (`gh`)
 
 ## Configuration
 
@@ -112,11 +40,11 @@ aws_account_id = "123456789012"
 # Optional: AWS region (default: us-east-1)
 aws_region = "us-east-1"
 
-# Optional: EC2 instance type (default: t3.medium)
-# instance_type = "t3.medium"
+# Optional: EC2 instance type (default: g4dn.2xlarge)
+# instance_type = "g4dn.2xlarge"
 
-# Optional: Root volume size in GB (default: 30)
-# root_volume_size = 30
+# Optional: Root volume size in GB (default: 50)
+# root_volume_size = 50
 
 # Optional: Environment tag (default: production)
 # environment = "production"
@@ -146,7 +74,7 @@ The infrastructure is separated into **two layers** with independent Terraform s
    - State file: `foundation/terraform.tfstate`
 
 2. **Application Layer** (`infrastructure/`)
-   - Ephemeral resources: EC2, ALB, IAM roles, security groups
+   - Ephemeral resources: EC2, Load Balancer, IAM roles, security groups
    - Can be destroyed and recreated safely
    - State file: `infrastructure/terraform.tfstate`
 
@@ -209,7 +137,7 @@ Waiting for DNS propagation and ACM validation...
 **Note:** After the certificate is issued, you can remove this validation CNAME record from your DNS. It's only needed during initial certificate creation. ACM will auto-renew without needing the validation record.
 
 **Foundation outputs** will include:
-- `certificate_arn` - Used by application layer ALB
+- `certificate_arn` - Used by application layer Load Balancer
 - `s3_bucket_id` - Used by EC2 for model caching
 - `repository_name` - Used for GitHub secrets
 
@@ -228,10 +156,10 @@ terragrunt plan
 ```
 
 Review the resources that will be created (~21 AWS resources + 3 GitHub secrets):
-- EC2 t3.medium instance
+- EC2 g4dn.2xlarge instance
 - Application Load Balancer + listeners
-- ALB target group with health checks
-- Security groups (ALB + EC2)
+- Load Balancer target group with health checks
+- Security groups (Load Balancer + EC2)
 - IAM roles (EC2 SSM + GitHub Actions OIDC)
 - GitHub Actions secrets
 
@@ -244,13 +172,13 @@ terragrunt apply
 
 #### Step 3: Configure DNS CNAME for your application
 
-After `apply` completes, you'll see instructions to add a CNAME record pointing your domain to the ALB:
+After `apply` completes, you'll see instructions to add a CNAME record pointing your domain to CloudFront:
 
 ```bash
 # From the outputs
 Hostname: ttb-verifier.yourdomain.com
 Type: CNAME
-Value: ttb-verifier-alb-XXXXXXXX.us-east-1.elb.amazonaws.com
+Value: d123456789abcdef.cloudfront.net
 ```
 
 Add this CNAME to your DNS provider. This record should remain in place permanently.
@@ -328,219 +256,16 @@ curl -X POST "https://ttb-verifier.yourdomain.com/verify" \
   -F "file=@path/to/label.jpg"
 ```
 
-## Day-to-Day Operations
 
-### Updating Application Infrastructure
 
-For most infrastructure changes, you'll only work in the application layer:
 
-```bash
-cd infrastructure  # application layer
-terragrunt plan
-terragrunt apply
-```
 
-The foundation layer is only modified when:
-- Changing the domain name (requires new ACM certificate)
-- Modifying GitHub repository settings
-- Updating S3 bucket configuration
 
-### Disaster Recovery Testing
 
-The two-layer architecture enables safe disaster recovery testing:
 
-**Destroy application layer** (foundation protected):
-```bash
-cd infrastructure
-terragrunt destroy  # No targeting required!
-```
 
-This will destroy:
-- EC2 instance
-- Application Load Balancer
-- IAM roles and policies
-- Security groups
-- GitHub Actions secrets
 
-Foundation resources (certificate, repository, S3 bucket) are protected with `prevent_destroy = true` and remain intact.
 
-**Recreate application layer:**
-```bash
-cd infrastructure
-terragrunt apply
-```
 
-**Recovery Time Objective (RTO):** 8-12 minutes
-- Foundation resources already exist (no certificate validation wait)
-- EC2 downloads model from S3 cache (much faster than Ollama)
-- Application deployed via GitHub Actions
 
-### Modifying Foundation Resources
 
-**Warning:** Foundation resources are protected and should rarely be modified.
-
-If you need to modify foundation resources:
-
-```bash
-cd infrastructure/foundation
-terragrunt plan
-terragrunt apply
-```
-
-To destroy foundation resources, you must:
-1. Remove `prevent_destroy = true` from the resource definition
-2. Run `terragrunt apply` to update state
-3. Run `terragrunt destroy`
-
-**Never destroy foundation resources unless intentional** - they contain:
-- ACM certificate (requires DNS validation wait on recreation)
-- GitHub repository (contains code and settings)
-- S3 model bucket (contains 6.7 GiB cached model)
-
-## Troubleshooting
-
-### Certificate validation timeout
-
-If certificate validation times out (>30 minutes):
-
-1. Verify the CNAME record is correct in your DNS
-2. Check DNS propagation: `dig _abc123def456.ttb-verifier.yourdomain.com`
-3. Re-run `terragrunt apply` - it will continue from where it left off
-
-### GitHub secrets not created
-
-If secrets fail to create due to repository timing issues:
-
-```bash
-# Simply re-run apply
-terragrunt apply
-```
-
-The `depends_on` directives ensure proper ordering on subsequent runs.
-
-### EC2 instance not responding
-
-Check EC2 initialization logs:
-
-```bash
-# Connect via SSM
-aws ssm start-session --target $(terragrunt output -raw ec2_instance_id)
-
-# Check cloud-init logs
-sudo cat /var/log/cloud-init-output.log
-
-# Check Docker
-sudo docker ps
-sudo docker logs ttb-ollama
-sudo docker logs ttb-verifier
-```
-
-### Cannot access via SSM
-
-Verify IAM instance profile and SSM agent:
-
-```bash
-# Check IAM instance profile
-aws ec2 describe-instances --instance-ids $(terragrunt output -raw ec2_instance_id) \
-  --query 'Reservations[0].Instances[0].IamInstanceProfile'
-
-# Should show: ttb-ssm-instance-profile
-```
-
-## Updating Infrastructure
-
-### Modify configuration
-
-1. Edit `terraform.tfvars` with your changes
-2. Run `terragrunt plan` to review changes
-3. Run `terragrunt apply` to apply changes
-
-### Update to new instance type
-
-```hcl
-# terraform.tfvars
-instance_type = "t3.large"
-```
-
-```bash
-terragrunt apply
-```
-
-**Warning:** Changing instance type will cause instance replacement and downtime.
-
-## Destroying Infrastructure
-
-### Full teardown
-
-```bash
-cd infrastructure
-export GITHUB_TOKEN=$(gh auth token)
-terragrunt destroy
-```
-
-This will:
-- Destroy all AWS resources
-- Delete GitHub secrets (repository remains)
-- Preserve Terraform state in S3
-
-### Cleanup state backend
-
-If you want to remove the S3 bucket and DynamoDB table:
-
-```bash
-aws s3 rm s3://unitedentropy-ttb-tfstate --recursive
-aws s3 rb s3://unitedentropy-ttb-tfstate
-aws dynamodb delete-table --table-name unitedentropy-ttb-tfstate
-```
-
-## Cost Estimate
-
-Monthly costs (us-east-1):
-- EC2 t3.medium: ~$30
-- EBS 30GB gp3: ~$2.40
-- ALB: ~$16
-- Data transfer: ~$2
-- S3/DynamoDB: ~$0.11
-- **Total: ~$54/month**
-
-## Security Considerations
-
-### Secrets Management
-
-- GitHub Actions uses OIDC (no long-lived AWS credentials)
-- IAM roles follow least-privilege principle
-- GitHub secrets are encrypted at rest
-- SSM is used instead of SSH for server access
-
-### Network Security
-
-- EC2 security group only allows traffic from ALB
-- ALB security group allows public HTTPS (443) only
-- No direct SSH access - use SSM Session Manager
-
-**Known Limitation - Public IP on EC2:**
-- ⚠️ The EC2 instance currently gets a public IP address from the default VPC
-- **Mitigation:** Security group rules prevent any direct inbound access; only the ALB can reach the application on port 8000
-- **Why it exists:** Default VPC has no NAT Gateway or VPC endpoints. Instance needs internet access for Docker Hub, S3, and SSM communication
-- **Production recommendation:** Before production deployment, implement one of these options:
-  1. Add VPC endpoints (S3 Gateway + SSM endpoints) + NAT Gateway (~$50-60/month)
-  2. Create custom VPC with private subnets and NAT Gateway (~$35-40/month)
-  3. At minimum, add `associate_public_ip_address = false` to instance.tf and deploy NAT Gateway
-- **Risk assessment:** Acceptable for development/demo environments due to security group restrictions. Should be remediated for production use.
-
-### Certificate Management
-
-- ACM certificates auto-renew before expiration
-- No need to maintain validation CNAME after initial creation
-- TLS 1.2+ enforced on ALB
-
-## Support
-
-For issues specific to infrastructure deployment:
-1. Check troubleshooting section above
-2. Review Terragrunt/OpenTofu logs
-3. Verify AWS and GitHub permissions
-
-For application issues:
-- See main README.md
-- Check API documentation at `/docs`

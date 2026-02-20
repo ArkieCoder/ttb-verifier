@@ -986,66 +986,115 @@ async def root():
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url="/ui/verify", status_code=status.HTTP_302_FOUND)
 
+# File-based lock path for cross-worker pre-warm coordination
+_PREWARM_LOCK_FILE = Path("/app/tmp/prewarm.lock")
+_PREWARM_DONE_FILE = Path("/app/tmp/prewarm.done")
+
 
 def prewarm_ollama_model(ollama_host: str, model: str) -> None:
     """
     Pre-warm Ollama model by loading it into GPU memory.
-    
-    This function runs in the background when the health check detects
-    that a model has been loaded. Pre-warming ensures the first API
-    request doesn't experience the 60-90s GPU load delay.
-    
+
+    Uses a file-based lock so only one of the 4 uvicorn workers triggers
+    the pre-warm. Also checks /api/ps first — if the model is already in
+    GPU RAM (e.g. from a previous worker), skips entirely.
+
     Args:
         ollama_host: Ollama server URL
         model: Model name to pre-warm
     """
     global _ollama_prewarmed, _ollama_prewarm_lock
-    
-    # Avoid concurrent pre-warm attempts
-    if _ollama_prewarm_lock:
+
+    # In-process guard — already done or in progress in this worker
+    if _ollama_prewarmed or _ollama_prewarm_lock:
         return
-    
+
     _ollama_prewarm_lock = True
-    
+
     try:
         import requests
         import threading
-        
+        import fcntl
+
         def _prewarm():
             global _ollama_prewarmed, _ollama_prewarm_lock
+            lock_fd = None
+            acquired = False
             try:
+                # --- Step 1: Check if model is already in GPU via /api/ps ---
+                try:
+                    ps_resp = requests.get(f"{ollama_host}/api/ps", timeout=2)
+                    if ps_resp.status_code == 200:
+                        loaded = [m.get('name', '').split(':')[0]
+                                  for m in ps_resp.json().get('models', [])]
+                        model_base = model.split(':')[0]
+                        if model_base in loaded:
+                            logger.info(f"Model '{model}' already in GPU, skipping pre-warm")
+                            _ollama_prewarmed = True
+                            _PREWARM_DONE_FILE.touch()
+                            return
+                except Exception:
+                    pass  # If /api/ps fails, proceed to try pre-warming anyway
+
+                # --- Step 2: Check done-file (another worker already succeeded) ---
+                if _PREWARM_DONE_FILE.exists():
+                    logger.info(f"Pre-warm done-file found, skipping pre-warm in this worker")
+                    _ollama_prewarmed = True
+                    return
+
+                # --- Step 3: Acquire file lock — only one worker does the pre-warm ---
+                _PREWARM_LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
+                lock_fd = open(_PREWARM_LOCK_FILE, 'w')
+                try:
+                    fcntl.flock(lock_fd.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    acquired = True
+                except BlockingIOError:
+                    logger.info("Another worker is already pre-warming, skipping")
+                    _ollama_prewarmed = True  # Will be done soon, treat as in progress
+                    return
+
+                # Re-check done-file now that we hold the lock
+                if _PREWARM_DONE_FILE.exists():
+                    logger.info("Pre-warm done-file found after acquiring lock, skipping")
+                    _ollama_prewarmed = True
+                    return
+
+                # --- Step 4: Fire the pre-warm request ---
+                # Use /api/chat with a minimal text-only message to guarantee
+                # the mllama vision model weights are fully loaded into GPU RAM.
+                # /api/generate with an empty prompt does not reliably load
+                # mllama family models.
                 logger.info(f"Pre-warming Ollama model '{model}' into GPU memory...")
-                
-                # Use /api/generate with empty prompt and keep_alive=-1 to load
-                # model weights into GPU without running full inference.
-                # This returns quickly (just loads weights) vs /api/chat which
-                # runs a full inference pass and can take 20+ minutes.
                 response = requests.post(
-                    f"{ollama_host}/api/generate",
+                    f"{ollama_host}/api/chat",
                     json={
                         "model": model,
-                        "prompt": "",
-                        "keep_alive": -1
+                        "messages": [{"role": "user", "content": "hi"}],
+                        "keep_alive": -1,
+                        "stream": False
                     },
-                    timeout=120  # Allow up to 120s for GPU model loading
+                    timeout=120
                 )
-                
+
                 if response.status_code == 200:
-                    logger.info(f"✓ Model '{model}' pre-warmed successfully and loaded in GPU")
+                    logger.info(f"Model '{model}' pre-warmed and loaded in GPU")
                     _ollama_prewarmed = True
+                    _PREWARM_DONE_FILE.touch()
                 else:
                     logger.warning(f"Model pre-warm returned HTTP {response.status_code}")
-                    
+
             except Exception as e:
                 logger.warning(f"Model pre-warm failed: {e}")
             finally:
-                # Reset lock to allow retrying if this attempt failed
+                if lock_fd:
+                    if acquired:
+                        fcntl.flock(lock_fd.fileno(), fcntl.LOCK_UN)
+                    lock_fd.close()
                 _ollama_prewarm_lock = False
-        
-        # Run pre-warming in background thread to avoid blocking health check
+
         thread = threading.Thread(target=_prewarm, daemon=True)
         thread.start()
-        
+
     except Exception as e:
         logger.error(f"Failed to start pre-warm thread: {e}")
         _ollama_prewarm_lock = False
@@ -1117,12 +1166,18 @@ def get_health_status() -> Dict[str, Any]:
                         # Mark as pre-warmed since model is loaded
                         global _ollama_prewarmed
                         _ollama_prewarmed = True
+                        # Ensure done-file exists so other workers skip pre-warm
+                        _PREWARM_DONE_FILE.touch()
                     else:
-                        # Model exists but not yet loaded - trigger auto pre-warm to load into GPU
-                        # This ensures model is loaded and cached in GPU for fast requests
+                        # Model not in GPU — reset flags so pre-warm fires again
+                        _ollama_prewarmed = False
+                        if _PREWARM_DONE_FILE.exists():
+                            _PREWARM_DONE_FILE.unlink(missing_ok=True)
+                            logger.info("Model evicted from GPU, cleared pre-warm done-file")
+                        # Trigger pre-warm (file lock ensures only one worker does it)
                         global _ollama_prewarm_lock
-                        if not _ollama_prewarmed and not _ollama_prewarm_lock:
-                            logger.info(f"Model '{ollama_model}' downloaded but not loaded, triggering auto pre-warm")
+                        if not _ollama_prewarm_lock:
+                            logger.info(f"Model '{ollama_model}' not in GPU, triggering pre-warm")
                             prewarm_ollama_model(ollama_host, ollama_model)
                         
                         # Model exists but not yet loaded - pre-warming may be in progress

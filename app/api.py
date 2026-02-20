@@ -975,11 +975,10 @@ async def root():
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url="/ui/verify", status_code=status.HTTP_302_FOUND)
 
-# Path to the Ollama health sentinel file written by the host cron job
-# scripts/ollama-health-cron.sh runs every 5 minutes and writes this file
-# when the model is in GPU RAM. The app never touches Ollama directly from
-# the health check — all the blocking network calls are gone.
-_OLLAMA_HEALTHY_FILE = Path("/etc/OLLAMA_HEALTHY")
+# Sentinel file written by the host cron job (scripts/ollama-health-cron.sh).
+# The directory /etc/ollama_health is bind-mounted from the host (read-only).
+# The cron job writes HEALTHY when the model is in GPU, removes it otherwise.
+_OLLAMA_HEALTHY_FILE = Path("/etc/ollama_health/HEALTHY")
 
 
 def get_health_status() -> Dict[str, Any]:

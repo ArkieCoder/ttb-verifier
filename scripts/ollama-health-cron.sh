@@ -16,9 +16,12 @@
 
 set -euo pipefail
 
-HEALTHY_FILE="/etc/OLLAMA_HEALTHY"
+HEALTH_DIR="/etc/ollama_health"
+HEALTHY_FILE="$HEALTH_DIR/HEALTHY"
 MODEL="${OLLAMA_MODEL:-llama3.2-vision}"
 CONTAINER="${OLLAMA_CONTAINER:-ttb-ollama}"
+
+mkdir -p "$HEALTH_DIR"
 
 log() { logger -t "ollama-health-cron" "$*"; }
 mark_healthy()   { touch "$HEALTHY_FILE";  log "OK model in GPU"; }

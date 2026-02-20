@@ -107,21 +107,23 @@ class OllamaOCR(OCRBackend):
     
     def _ensure_available(self):
         """
-        Verify Ollama is available before use (lazy check).
-        
+        Verify Ollama is available before use.
+
+        Uses the sentinel file /etc/ollama_health/HEALTHY rather than a live
+        HTTP call to Ollama. This keeps the verify path consistent with the
+        /health endpoint and avoids a second independent availability check
+        that could disagree with the cron-managed health state.
+
         Raises:
-            RuntimeError: If Ollama is not available
+            RuntimeError: If the sentinel file is absent (model not in GPU)
         """
-        # Check cached availability (don't check repeatedly)
-        if self._availability_checked and self._is_available:
-            return
-        
-        # Perform availability check
-        self._is_available, self._availability_error = self.check_availability()
-        self._availability_checked = True
-        
-        if not self._is_available:
-            raise RuntimeError(self._availability_error)
+        from pathlib import Path
+        sentinel = Path("/etc/ollama_health/HEALTHY")
+        if not sentinel.exists():
+            raise RuntimeError(
+                "Ollama model not ready (sentinel /etc/ollama_health/HEALTHY absent — "
+                "cron pre-warm pending)"
+            )
     
     def extract_text(self, image_path: str) -> Dict[str, Any]:
         """Extract text using Ollama vision model."""

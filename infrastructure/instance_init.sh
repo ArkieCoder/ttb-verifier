@@ -183,7 +183,7 @@ services:
       - SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
     volumes:
       - /home/ubuntu/tmp:/app/tmp
-      - /etc/OLLAMA_HEALTHY:/etc/OLLAMA_HEALTHY:ro
+      - /etc/ollama_health:/etc/ollama_health:ro
     depends_on:
       - ollama
     restart: unless-stopped
@@ -290,9 +290,11 @@ curl -f http://localhost:8000/ || {
 cat > /usr/local/bin/ollama-health-cron.sh <<'EOFCRON'
 #!/bin/bash
 set -euo pipefail
-HEALTHY_FILE="/etc/OLLAMA_HEALTHY"
+HEALTH_DIR="/etc/ollama_health"
+HEALTHY_FILE="$HEALTH_DIR/HEALTHY"
 MODEL="${OLLAMA_MODEL:-llama3.2-vision}"
 CONTAINER="${OLLAMA_CONTAINER:-ttb-ollama}"
+mkdir -p "$HEALTH_DIR"
 log() { logger -t "ollama-health-cron" "$*"; }
 mark_healthy()   { touch "$HEALTHY_FILE";  log "OK model in GPU"; }
 mark_unhealthy() { rm -f "$HEALTHY_FILE";  log "WARN $1"; }

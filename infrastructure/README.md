@@ -11,12 +11,11 @@ The deployment guide includes:
 - Complete configuration instructions  
 - Step-by-step deployment process
 - DNS configuration details
-- Troubleshooting common issues
-- Cost estimates and security considerations
+- Security considerations
 
 ## Quick Overview
 
-This infrastructure is fully configurable and can be deployed to any AWS account and GitHub organization by simply editing `terraform.tfvars`.
+This infrastructure is fully configurable and can be deployed to any AWS account and GitHub organization by editing `terraform.tfvars` and setting the `TFSTATE_PREFIX` environment variable.
 
 ## Two-Layer Architecture
 
@@ -27,7 +26,7 @@ The infrastructure is separated into **two independent layers** with separate Te
 - ACM Certificate (HTTPS/TLS)
 - GitHub Repository (code + settings)
 - S3 Bucket for Ollama models (performance optimization)
-- State: `s3://unitedentropy-ttb-tfstate/foundation/terraform.tfstate`
+- State: `s3://<tfstate-prefix>-tfstate/foundation/terraform.tfstate`
 
 **Key Features:**
 - All resources have `prevent_destroy = true` lifecycle protection
@@ -36,17 +35,17 @@ The infrastructure is separated into **two independent layers** with separate Te
 
 ### Application Layer (`.`)
 **Ephemeral resources that can be destroyed/recreated:**
-- EC2 instance (Docker host)
+- EC2 instance (Docker host with GPU)
 - Application Load Balancer + listeners
+- CloudFront distribution (HTTPS, caching, DDoS protection)
 - IAM roles and policies
 - Security groups
 - GitHub Actions secrets
-- State: `s3://unitedentropy-ttb-tfstate/infrastructure/terraform.tfstate`
+- State: `s3://<tfstate-prefix>-tfstate/infrastructure/terraform.tfstate`
 
 **Key Features:**
 - References foundation via Terraform remote state
 - Can be destroyed with `terragrunt destroy` (no targeting required)
-- Fast disaster recovery (8-12 minutes with S3 model cache)
 
 ### Cross-Layer Communication
 
@@ -55,9 +54,9 @@ Application layer accesses foundation resources via remote state data source:
 data "terraform_remote_state" "foundation" {
   backend = "s3"
   config = {
-    bucket = "unitedentropy-ttb-tfstate"
+    bucket = var.tfstate_bucket
     key    = "foundation/terraform.tfstate"
-    region = "us-east-1"
+    region = var.aws_region
   }
 }
 
@@ -73,18 +72,22 @@ locals {
 ```
 Internet (HTTPS)
     ↓
+CloudFront Distribution
+  (HTTPS termination, caching, DDoS protection, custom error pages)
+    ↓ (HTTP, port 80)
 Application Load Balancer
     ↓ (HTTP, port 8000)
-EC2 t3.medium (Docker)
+EC2 g4dn.2xlarge (Docker, GPU)
     ├─ ttb-verifier container (FastAPI)
     └─ ttb-ollama container (AI OCR)
 ```
 
 **Key Features:**
+- ✅ CloudFront CDN in front of the ALB (HTTPS termination, caching, error pages)
 - ✅ HTTPS with auto-renewing ACM certificate
 - ✅ SSM-based deployment (no SSH keys)
 - ✅ OIDC authentication for GitHub Actions (no long-lived credentials)
-- ✅ Default VPC (reuses existing subnets, no custom VPC needed)
+- ✅ Subnets configurable via `tfvars` (works with default VPC or any existing VPC)
 - ✅ Automated Ollama model pre-loading during first boot
 
 ## Prerequisites
@@ -101,6 +104,7 @@ Your AWS IAM user/role needs permissions to create:
 - EC2 instances and security groups
 - IAM roles, policies, and OIDC providers
 - Application Load Balancers and target groups
+- CloudFront distributions
 - ACM certificates
 - S3 buckets (for Terragrunt state)
 - DynamoDB tables (for state locking)
@@ -111,13 +115,22 @@ Recommended: Use `AdministratorAccess` policy for initial setup, then restrict.
 
 You'll need access to your **DNS provider** to add:
 1. CNAME for ACM certificate validation (temporary)
-2. CNAME for the application pointing to the ALB (permanent)
+2. CNAME for the application pointing to the **CloudFront** distribution (permanent)
 
 ## Deployment Order
 
 ### First-Time Setup (Both Layers)
 
-**1. Deploy Foundation Layer:**
+**1. Configure your deployment:**
+
+Edit `terraform.tfvars` with your values (GitHub owner, domain name, AWS account ID, subnet IDs).
+
+Set the state bucket prefix:
+```bash
+export TFSTATE_PREFIX="myorg-ttb"
+```
+
+**2. Deploy Foundation Layer:**
 ```bash
 cd infrastructure/foundation
 terragrunt init
@@ -128,7 +141,7 @@ terragrunt apply
 **Time:** ~5 minutes  
 **Creates:** ACM certificate, GitHub repository, S3 model bucket
 
-**2. Deploy Application Layer:**
+**3. Deploy Application Layer:**
 ```bash
 cd infrastructure  # parent directory
 terragrunt init
@@ -137,7 +150,7 @@ terragrunt apply
 ```
 
 **Time:** ~8-15 minutes (includes EC2 initialization + model download)  
-**Creates:** EC2, ALB, IAM roles, security groups, GitHub secrets
+**Creates:** EC2, ALB, CloudFront, IAM roles, security groups, GitHub secrets
 
 ### Day-to-Day Operations
 
@@ -154,27 +167,6 @@ terragrunt apply
 - Modifying repository settings
 - Updating S3 bucket configuration
 
-### Disaster Recovery
-
-**To test complete infrastructure rebuild:**
-
-```bash
-# Destroy application layer (safe - foundation protected)
-cd infrastructure
-terragrunt destroy  # No targeting required!
-
-# Recreate application layer
-terragrunt apply
-```
-
-**RTO:** 8-12 minutes (uses S3 model cache)
-
-**Note:** Foundation layer resources have `prevent_destroy = true` and cannot be accidentally destroyed.
-
-## Quick Start (Existing Infrastructure)
-
-If the infrastructure already exists and you just need to make changes:
-
 ## Quick Start (Existing Infrastructure)
 
 If the infrastructure already exists and you just need to make changes:
@@ -182,13 +174,13 @@ If the infrastructure already exists and you just need to make changes:
 ### Step 1: Initialize Terragrunt (Application Layer)
 
 ```bash
+export TFSTATE_PREFIX="myorg-ttb"  # must match original deployment
 cd infrastructure  # application layer
 terragrunt init
 ```
 
 **What happens:**
-- Connects to existing S3 backend: `unitedentropy-ttb-tfstate`
-- Uses state file: `infrastructure/terraform.tfstate`
+- Connects to existing S3 backend
 - Downloads AWS provider plugins
 - Generates `backend.tf` and `provider.tf`
 
@@ -220,7 +212,7 @@ terragrunt apply
    - OIDC provider
    - EC2 instance launched
    - ALB and target group created
-   - ACM certificate requested
+   - CloudFront distribution created
 
 2. **Interactive Pause** (5-30 minutes):
    - Script outputs DNS validation CNAME record
@@ -250,7 +242,7 @@ terragrunt output cloudfront_domain_name
 ```
 
 **Add CNAME to your DNS provider:**
-- **Hostname:** Your application domain (e.g., `ttb-verifier.yourdomain.com`)
+- **Hostname:** Your application domain (e.g., `ttb-verifier.example.com`)
 - **Type:** CNAME
 - **Value:** `<cloudfront-domain from output>` (e.g., `d1bmuzubpqmnvs.cloudfront.net`)
 - **TTL:** 300 (or default)
@@ -266,10 +258,10 @@ terragrunt output cloudfront_domain_name
 
 ```bash
 # Test DNS resolution (should show CloudFront domain)
-nslookup ttb-verifier.unitedentropy.com
+nslookup ttb-verifier.example.com
 
 # Test application (will show error until application deployed)
-curl https://ttb-verifier.unitedentropy.com/health
+curl https://ttb-verifier.example.com/health
 
 # Check EC2 via SSM
 aws ssm start-session --target $(terragrunt output -raw ec2_instance_id)
@@ -292,7 +284,7 @@ terragrunt output github_actions_role_arn
 
 1. **Name:** `AWS_ROLE_TO_ASSUME`  
    **Value:** Output from `github_actions_role_arn`  
-   **Example:** `arn:aws:iam::253490750467:role/ttb-github-actions-role`
+   **Example:** `arn:aws:iam::<account-id>:role/ttb-github-actions-role`
 
 2. **Name:** `EC2_INSTANCE_ID`  
    **Value:** Output from `ec2_instance_id`  
@@ -304,11 +296,12 @@ terragrunt output github_actions_role_arn
 ## Resources Created
 
 ### Compute
-- **EC2 Instance:** t3.medium, Amazon Linux 2023, 30GB gp3
+- **EC2 Instance:** g4dn.2xlarge, Ubuntu 22.04, 50GB gp3
 - **IAM Instance Profile:** Attached to EC2 for SSM access
 
 ### Networking
-- **Application Load Balancer:** Internet-facing, HTTPS + HTTP
+- **CloudFront Distribution:** HTTPS termination, caching, DDoS protection
+- **Application Load Balancer:** Internet-facing, HTTP (CloudFront origin)
 - **Target Group:** Routes to EC2 port 8000
 - **Security Groups:**
   - ALB: Allow 80/443 from internet
@@ -320,21 +313,21 @@ terragrunt output github_actions_role_arn
 - **OIDC Provider:** GitHub Actions authentication (no long-lived credentials)
 
 ### SSL/TLS
-- **ACM Certificate:** `ttb-verifier.unitedentropy.com` (auto-renewing, DNS validated)
+- **ACM Certificate:** Your configured domain (auto-renewing, DNS validated)
 
 ### State Management
-- **S3 Bucket:** `unitedentropy-ttb-tfstate` (auto-created by Terragrunt)
-- **DynamoDB Table:** `unitedentropy-ttb-tfstate` (state locking)
+- **S3 Bucket:** `<tfstate-prefix>-tfstate` (auto-created by Terragrunt)
+- **DynamoDB Table:** `<tfstate-prefix>-tfstate` (state locking)
 
 ## Configuration Details
 
 ### EC2 Instance
 
 **Specifications:**
-- Type: t3.medium (2 vCPU, 4GB RAM)
-- AMI: Amazon Linux 2023 (latest)
-- Storage: 30GB gp3 (for Docker images + Ollama models)
-- Network: Default VPC, public subnet (reuses existing infrastructure)
+- Type: g4dn.2xlarge (8 vCPU, 32GB RAM, 1× NVIDIA T4 GPU)
+- AMI: Ubuntu 22.04 LTS (latest)
+- Storage: 50GB gp3 (for Docker images + Ollama models)
+- Network: Configured subnets via `alb_subnet_ids` in `terraform.tfvars`
 
 **Installed Software** (via user_data):
 - Docker Engine
@@ -354,7 +347,7 @@ terragrunt output github_actions_role_arn
 
 **ALB Security Group (`ttb-alb-sg`):**
 - Inbound:
-  - Port 80 from 0.0.0.0/0 (HTTP, redirects to HTTPS)
+  - Port 80 from 0.0.0.0/0 (HTTP, CloudFront origin protocol)
   - Port 443 from 0.0.0.0/0 (HTTPS)
 - Outbound: All (for health checks to EC2)
 
@@ -366,9 +359,8 @@ terragrunt output github_actions_role_arn
 
 ### Load Balancer Configuration
 
-**Listeners:**
-- HTTP (80): Redirects to HTTPS (301)
-- HTTPS (443): Forwards to target group (port 8000)
+**Listener:**
+- HTTP (80): Forwards to target group (CloudFront handles HTTPS)
 
 **Target Group Health Checks:**
 - Path: `/`
@@ -379,21 +371,15 @@ terragrunt output github_actions_role_arn
 - Healthy threshold: 2 consecutive successes
 - Unhealthy threshold: 3 consecutive failures
 
-**SSL Policy:** `ELBSecurityPolicy-TLS13-1-2-2021-06` (TLS 1.2+)
+### CloudFront Configuration
 
-## Cost Estimate
+CloudFront sits in front of the ALB and is the only public HTTPS entry point:
+- HTTPS termination with ACM certificate
+- Custom error pages (503 during maintenance)
+- Caching for static assets
+- DDoS protection via AWS Shield Standard
 
-| Resource | Monthly Cost |
-|----------|--------------|
-| EC2 t3.medium (730 hours) | $30.37 |
-| EBS gp3 (30GB) | $2.40 |
-| Application Load Balancer | $16.20 |
-| ALB LCU (low traffic) | ~$3.00 |
-| Data transfer | ~$2.00 |
-| S3 state storage | $0.01 |
-| DynamoDB state locking | $0.10 |
-| ACM Certificate | **FREE** |
-| **Total** | **~$54/month** |
+**DNS:** Your domain CNAME must point to the CloudFront distribution domain, not the ALB.
 
 ## Updating Infrastructure
 
@@ -407,20 +393,20 @@ terragrunt output github_actions_role_arn
 
 **Scale instance size:**
 ```hcl
-# In instance.tf
-instance_type = "t3.large"  # Change from t3.medium
+# In terraform.tfvars
+instance_type = "g4dn.4xlarge"
+```
+
+**Update ALB subnets:**
+```hcl
+# In terraform.tfvars
+alb_subnet_ids = ["subnet-aaa", "subnet-bbb", "subnet-ccc"]
 ```
 
 **Update security group rules:**
 ```hcl
 # In security_groups.tf
 # Add/modify ingress/egress rules
-```
-
-**Change health check settings:**
-```hcl
-# In target_groups.tf
-# Modify health_check block
 ```
 
 ## Destroying Infrastructure
@@ -434,94 +420,23 @@ terragrunt destroy
 **What gets deleted:**
 - EC2 instance (application lost!)
 - Load balancer
+- CloudFront distribution
 - Security groups
 - IAM roles and policies
-- ACM certificate
 
 **What remains:**
 - S3 state bucket (Terragrunt won't delete)
 - DynamoDB table (Terragrunt won't delete)
+- Foundation layer resources (protected by `prevent_destroy = true`)
 - DNS records (manual removal required)
-
-## Troubleshooting
-
-### Certificate Validation Hangs
-
-**Symptom:** `terragrunt apply` pauses at certificate validation for >30 minutes
-
-**Cause:** DNS record not added or incorrect
-
-**Solution:**
-1. Check the output for the exact CNAME record
-2. Verify record added correctly in your DNS provider:
-   ```bash
-   dig _<random>.yourdomain.com CNAME
-   ```
-3. Wait for DNS propagation (can take up to 30 mins)
-4. If timeout occurs, just run `terragrunt apply` again
-
-### EC2 Not Appearing in SSM
-
-**Symptom:** `aws ssm describe-instance-information` doesn't show instance
-
-**Causes:**
-- SSM Agent not running
-- IAM instance profile not attached
-- Network connectivity issues
-
-**Solution:**
-```bash
-# Check instance status
-aws ec2 describe-instances --instance-ids <instance-id>
-
-# Check IAM role attached
-aws ec2 describe-iam-instance-profile-associations
-
-# Check user data logs (via EC2 console → Instance → Actions → Monitor → Get system log)
-```
-
-### Health Checks Failing
-
-**Symptom:** ALB target shows "unhealthy"
-
-**Causes:**
-- Docker containers not started
-- Port 8000 not accessible
-- Application returning non-200 status
-
-**Solution:**
-```bash
-# SSH via SSM
-aws ssm start-session --target <instance-id>
-
-# Check Docker status
-docker ps
-docker-compose -f /app/docker-compose.yml logs
-
-# Check port listening
-curl http://localhost:8000
-
-# Check security group rules
-```
-
-### Terraform State Lock
-
-**Symptom:** `Error: Error acquiring the state lock`
-
-**Cause:** Previous `terragrunt apply` was interrupted
-
-**Solution:**
-```bash
-# Force unlock (use lock ID from error message)
-terragrunt force-unlock <lock-id>
-```
 
 ## File Reference
 
 | File | Purpose |
 |------|---------|
-| `terragrunt.hcl` | Terragrunt configuration, backend setup |
-| `ami.tf` | Data source for Amazon Linux 2023 AMI |
+| `root.hcl` | Terragrunt configuration, backend setup |
+| `terraform.tfvars` | Deployment-specific values (owner, domain, subnets, etc.) |
+| `ami.tf` | Data source for Ubuntu 22.04 AMI |
 | `instance.tf` | EC2 instance resource |
 | `instance_init.sh` | User data script (runs on first boot) |
 | `roles.tf` | IAM roles for EC2 and GitHub Actions |
@@ -529,30 +444,29 @@ terragrunt force-unlock <lock-id>
 | `security_groups.tf` | Security groups for ALB and EC2 |
 | `load_balancers.tf` | ALB and listeners |
 | `target_groups.tf` | ALB target group |
-| `certificates.tf` | ACM certificate and validation logic |
+| `cloudfront.tf` | CloudFront distribution |
+| `remote_foundation.tf` | Remote state reference to foundation layer |
 | `outputs.tf` | Output values for GitHub configuration |
 
 ## Notes
 
-### Default VPC Usage
+### Subnet Configuration
 
-This infrastructure uses the **default VPC** in us-east-1 with existing subnets. No custom VPC, NAT Gateway, or private subnets are created, saving ~$32/month compared to a fully private architecture.
+ALB subnets must be set in `terraform.tfvars` via `alb_subnet_ids`. They must span at least two Availability Zones. Any existing subnets work — default VPC subnets, or subnets from a custom VPC.
 
-**Subnet IDs** (hardcoded in `load_balancers.tf`):
-- subnet-087c34ce6b854b207 (us-east-1a)
-- subnet-067659fddc18e6d08 (us-east-1b)
-- subnet-0964715de1feee340 (us-east-1c)
-- subnet-0e47260fdbba6e0f6 (us-east-1d)
-- subnet-08925a7ee9f27c57b (us-east-1e)
-- subnet-0b98b5770d8be8909 (us-east-1f)
-
-These subnets are from the AWS default VPC and are reused to avoid infrastructure overhead. The EC2 instance is in a public subnet but secured via security groups (only ALB can access port 8000).
+To list your default VPC subnets:
+```bash
+aws ec2 describe-subnets \
+  --filters "Name=default-for-az,Values=true" \
+  --query "Subnets[*].{ID:SubnetId,AZ:AvailabilityZone}" \
+  --output table
+```
 
 ### Security Posture
 
 **Encrypted in Transit:**
-- ✅ HTTPS enforced (HTTP redirects to HTTPS)
-- ✅ ACM certificate with TLS 1.2+
+- ✅ HTTPS enforced via CloudFront (ACM certificate, TLS 1.2+)
+- ✅ ALB accepts HTTP from CloudFront only (origin protocol)
 
 **Access Control:**
 - ✅ No SSH access (SSM Session Manager only)
@@ -562,25 +476,11 @@ These subnets are from the AWS default VPC and are reused to avoid infrastructur
 
 **Audit & Compliance:**
 - ✅ All SSM commands logged to CloudTrail
-- ✅ All API requests logged by ALB
+- ✅ All API requests logged by ALB and CloudFront
 - ✅ Infrastructure changes tracked in Terragrunt state
 
 **Known Security Considerations:**
-- ⚠️ **Public IP on EC2 Instance:** The EC2 instance currently has a public IP address assigned by the default VPC's auto-assign public IP setting. While the security group restricts access (only ALB can reach port 8000), this is not ideal for a production environment.
-  
-  **Why it exists:** The default VPC has no NAT Gateway or VPC endpoints. The instance needs internet access to:
-  - Pull Docker images from Docker Hub
-  - Download Ollama models from S3 (no S3 Gateway Endpoint)
-  - Communicate with AWS SSM (no SSM VPC Endpoints)
-  
-  **Production remediation options:**
-  1. **Add VPC Endpoints** (recommended): Deploy S3 Gateway Endpoint + SSM VPC Endpoints + NAT Gateway for Docker Hub access (~$50-60/month)
-  2. **NAT Gateway only**: Deploy NAT Gateway and move instance to private subnet (~$35-40/month)
-  3. **Custom VPC**: Create private subnet architecture with proper NAT and endpoint design
-  
-  **Current mitigation:** Security group rules strictly limit access. Only the ALB security group can reach port 8000. No SSH access is configured. The public IP provides no actual inbound access due to security group restrictions.
-  
-  **Risk assessment:** Acceptable for demo/development environments. Should be remediated before production deployment.
+- ⚠️ **Public IP on EC2 Instance:** The EC2 instance may have a public IP depending on your subnet configuration. The security group restricts access (only the ALB can reach port 8000), but removing the public IP requires either a NAT Gateway or VPC endpoints for SSM/Docker Hub access.
 
 ## Next Steps
 
@@ -589,6 +489,6 @@ After infrastructure is deployed:
 1. ✅ Configure GitHub repository secrets
 2. ✅ Create GitHub Actions workflows (see `../.github/workflows/`)
 3. ✅ Push code to trigger first deployment
-4. ✅ Test HTTPS endpoint: https://ttb-verifier.unitedentropy.com
+4. ✅ Test HTTPS endpoint via your configured domain
 
 See parent repository's CI/CD documentation for GitHub Actions setup.

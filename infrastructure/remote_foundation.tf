@@ -5,9 +5,9 @@ data "terraform_remote_state" "foundation" {
   backend = "s3"
   
   config = {
-    bucket = "unitedentropy-ttb-tfstate"
+    bucket = var.tfstate_bucket
     key    = "foundation/terraform.tfstate"
-    region = "us-east-1"
+    region = var.aws_region
   }
 }
 

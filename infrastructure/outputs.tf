@@ -42,7 +42,7 @@ output "ec2_public_ip" {
 
 output "alb_url" {
   description = "ALB URL for testing"
-  value       = "https://ttb-verifier.unitedentropy.com (after DNS configured)"
+  value       = "https://${var.domain_name} (after DNS configured)"
 }
 
 output "instance_availability_zone" {
@@ -70,7 +70,7 @@ output "setup_instructions" {
        - AWS_REGION: us-east-1
     
     2. Add CNAME record to your DNS provider:
-       - Hostname: ttb-verifier.unitedentropy.com
+       - Hostname: ${var.domain_name}
        - Type: CNAME
        - Value: ${aws_cloudfront_distribution.ttb.domain_name}
        
@@ -79,7 +79,7 @@ output "setup_instructions" {
     
     3. Wait 5-10 minutes for DNS propagation
     
-    4. Test access: curl https://ttb-verifier.unitedentropy.com/health
+    4. Test access: curl https://${var.domain_name}/health
        (Will show connection error until first GitHub Actions deployment completes)
     
     5. Monitor EC2 initialization: 

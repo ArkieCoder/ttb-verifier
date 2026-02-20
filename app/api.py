@@ -1016,14 +1016,15 @@ def prewarm_ollama_model(ollama_host: str, model: str) -> None:
             try:
                 logger.info(f"Pre-warming Ollama model '{model}' into GPU memory...")
                 
-                # Simple chat request to force model load into GPU
-                # Use keep_alive=-1 to keep model loaded indefinitely
+                # Use /api/generate with empty prompt and keep_alive=-1 to load
+                # model weights into GPU without running full inference.
+                # This returns quickly (just loads weights) vs /api/chat which
+                # runs a full inference pass and can take 20+ minutes.
                 response = requests.post(
-                    f"{ollama_host}/api/chat",
+                    f"{ollama_host}/api/generate",
                     json={
                         "model": model,
-                        "messages": [{"role": "user", "content": "warmup"}],
-                        "stream": False,
+                        "prompt": "",
                         "keep_alive": -1
                     },
                     timeout=120  # Allow up to 120s for GPU model loading

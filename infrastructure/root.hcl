@@ -1,11 +1,9 @@
 locals {
-  # Read tfstate_bucket from terraform.tfvars so the S3 backend name is
-  # configured in one place (terraform.tfvars) and never hardcoded here.
-  # terraform.tfvars is gitignored, keeping deployment identifiers out of git.
-  # find_in_parent_folders walks up from the calling module's directory, so
-  # it works whether called from infrastructure/ or infrastructure/foundation/.
+  # dirname(find_in_parent_folders("root.hcl")) resolves to the infrastructure/
+  # directory regardless of which child layer (app or foundation) is calling.
+  # That is where terraform.tfvars lives.
   tfstate_bucket = regex("tfstate_bucket\\s*=\\s*\"([^\"]+)\"",
-    file(find_in_parent_folders("terraform.tfvars"))
+    file("${dirname(find_in_parent_folders("root.hcl"))}/terraform.tfvars")
   )[0]
 }
 

@@ -80,14 +80,7 @@ For **Tier 2 accuracy validation**, provide expected values:
 
 **Without metadata:** Only Tier 1 (structural) validation is performed.
 
-### Step 3: Choose OCR Backend
-
-- **Ollama Vision AI** (only available backend): Uses llama3.2-vision for high-accuracy text extraction
-  - Processing time: ~58 seconds per label
-  - Automatically disabled if model is downloading
-  - Submitted jobs are queued; the page polls for results automatically
-
-### Step 4: Submit & Review Results
+### Step 3: Submit & Review Results
 
 Click **Verify Label** — the job is submitted to the async queue and the page polls for results.
 
@@ -136,13 +129,10 @@ batch.zip
 
 1. Navigate to **Batch Verification**
 2. Select your ZIP file
-3. Choose OCR backend (Tesseract or Ollama)
+3. Choose OCR backend (Ollama)
 4. Click **Upload & Process Batch**
 
-**Important:** Batch processing is **asynchronous** — the job is queued and processed in the background. The page polls for status automatically. Expect:
-- ~58 seconds per image (Ollama)
-
-For 50 images, total processing may take **40-50 minutes**.
+**Important:** Batch processing is **asynchronous** — the job is queued and processed in the background. The page polls for status automatically.
 
 ### Step 3: Review Results
 
@@ -161,33 +151,6 @@ For 50 images, total processing may take **40-50 minutes**.
 - Field name
 - Violation message
 - Expected vs. actual values
-
----
-
-## OCR Backend Selection
-
-### Ollama Vision AI (llama3.2-vision) — Only Available Backend
-
-**Best for:**
-- All label verification tasks
-- Complex layouts and stylized/decorative fonts
-- Maximum accuracy requirements
-
-**Characteristics:**
-- ~58 seconds per label
-- ~95% field accuracy
-- Requires model download on first run (5-10 minutes)
-- Shows "Not Ready" while downloading
-- GPU-accelerated on g4dn.2xlarge instance
-
-**Status Indicator:**
-- 🟢 **Available** - Model loaded, ready to use
-- 🔴 **Unavailable** - Model downloading or service offline
-- 🟡 **Checking...** - Querying health endpoint
-
-The UI automatically **polls `/health`** every 30 seconds to update status.
-
-**Note:** Tesseract OCR was evaluated but rejected due to ~60-70% field accuracy — insufficient for regulatory compliance checking. Ollama is the only OCR backend in this system.
 
 ---
 
@@ -340,7 +303,7 @@ curl -c cookies.txt -X POST https://<your-domain>/ui/login \
 ```bash
 curl -b cookies.txt -X POST https://<your-domain>/verify \
   -F "image=@label.jpg" \
-  -F "ocr_backend=tesseract"
+  -F "ocr_backend=ollama"
 ```
 
 **Batch verification:**
@@ -407,67 +370,11 @@ For production:
 
 ---
 
-## Architecture
-
-### Components
-
-```
-┌──────────────────────────────────────┐
-│         CloudFront CDN               │
-│  (Custom Error Pages, SSL Termination)│
-└────────────┬─────────────────────────┘
-             │ HTTPS
-             ▼
-┌──────────────────────────────────────┐
-│     Application Load Balancer        │
-│   (Health Checks, Target Groups)     │
-└────────────┬─────────────────────────┘
-             │
-             ▼
-┌──────────────────────────────────────┐
-│       EC2 Instance (g4dn.2xlarge)    │
-│  ┌────────────────────────────────┐  │
-│  │    FastAPI Application         │  │
-│  │  - Host Check Middleware       │  │
-│  │  - Session Auth (4h duration)  │  │
-│  │  - Async Queue (verify+batch)  │  │
-│  │  - Jinja2 Templates            │  │
-│  └────────────────┬───────────────┘  │
-│                   │                  │
-│                   ▼                  │
-│          ┌──────────────┐            │
-│          │    Ollama    │            │
-│          │ llama3.2-    │            │
-│          │    vision    │            │
-│          └──────────────┘            │
-└──────────────────────────────────────┘
-             │
-             ▼
-┌──────────────────────────────────────┐
-│      AWS Secrets Manager             │
-│  (TTB_DEFAULT_USER, TTB_DEFAULT_PASS)│
-└──────────────────────────────────────┘
-```
-
-### Data Flow
-
-1. **User** navigates to configured domain
-2. **CloudFront** forwards request to ALB
-3. **ALB** routes to healthy EC2 instance
-4. **Middleware** checks Host header
-5. **Auth** validates session cookie
-6. **Application** enqueues verification job and returns a job ID
-7. **Worker** picks up job, calls Ollama (llama3.2-vision)
-8. **Client** polls `GET /verify/async/{job_id}` for result
-9. **Response** rendered via Jinja2 template when job completes
-
----
 
 ## Support
 
 For issues or questions:
-- Check [docs/OPERATIONS.md](../infrastructure/OPERATIONS.md) for troubleshooting
-- Review [docs/ARCHITECTURE.md](ARCHITECTURE.md) for system design
+- Check [docs/OPERATIONS_RUNBOOK.md](../docs/OPERATIONS_RUNBOOK.md) for troubleshooting
 - See [infrastructure/README.md](../infrastructure/README.md) for deployment
 
 ---

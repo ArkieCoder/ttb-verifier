@@ -179,47 +179,6 @@ gh run view <run-id> --repo <github_owner>/<github_repo_name>
 - Timestamps, actor, and outputs recorded
 - Can review history of infrastructure changes
 
-## Common Issues
-
-### Issue: Workflow Queued for Long Time
-
-**Symptom**: Workflow shows "Queued" status for several minutes
-
-**Cause**: Another workflow is running (deploy, test, or terraform-checks)
-
-**Solution**: Wait for other workflow to complete, or cancel the other workflow if safe
-
-**Check what's running**:
-```bash
-gh run list --repo <github_owner>/<github_repo_name> --limit 10
-```
-
----
-
-### Issue: Confirmation Failed
-
-**Symptom**: Workflow fails immediately with "Confirmation failed"
-
-**Cause**: Didn't type "APPLY" exactly (case-sensitive)
-
-**Solution**: Re-run workflow and type "APPLY" in all caps
-
----
-
-### Issue: Plan Shows Unexpected Changes
-
-**Symptom**: Plan output shows changes you didn't expect
-
-**Cause**: 
-- Terraform state drift (manual changes in AWS)
-- Someone else modified infrastructure
-- Provider version differences
-
-**Solution**: 
-1. Review plan output carefully
-2. If changes look wrong, cancel the workflow
-3. Investigate state drift with local `terragrunt plan`
-4. Fix issues locally before re-running workflow
 
 ## When to Use
 
@@ -274,7 +233,7 @@ gh workflow disable infrastructure-deploy.yml --repo <github_owner>/<github_repo
 
 ## Related Documentation
 
-- `infrastructure/DEPLOYMENT_GUIDE.md` - Full deployment instructions
-- `infrastructure/README.md` - Infrastructure overview
-- `.github/workflows/deploy.yml` - Application deployment workflow
-- `.github/workflows/terraform-checks.yml` - PR validation workflow
+- [infrastructure/DEPLOYMENT_GUIDE.md](infrastructure/DEPLOYMENT_GUIDE.md) - Full deployment instructions
+- [infrastructure/README.md](infrastructure/README.md) - Infrastructure overview
+- [.github/workflows/deploy.yml](.github/workflows/deploy.yml) - Application deployment workflow
+- [.github/workflows/terraform-checks.yml](.github/workflows/terraform-checks.yml) - PR validation workflow

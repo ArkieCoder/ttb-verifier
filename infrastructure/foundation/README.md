@@ -179,6 +179,6 @@ terragrunt output
 
 ## Additional Documentation
 
-- Parent README: `../README.md`
-- Deployment Guide: `../DEPLOYMENT_GUIDE.md`
-- DNS Configuration: `../DNS_CONFIGURATION.md`
+- Parent README: [../README.md](../README.md)
+- Deployment Guide: [../DEPLOYMENT_GUIDE.md](../DEPLOYMENT_GUIDE.md)
+- DNS Configuration: [../DNS_CONFIGURATION.md](../DNS_CONFIGURATION.md)

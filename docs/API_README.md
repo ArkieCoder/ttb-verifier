@@ -12,7 +12,7 @@ REST API for validating alcohol beverage labels against 27 CFR regulations. Supp
 
 ## Quick Start
 
-### Start the API
+### Start the app
 
 ```bash
 # Using Docker Compose (recommended)
@@ -26,8 +26,7 @@ curl http://localhost:8000/docs
 
 ```bash
 curl -X POST http://localhost:8000/verify \
-  -F "image=@samples/label_good_001.jpg" \
-  -F "ocr_backend=tesseract"
+  -F "image=@samples/label_good_001.jpg"
 ```
 
 ---
@@ -50,7 +49,7 @@ curl -X POST http://localhost:8000/verify \
 |-----------|------|----------|-------------|
 | `image` | File | Yes | Label image (max 10MB, .jpg/.jpeg/.png) |
 | `ground_truth` | String (JSON) | No | Expected values for Tier 2 validation |
-| `ocr_backend` | String | No | OCR engine: `tesseract` (fast, default) or `ollama` (accurate) |
+| `ocr_backend` | String | No | OCR engine: `ollama` (default) |
 
 **Ground Truth JSON Format:**
 ```json
@@ -139,7 +138,7 @@ curl -X POST http://localhost:8000/verify \
 
 #### Example Requests
 
-**Basic Verification (Tesseract):**
+**Basic Verification:**
 ```bash
 curl -X POST http://localhost:8000/verify \
   -F "image=@label.jpg"
@@ -152,7 +151,7 @@ curl -X POST http://localhost:8000/verify \
   -F 'ground_truth={"brand_name":"Ridge & Co.","abv":7.5,"net_contents":"64 fl oz","bottler":"Imported by Black Brewing, San Francisco, CA","product_type":"Hefeweizen"}'
 ```
 
-**Using Ollama AI (Slower, More Accurate):**
+**Using Ollama AI:**
 ```bash
 curl -X POST http://localhost:8000/verify \
   -F "image=@label.jpg" \
@@ -166,8 +165,7 @@ import requests
 url = "http://localhost:8000/verify"
 files = {"image": open("label.jpg", "rb")}
 data = {
-    "ground_truth": '{"brand_name":"Ridge & Co.","abv":7.5}',
-    "ocr_backend": "tesseract"
+    "ground_truth": '{"brand_name":"Ridge & Co.","abv":7.5}'
 }
 
 response = requests.post(url, files=files, data=data)
@@ -194,7 +192,7 @@ print(f"Violations: {len(result['violations'])}")
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `batch_file` | File (ZIP) | Yes | ZIP file containing images and optional JSON files (max 50 images) |
-| `ocr_backend` | String | No | OCR engine: `tesseract` (default) or `ollama` |
+| `ocr_backend` | String | No | OCR engine: `ollama` (default) |
 
 **ZIP File Structure:**
 ```
@@ -278,8 +276,7 @@ zip batch.zip label_good_001.jpg label_good_001.json \
 **Upload Batch:**
 ```bash
 curl -X POST http://localhost:8000/verify/batch \
-  -F "batch_file=@batch.zip" \
-  -F "ocr_backend=tesseract"
+  -F "batch_file=@batch.zip"
 ```
 
 **Python Client Example:**
@@ -299,9 +296,7 @@ with zipfile.ZipFile('batch.zip', 'w') as zf:
 # Upload batch
 url = "http://localhost:8000/verify/batch"
 files = {"batch_file": open("batch.zip", "rb")}
-data = {"ocr_backend": "tesseract"}
-
-response = requests.post(url, files=files, data=data)
+response = requests.post(url, files=files)
 result = response.json()
 
 print(f"Total: {result['summary']['total']}")
@@ -346,21 +341,6 @@ print(f"Non-compliant: {result['summary']['non_compliant']}")
 }
 ```
 
-### 422 Unprocessable Entity
-
-**Causes:**
-- Validation error (Pydantic model validation)
-- Invalid enum value (e.g., ocr_backend not 'tesseract' or 'ollama')
-
-**Example:**
-```json
-{
-  "error": "Validation error",
-  "detail": "ocr_backend must be 'tesseract' or 'ollama'",
-  "timestamp": "2026-02-16T12:00:00Z"
-}
-```
-
 ### 500 Internal Server Error
 
 **Causes:**
@@ -394,37 +374,6 @@ Features:
 
 ---
 
-## Performance
-
-### Processing Times (Tesseract Backend)
-
-| Scenario | Average Time | Notes |
-|----------|--------------|-------|
-| Single label (Tesseract) | 0.7s | Meets 5-second requirement |
-| Single label (Ollama) | 58s | High accuracy, slow |
-| Batch 10 labels | 7s | ~0.7s per label |
-| Batch 50 labels | 36s | ~0.72s per label |
-
-### Recommendations
-
-**For Fast Results:**
-- Use Tesseract backend (default)
-- Average 0.7s per label
-- Suitable for real-time validation
-
-**For High Accuracy:**
-- Use Ollama backend
-- Average 58s per label
-- Better for decorative fonts
-- Recommended for critical validation
-
-**For Large Batches:**
-- Use batch endpoint
-- Process up to 50 labels at once
-- Consider splitting batches >20 labels if using Ollama
-
----
-
 ## Configuration
 
 ### Environment Variables
@@ -440,7 +389,6 @@ OLLAMA_MODEL=llama3.2-vision
 LOG_LEVEL=INFO
 MAX_FILE_SIZE_MB=10
 MAX_BATCH_SIZE=50
-DEFAULT_OCR_BACKEND=tesseract
 
 # CORS Configuration
 CORS_ORIGINS=["*"]
@@ -476,30 +424,6 @@ Current API is designed for demonstration and development:
 - Request tracing
 - Metrics (Prometheus)
 - API versioning
-
-### Recommended Production Architecture
-
-```
-Internet
-   ↓
-AWS API Gateway
-   ├── Authentication (API keys)
-   ├── Rate limiting
-   ├── Request throttling
-   ├── CloudWatch metrics
-   ↓
-EC2 / ECS / Lambda
-   ↓
-Docker Container (TTB Verifier)
-```
-
-**Why API Gateway?**
-- ✅ Handles authentication/authorization
-- ✅ Built-in rate limiting
-- ✅ Request validation
-- ✅ CloudWatch integration
-- ✅ Usage plans and quotas
-- ✅ No code changes needed
 
 ### Adding Features Later
 
@@ -563,30 +487,6 @@ docker-compose restart
 - Valid format (.jpg, .jpeg, .png)
 - Not corrupted: `file label.jpg`
 
-### Slow Processing
-
-**Symptom:** Requests timeout or take >60s
-
-**Cause:** Using Ollama backend
-
-**Solution:**
-- Use Tesseract for fast results (0.7s)
-- Increase client timeout to 120s for Ollama
-- Consider batch processing for multiple labels
-
-### CORS Errors
-
-**Symptom:** Browser blocks requests from frontend
-
-**Solution:**
-```bash
-# Update CORS_ORIGINS in .env
-CORS_ORIGINS=["http://localhost:3000","http://localhost:8080"]
-
-# Restart services
-docker-compose restart verifier
-```
-
 ---
 
 ## Code Examples
@@ -604,7 +504,7 @@ class TTBVerifierClient:
     def __init__(self, base_url="http://localhost:8000"):
         self.base_url = base_url
     
-    def verify_single(self, image_path, ground_truth=None, ocr_backend="tesseract"):
+    def verify_single(self, image_path, ground_truth=None):
         """Verify a single label."""
         url = f"{self.base_url}/verify"
         
@@ -618,7 +518,7 @@ class TTBVerifierClient:
         response.raise_for_status()
         return response.json()
     
-    def verify_batch(self, zip_path, ocr_backend="tesseract"):
+    def verify_batch(self, zip_path):
         """Verify a batch of labels."""
         url = f"{self.base_url}/verify/batch"
         
@@ -690,10 +590,6 @@ fi
 - Max file size: 10MB per image
 - Max batch size: 50 images
 - Allowed formats: .jpg, .jpeg, .png
-
-**OCR Backends:**
-- `tesseract` (default): Fast (~0.7s), moderate accuracy
-- `ollama`: Slow (~58s), high accuracy
 
 **Validation Tiers:**
 - Tier 1 (Structural): Checks presence of required fields

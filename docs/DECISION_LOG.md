@@ -3,6 +3,28 @@
 ## Overview
 This document tracks key technical and architectural decisions made during the development of the AI-Powered Alcohol Label Verification App prototype.
 
+## Decision Summary
+
+| Decision # | Title | Link | Outcome |
+|------------|-------|------|---------|
+| 001 | Programming Language Selection | [Decision 001](#decision-001-programming-language-selection) | ✅ Decided |
+| 002 | Web Framework Selection | [Decision 002](#decision-002-web-framework-selection) | ✅ Decided |
+| 003 | AI/OCR Service Selection | [Decision 003](#decision-003-aiocr-service-selection) | ✅ Decided |
+| 004 | Deployment Platform | [Decision 004](#decision-004-deployment-platform) | ✅ Decided |
+| 005 | Sample Label Generator Approach | [Decision 005](#decision-005-sample-label-generator-approach) | ✅ Decided |
+| 006 | Deterministic Generation vs AI Image Generation | [Decision 006](#decision-006-deterministic-generation-vs-ai-image-generation) | ✅ Decided |
+| 007 | JPEG-Only Output Format | [Decision 007](#decision-007-jpeg-only-output-format) | ✅ Decided |
+| 008 | CLI-First Development Approach | [Decision 008](#decision-008-cli-first-development-approach) | ✅ Decided |
+| 009 | Graceful Degradation Validation Strategy | [Decision 009](#decision-009-graceful-degradation-validation-strategy) | ✅ Decided |
+| 010 | [To Be Determined] | [Decision 010](#decision-010-to-be-determined) | 🔄 Pending |
+| 011 | Remove Pretty-Print Option - JSON-Only Output | [Decision 011](#decision-011-remove-pretty-print-option---json-only-output) | ✅ Decided |
+| 012 | Docker Strategy with Separate Ollama Service | [Decision 012](#decision-012-docker-strategy-with-separate-ollama-service) | ✅ Decided |
+| 013 | Pytest Test Suite with 80% Coverage Target | [Decision 013](#decision-013-pytest-test-suite-with-80%-coverage-target) | ✅ Decided |
+| 014 | FastAPI with Open Access and Minimal Observability | [Decision 014](#decision-014-fastapi-with-open-access-and-minimal-observability) | ✅ Decided |
+| 015 | Container Registry - GitHub Container Registry (GHCR) | [Decision 015](#decision-015-container-registry---github-container-registry-ghcr) | ✅ Decided |
+
+## Decision Details
+
 ---
 
 ## Decision 001: Programming Language Selection

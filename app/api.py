@@ -1060,16 +1060,19 @@ def prewarm_ollama_model(ollama_host: str, model: str) -> None:
                     return
 
                 # --- Step 4: Fire the pre-warm request ---
-                # Use /api/chat with a minimal text-only message to guarantee
-                # the mllama vision model weights are fully loaded into GPU RAM.
-                # /api/generate with an empty prompt does not reliably load
-                # mllama family models.
+                # Use /api/generate with an empty prompt and keep_alive=-1.
+                # This loads the model weights into GPU RAM without running
+                # real inference, so Ollama stays free to serve /verify
+                # requests immediately after.  Using /api/chat with a real
+                # message runs full inference (20-60s) and blocks Ollama's
+                # single inference thread, causing /api/tags health-check
+                # calls to hang and cascading 503s from CloudFront.
                 logger.info(f"Pre-warming Ollama model '{model}' into GPU memory...")
                 response = requests.post(
-                    f"{ollama_host}/api/chat",
+                    f"{ollama_host}/api/generate",
                     json={
                         "model": model,
-                        "messages": [{"role": "user", "content": "hi"}],
+                        "prompt": "",
                         "keep_alive": -1,
                         "stream": False
                     },

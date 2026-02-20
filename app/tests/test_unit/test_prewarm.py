@@ -121,36 +121,44 @@ def test_skips_when_done_file_exists(reset_state):
     assert api._ollama_prewarmed is True
 
 
-def test_happy_path_calls_chat_and_writes_done_file(reset_state):
-    """Happy path: no model in GPU, no done-file → call /api/chat, write done-file."""
+def test_happy_path_calls_generate_and_writes_done_file(reset_state):
+    """Happy path: no model in GPU, no done-file → call /api/generate, write done-file.
+
+    We use /api/generate with an empty prompt and keep_alive=-1 rather than
+    /api/chat with a real message.  /api/chat runs full inference (20-60s) and
+    blocks Ollama's single inference thread, which causes /api/tags health-check
+    calls to hang and cascading 503s from CloudFront.  /api/generate with an
+    empty prompt loads the weights without real inference.
+    """
     done_file = reset_state['done_file']
 
     ps_response = MagicMock()
     ps_response.status_code = 200
     ps_response.json.return_value = {'models': []}
 
-    chat_response = MagicMock()
-    chat_response.status_code = 200
+    generate_response = MagicMock()
+    generate_response.status_code = 200
 
     with patch('requests.get', return_value=ps_response), \
-         patch('requests.post', return_value=chat_response) as mock_post:
+         patch('requests.post', return_value=generate_response) as mock_post:
         _run_prewarm_sync()
 
-    # Verify /api/chat was called with the right payload
+    # Verify /api/generate was called with the right payload
     mock_post.assert_called_once()
     call_args = mock_post.call_args
-    assert '/api/chat' in call_args[0][0]
+    assert '/api/generate' in call_args[0][0]
     payload = call_args[1]['json']
     assert payload['model'] == 'llama3.2-vision'
     assert payload['keep_alive'] == -1
     assert payload['stream'] is False
+    assert payload['prompt'] == ''
 
     assert api._ollama_prewarmed is True
     assert done_file.exists(), "done-file must be written after successful pre-warm"
 
 
-def test_failed_chat_request_does_not_write_done_file(reset_state):
-    """If /api/chat returns an error, done-file must NOT be written (allow retry)."""
+def test_failed_generate_request_does_not_write_done_file(reset_state):
+    """If /api/generate returns an error, done-file must NOT be written (allow retry)."""
     done_file = reset_state['done_file']
 
     ps_response = MagicMock()
@@ -169,14 +177,14 @@ def test_failed_chat_request_does_not_write_done_file(reset_state):
 
 
 def test_ps_failure_falls_through_to_prewarm(reset_state):
-    """/api/ps connection error should not abort — fall through and try /api/chat."""
+    """/api/ps connection error should not abort — fall through and try /api/generate."""
     import requests as req
 
-    chat_response = MagicMock()
-    chat_response.status_code = 200
+    generate_response = MagicMock()
+    generate_response.status_code = 200
 
     with patch('requests.get', side_effect=req.exceptions.ConnectionError("refused")), \
-         patch('requests.post', return_value=chat_response) as mock_post:
+         patch('requests.post', return_value=generate_response) as mock_post:
         _run_prewarm_sync()
 
     mock_post.assert_called_once()

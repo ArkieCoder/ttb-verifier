@@ -1,9 +1,8 @@
 locals {
-  # dirname(find_in_parent_folders("root.hcl")) resolves to the infrastructure/
-  # directory regardless of which child layer (app or foundation) is calling.
-  # That is where terraform.tfvars lives.
+  # get_repo_root() finds the .git directory, giving a stable absolute path
+  # that works even when Terragrunt evaluates this file from inside the cache.
   tfstate_bucket = regex("tfstate_bucket\\s*=\\s*\"([^\"]+)\"",
-    file("${dirname(find_in_parent_folders("root.hcl"))}/terraform.tfvars")
+    file("${get_repo_root()}/infrastructure/terraform.tfvars")
   )[0]
 }
 

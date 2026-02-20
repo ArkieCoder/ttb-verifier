@@ -93,10 +93,11 @@ class OllamaOCR(OCRBackend):
             import httpx
             import ollama
             self.ollama = ollama
-            self._client = ollama.Client(
-                host=host,
-                timeout=httpx.Timeout(timeout=float(timeout), connect=10.0),
-            )
+            self._httpx_timeout = httpx.Timeout(timeout=float(timeout), connect=10.0)
+            # Do NOT create a persistent _client here. A long-lived httpx client
+            # can end up with a stale/broken connection after a streaming response
+            # completes, causing subsequent requests to hang silently. We create
+            # a fresh client per request in _do_extract() instead.
         except ImportError:
             self._is_available = False
             self._availability_error = "ollama Python library not installed. Install with: pip install ollama"
@@ -271,7 +272,11 @@ Format your response as plain text, with each distinct text element on its own l
             #   streaming because the runner will still abort cleanly on pipe
             #   breaks regardless of the keep_alive setting.
             chunks = []
-            for chunk in self._client.chat(
+            client = self.ollama.Client(
+                host=self.host,
+                timeout=self._httpx_timeout,
+            )
+            for chunk in client.chat(
                 model=self.model,
                 messages=[{
                     'role': 'user',

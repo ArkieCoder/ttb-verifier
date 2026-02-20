@@ -197,9 +197,8 @@ class OllamaOCR(OCRBackend):
         finally:
             _ollama_semaphore.release()
 
-    def _do_extract(self, image_path: str, start_time: float,
-                    _retry: bool = True) -> Dict[str, Any]:
-        """Inner extraction with timeout classification and one automatic retry."""
+    def _do_extract(self, image_path: str, start_time: float) -> Dict[str, Any]:
+        """Inner extraction with timeout classification."""
         try:
             # Verify image exists
             img_path = Path(image_path)
@@ -238,8 +237,11 @@ Format your response as plain text, with each distinct text element on its own l
                 }],
                 options={
                     'temperature': 0.1,  # Low temperature for consistent extraction
-                },
-                keep_alive=-1  # Keep model loaded indefinitely to avoid 60s+ reload times
+                }
+                # keep_alive omitted: use Ollama's default (5 minutes idle).
+                # keep_alive=-1 pinned the model and prevented the runner from
+                # ever restarting, so a timed-out/aborted request left Ollama's
+                # internal queue permanently stuck until the container restarted.
             )
 
             extracted_text = response['message']['content'].strip()
@@ -279,12 +281,9 @@ Format your response as plain text, with each distinct text element on its own l
                     "Ollama request timed out after %.1fs (limit: %ds) — %s",
                     time.time() - start_time, self.timeout, err_str
                 )
-                # One automatic retry on timeout; Ollama occasionally needs a
-                # few extra seconds during memory operations.
-                if _retry:
-                    logger.info("Retrying Ollama request once after timeout")
-                    return self._do_extract(image_path, start_time, _retry=False)
-
+                # No automatic retry: a retry sends a fresh request into Ollama's
+                # internal queue while the previous one may still be running, which
+                # doubles GPU pressure and makes saturation worse, not better.
                 return {
                     'success': False,
                     'error': f"Ollama request timed out after {self.timeout}s. Please retry.",

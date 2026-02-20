@@ -225,10 +225,30 @@ Please extract and list every piece of text you can see, line by line. Include:
 
 Format your response as plain text, with each distinct text element on its own line. Do NOT add bullet points, asterisks, or markdown formatting."""
 
-            # Call Ollama using the client instance (which has the configured timeout).
-            # Do NOT use self.ollama.chat() — the module-level function uses a default
-            # httpx client with no timeout, causing requests to hang for 20+ minutes.
-            response = self._client.chat(
+            # Call Ollama using the streaming API with keep_alive=-1.
+            #
+            # Why streaming:
+            #   The non-streaming (blocking) call holds a single HTTP connection
+            #   open until the full response is ready.  If our timeout fires and
+            #   we close that connection, Ollama does NOT detect the disconnect —
+            #   its internal runner keeps the inference running at full GPU
+            #   utilisation until it finishes, then tries to write the response
+            #   to a socket that no longer exists.  With many requests this
+            #   causes the runner to accumulate minutes of backlogged work.
+            #
+            #   With stream=True, Ollama sends one chunk per generated token.
+            #   The moment our side stops reading (timeout, cancelled request,
+            #   process exit), the write() on Ollama's side raises a BrokenPipe
+            #   and the runner aborts the current inference immediately, freeing
+            #   VRAM and the GPU for the next request.
+            #
+            # Why keep_alive=-1:
+            #   Keeps the model resident in VRAM between requests so there is no
+            #   20-60s cold-load penalty on every call.  Safe to combine with
+            #   streaming because the runner will still abort cleanly on pipe
+            #   breaks regardless of the keep_alive setting.
+            chunks = []
+            for chunk in self._client.chat(
                 model=self.model,
                 messages=[{
                     'role': 'user',
@@ -236,15 +256,14 @@ Format your response as plain text, with each distinct text element on its own l
                     'images': [str(img_path)]
                 }],
                 options={
-                    'temperature': 0.1,  # Low temperature for consistent extraction
-                }
-                # keep_alive omitted: use Ollama's default (5 minutes idle).
-                # keep_alive=-1 pinned the model and prevented the runner from
-                # ever restarting, so a timed-out/aborted request left Ollama's
-                # internal queue permanently stuck until the container restarted.
-            )
+                    'temperature': 0.1,
+                },
+                keep_alive=-1,
+                stream=True,
+            ):
+                chunks.append(chunk['message']['content'])
 
-            extracted_text = response['message']['content'].strip()
+            extracted_text = ''.join(chunks).strip()
             processing_time = time.time() - start_time
 
             return {

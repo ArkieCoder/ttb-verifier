@@ -81,7 +81,6 @@ For **Tier 2 accuracy validation**, provide expected values:
 
 ### Step 3: Choose OCR Backend
 
-- **Tesseract** (default): Fast (~1s), good recall, moderate precision
 - **Ollama Vision AI**: Accurate (~10-30s), better for complex labels
   - Automatically disabled if model is downloading
   - Adjust timeout for large images (default: 60s)
@@ -133,11 +132,10 @@ batch.zip
 
 1. Navigate to **Batch Verification**
 2. Select your ZIP file
-3. Choose OCR backend (Tesseract or Ollama)
+3. Choose OCR backend (Ollama)
 4. Click **Upload & Process Batch**
 
 **Important:** Batch processing is **synchronous**. Expect:
-- Tesseract: 2-5 seconds per image
 - Ollama: 10-30 seconds per image
 
 For 50 images with Ollama, processing may take **15-25 minutes**.
@@ -164,19 +162,6 @@ For 50 images with Ollama, processing may take **15-25 minutes**.
 
 ## OCR Backend Selection
 
-### Tesseract OCR
-
-**Best for:**
-- Fast processing (< 1 second)
-- Batch operations with many images
-- Simple, well-structured labels
-
-**Characteristics:**
-- 100% recall (finds all fields)
-- ~50% precision (may have false positives)
-- No GPU required
-- Always available
-
 ### Ollama Vision AI (llama3.2-vision)
 
 **Best for:**
@@ -185,7 +170,7 @@ For 50 images with Ollama, processing may take **15-25 minutes**.
 - Maximum accuracy requirements
 
 **Characteristics:**
-- ~58 seconds per label
+- ~10-30 seconds per label
 - Excellent accuracy
 - Requires model download (first-time: 5-10 minutes)
 - Shows "Not Ready" while downloading
@@ -303,7 +288,6 @@ Actual: 8.2%
 
 **Solution:**
 - Wait 5-10 minutes for model download
-- Use Tesseract backend as fallback
 - Check `/health` endpoint: `curl https://ttb-verifier.unitedentropy.com/health`
 
 ### Batch Processing Hangs
@@ -317,7 +301,6 @@ Actual: 8.2%
 - Reduce batch size to ≤ 50 images
 - Resize images to < 2MB each
 - Increase Ollama timeout (default: 60s)
-- Use Tesseract for large batches
 
 ### Images Won't Upload
 
@@ -349,7 +332,7 @@ curl -c cookies.txt -X POST https://<your-domain>/ui/login \
 ```bash
 curl -b cookies.txt -X POST https://<your-domain>/verify \
   -F "image=@label.jpg" \
-  -F "ocr_backend=tesseract"
+  -F "ocr_backend=ollama"
 ```
 
 **Batch verification:**
@@ -417,55 +400,7 @@ For production:
 
 ---
 
-## Architecture
 
-### Components
-
-```
-┌──────────────────────────────────────┐
-│         CloudFront CDN               │
-│  (Custom Error Pages, SSL Termination)│
-└────────────┬─────────────────────────┘
-             │ HTTPS
-             ▼
-┌──────────────────────────────────────┐
-│     Application Load Balancer        │
-│   (Health Checks, Target Groups)     │
-└────────────┬─────────────────────────┘
-             │
-             ▼
-┌──────────────────────────────────────┐
-│       EC2 Instance (t3.xlarge)       │
-│  ┌────────────────────────────────┐  │
-│  │    FastAPI Application         │  │
-│  │  - Host Check Middleware       │  │
-│  │  - Session Auth (4h duration)  │  │
-│  │  - Jinja2 Templates            │  │
-│  └────────┬───────────────┬────────┘  │
-│           │               │           │
-│           ▼               ▼           │
-│    ┌──────────┐    ┌──────────┐      │
-│    │Tesseract │    │  Ollama  │      │
-│    │   OCR    │    │ llama3.2 │      │
-│    └──────────┘    └──────────┘      │
-└──────────────────────────────────────┘
-             │
-             ▼
-┌──────────────────────────────────────┐
-│      AWS Secrets Manager             │
-│  (TTB_DEFAULT_USER, TTB_DEFAULT_PASS)│
-└──────────────────────────────────────┘
-```
-
-### Data Flow
-
-1. **User** navigates to configured domain
-2. **CloudFront** forwards request to ALB
-3. **ALB** routes to healthy EC2 instance
-4. **Middleware** checks Host header
-5. **Auth** validates session cookie
-6. **Application** processes label with OCR backend
-7. **Response** rendered via Jinja2 template
 
 ---
 
@@ -473,7 +408,6 @@ For production:
 
 For issues or questions:
 - Check [docs/OPERATIONS_RUNBOOK.md](../docs/OPERATIONS_RUNBOOK.md) for troubleshooting
-- Review [docs/ARCHITECTURE.md](ARCHITECTURE.md) for system design
 - See [infrastructure/README.md](../infrastructure/README.md) for deployment
 
 ---
